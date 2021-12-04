@@ -1,0 +1,33 @@
+spring:
+   datasource:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/testdb
+      username: root
+      password:
+   jpa:
+      hibernate:
+         ddl-auto: update
+      show-sql: false
+logging:
+   level:
+      org:
+         springframework:
+            web: trace
+         appche: trace
+server:
+   port: 8089
+   ssl:
+      enable: true
+      key-store: classpath:keystore/storechain.p12
+      key-store-password: Jj123456
+      key-store-type: PKCS12
+      key-alias: storechain
+eureka:
+   client:
+      register-with-eureka: false
+      fetch-registry: false
+      serviceUrl:
+         defaultZone: https://localhost:8089/eureka/
+   instance:
+      hostname: localhost
+          
