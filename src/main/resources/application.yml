@@ -30,4 +30,26 @@ eureka:
          defaultZone: https://localhost:8089/eureka/
    instance:
       hostname: localhost
-          
+netty:
+   enable: true
+   servers:
+      -
+         name: web-socket
+         port: 8090
+         provider: com.storechain.spring.boot.connection.netty.WebSocketServerProvider
+         handler: com.storechain.connection.netty.websocket.handler.WebSocketServerInitializeHandler
+         client-converter: com.storechain.connection.netty.websocket.WebSocketClientConverter
+         options:
+            -
+               SO_BACKLOG: 1024
+         encode-endian: BIG
+         decode-endian: BIG
+         charset: UTF-8
+         log-user-active: true
+         log-user-inactive: true
+         log-channel-read: true
+         log-channel-write: true
+         kick-unknown-packet-user: true
+         log-banned-ip-active: true
+system:
+   timer-thread-count: 16

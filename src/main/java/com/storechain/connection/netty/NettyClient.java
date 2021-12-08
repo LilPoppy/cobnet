@@ -1,5 +1,6 @@
 package com.storechain.connection.netty;
 
+import java.net.InetSocketAddress;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.storechain.connection.InboundPacket;
@@ -11,18 +12,22 @@ import io.netty.util.AttributeKey;
 
 public class NettyClient<CH extends Channel, T extends Packet> {
 	
-	public static final AttributeKey<NettyClient> CLIENT_KEY = AttributeKey.valueOf("StoreChain");
+	@SuppressWarnings("rawtypes")
+	public static final AttributeKey<NettyClient> CLIENT_KEY = AttributeKey.valueOf("StoreChain-Client");
+	
+	protected final NettyServer server;
 	
 	protected final CH channel;
 	
-	private final ReentrantLock lock;
+	private final ReentrantLock locker;
 	
 	private final T reader;
 	
-	public NettyClient(CH c, T packet) {
+	public NettyClient(NettyServer server, CH c, T packet) {
+		this.server = server;
         channel = c;
         reader =  packet;
-        lock = new ReentrantLock(true);
+        locker = new ReentrantLock(true);
     }
 	
 	public final T getReader() {
@@ -33,8 +38,15 @@ public class NettyClient<CH extends Channel, T extends Packet> {
 		channel.writeAndFlush(msg);
 	}
 	
+	public boolean isConnected() {
+		return server.contains(channel);
+	}
+	
 	public void close() {
-		channel.close();
+		if(server.contains(channel)) {
+			server.remove(this);
+			channel.close();
+		}
 	}
 	
 	public String getFullIPAddress() {
@@ -44,12 +56,16 @@ public class NettyClient<CH extends Channel, T extends Packet> {
 	public String getIP() {
 		return getFullIPAddress().split(":")[0].substring(1);
 	}
+	
+	public InetSocketAddress getAddress() {
+		return (InetSocketAddress) channel.remoteAddress();
+	}
 
 	public final void acquireEncoderState() {
-		lock.lock();
+		locker.lock();
 	}
 
 	public final void releaseEncodeState() {
-		lock.unlock();
+		locker.unlock();
 	}
 }

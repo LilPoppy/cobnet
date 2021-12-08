@@ -7,7 +7,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.storechain.Endian;
-import com.storechain.configuration.ServerConfiguration;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -18,36 +17,22 @@ public class InboundPacket extends Packet {
 	
 	private long opcode;
 	
-	public InboundPacket(byte[] data) {
-		this(data, ServerConfiguration.WEBSOCKET_DEFAULT_DECODE_ENDIAN, ServerConfiguration.WEBSOCKET_DEFAULT_CHARSET);
-	}
-	
-	public InboundPacket(byte[] data, Endian endian) {
-		this(data, endian, ServerConfiguration.WEBSOCKET_DEFAULT_CHARSET);
-	}
-	
 	public InboundPacket(byte[] data, Endian endian, Charset charset) {
 		this(Unpooled.copiedBuffer(data), endian, charset);
 	}
 	
-	public InboundPacket(ByteBuf buf) {
-		this(buf, ServerConfiguration.WEBSOCKET_DEFAULT_DECODE_ENDIAN, ServerConfiguration.WEBSOCKET_DEFAULT_CHARSET);
-	}
-	
-	public InboundPacket(ByteBuf buf, Endian endian) {
-		this(buf, endian, ServerConfiguration.WEBSOCKET_DEFAULT_CHARSET);
-	}
 	
 	public InboundPacket(ByteBuf buf, Endian endian, Charset charset) {
 		super(buf.array(), endian, charset);
 		this.byteBuf = buf.copy();
 	}
-	
-    public InboundPacket(){
-        this(Unpooled.buffer());
+
+    
+    public InboundOperation getOperation() {
+    	return InboundOperation.getByCode(opcode);
     }
     
-    public long getHeader() {
+    public long getOpcode() {
     	return this.opcode;
     }
     
@@ -146,11 +131,13 @@ public class InboundPacket extends Packet {
     	return new String(this.decode(size), this.charset);
     }
     
-    public Map decodeMap() throws JsonMappingException, JsonProcessingException {
+    @SuppressWarnings("rawtypes")
+	public Map decodeMap() throws JsonMappingException, JsonProcessingException {
     	return new ObjectMapper().readValue(decodeString(), Map.class);
     }
     
-    public Map decodeBigMap() throws JsonMappingException, JsonProcessingException {
+    @SuppressWarnings("rawtypes")
+	public Map decodeBigMap() throws JsonMappingException, JsonProcessingException {
     	return new ObjectMapper().readValue(decodeText(), Map.class);
     }
 
@@ -178,7 +165,7 @@ public class InboundPacket extends Packet {
 
 	@Override
 	public InboundPacket clone() throws CloneNotSupportedException {
-		return new InboundPacket(byteBuf);
+		return new InboundPacket(byteBuf, endian, charset);
 	}
 
 	@Override

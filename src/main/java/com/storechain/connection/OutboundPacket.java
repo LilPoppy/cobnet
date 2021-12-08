@@ -8,8 +8,9 @@ import org.bouncycastle.util.Arrays;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.storechain.Endian;
-import com.storechain.configuration.Constants;
-import com.storechain.configuration.ServerConfiguration;
+import com.storechain.connection.netty.NettyServer;
+import com.storechain.constants.LogicConstants;
+import com.storechain.interfaces.connection.Encodable;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
@@ -21,8 +22,8 @@ public class OutboundPacket extends Packet {
 	
 	private ByteBuf byteBuf;
 	
-    public OutboundPacket(long opcode) {
-        this(new byte[]{});
+    public OutboundPacket(NettyServer server, long opcode) {
+        this(server);
         encodeUInt(opcode);
         this.opcode = opcode;
     }
@@ -41,19 +42,15 @@ public class OutboundPacket extends Packet {
         buf.release();
 	}
 	
-	public OutboundPacket(byte[] data, Endian endian) {
-		this(data, endian, ServerConfiguration.WEBSOCKET_DEFAULT_CHARSET);
-	}
-	
-	public OutboundPacket(byte[] data) {
-		this(data, ServerConfiguration.WEBSOCKET_DEFAULT_ENCODE_ENDIAN, ServerConfiguration.WEBSOCKET_DEFAULT_CHARSET);
-	}
-	
-    public OutboundPacket() {
-        this(new byte[]{}, ServerConfiguration.WEBSOCKET_DEFAULT_ENCODE_ENDIAN, ServerConfiguration.WEBSOCKET_DEFAULT_CHARSET);
+    public OutboundPacket(NettyServer server) {
+        this(new byte[]{}, server.getConfiguration().getEncodeEndian(), server.getConfiguration().getCharset());
     }
     
-    public long getHeader() {
+    public OutboundOperation getOperation() {
+    	return OutboundOperation.getByCode(opcode);
+    }
+    
+    public long getOpcode() {
     	return this.opcode;
     }
     
@@ -112,7 +109,7 @@ public class OutboundPacket extends Packet {
     public void encodeString(String value) {
     	byte[] bs = value.getBytes(charset);
     	
-    	if(bs.length > Constants.MAX_UINT_VALUE) {
+    	if(bs.length > LogicConstants.MAX_UINT_VALUE) {
     		encodeLong(bs.length);
     	} else {
     		encodeUInt(bs.length);
@@ -121,7 +118,8 @@ public class OutboundPacket extends Packet {
     	encode(bs);
     }
     
-    public void encodeMap(Map map) throws JsonProcessingException {
+    @SuppressWarnings("rawtypes")
+	public void encodeMap(Map map) throws JsonProcessingException {
     	encodeString(new ObjectMapper().writeValueAsString(map));
     }
     
@@ -157,7 +155,7 @@ public class OutboundPacket extends Packet {
 
 	@Override
 	public Packet clone() throws CloneNotSupportedException {
-		return new OutboundPacket(this.getData());
+		return new OutboundPacket(this.getData(), endian, charset);
 	}
 	
     @Override
