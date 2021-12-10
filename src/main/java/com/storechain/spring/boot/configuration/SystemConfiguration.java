@@ -7,13 +7,94 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties("system")
 public class SystemConfiguration {
 	
-	private int timerThreadCount = 8;
 
-	public int getTimerThreadCount() {
-		return timerThreadCount;
+	private TimerProviderConfiguration timerProvider; 
+	
+
+	@Configuration
+	@ConfigurationProperties
+	public static class TimerProviderConfiguration {
+	
+		private int threadCount = 8;
+		
+		private int maxThreadCount = Integer.MAX_VALUE;
+		
+		private int keepAliveMinutes = 5;
+		
+		private boolean allowCoreThreadTimeOut = true;
+		
+		private boolean removeOnCancelPolicy = true;
+		
+		private boolean continueExistingPeriodicTasksAfterShutdownPolicy;
+		
+		private boolean executeExistingDelayedTasksAfterShutdownPolicy;
+
+		public int getThreadCount() {
+			return threadCount;
+		}
+
+		public void setThreadCount(int threadCount) {
+			this.threadCount = threadCount;
+		}
+
+		public int getKeepAliveMinutes() {
+			return keepAliveMinutes;
+		}
+
+		public void setKeepAliveMinutes(int keepAliveMinutes) {
+			this.keepAliveMinutes = keepAliveMinutes;
+		}
+
+		public boolean isAllowCoreThreadTimeOut() {
+			return allowCoreThreadTimeOut;
+		}
+
+		public void setAllowCoreThreadTimeOut(boolean allowCoreThreadTimeOut) {
+			this.allowCoreThreadTimeOut = allowCoreThreadTimeOut;
+		}
+
+		public boolean isRemoveOnCancelPolicy() {
+			return removeOnCancelPolicy;
+		}
+
+		public void setRemoveOnCancelPolicy(boolean removeOnCancelPolicy) {
+			this.removeOnCancelPolicy = removeOnCancelPolicy;
+		}
+
+		public boolean isContinueExistingPeriodicTasksAfterShutdownPolicy() {
+			return continueExistingPeriodicTasksAfterShutdownPolicy;
+		}
+
+		public void setContinueExistingPeriodicTasksAfterShutdownPolicy(
+				boolean continueExistingPeriodicTasksAfterShutdownPolicy) {
+			this.continueExistingPeriodicTasksAfterShutdownPolicy = continueExistingPeriodicTasksAfterShutdownPolicy;
+		}
+
+		public boolean isExecuteExistingDelayedTasksAfterShutdownPolicy() {
+			return executeExistingDelayedTasksAfterShutdownPolicy;
+		}
+
+		public void setExecuteExistingDelayedTasksAfterShutdownPolicy(
+				boolean executeExistingDelayedTasksAfterShutdownPolicy) {
+			this.executeExistingDelayedTasksAfterShutdownPolicy = executeExistingDelayedTasksAfterShutdownPolicy;
+		}
+
+		public int getMaxThreadCount() {
+			return this.maxThreadCount < this.threadCount ? Integer.MAX_VALUE : this.maxThreadCount;
+		}
+
+		public void setMaxThreadCount(int maxThreadCount) {
+			this.maxThreadCount = maxThreadCount;
+		}
 	}
 
-	public void setTimerThreadCount(int timerThreadCount) {
-		this.timerThreadCount = timerThreadCount;
+	public TimerProviderConfiguration getTimerProvider() {
+		return timerProvider;
 	}
+
+
+	public void setTimerProvider(TimerProviderConfiguration timerProvider) {
+		this.timerProvider = timerProvider;
+	}
+
 }

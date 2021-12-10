@@ -30,7 +30,7 @@ public class UnknownPacketHandler implements Listener {
 			if(client.isConnected()) {
 				log.warn(String.format("Kicking %s by sending unknown packet.", client.getFullIPAddress()));
 				client.close();	
-				server.block(client, new Date(System.currentTimeMillis() + (15 * 1000)));
+				server.block(client, new Date(System.currentTimeMillis() + (5 * 1000)));
 			}
 		}
 		

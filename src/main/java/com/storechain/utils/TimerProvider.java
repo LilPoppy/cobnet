@@ -6,21 +6,40 @@ import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.storechain.EntryPoint;
 
-public class TimerProvider {
+public class TimerProvider  {
 	
 	public static final TimerProvider INSTANCE = new TimerProvider();
 	
 	private final ScheduledThreadPoolExecutor executor;
 	
-	public TimerProvider() {
+	private TimerProvider() {
 		
-		this.executor = new ScheduledThreadPoolExecutor(EntryPoint.SYSTEM_CONFIG.getTimerThreadCount());
+		this.executor = new ScheduledThreadPoolExecutor(EntryPoint.SYSTEM_CONFIG.getTimerProvider().getThreadCount(), new ThreadFactory() {
+        	
+            private final AtomicInteger number = new AtomicInteger(-1);
+
+            @Override
+            public Thread newThread(Runnable r) {
+                Thread t = new Thread(r);
+                t.setName("TimerProvider:" + number.getAndIncrement());
+                return t;
+            }
+        });
+		
+		executor.setMaximumPoolSize(EntryPoint.SYSTEM_CONFIG.getTimerProvider().getMaxThreadCount());
+        executor.setContinueExistingPeriodicTasksAfterShutdownPolicy(EntryPoint.SYSTEM_CONFIG.getTimerProvider().isContinueExistingPeriodicTasksAfterShutdownPolicy());
+        executor.setExecuteExistingDelayedTasksAfterShutdownPolicy(EntryPoint.SYSTEM_CONFIG.getTimerProvider().isExecuteExistingDelayedTasksAfterShutdownPolicy());
+        executor.setRemoveOnCancelPolicy(EntryPoint.SYSTEM_CONFIG.getTimerProvider().isRemoveOnCancelPolicy());
+        executor.setKeepAliveTime(EntryPoint.SYSTEM_CONFIG.getTimerProvider().getKeepAliveMinutes(), TimeUnit.MINUTES);
+        executor.allowCoreThreadTimeOut(EntryPoint.SYSTEM_CONFIG.getTimerProvider().isAllowCoreThreadTimeOut());
 	}
+	
 	
 	public ScheduledFuture<?> register(Runnable delegate, long delay, long period, TimeUnit unit, int maxCount, Runnable onDone, Object... args) {
 		return this.executor.scheduleAtFixedRate(new TimerScheduleRunnable(delegate, maxCount, onDone, args), delay, period, unit);
@@ -50,8 +69,18 @@ public class TimerProvider {
 		return register(delegate, delay, period, unit, maxCount, null, args);
 	}
 	
+	public ScheduledFuture<?> register(Runnable delegate, Date delay, long milliSeconds, int maxCount, Object... args) {
+		long v = delay.getTime() - System.currentTimeMillis();
+		return register(delegate, v > 0 ? v : 0, milliSeconds, TimeUnit.MILLISECONDS, maxCount, args);
+	}
+	
 	public ScheduledFuture<?> register(Runnable delegate, long delay, long period, TimeUnit unit, Object... args) {
 		return register(delegate, delay, period, unit, -1, null, args);
+	}
+	
+	public ScheduledFuture<?> register(Runnable delegate, Date delay, long milliSeconds, Object... args) {
+		long v = delay.getTime() - System.currentTimeMillis();
+		return register(delegate, v > 0 ? v : 0, milliSeconds, TimeUnit.MILLISECONDS, args);
 	}
 	
 	public ScheduledFuture<?> schedule(Runnable delegate, long delay, TimeUnit unit, Object... args) {
@@ -71,6 +100,34 @@ public class TimerProvider {
 		this.executor.purge();
 	}
 	
+    public long getActiveCount() {
+        return this.executor.getActiveCount();
+    }
+
+    public long getCompletedTaskCount() {
+        return this.executor.getCompletedTaskCount();
+    }
+    
+    public long getTaskCount() {
+        return this.executor.getTaskCount();
+    }
+
+    public boolean isShutdown() {
+        return this.executor.isShutdown();
+    }
+	
+    public boolean isTerminated() {
+        return this.executor.isTerminated();
+    }
+    
+    public int getPoolSize() {
+    	return this.executor.getPoolSize();
+    }
+    
+    public int getQueueCount() {
+    	return this.getQueue().size();
+    }
+    
 	public BlockingQueue<Runnable> getQueue() {
 		return this.executor.getQueue();
 	}
@@ -85,6 +142,11 @@ public class TimerProvider {
 	
 	public ScheduledThreadPoolExecutor getExecutor() {
 		return executor;
+	}
+	
+	@Override
+	public String toString() {
+		return this.executor.toString();
 	}
 
 	private class TimerScheduleRunnable extends TimerTask {

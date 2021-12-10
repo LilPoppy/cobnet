@@ -1,4 +1,6 @@
 spring:
+   application:
+      name: StoreChain-Server
    datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://localhost:3306/testdb
@@ -23,13 +25,13 @@ server:
       key-store-type: PKCS12
       key-alias: storechain
 eureka:
-   client:
-      register-with-eureka: false
-      fetch-registry: false
-      serviceUrl:
-         defaultZone: https://localhost:8089/eureka/
    instance:
       hostname: localhost
+   client:
+      registerWithEureka: false
+      fetchRegistry: false
+      service-url:
+         defaultZone: https://localhost:8089/eureka
 netty:
    enable: true
    servers:
@@ -52,4 +54,11 @@ netty:
          kick-unknown-packet-user: true
          log-banned-ip-active: true
 system:
-   timer-thread-count: 16
+   timer-provider:
+      thread-count: 16
+      maxThreadCount: -1
+      keep-alive-minutes: 5
+      allow-core-thread-timeout: true
+      remove-on-cancel-policy: true
+      continue-existing-periodic-tasks-after-shutdown-policy: false
+      execute-existing-delayed-tasks-after-shutdown-policy: false
