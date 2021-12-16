@@ -1,6 +1,7 @@
 package com.storechain.connection.netty.handler;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.storechain.connection.netty.NettyClient;
 import com.storechain.connection.netty.NettyServer;
@@ -14,7 +15,7 @@ import io.netty.handler.ipfilter.RuleBasedIpFilter;
 public class ChannelInitializeHandler<T extends Channel>
 		extends ChannelInitializer<T> {
 
-	protected static Logger log = Logger.getRootLogger();
+	protected static Logger log = LogManager.getRootLogger();
 	
 	@SuppressWarnings("rawtypes")
 	private final NettyClientConverter converter;

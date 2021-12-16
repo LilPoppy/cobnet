@@ -11,11 +11,11 @@ spring:
          ddl-auto: update
       show-sql: false
 logging:
+   file: 
+      name: ./logs/spring.log
    level:
-      org:
-         springframework:
-            web: trace
-         appche: trace
+      root: INFO
+
 server:
    port: 8089
    ssl:

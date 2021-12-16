@@ -2,7 +2,8 @@ package com.storechain.connection.handler;
 
 import java.util.Date;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.storechain.EntryPoint;
 import com.storechain.connection.InboundOperation;
@@ -14,7 +15,7 @@ import com.storechain.interfaces.connection.annotation.Handler;
 
 public class UnknownPacketHandler implements Listener {
 	
-	protected static Logger log = Logger.getLogger(UnknownPacketHandler.class);
+	protected static Logger log = LoggerFactory.getLogger(UnknownPacketHandler.class);
 	
 	private final NettyServer server;
 	

@@ -21,7 +21,7 @@ public class WebSocketServerProvider implements NettyServerProvider {
 		
 		ChannelHandler handler;
 		ChannelInitializeHandler sub_handler;
-		
+
 		try {
 			
 			Class<?> handler_class = config.getHandler();

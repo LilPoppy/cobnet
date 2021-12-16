@@ -2,7 +2,8 @@ package com.storechain.connection.netty;
 
 import java.util.Map.Entry;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.storechain.connection.netty.handler.ChannelInitializeHandler;
 
@@ -15,7 +16,7 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 
 public class NettyConnectionAdapter {
 
-	protected static Logger log = Logger.getLogger(NettyConnectionAdapter.class);
+	protected static Logger log = LogManager.getLogger(NettyConnectionAdapter.class);
 	
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static ChannelFuture connect(String ip, int port, ChannelInitializeHandler handler,

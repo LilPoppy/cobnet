@@ -18,8 +18,13 @@
 		<repackage.classifier/>
 		<spring-cloud.version>2021.0.0</spring-cloud.version>
 		<spring-native.version>0.11.0</spring-native.version>
+		<graalvm.version>21.3.0</graalvm.version>
 	</properties>
 	<dependencies>
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jdbc</artifactId>
@@ -66,6 +71,10 @@
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
 		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-yaml</artifactId>
+		</dependency>
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
@@ -100,14 +109,8 @@
             <artifactId>netty-all</artifactId>
         </dependency>
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-        </dependency>
-        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
-            <version>1.2</version>
         </dependency>
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
@@ -116,7 +119,35 @@
 		<dependency>
 		    <groupId>org.graalvm.js</groupId>
 		    <artifactId>js</artifactId>
-		    <version>21.3.0</version>
+		    <version>${graalvm.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.js</groupId>
+			<artifactId>js-scriptengine</artifactId>
+			<version>${graalvm.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.tools</groupId>
+			<artifactId>profiler</artifactId>
+			<version>${graalvm.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.tools</groupId>
+			<artifactId>chromeinspector</artifactId>
+			<version>${graalvm.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.graalvm.sdk</groupId>
+		    <artifactId>graal-sdk</artifactId>
+		    <version>${graalvm.version}</version>
+		</dependency>
+		<dependency>
+		    <groupId>org.graalvm.nativeimage</groupId>
+		    <artifactId>svm</artifactId>
+		    <version>${graalvm.version}</version>
+		    <scope>provided</scope>
 		</dependency>
         <dependency>
             <groupId>org.python</groupId>
@@ -135,6 +166,7 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
+	
 	<build>
 		<plugins>
 			<plugin>
@@ -188,6 +220,7 @@
 			</plugin>
 		</plugins>
 	</build>
+	
 	<repositories>
 		<repository>
 			<id>spring-releases</id>
@@ -216,13 +249,6 @@
 				<repackage.classifier>exec</repackage.classifier>
 				<native-buildtools.version>0.9.8</native-buildtools.version>
 			</properties>
-			<dependencies>
-				<dependency>
-					<groupId>org.junit.platform</groupId>
-					<artifactId>junit-platform-launcher</artifactId>
-					<scope>test</scope>
-				</dependency>
-			</dependencies>
 			<build>
 				<plugins>
 					<plugin>
@@ -230,6 +256,23 @@
 						<artifactId>native-maven-plugin</artifactId>
 						<version>${native-buildtools.version}</version>
 						<extensions>true</extensions>
+						<configuration>
+							<buildArgs>
+								<buildArgs>--no-server</buildArgs>
+								<buildArgs>--no-fallback</buildArgs>
+								<buildArgs>--report-unsupported-elements-at-runtime</buildArgs>
+							    <!--<buildArgs>-H:+AddAllCharsets</buildArgs>-->
+							    <buildArgs>-Dlogging.config=logback-config.xml</buildArgs>
+							    <buildArgs>--allow-incomplete-classpath</buildArgs>
+								<buildArgs>--features=com.storechain.RuntimeReflectionRegistrationFeature</buildArgs>
+								<buildArgs>-H:ReflectionConfigurationFiles=${basedir}/src/main/java/reflect-config.json</buildArgs>
+								<buildArgs>-H:ResourceConfigurationFiles=${basedir}/src/main/java/resource-config.json</buildArgs>
+								<buildArgs>-H:+ReportExceptionStackTraces</buildArgs>
+								<buildArgs>-H:+ReportUnsupportedElementsAtRuntime</buildArgs>
+								<buildArgs>-H:IncludeResources=".*.xml|.*.conf|.*.yml" </buildArgs>
+								<buildArgs>-H:TraceClassInitialization=true</buildArgs>
+							</buildArgs>
+						</configuration>
 						<executions>
 							<execution>
 								<id>build-native</id>
@@ -243,18 +286,12 @@
 					<plugin>
 					    <groupId>org.springframework.experimental</groupId>
 					    <artifactId>spring-aot-maven-plugin</artifactId>
-					    <version>0.11.0-RC1</version>
+					    <version>0.11.0</version>
 				            <executions>
 				                <execution>
 				                    <id>generate</id>
 				                    <goals>
 				                        <goal>generate</goal>
-				                    </goals>
-				                </execution>
-				                <execution>
-				                    <id>test-generate</id>
-				                    <goals>
-				                        <goal>test-generate</goal>
 				                    </goals>
 				                </execution>
 				            </executions>
@@ -263,5 +300,4 @@
 			</build>
 		</profile>
 	</profiles>
-
 </project>

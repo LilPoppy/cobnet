@@ -2,7 +2,8 @@ package com.storechain.connection.netty.handler;
 
 import java.net.InetSocketAddress;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.storechain.connection.netty.NettyServer;
 
@@ -11,7 +12,7 @@ import io.netty.handler.ipfilter.IpFilterRuleType;
 
 public class IpFilterRuleHandler implements IpFilterRule {
 
-	protected static Logger log = Logger.getLogger(IpFilterRuleHandler.class);
+	protected static Logger log = LogManager.getLogger(IpFilterRuleHandler.class);
 	private final NettyServer server;
 	
 	public IpFilterRuleHandler(NettyServer server) {

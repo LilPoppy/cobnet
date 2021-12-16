@@ -1,6 +1,9 @@
 package com.storechain.connection.netty.websocket.handler;
 
-import org.apache.log4j.Logger;
+
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.storechain.EntryPoint;
 import com.storechain.connection.InboundOperation;
@@ -24,7 +27,7 @@ public class WebSocketInboundPacketHandler extends SimpleChannelInboundHandler<I
 		this.server = server;
 	}
 
-	protected static Logger log = Logger.getLogger(WebSocketInboundPacketHandler.class);
+	protected static Logger log = LoggerFactory.getLogger(WebSocketInboundPacketHandler.class);
 	
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, InboundPacket packet) throws Exception {
@@ -36,7 +39,7 @@ public class WebSocketInboundPacketHandler extends SimpleChannelInboundHandler<I
         
         if(operation == InboundOperation.UNKNOWN) {
         	
-        	log.fatal(String.format("Unknown packet:[(%d) %s]", packet.getOpcode(), packet.toString()));
+        	log.warn(String.format("Unknown packet:[(%d) %s]", packet.getOpcode(), packet.toString()));
         }
         
         int hitCount = 0;
@@ -63,7 +66,7 @@ public class WebSocketInboundPacketHandler extends SimpleChannelInboundHandler<I
         	
             if(server.getConfiguration().isLogChannelRead() && operation != InboundOperation.UNKNOWN) {
             	
-            	log.info(String.format("[IN] [%s]", packet.getOperation()));
+            	log.debug(String.format("[IN] [%s]", packet.getOperation()));
             }
         }  else if(operation != InboundOperation.UNKNOWN) {
         	

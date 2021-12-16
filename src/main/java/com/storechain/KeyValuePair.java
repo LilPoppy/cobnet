@@ -25,6 +25,12 @@ public class KeyValuePair<T, E> implements Entry<T, E> {
 		this._value = value;
 		return this._value;
 	}
+	
+	
+//	public static <T,E> KeyValuePair<T,E> valueOf(T key, E value) {
+//		return new KeyValuePair<T,E>(key, value);
+//	}
+	
 
 
 }

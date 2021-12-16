@@ -3,14 +3,15 @@ package com.storechain.connection.netty.websocket.handler;
 import javax.net.ssl.SSLEngine;
 import javax.net.ssl.SSLHandshakeException;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.ssl.SslHandler;
 
 public class WebSocketSslHandler extends SslHandler {
 	
-	protected static Logger log = Logger.getLogger(WebSocketSslHandler.class);
+	protected static Logger log = LoggerFactory.getLogger(WebSocketSslHandler.class);
 
 	public WebSocketSslHandler(SSLEngine engine) {
 		super(engine);

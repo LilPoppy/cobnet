@@ -1,9 +1,8 @@
 package com.storechain.spring.boot.connection.netty;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.Map.Entry;
-
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import com.storechain.connection.netty.NettyServer;
 import com.storechain.connection.netty.handler.ChannelInitializeHandler;
@@ -12,11 +11,10 @@ import com.storechain.interfaces.spring.connection.NettyServerProvider;
 import com.storechain.spring.boot.configuration.NettyConfiguration.ServerConfiguration;
 
 import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelOption;
 
 public class NettyBaseServerProvider implements NettyServerProvider {
 	
-	protected static final Logger log = Logger.getLogger(NettyBaseServerProvider.class);
+	protected static final Logger log = LogManager.getLogger(NettyBaseServerProvider.class);
 
 	@Override
 	public void providing(ServerConfiguration config) {

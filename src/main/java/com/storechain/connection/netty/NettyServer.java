@@ -14,9 +14,9 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ScheduledFuture;
 
-import org.apache.log4j.Logger;
-import org.springframework.scheduling.annotation.Async;
 
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
 import com.storechain.EntryPoint;
 import com.storechain.KeyValuePair;
 import com.storechain.connection.InboundPacket;
@@ -39,17 +39,18 @@ import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.GlobalEventExecutor;
 
+import org.slf4j.Logger;
+
 //TODO serialize server cache to SQL or something else and reload it when server starts again.
 public class NettyServer extends DefaultChannelGroup {
 	
-	@SuppressWarnings("rawtypes")
 	public static final AttributeKey<NettyServer> SERVER_KEY = AttributeKey.valueOf("StoreChain-Server");
 	
 	public static final List<NettyServer> SERVERS = new ArrayList<NettyServer>();
 	
 	private final String name;
 	
-	protected static Logger log = Logger.getLogger(NettyServer.class);
+	protected static Logger log = LoggerFactory.getLogger(NettyServer.class);
 	
 	private volatile NioServerSocketChannel channel;
 	
@@ -161,7 +162,7 @@ public class NettyServer extends DefaultChannelGroup {
 					
 					if(future.isDone() && future.isSuccess()) {
 						
-						log.debug(String.format("Listening port %d register by %s(%s)", port, getName(), subHandler.getClass().getName()));
+						log.info(String.format("Listening port %d register by %s(%s)", port, getName(), subHandler.getClass().getName()));
 
 						SERVERS.add(server);
 					}
