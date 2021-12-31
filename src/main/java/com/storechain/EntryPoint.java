@@ -46,7 +46,7 @@ public class EntryPoint {
 				provider.providing(serverConfig);
 			}
 		}
-
+		
 		ScriptEngineManager sem = new ScriptEngineManager();
 
 		for(var se : sem.getEngineFactories()) {

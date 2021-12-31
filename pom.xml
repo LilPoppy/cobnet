@@ -19,6 +19,7 @@
 		<spring-cloud.version>2021.0.0</spring-cloud.version>
 		<spring-native.version>0.11.0</spring-native.version>
 		<graalvm.version>21.3.0</graalvm.version>
+		<dockerfile-maven.version>0.38.0</dockerfile-maven.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -47,10 +48,6 @@
 		</dependency>
 		<dependency>
 		    <groupId>org.springframework.cloud</groupId>
-		    <artifactId>spring-cloud-config-server</artifactId>
-		</dependency>
-		<dependency>
-		    <groupId>org.springframework.cloud</groupId>
 		    <artifactId>spring-cloud-starter-config</artifactId>
 		</dependency>
 		<dependency>
@@ -61,15 +58,6 @@
 			<groupId>org.springframework.experimental</groupId>
 			<artifactId>spring-native</artifactId>
 			<version>${spring-native.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.session</groupId>
-			<artifactId>spring-session-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-configuration-processor</artifactId>
-			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -154,6 +142,11 @@
             <artifactId>jython</artifactId>
             <version>2.7.2</version>
         </dependency>
+		<dependency>
+		    <groupId>org.apache.tomcat</groupId>
+		    <artifactId>tomcat-util</artifactId>
+		    <version>10.1.0-M8</version>
+		</dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>
@@ -244,6 +237,55 @@
 
 	<profiles>
 		<profile>
+			<id>docker</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>io.fabric8</groupId>
+						<artifactId>docker-maven-plugin</artifactId>
+						<version>${dockerfile-maven.version}</version>
+						<configuration>
+							<images>
+								<image>
+									<name>${project.artifactId}:${project.version}</name>
+									<alias>${project.name}</alias>
+									<build>
+										<dockerFile>${project.basedir}/Dockerfile</dockerFile>
+										<args>
+											<ARTIFACTID>${project.artifactId}</ARTIFACTID>
+											<VERSION>${project.version}</VERSION>
+											<AUTHORS>LilPoppy</AUTHORS>
+											<AUTHORS_EMAIL>lilpoppy96@gmail.com</AUTHORS_EMAIL>
+											<SOURCE_REPO>https://github.com/SpamanDev/StoreChain-Server</SOURCE_REPO>
+											<GRAALVM_VERSION>${graalvm.version}</GRAALVM_VERSION>
+											<JAVA_VERSION>java${java.version}</JAVA_VERSION>
+											<WORK_DIR>/build</WORK_DIR>
+											<ORACLE_VERSION>8-slim</ORACLE_VERSION>
+											<TARGETPLATFORM>linux/amd64</TARGETPLATFORM>
+											<PORT>8089</PORT>
+										</args>
+									</build>
+								</image>
+							</images>
+							<useColor>true</useColor>
+							<logStdout>true</logStdout>
+							<verbose>true</verbose>
+						</configuration>
+						<executions>
+							<execution>
+								<id>build-docker</id>
+								<phase>package</phase>
+								<goals>
+							   		<goal>build</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		
+		<profile>
 			<id>native</id>
 			<properties>
 				<repackage.classifier>exec</repackage.classifier>
@@ -258,8 +300,9 @@
 						<extensions>true</extensions>
 						<configuration>
 							<buildArgs>
-								<buildArgs>--no-server</buildArgs>
+								<!--<buildArgs>- -no-server</buildArgs>-->
 								<buildArgs>--no-fallback</buildArgs>
+								<buildArgs>-DskipTests</buildArgs>
 								<buildArgs>--report-unsupported-elements-at-runtime</buildArgs>
 							    <!--<buildArgs>-H:+AddAllCharsets</buildArgs>-->
 							    <buildArgs>-Dlogging.config=logback-config.xml</buildArgs>

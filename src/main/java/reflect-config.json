@@ -12,6 +12,15 @@
             }
         ]
     },
+	{
+	    "name":"[Lcom.fasterxml.jackson.databind.JsonSerializer;"
+	},
+	{
+	    "name":"[Lcom.fasterxml.jackson.databind.JsonDeserializer;"
+	},
+	{
+	    "name":"[Lorg.springframework.context.ApplicationContextInitializer;"
+	},
     {
         "name":"java.io.ObjectInputStream",
         "allPublicMethods":true
@@ -19,54 +28,6 @@
     {
         "name":"java.lang.String",
         "fields":[{"name":"value"}]
-    },
-    {
-        "name":"org.apache.logging.log4j.core.config.json.JsonConfigurationFactory",
-        "methods":[{ "name":"<init>", "parameterTypes":[] }]
-    },
-    {
-        "name":"org.apache.logging.log4j.core.config.properties.PropertiesConfigurationFactory",
-        "methods":[{ "name":"<init>", "parameterTypes":[] }]
-    },
-    {
-        "name":"org.apache.logging.log4j.core.config.xml.XmlConfigurationFactory",
-        "methods":[{ "name":"<init>", "parameterTypes":[] }]
-    },
-    {
-        "name":"org.apache.logging.log4j.core.config.yaml.YamlConfigurationFactory",
-        "methods":[{ "name":"<init>", "parameterTypes":[] }]
-    },
-    {
-        "name":"org.apache.logging.log4j.core.lookup.JmxRuntimeInputArgumentsLookup",
-        "methods":[{ "name":"<init>", "parameterTypes":[] }]
-    },
-    {
-        "name":"org.apache.logging.log4j.core.lookup.JndiLookup",
-        "methods":[{ "name":"<init>", "parameterTypes":[] }]
-    },
-    {
-        "name":"org.apache.logging.log4j.core.pattern.DatePatternConverter",
-        "allDeclaredMethods":true
-    },
-    {
-        "name":"org.apache.logging.log4j.core.pattern.LevelPatternConverter",
-        "allDeclaredMethods":true
-    },
-    {
-        "name":"org.apache.logging.log4j.core.pattern.LineSeparatorPatternConverter",
-        "allDeclaredMethods":true
-    },
-    {
-        "name":"org.apache.logging.log4j.core.pattern.LoggerPatternConverter",
-        "allDeclaredMethods":true
-    },
-    {
-        "name":"org.apache.logging.log4j.core.pattern.MessagePatternConverter",
-        "allDeclaredMethods":true
-    },
-    {
-        "name":"org.apache.logging.log4j.core.pattern.ThreadNamePatternConverter",
-        "allDeclaredMethods":true
     },
     {
         "name":"org.graalvm.compiler.nodes.FixedNode",
@@ -152,15 +113,16 @@
         ]
     },
     {
-        "name": "ch.qos.logback.classic.spi.LoggerContextListener",
+        "name" : "java.util.logging.FileHandler",
         "methods": [
             { "name" : "<init>", "parameterTypes" : [] }
         ]
     },
     {
-        "name" : "java.util.logging.FileHandler",
+        "name" : "io.netty.handler.ssl.ReferenceCountedOpenSslEngine",
+        "allDeclaredFields":true,
         "methods": [
-            { "name" : "<init>", "parameterTypes" : [] }
+            { "name": "<init>", "parameterTypes": [] }
         ]
     }
 ]
