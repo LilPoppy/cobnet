@@ -2,13 +2,13 @@ package com.storechain.utils;
 
 import java.util.Date;
 import java.util.List;
-import java.util.TimerTask;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 
 import com.storechain.EntryPoint;
 
@@ -40,9 +40,39 @@ public class TimerProvider  {
         executor.allowCoreThreadTimeOut(EntryPoint.SYSTEM_CONFIG.getTimerProvider().isAllowCoreThreadTimeOut());
 	}
 	
+	public ScheduledFuture<?> register(Runnable delegate, long delay, long period, TimeUnit unit, Function<Object[], Boolean> continuous, Object...args) {
+		
+		TimerScheduleRunnable runnable = new TimerScheduleRunnable(delegate, continuous, args);
+		
+		runnable.self = this.executor.scheduleAtFixedRate(runnable, delay, period, unit);
+		
+		return runnable.self;
+		
+	}
 	
-	public ScheduledFuture<?> register(Runnable delegate, long delay, long period, TimeUnit unit, int maxCount, Runnable onDone, Object... args) {
-		return this.executor.scheduleAtFixedRate(new TimerScheduleRunnable(delegate, maxCount, onDone, args), delay, period, unit);
+	public ScheduledFuture<?> register(Runnable delegate, long delay, long period, TimeUnit unit, final int maxCount, Runnable onDone, Object... args) {
+		
+		return register(delegate, delay, period, unit, new Function<Object[], Boolean>() {
+			
+			private final AtomicInteger count = new AtomicInteger();
+			
+			@Override
+			public Boolean apply(Object[] t) {
+
+				if(maxCount > 0 && count.incrementAndGet() >= maxCount) {
+					
+					if(onDone != null) {
+						
+						onDone.run();
+					}
+					
+					return false;
+				}
+				
+				return true;
+			}
+			
+		}, args);
 	}
 	
 	public ScheduledFuture<?> register(Runnable delegate, long period, TimeUnit unit, int maxCount, Runnable onDone, Object... args) {
@@ -54,16 +84,25 @@ public class TimerProvider  {
 	}
 	
 	public ScheduledFuture<?> register(Runnable delegate, long period, TimeUnit unit, int maxCount, Object... args) {
-		return register(delegate,  period, unit, maxCount, null, args);
+		return register(delegate, period, unit, maxCount, null, args);
 	}
 	
-	public ScheduledFuture<?> register(Runnable delegate, long milliSeconds, Object... args) {
-		return register(delegate,  milliSeconds, TimeUnit.MILLISECONDS, -1, null, args);
+	public ScheduledFuture<?> register(Runnable delegate, long milliSeconds, int maxCount, Object... args) {
+		return register(delegate, milliSeconds, TimeUnit.MILLISECONDS, maxCount, args);
 	}
 	
-	public ScheduledFuture<?> register(Runnable delegate, long period, TimeUnit unit, Object... args) {
-		return register(delegate, period, unit, -1, null, args);
+	public ScheduledFuture<?> register(Runnable delegate, long milliSeconds) {
+		return register(delegate, milliSeconds, -1);
 	}
+	
+	public ScheduledFuture<?> register(Runnable delegate, long period, TimeUnit unit) {
+		return register(delegate, period, unit, -1);
+	}
+	
+	public ScheduledFuture<?> register(Runnable delegate, long delay, long period, TimeUnit unit) {
+		return register(delegate, delay, period, unit, -1);
+	}
+	
 	
 	public ScheduledFuture<?> register(Runnable delegate, long delay, long period, TimeUnit unit, int maxCount, Object... args) {
 		return register(delegate, delay, period, unit, maxCount, null, args);
@@ -74,17 +113,18 @@ public class TimerProvider  {
 		return register(delegate, v > 0 ? v : 0, milliSeconds, TimeUnit.MILLISECONDS, maxCount, args);
 	}
 	
-	public ScheduledFuture<?> register(Runnable delegate, long delay, long period, TimeUnit unit, Object... args) {
-		return register(delegate, delay, period, unit, -1, null, args);
-	}
-	
-	public ScheduledFuture<?> register(Runnable delegate, Date delay, long milliSeconds, Object... args) {
+	public ScheduledFuture<?> register(Runnable delegate, Date delay, long milliSeconds) {
 		long v = delay.getTime() - System.currentTimeMillis();
-		return register(delegate, v > 0 ? v : 0, milliSeconds, TimeUnit.MILLISECONDS, args);
+		return register(delegate, v > 0 ? v : 0, milliSeconds, TimeUnit.MILLISECONDS);
 	}
 	
 	public ScheduledFuture<?> schedule(Runnable delegate, long delay, TimeUnit unit, Object... args) {
-		return this.executor.schedule(new TimerScheduleRunnable(delegate, args), delay, unit);
+		
+		TimerScheduleRunnable runnable = new TimerScheduleRunnable(delegate, args);
+		
+		runnable.self = this.executor.schedule(runnable, delay, unit);
+		
+		return runnable.self;
 	}
 	
 	public ScheduledFuture<?> schedule(Runnable delegate, long milliSeconds, Object... args) {
@@ -149,65 +189,36 @@ public class TimerProvider  {
 		return this.executor.toString();
 	}
 
-	private class TimerScheduleRunnable extends TimerTask {
+	private class TimerScheduleRunnable implements Runnable {
 
 		private volatile ScheduledFuture<?> self;
 		private final Runnable delegate;
-		private final int maxCount;
-		private final AtomicInteger count = new AtomicInteger();;
-		private final Runnable onDone;
+		private final Function<Object[], Boolean> continuous;
+		private final Object[] args;
 		
-		public TimerScheduleRunnable(Runnable delegate, int maxCount, Runnable onDone, Object... args) {
+		public TimerScheduleRunnable(Runnable delegate, Function<Object[], Boolean> continuous, Object... args) {
 			this.delegate = delegate;
-			this.maxCount = maxCount;
-			this.onDone = onDone;
-		}
-		
-		public TimerScheduleRunnable(Runnable delegate, int maxCount, Object... args) {
-			this(delegate, maxCount, null, args);
+			this.continuous = continuous;
+			this.args = args;
 		}
 		
 		public TimerScheduleRunnable(Runnable delegate, Object... args) {
-			this(delegate, -1, args);
+			this(delegate, null, args);
 		}
+		
 
 		@Override
 		public void run() {
-			
+						
 			this.delegate.run();
 			
-			boolean interrupted = false;
-			
-			if(maxCount > -1 && this.count.incrementAndGet() == maxCount) {
+			if(this.continuous != null) {
 				
-				if(this.onDone != null) {
+				if(!this.continuous.apply(this.args)) {
 					
-					this.onDone.run();
+					this.self.cancel(false);
 				}
-				
-				try {
-					
-					while(self == null) {
-						
-	                    try {
-	                        Thread.sleep(1);
-	                    } catch (InterruptedException e) {
-	                        interrupted = true;
-	                    }
-						
-					}
-					
-					self.cancel(false);
-					
-				}finally {
-					if(interrupted) {
-						Thread.currentThread().interrupt();
-					}
-				}
-				
 			}
-			
-			
 		}
 	}
 }

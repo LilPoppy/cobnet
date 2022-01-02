@@ -44,14 +44,6 @@
 		</dependency>
 		<dependency>
 		    <groupId>org.springframework.cloud</groupId>
-		    <artifactId>spring-cloud-config-client</artifactId>
-		</dependency>
-		<dependency>
-		    <groupId>org.springframework.cloud</groupId>
-		    <artifactId>spring-cloud-starter-config</artifactId>
-		</dependency>
-		<dependency>
-		    <groupId>org.springframework.cloud</groupId>
 		    <artifactId>spring-cloud-commons</artifactId>
 		</dependency>
 		<dependency>
@@ -260,7 +252,11 @@
 											<GRAALVM_VERSION>${graalvm.version}</GRAALVM_VERSION>
 											<JAVA_VERSION>java${java.version}</JAVA_VERSION>
 											<WORK_DIR>/build</WORK_DIR>
-											<ORACLE_VERSION>8-slim</ORACLE_VERSION>
+											<!-- https://yum.oracle.com/repo/OracleLinux/OL8/baseos/latest/x86_64/index.html -->
+											<RPM_REPO>oraclelinux-release-el8</RPM_REPO>
+											<!-- https://yum.oracle.com/repo/OracleLinux/OL8/codeready/builder/x86_64/index_src.html -->
+											<RPM_CODEREADY_BUILDER>ol8_codeready_builder</RPM_CODEREADY_BUILDER>
+											<INSTALLATIONS>procps-ng bzip2-devel zip unzip ed gcc gcc-c++ gcc-gfortran gzip file fontconfig less libcurl-devel make openssl apr-devel openssl-devel readline-devel tar glibc-langpack-en net-tools python3-libs</INSTALLATIONS>
 											<TARGETPLATFORM>linux/amd64</TARGETPLATFORM>
 											<PORT>8089</PORT>
 										</args>

@@ -13,7 +13,6 @@ For further reference, please consider the following sections:
 * [Spring Data JDBC](https://docs.spring.io/spring-data/jdbc/docs/current/reference/html/)
 * [Spring Data JPA](https://docs.spring.io/spring-boot/docs/2.6.1/reference/htmlsingle/#boot-features-jpa-and-spring-data)
 * [Spring Web](https://docs.spring.io/spring-boot/docs/2.6.1/reference/htmlsingle/#boot-features-developing-web-applications)
-* [Spring Configuration Processor](https://docs.spring.io/spring-boot/docs/2.6.1/reference/htmlsingle/#configuration-metadata-annotation-processor)
 * [Eureka Server](https://docs.spring.io/spring-cloud-netflix/docs/current/reference/html/#spring-cloud-eureka-server)
 * [Eureka Discovery Client](https://docs.spring.io/spring-cloud-netflix/docs/current/reference/html/#service-discovery-eureka-clients)
 
@@ -41,27 +40,28 @@ This project has been configured to let you generate either a lightweight contai
 If you're already familiar with Spring Boot container images support, this is the easiest way to get started with Spring Native.
 Docker should be installed and configured on your machine prior to creating the image, see [the Getting Started section of the reference guide](https://docs.spring.io/spring-native/docs/0.11.0/reference/htmlsingle/#getting-started-buildpacks).
 
-Requirement:
-- atlease 8GB memory in docker settings. see [Out of memory error when building the native image](https://docs.spring.io/spring-native/docs/current/reference/htmlsingle/#_out_of_memory_error_when_building_the_native_image)
-
-To create the image, run the following goal:
-
-```
-$ ./mvnw spring-boot:build-image
-```
-
-Or
+Before make image:
+- atlease 10GB memory in docker preferences. see [Out of memory error when building the native image](https://docs.spring.io/spring-native/docs/current/reference/htmlsingle/#_out_of_memory_error_when_building_the_native_image)
 
 To create the docker image, run the following goal:
 
 ```
 $ ./mvnw package -Pdocker
 ```
+then link MySQL container and project:
 
-Then, you can run the app like any other container:
+Linux:
 
 ```
-$ docker run --rm -p 8080:8080 storechain-server:0.0.1-SNAPSHOT
+$ docker pull mysql/mysql-server
+```
+
+```
+$ docker run -p 3306:3306 --name storechain-server-mysql -v /etc/mysql/conf:/etc/mysql/conf.d -v /usr/local/docker/mysql/logs:/logs -v /var/lib/mysql:/var/lib/mysql -e MYSQL_ALLOW_EMPTY_PASSWORD="yes" -d -it mysql:latest
+```
+
+```
+$ docker run --rm --name storechain-server --link storechain-server-mysql:db storechain-server:0.0.1-SNAPSHOT
 ```
 
 ### Executable with Native Build Tools
