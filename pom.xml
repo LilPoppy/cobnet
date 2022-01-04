@@ -353,7 +353,6 @@
 								<buildArgs>--report-unsupported-elements-at-runtime</buildArgs>
 							    <!--<buildArgs>-H:+AddAllCharsets</buildArgs>-->
 							    <buildArgs>-Dlogging.config=logback-config.xml</buildArgs>
-							    <buildArgs>--allow-incomplete-classpath</buildArgs>
 								<buildArgs>--features=com.storechain.RuntimeReflectionRegistrationFeature</buildArgs>
 								<buildArgs>-H:ReflectionConfigurationFiles=${basedir}/src/main/java/reflect-config.json</buildArgs>
 								<buildArgs>-H:ResourceConfigurationFiles=${basedir}/src/main/java/resource-config.json</buildArgs>
@@ -361,8 +360,6 @@
 								<buildArgs>-H:+ReportUnsupportedElementsAtRuntime</buildArgs>
 								<buildArgs>-H:IncludeResources=".*.xml|.*.conf|.*.yml" </buildArgs>
 								<buildArgs>-H:TraceClassInitialization=true</buildArgs>
-								<buildArgs>-H:DeadlockWatchdogInterval=10</buildArgs>
-								<buildArgs>-H:+DeadlockWatchdogExitOnTimeout</buildArgs>
 							</buildArgs>
 						</configuration>
 						<executions>

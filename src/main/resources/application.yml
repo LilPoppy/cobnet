@@ -1,6 +1,9 @@
 spring:
    application:
       name: StoreChain-Server
+   cloud:
+      compatibility-verifier:
+         enabled: false
    datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://localhost:3306/testdb
