@@ -2,7 +2,10 @@ package com.storechain;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+
+import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,10 +46,22 @@ public class EntryPoint {
 			}
 		}
 		ScriptEngineManager sem = new ScriptEngineManager();
-
+		
 		for(var se : sem.getEngineFactories()) {
 			log.info(se.getEngineName());
 		}
+		
+		ScriptEngine engine = sem.getEngineByName("Graal.js");
+		
+		String script1 = "function hello(name) {print ('Hello, ' + name);}";
+		
+		try {
+			engine.eval(script1);
+		} catch (ScriptException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 	}
 	
 }

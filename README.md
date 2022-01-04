@@ -51,7 +51,7 @@ These additional references should also help you:
 This project can be easily build with maven, run the following goal:
 
 ```
-$ mvn package
+$ mvn clean package
 ```
 
 Then run the followings to start the server:
@@ -75,7 +75,7 @@ Docker should be installed and configured on your machine prior to creating the 
 To create the docker image and container by compose, run the following goal:
 
 ```
-$ mvn package -Pdocker
+$ mvn clean package -Pdocker
 ```
 To start the app you can run as follows:
 
@@ -92,7 +92,7 @@ The GraalVM native-image compiler should be installed and configured on your mac
 To create the executable, run the following goal:
 
 ```
-$ mvn package -Pnative
+$ mvn clean package -Pnative
 ```
 
 Then, you can run the app as follows:

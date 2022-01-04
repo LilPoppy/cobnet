@@ -162,7 +162,7 @@ public class NettyServer extends DefaultChannelGroup {
 					
 					if(future.isDone() && future.isSuccess()) {
 						
-						log.info(String.format("Listening port %d register by %s(%s)", port, getName(), subHandler.getClass().getName()));
+						log.info(String.format("Listening port %d registed by %s(%s)", port, getName(), subHandler.getClass().getName()));
 
 						SERVERS.add(server);
 					}

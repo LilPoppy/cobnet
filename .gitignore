@@ -5,6 +5,8 @@ logs/
 !**/src/main/**/target/
 !**/src/test/**/target/
 *.DS_STORE
+*.pkc
+.jython_cache/
 
 ### STS ###
 .apt_generated
