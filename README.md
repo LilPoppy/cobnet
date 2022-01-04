@@ -48,6 +48,20 @@ These additional references should also help you:
 
 * [Configure the Spring AOT Plugin](https://docs.spring.io/spring-native/docs/0.11.0/reference/htmlsingle/#spring-aot-maven)
 
+### JVM
+
+This project can be easily build with maven, run the following goal:
+
+```
+$ mvn package
+```
+
+Then run the following to start the server:
+
+```
+$ java -jar target/storechain-server.jar
+```
+
 ## Spring Native
 
 This project has been configured to let you generate either a lightweight container or a native executable.
@@ -63,7 +77,7 @@ Docker should be installed and configured on your machine prior to creating the 
 To create the docker image and container by compose, run the following goal:
 
 ```
-$ ./mvnw package -Pdocker
+$ mvn package -Pdocker
 ```
 To start the app you can run as follows:
 
@@ -80,7 +94,7 @@ The GraalVM native-image compiler should be installed and configured on your mac
 To create the executable, run the following goal:
 
 ```
-$ ./mvnw package -Pnative
+$ mvn package -Pnative
 ```
 
 Then, you can run the app as follows:
