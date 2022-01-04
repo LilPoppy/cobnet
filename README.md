@@ -1,9 +1,14 @@
-[![CI](https://github.com/SpamanDev/StoreChain-Server/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/SpamanDev/StoreChain-Server/actions/workflows/main.yml)
-[![GitHub issues](https://img.shields.io/github/issues/SpamanDev/StoreChain-Server.svg)](https://github.com/SpamanDev/StoreChain-Server/issues)
-[![fork this repo](https://githubbadges.com/fork.svg?user=SpamanDev&repo=StoreChain-Server&style=default)](https://github.com/SpamanDev/StoreChain-Server/fork)
-[![star this repo](https://githubbadges.com/star.svg?user=SpamanDev&repo=StoreChain-Server&style=default)](https://github.com/SpamanDev/StoreChain-Server)
+Storechain-Server
+============
 
-## Storechain-Server
+[![CI](https://github.com/SpamanDev/StoreChain-Server/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/SpamanDev/StoreChain-Server/actions/workflows/main.yml)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![versionjava](https://img.shields.io/badge/dynamic/xml?color=brightgreen&url=https://raw.githubusercontent.com/SpamanDev/StoreChain-Server/master/pom.xml&query=%2F%2F%2A%5Blocal-name%28%29%3D%27java.version%27%5D&label=java)](https://github.com/openjdk/jdk)
+[![versionspringboot](https://img.shields.io/badge/dynamic/xml?color=brightgreen&url=https://raw.githubusercontent.com/SpamanDev/StoreChain-Server/master/pom.xml&query=%2F%2A%5Blocal-name%28%29%3D%27project%27%5D%2F%2A%5Blocal-name%28%29%3D%27parent%27%5D%2F%2A%5Blocal-name%28%29%3D%27version%27%5D&label=springboot)](https://github.com/spring-projects/spring-boot)
+[![versionspring-graalvm-native](https://img.shields.io/badge/dynamic/xml?color=brightgreen&url=https://raw.githubusercontent.com/SpamanDev/StoreChain-Server/master/pom.xml&query=%2F%2F%2A%5Blocal-name%28%29%3D%27graalvm.version%27%5D&label=graalvm)](https://github.com/spring-projects-experimental/spring-graalvm-native)
+<!--[![Docker](https://img.shields.io/docker/cloud/build/SpamanDev/StoreChain-Server?label=Docker&style=flat)](https://hub.docker.com/r/SpamanDev/StoreChain-Server/builds)-->
+[![fork this repo](https://githubbadges.com/fork.svg?user=SpamanDev&repo=StoreChain-Server&style=default)](https://github.com/SpamanDev/StoreChain-Server/fork)
+[![GitHub issues](https://img.shields.io/github/issues/SpamanDev/StoreChain-Server.svg)](https://github.com/SpamanDev/StoreChain-Server/issues)
 
 A simple microservice server based on graalvm + docker. 
 
