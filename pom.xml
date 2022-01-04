@@ -361,6 +361,8 @@
 								<buildArgs>-H:+ReportUnsupportedElementsAtRuntime</buildArgs>
 								<buildArgs>-H:IncludeResources=".*.xml|.*.conf|.*.yml" </buildArgs>
 								<buildArgs>-H:TraceClassInitialization=true</buildArgs>
+								<buildArgs>-H:DeadlockWatchdogInterval=10</buildArgs>
+								<buildArgs>-H:+DeadlockWatchdogExitOnTimeout</buildArgs>
 							</buildArgs>
 						</configuration>
 						<executions>
