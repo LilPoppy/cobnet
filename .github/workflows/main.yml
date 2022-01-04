@@ -30,12 +30,7 @@ jobs:
           graalvm-version: 21.3.0
           native-image: true
       - run: java -version
-    workflow "build test" {
-      resolves = ["comchangs/action-maven"]
-      on = "push"
-    }
+      - name: Build with Maven
+        run: mvn --batch-mode --update-snapshots package
 
-    action "comchangs/action-maven" {
-      uses = "comchangs/action-maven@master"
-      args = "-Pnative package"
-    }
+
