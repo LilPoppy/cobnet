@@ -1,5 +1,4 @@
-[![CI](https://github.com/softwaremill/maven-badges/actions/workflows/ci.yml/badge.svg)](https://github.com/softwaremill/maven-badges/actions/workflows/ci.yml)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.storechain.storechain-server/rsql-parser/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/com.storechain.storechain-server/rsql-parser)
+[![CI](https://github.com/SpamanDev/StoreChain-Server/actions/workflows/ci.yml/badge.svg)](https://github.com/SpamanDev/StoreChain-Server/actions/workflows/ci.yml)
 
 ## Storechain-Server
 
