@@ -1,4 +1,4 @@
-[![CI](https://github.com/SpamanDev/StoreChain-Server/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/SpamanDev/StoreChain-Server/actions/workflows/main.yml)
+[![build](https://github.com/SpamanDev/StoreChain-Server/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/SpamanDev/StoreChain-Server/actions/workflows/main.yml)
 
 ## Storechain-Server
 
@@ -19,8 +19,9 @@ For further reference, please consider the following sections:
 * [Spring Data JDBC](https://docs.spring.io/spring-data/jdbc/docs/current/reference/html/)
 * [Spring Data JPA](https://docs.spring.io/spring-boot/docs/2.6.1/reference/htmlsingle/#boot-features-jpa-and-spring-data)
 * [Spring Web](https://docs.spring.io/spring-boot/docs/2.6.1/reference/htmlsingle/#boot-features-developing-web-applications)
-* [Eureka Server](https://docs.spring.io/spring-cloud-netflix/docs/current/reference/html/#spring-cloud-eureka-server)
-* [Eureka Discovery Client](https://docs.spring.io/spring-cloud-netflix/docs/current/reference/html/#service-discovery-eureka-clients)
+* [Eureka Client](https://docs.spring.io/spring-cloud-netflix/docs/current/reference/html/#spring-cloud-eureka-client)
+* [Spring Boot with Graalvm](https://docs.spring.io/spring-native/docs/current/reference/htmlsingle/#support-spring-boot)
+* [Spring Cloud with Graalvm](https://docs.spring.io/spring-native/docs/current/reference/htmlsingle/#support-spring-cloud)
 
 ### Guides
 The following guides illustrate how to use some features concretely:
