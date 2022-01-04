@@ -13,6 +13,7 @@ ARG GRAALVM_VERSION
 ARG GRAALVM_PKG=https://github.com/graalvm/graalvm-ce-builds/releases/download/vm-$GRAALVM_VERSION/graalvm-ce-$JAVA_VERSION-GRAALVM_ARCH-$GRAALVM_VERSION.tar.gz
 
 ARG PORT
+ARG WEBSOCKET_PORT
 
 LABEL \
     com.storechain.server.image.title=${ARTIFACTID} \
@@ -75,6 +76,7 @@ RUN source "$HOME/.sdkman/bin/sdkman-init.sh" && mvn -Pnative clean package
 MAINTAINER $AUTHORS
 
 EXPOSE $PORT
+EXPOSE $WEBSOCKET_PORT
 
 RUN cp ./target/$ARTIFACTID ./native-server
 

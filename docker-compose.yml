@@ -1,0 +1,28 @@
+version: '3'
+services:
+   storechain-server:
+      container_name: ${CONTAINER_NAME}
+      image: ${IMAGE_NAME}
+      ports:
+         - ${EXPOSE}:${EXPOSE}
+         - ${WEBSOCKET_EXPOSE}:${WEBSOCKET_EXPOSE}
+      networks:
+         - spring-cloud-network
+      depends_on:
+             - db
+      environment:
+         SPRING_DATASOURCE_URL: jdbc:mysql://db:${DB_EXPOSE}/testdb?autoReconnect=true&useSSL=false
+   db:
+      image: ${DB_IMAGE_NAME}
+      command: --default-authentication-plugin=mysql_native_password
+      restart: always
+      environment:
+         MYSQL_DATABASE: testdb
+         MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      ports:
+         - ${DB_EXPOSE}:${DB_EXPOSE}
+      networks:
+         - spring-cloud-network
+networks:
+    spring-cloud-network:
+        driver: bridge

@@ -20,6 +20,13 @@
 		<spring-native.version>0.11.0</spring-native.version>
 		<graalvm.version>21.3.0</graalvm.version>
 		<dockerfile-maven.version>0.38.0</dockerfile-maven.version>
+		<docker-maintainer>LilPoppy</docker-maintainer>
+		<docker-image-name>${project.artifactId}:${project.version}</docker-image-name>
+		<docker-container-name>${project.artifactId}</docker-container-name>
+		<docker-expose>8089</docker-expose>
+		<docker-expose-websocket>8090</docker-expose-websocket>
+		<docker-db-image-name>mysql</docker-db-image-name>
+		<docker-db-expose>3306</docker-db-expose>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -239,14 +246,14 @@
 						<configuration>
 							<images>
 								<image>
-									<name>${project.artifactId}:${project.version}</name>
+									<name>${docker-image-name}</name>
 									<alias>${project.name}</alias>
 									<build>
 										<dockerFile>${project.basedir}/Dockerfile</dockerFile>
 										<args>
 											<ARTIFACTID>${project.artifactId}</ARTIFACTID>
 											<VERSION>${project.version}</VERSION>
-											<AUTHORS>LilPoppy</AUTHORS>
+											<AUTHORS>${docker-maintainer}</AUTHORS>
 											<AUTHORS_EMAIL>lilpoppy96@gmail.com</AUTHORS_EMAIL>
 											<SOURCE_REPO>https://github.com/SpamanDev/StoreChain-Server</SOURCE_REPO>
 											<GRAALVM_VERSION>${graalvm.version}</GRAALVM_VERSION>
@@ -258,8 +265,27 @@
 											<RPM_CODEREADY_BUILDER>ol8_codeready_builder</RPM_CODEREADY_BUILDER>
 											<INSTALLATIONS>procps-ng bzip2-devel zip unzip ed gcc gcc-c++ gcc-gfortran gzip file fontconfig less libcurl-devel make openssl apr-devel openssl-devel readline-devel tar glibc-langpack-en net-tools python3-libs</INSTALLATIONS>
 											<TARGETPLATFORM>linux/amd64</TARGETPLATFORM>
-											<PORT>8089</PORT>
+											<PORT>${docker-expose}</PORT>
+											<WEBSOCKET_PORT>${docker-expose-websocket}</WEBSOCKET_PORT>
 										</args>
+									</build>
+								</image>
+								<image>
+									<name>${docker-db-image-name}</name>
+									<alias>db</alias>
+									<build>
+										<from>mysql:latest</from>
+										<maintainer>${docker-maintainer}</maintainer>
+										<ports>${docker-db-expose}</ports>
+									    <tags>
+    										<tag>latest</tag>
+    										<tag>${project.version}</tag>
+  										</tags>
+  										<!--
+										<volumes>
+										    <volume>/path/to/expose</volume> 
+										</volumes>
+										-->
 									</build>
 								</image>
 							</images>
@@ -269,13 +295,38 @@
 						</configuration>
 						<executions>
 							<execution>
-								<id>build-docker</id>
+								<id>build-image</id>
 								<phase>package</phase>
 								<goals>
 							   		<goal>build</goal>
 								</goals>
 							</execution>
 						</executions>
+					</plugin>
+					<plugin>
+			            <groupId>com.dkanejs.maven.plugins</groupId>
+			            <artifactId>docker-compose-maven-plugin</artifactId>
+			            <executions>
+			            	<execution>
+			            		<id>up</id>
+			            		<phase>package</phase>
+			            		<goals>
+			            			<goal>up</goal>
+			            		</goals>
+			            		<configuration>
+			            			<composeFile>${project.basedir}/docker-compose.yml</composeFile>
+			            			<detachedMode>true</detachedMode>
+			            			<envVars>
+			            				<IMAGE_NAME>${docker-image-name}</IMAGE_NAME>
+			            				<CONTAINER_NAME>${docker-container-name}</CONTAINER_NAME>
+			            				<EXPOSE>${docker-expose}</EXPOSE>
+			            				<WEBSOCKET_EXPOSE>${docker-expose-websocket}</WEBSOCKET_EXPOSE>
+			            				<DB_IMAGE_NAME>${docker-db-image-name}</DB_IMAGE_NAME>
+			            				<DB_EXPOSE>${docker-db-expose}</DB_EXPOSE>
+			            			</envVars>
+			            		</configuration>
+			            	</execution>
+			            </executions>
 					</plugin>
 				</plugins>
 			</build>

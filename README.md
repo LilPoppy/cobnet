@@ -1,3 +1,10 @@
+[![CI](https://github.com/softwaremill/maven-badges/actions/workflows/ci.yml/badge.svg)](https://github.com/softwaremill/maven-badges/actions/workflows/ci.yml)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.storechain.storechain-server/rsql-parser/badge.svg?style=plastic)](https://maven-badges.herokuapp.com/maven-central/com.storechain.storechain-server/rsql-parser)
+
+## Storechain-Server
+
+A simple microservice server based on graalvm + docker. 
+
 # Read Me First
 The following was discovered as part of building this project:
 
@@ -40,33 +47,26 @@ This project has been configured to let you generate either a lightweight contai
 If you're already familiar with Spring Boot container images support, this is the easiest way to get started with Spring Native.
 Docker should be installed and configured on your machine prior to creating the image, see [the Getting Started section of the reference guide](https://docs.spring.io/spring-native/docs/0.11.0/reference/htmlsingle/#getting-started-buildpacks).
 
-Before make image:
-- atlease 10GB memory in docker preferences. see [Out of memory error when building the native image](https://docs.spring.io/spring-native/docs/current/reference/htmlsingle/#_out_of_memory_error_when_building_the_native_image)
+* [Docker](https://docs.docker.com/get-docker/) atlease 10GB memory in docker preferences. see [Out of memory error when building the native image](https://docs.spring.io/spring-native/docs/current/reference/htmlsingle/#_out_of_memory_error_when_building_the_native_image)
 
-To create the docker image, run the following goal:
+* [Docker-Compose](https://docs.docker.com/compose/install/) 18.06.0+ needs to be installed.
+
+To create the docker image and container by compose, run the following goal:
 
 ```
 $ ./mvnw package -Pdocker
 ```
-then link MySQL container and project:
-
-Linux:
+To start the app you can run as follows:
 
 ```
-$ docker pull mysql/mysql-server
-```
-
-```
-$ docker run -p 3306:3306 --name storechain-server-mysql -v /etc/mysql/conf:/etc/mysql/conf.d -v /usr/local/docker/mysql/logs:/logs -v /var/lib/mysql:/var/lib/mysql -e MYSQL_ALLOW_EMPTY_PASSWORD="yes" -d -it mysql:latest
-```
-
-```
-$ docker run --rm --name storechain-server --link storechain-server-mysql:db storechain-server:0.0.1-SNAPSHOT
+$ docker start storechain-server
 ```
 
 ### Executable with Native Build Tools
 Use this option if you want to explore more options such as running your tests in a native image.
 The GraalVM native-image compiler should be installed and configured on your machine, see [the Getting Started section of the reference guide](https://docs.spring.io/spring-native/docs/0.11.0/reference/htmlsingle/#getting-started-native-build-tools).
+
+* [Graalvm-Native](https://www.graalvm.org/docs/getting-started/) needs to be installed.
 
 To create the executable, run the following goal:
 
@@ -75,6 +75,7 @@ $ ./mvnw package -Pnative
 ```
 
 Then, you can run the app as follows:
+
 ```
 $ target/storechain-server
 ```
