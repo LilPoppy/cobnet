@@ -1,5 +1,5 @@
 # This is a basic workflow to help you get started with Actions
-
+# https://gist.github.com/linux-china/8745394fbc308168b20068386771ea1b
 name: CI
 
 # Controls when the workflow will run
@@ -16,14 +16,9 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
-  build:
-    # The type of runner that the job will run on
+  linux-build:
     runs-on: ubuntu-latest
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - uses: ayltai/setup-graalvm@v1
         with:
@@ -33,17 +28,3 @@ jobs:
       - run: java -version
       - name: Build with Maven
         run: mvn -DskipTests -B clean package -Pnative
-      - name: Run UPX
-        uses: crazy-max/ghaction-upx@v1.3.3
-        with:
-          version: latest
-          file: target/demo-cli
-          args: '-7'
-      - name: Upload artifacts
-        run: mkdir staging && cp target/demo-cli staging/demo-cli-linux-amd64
-      - uses: actions/upload-artifact@v2
-        with:
-          name: package
-          path: staging
-
-
