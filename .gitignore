@@ -4,6 +4,7 @@ logs/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+*.DS_STORE
 
 ### STS ###
 .apt_generated
