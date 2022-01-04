@@ -1,4 +1,5 @@
 [![CI](https://github.com/SpamanDev/StoreChain-Server/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/SpamanDev/StoreChain-Server/actions/workflows/main.yml)
+[![GitHub issues](https://img.shields.io/github/issues/SpamanDev/StoreChain-Server.svg)](https://github.com/SpamanDev/StoreChain-Server/issues)
 [![fork this repo](https://githubbadges.com/fork.svg?user=SpamanDev&repo=StoreChain-Server&style=default)](https://github.com/SpamanDev/StoreChain-Server/fork)
 [![star this repo](https://githubbadges.com/star.svg?user=SpamanDev&repo=StoreChain-Server&style=default)](https://github.com/SpamanDev/StoreChain-Server)
 
