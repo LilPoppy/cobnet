@@ -1,4 +1,4 @@
-[![CI](https://github.com/SpamanDev/StoreChain-Server/actions/workflows/ci.yml/badge.svg)](https://github.com/SpamanDev/StoreChain-Server/actions/workflows/ci.yml)
+[![CI](https://github.com/SpamanDev/StoreChain-Server/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/SpamanDev/StoreChain-Server/actions/workflows/main.yml)
 
 ## Storechain-Server
 
