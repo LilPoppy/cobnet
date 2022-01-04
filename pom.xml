@@ -351,6 +351,7 @@
 								<buildArgs>--no-fallback</buildArgs>
 								<buildArgs>-DskipTests</buildArgs>
 								<buildArgs>--report-unsupported-elements-at-runtime</buildArgs>
+								<buildArgs>--allow-incomplete-classpath</buildArgs>
 							    <!--<buildArgs>-H:+AddAllCharsets</buildArgs>-->
 							    <buildArgs>-Dlogging.config=logback-config.xml</buildArgs>
 								<buildArgs>--features=com.storechain.RuntimeReflectionRegistrationFeature</buildArgs>

@@ -29,8 +29,6 @@ For further reference, please consider the following sections:
 * [Spring Data JPA](https://docs.spring.io/spring-boot/docs/2.6.1/reference/htmlsingle/#boot-features-jpa-and-spring-data)
 * [Spring Web](https://docs.spring.io/spring-boot/docs/2.6.1/reference/htmlsingle/#boot-features-developing-web-applications)
 * [Eureka Client](https://docs.spring.io/spring-cloud-netflix/docs/current/reference/html/#spring-cloud-eureka-client)
-* [Spring Boot with Graalvm](https://docs.spring.io/spring-native/docs/current/reference/htmlsingle/#support-spring-boot)
-* [Spring Cloud with Graalvm](https://docs.spring.io/spring-native/docs/current/reference/htmlsingle/#support-spring-cloud)
 
 ### Guides
 The following guides illustrate how to use some features concretely:
@@ -40,6 +38,8 @@ The following guides illustrate how to use some features concretely:
 * [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
 * [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
 * [Building REST services with Spring](https://spring.io/guides/tutorials/bookmarks/)
+* [Spring Boot with Graalvm](https://docs.spring.io/spring-native/docs/current/reference/htmlsingle/#support-spring-boot)
+* [Spring Cloud with Graalvm](https://docs.spring.io/spring-native/docs/current/reference/htmlsingle/#support-spring-cloud)
 
 ### Additional Links
 These additional references should also help you:
@@ -54,7 +54,7 @@ This project can be easily build with maven, run the following goal:
 $ mvn package
 ```
 
-Then run the following to start the server:
+Then run the followings to start the server:
 
 ```
 $ java -jar target/storechain-server.jar

@@ -7,6 +7,7 @@ on:
   # Triggers the workflow on push or pull request events but only for the main branch
   push:
     branches: [ main ]
+    tags: [ '*' ]
   pull_request:
     branches: [ main ]
 
@@ -31,6 +32,18 @@ jobs:
           native-image: true
       - run: java -version
       - name: Build with Maven
-        run: mvn --batch-mode --update-snapshots -Pnative verify
+        run: mvn -DskipTests -B clean package -Pnative native-image:native-image --file pom.xml
+      - name: Run UPX
+        uses: crazy-max/ghaction-upx@v1.3.3
+        with:
+          version: latest
+          file: target/demo-cli
+          args: '-7'
+      - name: Upload artifacts
+        run: mkdir staging && cp target/demo-cli staging/demo-cli-linux-amd64
+      - uses: actions/upload-artifact@v2
+        with:
+          name: package
+          path: staging
 
 
