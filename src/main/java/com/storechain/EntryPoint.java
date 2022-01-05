@@ -47,6 +47,7 @@ public class EntryPoint {
 		}
 		ScriptEngineManager sem = new ScriptEngineManager();
 		
+		sem.getEngineByName("Graal.js");
 		for(var se : sem.getEngineFactories()) {
 			log.info(se.getEngineName());
 		}
