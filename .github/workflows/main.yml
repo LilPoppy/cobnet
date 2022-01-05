@@ -30,8 +30,6 @@ jobs:
         with:
           maven-version: 3.8.2
       - run: java --version
-      - run: apt-get -y upgrade docker
-      - run: docker-compose migrate-to-labels
       - run: docker --version
       - run: docker-compose --version
       - name: Build with Maven
