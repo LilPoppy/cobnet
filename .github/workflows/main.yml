@@ -27,6 +27,10 @@ jobs:
       - uses: shogo82148/actions-setup-mysql@v1
         with:
           mysql-version: '8.0'
+          my-cnf: |
+            port=3306
+            authentication_policy=mysql_native_password
+            sql_mode="STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"
       - run: apt update && apt install -y libtinfo5
       - run: mysql -uroot
       - name: Set up Maven
@@ -77,6 +81,11 @@ jobs:
       - uses: shogo82148/actions-setup-mysql@v1
         with:
           mysql-version: '8.0'
+
+          my-cnf: |
+            port=3306
+            authentication_policy=mysql_native_password
+            sql_mode="STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION"
       - run: apt update && apt install -y libtinfo5
       - run: mysql -uroot
       - run: java --version
