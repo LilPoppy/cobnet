@@ -16,6 +16,23 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  linux-build-jvm:
+    runs-on: self-hosted
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin' # See 'Supported distributions' for available options
+          java-version: '17'
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4.2
+        with:
+          maven-version: 3.8.2
+      - run: java --version
+      - name: Build with Maven
+        run: mvn -DskipTests -B clean package
+      - name: Run App
+        run: java -jar target\storechain-server.jar
   linux-build-docker:
     runs-on: self-hosted
     steps:
@@ -49,6 +66,14 @@ jobs:
         uses: stCarolas/setup-maven@v4.2
         with:
           maven-version: 3.8.2
+      - uses: mirromutth/mysql-action@v1.1
+        with:
+          character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
+          collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
+          mysql version: '8.0' # Optional, default value is "latest". The version of the MySQL
+          mysql database: 'testdb' # Optional, default value is "test". The specified database which will be create
+          mysql user: 'root' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
+          mysql password: ${{ secrets.DatabasePassword }} # Required if "mysql user" exists. The password for the "mysql user"
       - run: java --version
       - name: Build with Maven
         run: mvn -DskipTests -B clean package -Pnative
