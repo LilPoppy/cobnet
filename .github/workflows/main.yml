@@ -28,6 +28,7 @@ jobs:
         with:
           mysql-version: '8.0'
           user: root
+          password: ''
       - run: apt update && apt install -y libtinfo5
       - run: mysql -uroot -e 'CREATE DATABASE testdb;'
       - name: Set up Maven
@@ -79,6 +80,7 @@ jobs:
         with:
           mysql-version: '8.0'
           user: root
+          password: ''
       - run: apt update && apt install -y libtinfo5
       - run: mysql -uroot -e 'CREATE DATABASE testdb;'
       - run: java --version
