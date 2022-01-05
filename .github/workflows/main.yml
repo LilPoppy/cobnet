@@ -33,6 +33,8 @@ jobs:
         with:
           maven-version: 3.8.2
       - run: java --version
+      - run: mysql -V
+      - run: mvn --version
       - name: Build with Maven
         run: mvn -DskipTests -B clean package
       - name: Run App
@@ -52,6 +54,7 @@ jobs:
       - run: java --version
       - run: docker --version
       - run: docker-compose --version
+      - run: mvn --version
       - name: Build with Maven
         run: mvn -DskipTests -B clean package -Pdocker
       - run: docker images
@@ -75,6 +78,9 @@ jobs:
           mysql-version: '8.0'
       - run: mysql -uroot -hlocalhost -uroot -e 'CREATE DATABASE testdb;'
       - run: java --version
+      - run: native-image --version
+      - run: mysql -V
+      - run: mvn --version
       - name: Build with Maven
         run: mvn -DskipTests -B clean package -Pnative
       - name: Run App
