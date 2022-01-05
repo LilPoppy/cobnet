@@ -27,10 +27,8 @@ jobs:
       - uses: shogo82148/actions-setup-mysql@v1
         with:
           mysql-version: '8.0'
-          user: root
-          password: ''
       - run: apt update && apt install -y libtinfo5
-      - run: mysql -uroot -e 'CREATE DATABASE testdb;'
+      - run: mysql -uroot
       - name: Set up Maven
         uses: stCarolas/setup-maven@v4.2
         with:
@@ -79,10 +77,8 @@ jobs:
       - uses: shogo82148/actions-setup-mysql@v1
         with:
           mysql-version: '8.0'
-          user: root
-          password: ''
       - run: apt update && apt install -y libtinfo5
-      - run: mysql -uroot -e 'CREATE DATABASE testdb;'
+      - run: mysql -uroot
       - run: java --version
       - run: native-image --version
       - run: mysql -V
