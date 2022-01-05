@@ -28,7 +28,6 @@ jobs:
         with:
           mysql-version: '8.0'
       - run: apt update && apt install -y libtinfo5
-      - run: ln -s /usr/lib64/libtinfo.so.6.1 /usr/lib64/libtinfo.so.5
       - run: mysql -uroot -hlocalhost -uroot -e 'CREATE DATABASE testdb;'
       - name: Set up Maven
         uses: stCarolas/setup-maven@v4.2
@@ -79,7 +78,6 @@ jobs:
         with:
           mysql-version: '8.0'
       - run: apt update && apt install -y libtinfo5
-      - run: ln -s /usr/lib64/libtinfo.so.6.1 /usr/lib64/libtinfo.so.5
       - run: mysql -uroot -hlocalhost -uroot -e 'CREATE DATABASE testdb;'
       - run: java --version
       - run: native-image --version
