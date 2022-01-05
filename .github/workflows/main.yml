@@ -32,7 +32,7 @@ jobs:
       - name: Build with Maven
         run: mvn -DskipTests -B clean package
       - name: Run App
-        run: $ java -jar target/storechain-server.jar
+        run: java -jar target/storechain-server.jar
   linux-build-docker:
     runs-on: self-hosted
     steps:
