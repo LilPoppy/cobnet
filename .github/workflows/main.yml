@@ -37,11 +37,6 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
-      - uses: ayltai/setup-graalvm@v1
-        with:
-          java-version: 17
-          graalvm-version: 21.3.0
-          native-image: true
       - name: Set up Maven
         uses: stCarolas/setup-maven@v4.2
         with:
@@ -51,6 +46,7 @@ jobs:
       - run: docker-compose --version
       - name: Build with Maven
         run: mvn -DskipTests -B clean package -Pdocker
+      - run: docker images
       - name: Run App
         run: docker start storechain-server
   linux-build-native:
