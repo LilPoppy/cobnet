@@ -52,15 +52,7 @@ public class EntryPoint {
 		}
 		
 		ScriptEngine engine = sem.getEngineByName("Graal.js");
-		
-		String script1 = "function hello(name) {print ('Hello, ' + name);}";
-		
-		try {
-			engine.eval(script1);
-		} catch (ScriptException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+
 		
 	}
 	
