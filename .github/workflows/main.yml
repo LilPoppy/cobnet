@@ -31,7 +31,6 @@ jobs:
           maven-version: 3.8.2
       - run: java --version
       - run: apt-get -y upgrade docker
-      - run: apt-get -y upgrade docker-compose
       - run: docker --version
       - run: docker-compose --version
       - name: Build with Maven
