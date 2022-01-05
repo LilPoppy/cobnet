@@ -53,6 +53,6 @@ jobs:
       - name: Build with Maven
         run: mvn -DskipTests -B clean package -Pnative
       - name: Run App
-        run: \target\storechain-server
+        run: target/storechain-server
 
       
