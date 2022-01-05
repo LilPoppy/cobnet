@@ -24,7 +24,7 @@ import com.storechain.connection.netty.handler.ChannelInitializeHandler;
 import com.storechain.interfaces.connection.Listener;
 import com.storechain.interfaces.connection.annotation.Handler;
 import com.storechain.spring.boot.configuration.NettyConfiguration.ServerConfiguration;
-import com.storechain.utils.TimerProvider;
+import com.storechain.utils.TaskProvider;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -231,7 +231,7 @@ public class NettyServer extends DefaultChannelGroup {
 			this.block(address);
 			
 			
-			this.blockTimers.put(address, TimerProvider.INSTANCE.schedule(new Runnable() 
+			this.blockTimers.put(address, TaskProvider.INSTANCE.schedule(new Runnable() 
 			{
 
 				@Override
@@ -242,7 +242,7 @@ public class NettyServer extends DefaultChannelGroup {
 			}, date));
 			
 			
-			TimerProvider.INSTANCE.purge();
+			TaskProvider.INSTANCE.purge();
 		}
 
 	}

@@ -12,15 +12,15 @@ import java.util.function.Function;
 
 import com.storechain.EntryPoint;
 
-public class TimerProvider  {
+public class TaskProvider  {
 	
-	public static final TimerProvider INSTANCE = new TimerProvider();
+	public static final TaskProvider INSTANCE = new TaskProvider();
 	
 	private final ScheduledThreadPoolExecutor executor;
 	
-	private TimerProvider() {
+	private TaskProvider() {
 		
-		this.executor = new ScheduledThreadPoolExecutor(EntryPoint.SYSTEM_CONFIG.getTimerProvider().getThreadCount(), new ThreadFactory() {
+		this.executor = new ScheduledThreadPoolExecutor(EntryPoint.SYSTEM_CONFIG.getTaskProvider().getThreadCount(), new ThreadFactory() {
         	
             private final AtomicInteger number = new AtomicInteger(-1);
 
@@ -32,17 +32,17 @@ public class TimerProvider  {
             }
         });
 		
-		executor.setMaximumPoolSize(EntryPoint.SYSTEM_CONFIG.getTimerProvider().getMaxThreadCount());
-        executor.setContinueExistingPeriodicTasksAfterShutdownPolicy(EntryPoint.SYSTEM_CONFIG.getTimerProvider().isContinueExistingPeriodicTasksAfterShutdownPolicy());
-        executor.setExecuteExistingDelayedTasksAfterShutdownPolicy(EntryPoint.SYSTEM_CONFIG.getTimerProvider().isExecuteExistingDelayedTasksAfterShutdownPolicy());
-        executor.setRemoveOnCancelPolicy(EntryPoint.SYSTEM_CONFIG.getTimerProvider().isRemoveOnCancelPolicy());
-        executor.setKeepAliveTime(EntryPoint.SYSTEM_CONFIG.getTimerProvider().getKeepAliveMinutes(), TimeUnit.MINUTES);
-        executor.allowCoreThreadTimeOut(EntryPoint.SYSTEM_CONFIG.getTimerProvider().isAllowCoreThreadTimeOut());
+		executor.setMaximumPoolSize(EntryPoint.SYSTEM_CONFIG.getTaskProvider().getMaxThreadCount());
+        executor.setContinueExistingPeriodicTasksAfterShutdownPolicy(EntryPoint.SYSTEM_CONFIG.getTaskProvider().isContinueExistingPeriodicTasksAfterShutdownPolicy());
+        executor.setExecuteExistingDelayedTasksAfterShutdownPolicy(EntryPoint.SYSTEM_CONFIG.getTaskProvider().isExecuteExistingDelayedTasksAfterShutdownPolicy());
+        executor.setRemoveOnCancelPolicy(EntryPoint.SYSTEM_CONFIG.getTaskProvider().isRemoveOnCancelPolicy());
+        executor.setKeepAliveTime(EntryPoint.SYSTEM_CONFIG.getTaskProvider().getKeepAliveMinutes(), TimeUnit.MINUTES);
+        executor.allowCoreThreadTimeOut(EntryPoint.SYSTEM_CONFIG.getTaskProvider().isAllowCoreThreadTimeOut());
 	}
 	
 	public ScheduledFuture<?> register(Runnable delegate, long delay, long period, TimeUnit unit, Function<Object[], Boolean> continuous, Object...args) {
 		
-		TimerScheduleRunnable runnable = new TimerScheduleRunnable(delegate, continuous, args);
+		TaskScheduleRunnable runnable = new TaskScheduleRunnable(delegate, continuous, args);
 		
 		runnable.self = this.executor.scheduleAtFixedRate(runnable, delay, period, unit);
 		
@@ -120,7 +120,7 @@ public class TimerProvider  {
 	
 	public ScheduledFuture<?> schedule(Runnable delegate, long delay, TimeUnit unit, Object... args) {
 		
-		TimerScheduleRunnable runnable = new TimerScheduleRunnable(delegate, args);
+		TaskScheduleRunnable runnable = new TaskScheduleRunnable(delegate, args);
 		
 		runnable.self = this.executor.schedule(runnable, delay, unit);
 		
@@ -189,20 +189,20 @@ public class TimerProvider  {
 		return this.executor.toString();
 	}
 
-	private class TimerScheduleRunnable implements Runnable {
+	private class TaskScheduleRunnable implements Runnable {
 
 		private volatile ScheduledFuture<?> self;
 		private final Runnable delegate;
 		private final Function<Object[], Boolean> continuous;
 		private final Object[] args;
 		
-		public TimerScheduleRunnable(Runnable delegate, Function<Object[], Boolean> continuous, Object... args) {
+		public TaskScheduleRunnable(Runnable delegate, Function<Object[], Boolean> continuous, Object... args) {
 			this.delegate = delegate;
 			this.continuous = continuous;
 			this.args = args;
 		}
 		
-		public TimerScheduleRunnable(Runnable delegate, Object... args) {
+		public TaskScheduleRunnable(Runnable delegate, Object... args) {
 			this(delegate, null, args);
 		}
 		

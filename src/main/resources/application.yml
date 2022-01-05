@@ -6,7 +6,7 @@ spring:
          enabled: false
    datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://localhost:3306/testdb
+      url: jdbc:mysql://localhost:@db-port@/@db-database@
       username: root
       password:
    jpa:
@@ -20,7 +20,7 @@ logging:
       root: INFO
 
 server:
-   port: 8089
+   port: "@tomcat-port@"
    ssl:
       enable: true
       key-store: classpath:keystore/storechain.p12
@@ -34,13 +34,13 @@ eureka:
       registerWithEureka: false
       fetchRegistry: false
       service-url:
-         defaultZone: https://localhost:8089/eureka
+         defaultZone: https://localhost:@tomcat-port@/eureka
 netty:
    enable: true
    servers:
       -
          name: web-socket
-         port: 8090
+         port: "@websocket-port@"
          provider: com.storechain.spring.boot.connection.netty.WebSocketServerProvider
          handler: com.storechain.connection.netty.websocket.handler.WebSocketServerInitializeHandler
          client-converter: com.storechain.connection.netty.websocket.WebSocketClientConverter
@@ -57,7 +57,7 @@ netty:
          kick-unknown-packet-user: true
          log-banned-ip-active: true
 system:
-   timer-provider:
+   task-provider:
       thread-count: 16
       maxThreadCount: -1
       keep-alive-minutes: 5

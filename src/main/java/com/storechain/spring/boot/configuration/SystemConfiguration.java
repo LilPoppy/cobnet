@@ -8,12 +8,12 @@ import org.springframework.context.annotation.Configuration;
 public class SystemConfiguration {
 	
 
-	private TimerProviderConfiguration timerProvider; 
+	private TaskProviderConfiguration taskProvider; 
 	
 
 	@Configuration
 	@ConfigurationProperties
-	public static class TimerProviderConfiguration {
+	public static class TaskProviderConfiguration {
 	
 		private int threadCount = 8;
 		
@@ -88,13 +88,13 @@ public class SystemConfiguration {
 		}
 	}
 
-	public TimerProviderConfiguration getTimerProvider() {
-		return timerProvider;
+	public TaskProviderConfiguration getTaskProvider() {
+		return taskProvider;
 	}
 
 
-	public void setTimerProvider(TimerProviderConfiguration timerProvider) {
-		this.timerProvider = timerProvider;
+	public void setTaskProvider(TaskProviderConfiguration timerProvider) {
+		this.taskProvider = timerProvider;
 	}
 
 }

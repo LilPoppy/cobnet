@@ -17,8 +17,8 @@ services:
       command: --default-authentication-plugin=mysql_native_password
       restart: always
       environment:
-         MYSQL_DATABASE: testdb
-         MYSQL_ALLOW_EMPTY_PASSWORD: "yea"
+         MYSQL_DATABASE: ${DB_DATABASE}
+         MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       ports:
          - ${DB_EXPOSE}:${DB_EXPOSE}
       networks:

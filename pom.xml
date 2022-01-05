@@ -15,6 +15,10 @@
 	<description>A simple server for storechain</description>
 	<properties>
 		<java.version>17</java.version>
+		<db-database>testdb</db-database>
+		<db-port>3306</db-port>
+		<tomcat-port>8089</tomcat-port>
+		<websocket-port>8090</websocket-port>
 		<repackage.classifier/>
 		<spring-cloud.version>2021.0.0</spring-cloud.version>
 		<spring-native.version>0.11.0</spring-native.version>
@@ -23,10 +27,7 @@
 		<docker-maintainer>LilPoppy</docker-maintainer>
 		<docker-image-name>${project.artifactId}:${project.version}</docker-image-name>
 		<docker-container-name>${project.artifactId}</docker-container-name>
-		<docker-expose>8089</docker-expose>
-		<docker-expose-websocket>8090</docker-expose-websocket>
 		<docker-db-image-name>mysql</docker-db-image-name>
-		<docker-db-expose>3306</docker-db-expose>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -240,6 +241,7 @@
 			<id>docker</id>
 			<build>
 				<plugins>
+
 					<plugin>
 						<groupId>io.fabric8</groupId>
 						<artifactId>docker-maven-plugin</artifactId>
@@ -266,8 +268,8 @@
 											<RPM_CODEREADY_BUILDER>ol8_codeready_builder</RPM_CODEREADY_BUILDER>
 											<INSTALLATIONS>procps-ng bzip2-devel zip unzip ed gcc gcc-c++ gcc-gfortran gzip file fontconfig less libcurl-devel make openssl apr-devel openssl-devel readline-devel tar glibc-langpack-en net-tools python3-libs</INSTALLATIONS>
 											<TARGETPLATFORM>linux/amd64</TARGETPLATFORM>
-											<PORT>${docker-expose}</PORT>
-											<WEBSOCKET_PORT>${docker-expose-websocket}</WEBSOCKET_PORT>
+											<PORT>${tomcat-port}</PORT>
+											<WEBSOCKET_PORT>${websocket-port}</WEBSOCKET_PORT>
 										</args>
 									</build>
 								</image>
@@ -277,13 +279,13 @@
 									<build>
 										<from>mysql:latest</from>
 										<maintainer>${docker-maintainer}</maintainer>
-										<ports>${docker-db-expose}</ports>
+										<ports>${db-port}</ports>
 									    <tags>
     										<tag>latest</tag>
     										<tag>${project.version}</tag>
   										</tags>
   										<!--
-										<volumes>
+										<volumes> # specific volumes for compose
 										    <volume>/path/to/expose</volume> 
 										</volumes>
 										-->
@@ -320,10 +322,11 @@
 			            			<envVars>
 			            				<IMAGE_NAME>${docker-image-name}</IMAGE_NAME>
 			            				<CONTAINER_NAME>${docker-container-name}</CONTAINER_NAME>
-			            				<EXPOSE>${docker-expose}</EXPOSE>
-			            				<WEBSOCKET_EXPOSE>${docker-expose-websocket}</WEBSOCKET_EXPOSE>
+			            				<EXPOSE>${tomcat-port}</EXPOSE>
+			            				<WEBSOCKET_EXPOSE>${websocket-port}</WEBSOCKET_EXPOSE>
 			            				<DB_IMAGE_NAME>${docker-db-image-name}</DB_IMAGE_NAME>
-			            				<DB_EXPOSE>${docker-db-expose}</DB_EXPOSE>
+			            				<DB_EXPOSE>${db-port}</DB_EXPOSE>
+			            				<DB_DATABASE>${db-database}</DB_DATABASE>
 			            			</envVars>
 			            		</configuration>
 			            	</execution>
