@@ -29,6 +29,11 @@ jobs:
         uses: stCarolas/setup-maven@v4.2
         with:
           maven-version: 3.8.2
-      - run: java -version
+      - run: java --version
+      - run: docker --version
+      - run: docker-compose --version
       - name: Build with Maven
         run: mvn -DskipTests -B clean package -Pdocker
+      - name: Run App
+        run: docker start storechain-server
+      
