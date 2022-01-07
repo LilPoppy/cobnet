@@ -1,28 +1,5 @@
 [
     {
-        "name": "com.storechain.spring.boot.connection.netty.NettyBaseServerProvider",
-        "allPublicConstructors":true
-    },
-    {
-    	"name": "com.storechain.spring.boot.connection.netty.WebSocketServerProvider",
-    	"allPublicConstructors":true
-    },
-    {
-    	"name": "com.storechain.connection.netty.websocket.handler.WebSocketServerInitializeHandler",
-    	"allPublicConstructors":true,
-    	"allPublicMethods":true
-    },
-    {
-    	"name": "com.storechain.connection.netty.websocket.WebSocketClientConverter",
-    	"allPublicConstructors":true,
-    	"allPublicMethods":true
-    },
-    {
-    	"name": "com.storechain.connection.handler.UnknownPacketHandler",
-    	"allPublicConstructors":true,
-    	"allPublicMethods":true
-    },
-    {
         "name": "io.netty.channel.ChannelOption",
         "methods":
         [
@@ -127,30 +104,19 @@
     },
     {
         "name": "org.apache.logging.log4j.message.ReusableMessageFactory",
-        "methods": [
-          { "name": "<init>", "parameterTypes": [] }
-        ]
+        "allPublicConstructors":true
     },
     {
         "name": "org.apache.logging.log4j.message.DefaultFlowMessageFactory",
-        "methods": [
-          {
-              "name": "<init>",
-              "parameterTypes": []
-          }
-        ]
+        "allPublicConstructors":true
     },
     {
         "name" : "java.util.logging.FileHandler",
-        "methods": [
-            { "name" : "<init>", "parameterTypes" : [] }
-        ]
+        "allPublicConstructors":true
     },
     {
         "name" : "io.netty.handler.ssl.ReferenceCountedOpenSslEngine",
         "allDeclaredFields":true,
-        "methods": [
-            { "name": "<init>", "parameterTypes": [] }
-        ]
+        "allPublicConstructors":true
     }
 ]

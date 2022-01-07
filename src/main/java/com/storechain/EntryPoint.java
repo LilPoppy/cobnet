@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
+
 import com.storechain.interfaces.spring.connection.NettyServerProvider;
 import com.storechain.spring.boot.configuration.NettyConfiguration;
 import com.storechain.spring.boot.configuration.SystemConfiguration;
@@ -155,7 +156,6 @@ public class EntryPoint {
 
 	public static void main(String[] args) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException, IOException {
 
-		
 		benchGraalPolyglotContext();
 		
 		benchGraalScriptEngine();
@@ -170,7 +170,7 @@ public class EntryPoint {
 		EntryPoint.CONTEXT = (ServletWebServerApplicationContext) SpringApplication.run(EntryPoint.class, args);
 		EntryPoint.NETTY_CONFIG = EntryPoint.CONTEXT.getBean(NettyConfiguration.class);
 		EntryPoint.SYSTEM_CONFIG = EntryPoint.CONTEXT.getBean(SystemConfiguration.class);
-		
+
 		if(NETTY_CONFIG.isEnable() && NETTY_CONFIG.getServers() != null) {
 			
 			for(NettyConfiguration.ServerConfiguration serverConfig : NETTY_CONFIG.getServers()) {

@@ -67,7 +67,7 @@ RUN \
     
 RUN source "$HOME/.sdkman/bin/sdkman-init.sh" && mvn --version
 
-RUN gu install native-image && native-image --version
+RUN gu install native-image && gu install python && native-image --version
     
 CMD java -version
 

@@ -48,6 +48,8 @@ These additional references should also help you:
 
 ### JVM
 
+* [GraalVM-CE-JAVA](https://www.graalvm.org/downloads/) needs to be downloaded.
+
 This project can be easily build with maven, run the following goal:
 
 ```

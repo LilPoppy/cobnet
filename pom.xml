@@ -109,11 +109,18 @@
             <artifactId>jython</artifactId>
             <version>2.7.2</version>
         </dependency>
-        <dependency>
-            <groupId>org.graalvm.sdk</groupId>
-            <artifactId>graal-sdk</artifactId>
-            <version>${graalvm.version}</version>
-        </dependency>
+		<dependency>
+		    <groupId>org.graalvm.sdk</groupId>
+		    <artifactId>graal-sdk</artifactId>
+		    <version>${graalvm.version}</version>
+		    <scope>provided</scope>
+		</dependency>
+		<dependency>
+		    <groupId>org.graalvm.nativeimage</groupId>
+		    <artifactId>svm</artifactId>
+		    <version>${graalvm.version}</version>
+		    <scope>provided</scope>
+		</dependency>
         <dependency>
             <groupId>org.graalvm.js</groupId>
             <artifactId>js</artifactId>
@@ -339,21 +346,49 @@
 						<configuration>
 							<buildArgs>
 								<!--<buildArgs>- -no-server</buildArgs>-->
+								<buildArgs>--macro:truffle</buildArgs>
 								<buildArgs>--no-fallback</buildArgs>
 								<buildArgs>-DskipTests</buildArgs>
 								<buildArgs>--report-unsupported-elements-at-runtime</buildArgs>
 								<buildArgs>--allow-incomplete-classpath</buildArgs>
 							    <!--<buildArgs>-H:+AddAllCharsets</buildArgs>-->
 							    <buildArgs>-Dlogging.config=logback-config.xml</buildArgs>
-								<!-- <buildArgs>- -features=com.storechain.RuntimeReflectionRegistrationFeature</buildArgs> -->
+								<buildArgs>--features=com.storechain.RuntimeReflectionRegistrationFeature</buildArgs>
 								<buildArgs>-H:ReflectionConfigurationFiles=${basedir}/src/main/java/reflect-config.json</buildArgs>
 								<buildArgs>-H:ResourceConfigurationFiles=${basedir}/src/main/java/resource-config.json</buildArgs>
-								<buildArgs>-H:+ReportExceptionStackTraces</buildArgs>
-								<buildArgs>-H:+ReportUnsupportedElementsAtRuntime</buildArgs>
 								<buildArgs>-H:IncludeResources=".*.xml|.*.conf|.*.yml" </buildArgs>
 								<buildArgs>-H:TraceClassInitialization=true</buildArgs>
-								<buildArgs>--language:js</buildArgs>
+								<buildArgs>-H:-EnableSecurityServicesFeature</buildArgs>
+								<buildArgs>-H:+ReportExceptionStackTraces</buildArgs>
+								<buildArgs>-H:+ReportUnsupportedElementsAtRuntime</buildArgs>
+								<buildArgs>--language:js --language:python</buildArgs>
+								<buildArgs>--initialize-at-run-time=com.storechain.utils.TaskProvider</buildArgs>
+								<buildArgs>--initialize-at-run-time=org.apache.tomcat.jni.OS</buildArgs>
+								<buildArgs>--initialize-at-run-time=org.apache.tomcat.jni.SSL</buildArgs>
+								<buildArgs>--initialize-at-run-time=org.python.modules.posix.PosixModule</buildArgs>
+								<buildArgs>--initialize-at-run-time=org.apache.tomcat.util.net.openssl.OpenSSLEngine</buildArgs>
+								<buildArgs>--initialize-at-run-time=org.python.modules.Setup</buildArgs>
+								<buildArgs>--initialize-at-run-time=org.springframework.core.io.VfsUtils</buildArgs>
+								
+								<buildArgs>--initialize-at-run-time=org.springframework.data.web.XmlBeamHttpMessageConverter</buildArgs>
+								<buildArgs>--initialize-at-run-time=org.springframework.data.web.ProjectingJackson2HttpMessageConverter</buildArgs>
+								<buildArgs>--initialize-at-run-time=org.springframework.boot.autoconfigure.neo4j.Neo4jAutoConfiguration</buildArgs>
+								<buildArgs>--initialize-at-run-time=org.springframework.boot.logging.log4j2.Log4J2LoggingSystem</buildArgs>
+								<buildArgs>--initialize-at-run-time=org.springframework.boot.liquibase.LiquibaseChangelogMissingFailureAnalyzer</buildArgs>
+								<buildArgs>--initialize-at-run-time=org.springframework.web.multipart.commons.CommonsFileUploadSupport</buildArgs>
+								<buildArgs>--initialize-at-run-time=org.springframework.http.converter.json.Jackson2ObjectMapperBuilder$XmlObjectMapperInitializer</buildArgs>
+								<buildArgs>--initialize-at-run-time=org.springframework.boot.r2dbc.EmbeddedDatabaseConnection</buildArgs>
+								<buildArgs>--initialize-at-run-time=io.netty.handler.ssl.ConscryptAlpnSslEngine</buildArgs>
+								<buildArgs>--initialize-at-run-time=io.netty.util.internal.logging.Log4JLogger</buildArgs>
+								<buildArgs>--initialize-at-run-time=reactor.core.publisher.Traces$SharedSecretsCallSiteSupplierFactory$TracingException</buildArgs>
+								<buildArgs>--initialize-at-run-time=com.zaxxer.hikari.metrics.micrometer.MicrometerMetricsTracker</buildArgs>
+								<buildArgs>--initialize-at-run-time=com.zaxxer.hikari.metrics.dropwizard.CodaHaleMetricsTracker</buildArgs>
+								<buildArgs>--initialize-at-run-time=com.netflix.discovery.shared.transport.jersey.JerseyEurekaHttpClientFactory</buildArgs>
+								<buildArgs>--initialize-at-run-time=org.hibernate.secure.internal.StandardJaccServiceImpl</buildArgs>
+								
+								<buildArgs>--initialize-at-run-time=com.storechain.EntryPoint</buildArgs>
 							</buildArgs>
+							
 						</configuration>
 						<executions>
 							<execution>

@@ -2,6 +2,8 @@ package com.storechain.connection.netty.handler;
 
 
 
+import javax.net.ssl.SSLHandshakeException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +17,14 @@ public abstract class InboundHandler extends ChannelInboundHandlerAdapter {
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
 		super.exceptionCaught(ctx, cause);
+		
 		cause.printStackTrace();
 		ctx.close();
+		
+
+		if(cause instanceof SSLHandshakeException) {
+			log.warn(String.format("%s has sent unknown package.", ctx.channel().remoteAddress()));
+			return;
+		}
 	}
 }

@@ -1,6 +1,6 @@
 package com.storechain;
 
-//import com.oracle.svm.core.annotate.AutomaticFeature;
+import com.oracle.svm.core.annotate.AutomaticFeature;
 import com.storechain.connection.handler.UnknownPacketHandler;
 import com.storechain.connection.netty.websocket.WebSocketClientConverter;
 import com.storechain.connection.netty.websocket.handler.WebSocketServerInitializeHandler;
@@ -11,8 +11,7 @@ import org.graalvm.nativeimage.hosted.Feature;
 import org.graalvm.nativeimage.hosted.RuntimeReflection;
 
 // All the reflection references must defined here before pack native.
-// SVM is incompatible to script engine!!!
-//@AutomaticFeature
+@AutomaticFeature
 public class RuntimeReflectionRegistrationFeature implements Feature {
 	
 	public void beforeAnalysis(BeforeAnalysisAccess access) {

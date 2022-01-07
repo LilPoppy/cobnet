@@ -1,7 +1,11 @@
 package com.storechain.connection.netty.websocket.handler;
 
+import javax.net.ssl.SSLHandshakeException;
+
 import org.eclipse.jetty.util.MultiMap;
 import org.eclipse.jetty.util.UrlEncoded;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.storechain.connection.netty.handler.InboundHandler;
 
@@ -10,6 +14,8 @@ import io.netty.handler.codec.http.FullHttpRequest;
 
 public class WebSocketInboundUrlHandler extends InboundHandler  {
 
+	protected Logger log = LoggerFactory.getLogger(InboundHandler.class);
+	
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 
@@ -27,4 +33,18 @@ public class WebSocketInboundUrlHandler extends InboundHandler  {
             }
         }
     }
+    
+	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+		
+		ctx.close();
+
+		if(cause instanceof SSLHandshakeException) {
+			log.warn(String.format("%s has sent unknown package.", ctx.channel().remoteAddress()));
+			return;
+		}
+		
+		super.exceptionCaught(ctx, cause);
+		
+	}
 }

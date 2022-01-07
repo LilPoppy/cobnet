@@ -7,6 +7,8 @@ import java.security.KeyStore;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLHandshakeException;
+
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.Ssl;
@@ -20,6 +22,7 @@ import com.storechain.connection.netty.handler.ChannelInitializeHandler;
 import com.storechain.connection.netty.websocket.WebSocketClientConverter;
 import com.storechain.connection.netty.websocket.WebSocketServer;
 
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
@@ -85,5 +88,19 @@ public class WebSocketInitializeHandler extends ChannelInitializeHandler<NioSock
         
         super.initChannel(ch);
     }
+	
+	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+		
+		ctx.close();
+
+		if(cause instanceof SSLHandshakeException) {
+			log.warn(String.format("%s has initialize without successed.", ctx.channel().remoteAddress()));
+			return;
+		}
+		
+		super.exceptionCaught(ctx, cause);
+		
+	}
    
 }

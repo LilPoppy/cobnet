@@ -34,7 +34,6 @@ public class WebSocketInboundPacketHandler extends SimpleChannelInboundHandler<I
 		
     	InboundOperation operation = packet.getOperation();
     	
-        
         NettyClient client = ctx.channel().attr(WebSocketClient.CLIENT_KEY).get();
         
         if(operation == InboundOperation.UNKNOWN) {
