@@ -11,7 +11,7 @@ Storechain-Server
 
 <!--[![Docker](https://img.shields.io/docker/cloud/build/SpamanDev/StoreChain-Server?label=Docker&style=flat)](https://hub.docker.com/r/SpamanDev/StoreChain-Server/builds)-->
 
-A simple microservice server based on graalvm + docker. 
+This is a SpringCloud euraka client project that can be quickly deployed.
 
 # Read Me First
 The following was discovered as part of building this project:
@@ -88,6 +88,8 @@ Use this option if you want to explore more options such as running your tests i
 The GraalVM native-image compiler should be installed and configured on your machine, see [the Getting Started section of the reference guide](https://docs.spring.io/spring-native/docs/0.11.0/reference/htmlsingle/#getting-started-native-build-tools).
 
 * [Graalvm-Native](https://www.graalvm.org/docs/getting-started/) needs to be installed.
+* [Reflection Use in Native Images](https://www.graalvm.org/reference-manual/native-image/Reflection/).
+* To [add a language](https://www.graalvm.org/reference-manual/native-image/Options/#macro-options) to native image.
 
 To create the executable, run the following goal:
 

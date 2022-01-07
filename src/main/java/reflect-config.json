@@ -1,5 +1,28 @@
 [
     {
+        "name": "com.storechain.spring.boot.connection.netty.NettyBaseServerProvider",
+        "allPublicConstructors":true
+    },
+    {
+    	"name": "com.storechain.spring.boot.connection.netty.WebSocketServerProvider",
+    	"allPublicConstructors":true
+    },
+    {
+    	"name": "com.storechain.connection.netty.websocket.handler.WebSocketServerInitializeHandler",
+    	"allPublicConstructors":true,
+    	"allPublicMethods":true
+    },
+    {
+    	"name": "com.storechain.connection.netty.websocket.WebSocketClientConverter",
+    	"allPublicConstructors":true,
+    	"allPublicMethods":true
+    },
+    {
+    	"name": "com.storechain.connection.handler.UnknownPacketHandler",
+    	"allPublicConstructors":true,
+    	"allPublicMethods":true
+    },
+    {
         "name": "io.netty.channel.ChannelOption",
         "methods":
         [
@@ -12,6 +35,11 @@
             }
         ]
     },
+    {
+    	"name":"org.springframework.web.servlet.handler.AbstractHandlerMethodMapping$EmptyHandler",
+    	"allPublicConstructors":true,
+    	"allPublicMethods":true
+	},
 	{
 	    "name":"[Lcom.fasterxml.jackson.databind.JsonSerializer;"
 	},

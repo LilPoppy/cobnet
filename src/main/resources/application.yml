@@ -1,7 +1,12 @@
 spring:
    application:
       name: StoreChain-Server
+   sleuth:
+      async:
+         enabled: false
    cloud:
+      refresh:
+         enabled: false
       compatibility-verifier:
          enabled: false
    datasource:
