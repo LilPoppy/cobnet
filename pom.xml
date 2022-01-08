@@ -358,10 +358,12 @@
 								<buildArgs>-H:ResourceConfigurationFiles=${basedir}/src/main/java/resource-config.json</buildArgs>
 								<buildArgs>-H:IncludeResources=".*.xml|.*.conf|.*.yml" </buildArgs>
 								<buildArgs>-H:TraceClassInitialization=true</buildArgs>
-								<buildArgs>-H:-EnableSecurityServicesFeature</buildArgs>
+								<buildArgs>-H:-TruffleCheckBlockListMethods</buildArgs>
 								<buildArgs>-H:+ReportExceptionStackTraces</buildArgs>
 								<buildArgs>-H:+ReportUnsupportedElementsAtRuntime</buildArgs>
 								<buildArgs>--language:js --language:python</buildArgs>
+								<buildArgs>-Dorg.graalvm.language.python.home=${java.home}/languages/python/</buildArgs>
+								<buildArgs>-Dtruffle.TruffleRuntime=com.oracle.truffle.api.impl.DefaultTruffleRuntime</buildArgs>
 								<buildArgs>--initialize-at-run-time=com.storechain.utils.TaskProvider</buildArgs>
 								<buildArgs>--initialize-at-run-time=org.apache.tomcat.jni.OS</buildArgs>
 								<buildArgs>--initialize-at-run-time=org.apache.tomcat.jni.SSL</buildArgs>
