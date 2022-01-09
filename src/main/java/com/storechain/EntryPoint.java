@@ -5,27 +5,24 @@ import java.lang.reflect.InvocationTargetException;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
-
 import com.storechain.interfaces.spring.connection.NettyServerProvider;
+import com.storechain.polyglot.PolyglotContext;
+import com.storechain.polyglot.PolyglotValue;
 import com.storechain.spring.boot.configuration.NettyConfiguration;
 import com.storechain.spring.boot.configuration.SystemConfiguration;
-
 import org.graalvm.polyglot.Context;
-import org.graalvm.polyglot.Value;
 import org.graalvm.polyglot.Source;
 
 //@EnableEurekaClient
 @SpringBootApplication(proxyBeanMethods = false)
 public class EntryPoint {
 
-	private static Logger log = LoggerFactory.getLogger(EntryPoint.class);
+	private final static Logger log = LoggerFactory.getLogger(EntryPoint.class);
 	
 	public static ServletWebServerApplicationContext CONTEXT;
 	
@@ -36,6 +33,8 @@ public class EntryPoint {
     public static final int WARMUP = 15;
     public static final int ITERATIONS = 10;
     public static final String BENCHFILE = "src/bench.js";
+    
+    public static final String SOURCE2 = "function hello(name) {print ('Hello, ' + name);}";
 
     public static final String SOURCE = ""
             + "var N = 2000;\n"
@@ -115,17 +114,43 @@ public class EntryPoint {
     }
     
     static long benchGraalPolyglotContext() throws IOException {
+    	
+    	/**
+    	
+    	------ read file from the class path ----------
+    	
+        String scriptText;
+        
+        try (Scanner scanner = new Scanner(
+                EntryPoint.class.getResourceAsStream("/demo.js"), StandardCharsets.UTF_8)) {
+            scriptText = scanner.useDelimiter("\\A").next();
+        }
+        
+        try(PolyglotContext context = PolyglotContext.create("js")) {
+        
+        	context.eval("js", scriptText);
+        	
+        	PolyglotValue function = context.getBindings("js").getMember("method");
+        	
+        	PolyglotValue result = function.execute(arguments);
+        }
+        
+        ------------------------------------------------
+        **/
+
         System.out.println("=== Graal.js via org.graalvm.polyglot.Context === ");
+        
         long sum = 0;
         
-        try (Context context = Context.create()) {
+        try(PolyglotContext context = PolyglotContext.create()) {
         	
-        	System.out.println("installed scripts: ");
+            System.out.println(String.format("installed scripts with %s: ", context));
+            
         	for(String key : context.getEngine().getLanguages().keySet()) {
         		System.out.println(key);
         	}
             context.eval(Source.newBuilder("js", SOURCE, "src.js").build());
-            Value primesMain = context.getBindings("js").getMember("primesMain");
+            PolyglotValue primesMain = context.getBindings("js").getMember("primesMain");
             System.out.println("warming up ...");
             for (int i = 0; i < WARMUP; i++) {
                 primesMain.execute();
@@ -138,36 +163,17 @@ public class EntryPoint {
                 sum += took;
                 System.out.println("iteration: " + took);
             }
-        } // context.close() is automatic
-        return sum;
-    }
-    
-    static long benchGraalScriptEngine() throws IOException {
-        System.out.println("=== Graal.js via javax.script.ScriptEngine ===");
-        ScriptEngine graaljsEngine = new ScriptEngineManager().getEngineByName("graal.js");
-        if (graaljsEngine == null) {
-            System.out.println("*** Graal.js not found ***");
-            return 0;
-        } else {
-            return benchScriptEngineIntl(graaljsEngine);
+
+            return sum;	
         }
     }
-    
 
 	public static void main(String[] args) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException, IOException {
 
 		benchGraalPolyglotContext();
 		
-		benchGraalScriptEngine();
-        System.out.println("=== Graal.js via javax.script.ScriptEngine ===");
-        ScriptEngine graaljsEngine = new ScriptEngineManager().getEngineByName("graal.js");
-        if (graaljsEngine == null) {
-            System.out.println("*** Graal.js not found ***");
-        } else {
-            benchScriptEngineIntl(graaljsEngine);
-        }
-		
 		EntryPoint.CONTEXT = (ServletWebServerApplicationContext) SpringApplication.run(EntryPoint.class, args);
+		System.out.println(Context.create().getEngine().getLanguages().keySet().toString());
 		EntryPoint.NETTY_CONFIG = EntryPoint.CONTEXT.getBean(NettyConfiguration.class);
 		EntryPoint.SYSTEM_CONFIG = EntryPoint.CONTEXT.getBean(SystemConfiguration.class);
 
@@ -179,18 +185,11 @@ public class EntryPoint {
 				
 				NettyServerProvider provider = (NettyServerProvider) provider_class.getConstructor().newInstance();
 
-				provider.providing(serverConfig);
+				provider.provide(serverConfig);
 			}
 		}
 		
-
-		//benchScriptEngineIntl(graaljsEngine);
-
-		//benchGraalScriptEngine();
-		
-		benchGraalPolyglotContext();
-		
-		
+		benchGraalPolyglotContext();	
 	}
 }
 

@@ -27,7 +27,7 @@
 		<docker-maintainer>LilPoppy</docker-maintainer>
 		<docker-image-name>${project.artifactId}:${project.version}</docker-image-name>
 		<docker-container-name>${project.artifactId}</docker-container-name>
-		<docker-db-image-name>mysql</docker-db-image-name>
+		<docker-db-image-name>${project.artifactId}-db</docker-db-image-name>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -45,6 +45,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
+			<exclusions>
+		        <exclusion>
+		            <groupId>org.apache.tomcat.embed</groupId>
+		            <artifactId>tomcat-embed-websocket</artifactId>
+		        </exclusion>
+         	</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
@@ -53,11 +59,6 @@
 		<dependency>
 		    <groupId>org.springframework.cloud</groupId>
 		    <artifactId>spring-cloud-commons</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.experimental</groupId>
-			<artifactId>spring-native</artifactId>
-			<version>${spring-native.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
@@ -103,11 +104,6 @@
         <dependency>
             <groupId>org.eclipse.jetty</groupId>
             <artifactId>jetty-server</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.python</groupId>
-            <artifactId>jython</artifactId>
-            <version>2.7.2</version>
         </dependency>
 		<dependency>
 		    <groupId>org.graalvm.sdk</groupId>
@@ -175,19 +171,6 @@
 			         	<springAot>true</springAot>
 			         </systemPropertyVariables>
 				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.springframework.experimental</groupId>
-				<artifactId>spring-aot-maven-plugin</artifactId>
-				<version>${spring-native.version}</version>
-				<executions>
-					<execution>
-						<id>generate</id>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<groupId>org.hibernate.orm.tooling</groupId>
@@ -329,15 +312,34 @@
 				</plugins>
 			</build>
 		</profile>
-		
 		<profile>
 			<id>native</id>
 			<properties>
 				<repackage.classifier>exec</repackage.classifier>
 				<native-buildtools.version>0.9.9</native-buildtools.version>
 			</properties>
+			<dependencies>
+				<dependency>
+					<groupId>org.springframework.experimental</groupId>
+					<artifactId>spring-native</artifactId>
+					<version>${spring-native.version}</version>
+				</dependency>
+			</dependencies>
 			<build>
 				<plugins>
+					<plugin>
+						<groupId>org.springframework.experimental</groupId>
+						<artifactId>spring-aot-maven-plugin</artifactId>
+						<version>${spring-native.version}</version>
+						<executions>
+							<execution>
+								<id>generate</id>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
 					<plugin>
 						<groupId>org.graalvm.buildtools</groupId>
 						<artifactId>native-maven-plugin</artifactId>
@@ -345,10 +347,10 @@
 						<extensions>true</extensions>
 						<configuration>
 							<buildArgs>
+								<buildArgs>-DskipTests</buildArgs>
 								<!--<buildArgs>- -no-server</buildArgs>-->
 								<buildArgs>--macro:truffle</buildArgs>
 								<buildArgs>--no-fallback</buildArgs>
-								<buildArgs>-DskipTests</buildArgs>
 								<buildArgs>--report-unsupported-elements-at-runtime</buildArgs>
 								<buildArgs>--allow-incomplete-classpath</buildArgs>
 							    <!--<buildArgs>-H:+AddAllCharsets</buildArgs>-->
@@ -361,9 +363,9 @@
 								<buildArgs>-H:-TruffleCheckBlockListMethods</buildArgs>
 								<buildArgs>-H:+ReportExceptionStackTraces</buildArgs>
 								<buildArgs>-H:+ReportUnsupportedElementsAtRuntime</buildArgs>
-								<buildArgs>--language:js --language:python</buildArgs>
-								<buildArgs>-Dorg.graalvm.language.python.home=${java.home}/languages/python/</buildArgs>
-								<buildArgs>-Dtruffle.TruffleRuntime=com.oracle.truffle.api.impl.DefaultTruffleRuntime</buildArgs>
+								<buildArgs>--language:js</buildArgs>
+								<!-- The argument to add python below is incompatible in Mac platform-->
+								<buildArgs>--language:python</buildArgs>
 								<buildArgs>--initialize-at-run-time=com.storechain.utils.TaskProvider</buildArgs>
 								<buildArgs>--initialize-at-run-time=org.apache.tomcat.jni.OS</buildArgs>
 								<buildArgs>--initialize-at-run-time=org.apache.tomcat.jni.SSL</buildArgs>
@@ -401,19 +403,6 @@
 								</goals>
 							</execution>
 						</executions>
-					</plugin>
-					<plugin>
-					    <groupId>org.springframework.experimental</groupId>
-					    <artifactId>spring-aot-maven-plugin</artifactId>
-					    <version>${spring-native.version}</version>
-			            <executions>
-			                <execution>
-			                    <id>generate</id>
-			                    <goals>
-			                        <goal>generate</goal>
-			                    </goals>
-			                </execution>
-			            </executions>
 					</plugin>
 				</plugins>
 			</build>

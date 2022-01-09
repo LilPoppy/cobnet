@@ -16,7 +16,7 @@ import io.netty.channel.ChannelOption;
 public class WebSocketServerProvider implements NettyServerProvider {
 
 	@Override
-	public void providing(ServerConfiguration config) {
+	public void provide(ServerConfiguration config) {
 		WebSocketServer server = new WebSocketServer(config.getName(), config.getPort());
 		
 		ChannelHandler handler;

@@ -72,7 +72,7 @@ This project has been configured to let you generate either a lightweight contai
 If you're already familiar with Spring Boot container images support, this is the easiest way to get started with Spring Native.
 Docker should be installed and configured on your machine prior to creating the image, see [the Getting Started section of the reference guide](https://docs.spring.io/spring-native/docs/0.11.0/reference/htmlsingle/#getting-started-buildpacks).
 
-* [Docker](https://docs.docker.com/get-docker/) atlease 10GB memory in docker preferences. see [Out of memory error when building the native image](https://docs.spring.io/spring-native/docs/current/reference/htmlsingle/#_out_of_memory_error_when_building_the_native_image)
+* [Docker](https://docs.docker.com/get-docker/) atlease 13GB memory in docker preferences. see [Out of memory error when building the native image](https://docs.spring.io/spring-native/docs/current/reference/htmlsingle/#_out_of_memory_error_when_building_the_native_image)
 
 * [Docker-Compose](https://docs.docker.com/compose/install/) 18.06.0+ needs to be installed.
 

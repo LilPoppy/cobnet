@@ -17,7 +17,7 @@ public class NettyBaseServerProvider implements NettyServerProvider {
 	protected static final Logger log = LogManager.getLogger(NettyBaseServerProvider.class);
 
 	@Override
-	public void providing(ServerConfiguration config) {
+	public void provide(ServerConfiguration config) {
 		
 		NettyServer server = new NettyServer(config.getName(), config.getPort());
 		

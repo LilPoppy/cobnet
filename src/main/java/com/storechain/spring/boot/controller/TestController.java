@@ -27,5 +27,4 @@ public class TestController {
 		mav.addObject("uid", new Random());
 		return mav;
 	}
-
 }

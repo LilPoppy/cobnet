@@ -2,6 +2,11 @@
     "bundles": [
     ],
     "resources":[
-
-  ]
+        {"pattern":"META-INF/services/com.oracle.truffle.api.TruffleLanguage$Provider"},
+        {"pattern":"META-INF/services/com.oracle.truffle.api.instrumentation.TruffleInstrument$Provider"},
+        {"pattern":"META-INF/services/com.oracle.truffle.js.runtime.Evaluator"},
+        {"pattern":"META-INF/services/com.oracle.truffle.js.runtime.builtins.JSFunctionLookup"},
+        {"pattern":"META-INF/services/java.nio.file.spi.FileSystemProvider"},
+        {"pattern":"com/oracle/truffle/nfi/impl/NFILanguageImpl.class"}
+    ]
 }

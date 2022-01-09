@@ -4,6 +4,6 @@ import com.storechain.spring.boot.configuration.NettyConfiguration;
 
 public interface NettyServerProvider {
 	
-	void providing(NettyConfiguration.ServerConfiguration config);
+	void provide(NettyConfiguration.ServerConfiguration config);
 
 }
