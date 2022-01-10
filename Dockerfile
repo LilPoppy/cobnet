@@ -33,7 +33,7 @@ RUN microdnf update -y $RPM_REPO \
     && fc-cache -f -v
     
 ENV LANG=en_US.UTF-8 \
-    JAVA_HOME=/opt/graalvm-ce-$JAVA_VERSION-$GRAALVM_VERSION/
+    JAVA_HOME=/opt/graalvm-ce-${JAVA_VERSION}-${GRAALVM_VERSION}
 
 ADD gu-wrapper.sh /usr/local/bin/gu
 

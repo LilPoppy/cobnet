@@ -16,7 +16,12 @@
 	<properties>
 		<java.version>17</java.version>
 		<db-database>testdb</db-database>
+		<db-auto-reconnect>true</db-auto-reconnect>
+		<db-use-ssl>false</db-use-ssl>
 		<db-port>3306</db-port>
+		<db-user>root</db-user>
+		<db-password>123456</db-password>
+		<db-root-password>123456</db-root-password>
 		<tomcat-port>8089</tomcat-port>
 		<websocket-port>8090</websocket-port>
 		<repackage.classifier/>
@@ -117,17 +122,6 @@
 		    <version>${graalvm.version}</version>
 		    <scope>provided</scope>
 		</dependency>
-        <dependency>
-            <groupId>org.graalvm.js</groupId>
-            <artifactId>js</artifactId>
-            <version>${graalvm.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.graalvm.js</groupId>
-            <artifactId>js-scriptengine</artifactId>
-            <version>${graalvm.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.graalvm.tools</groupId>
             <artifactId>profiler</artifactId>
@@ -299,8 +293,12 @@
 			            				<EXPOSE>${tomcat-port}</EXPOSE>
 			            				<WEBSOCKET_EXPOSE>${websocket-port}</WEBSOCKET_EXPOSE>
 			            				<DB_IMAGE_NAME>${docker-db-image-name}</DB_IMAGE_NAME>
+			            				<DB_AUTO_RECONNECT>${db-auto-reconnect}</DB_AUTO_RECONNECT>
+			            				<DB_USE_SSL>${db-use-ssl}</DB_USE_SSL>
 			            				<DB_EXPOSE>${db-port}</DB_EXPOSE>
 			            				<DB_DATABASE>${db-database}</DB_DATABASE>
+			            				<DB_USER>${db-user}</DB_USER>
+			            				<DB_PASSWORD>${db-password}</DB_PASSWORD>
 			            			</envVars>
 			            			<buildArgs>
 			            				<forceRm>true</forceRm>
@@ -349,23 +347,26 @@
 							<buildArgs>
 								<buildArgs>-DskipTests</buildArgs>
 								<!--<buildArgs>- -no-server</buildArgs>-->
-								<buildArgs>--macro:truffle</buildArgs>
 								<buildArgs>--no-fallback</buildArgs>
 								<buildArgs>--report-unsupported-elements-at-runtime</buildArgs>
 								<buildArgs>--allow-incomplete-classpath</buildArgs>
 							    <!--<buildArgs>-H:+AddAllCharsets</buildArgs>-->
 							    <buildArgs>-Dlogging.config=logback-config.xml</buildArgs>
-								<buildArgs>--features=com.storechain.RuntimeReflectionRegistrationFeature</buildArgs>
+								<buildArgs>--features=com.storechain.RuntimeReflectionRegistrationFeature,com.oracle.svm.truffle.TruffleFeature,com.oracle.svm.truffle.TruffleBaseFeature,org.graalvm.home.HomeFinderFeature</buildArgs>
 								<buildArgs>-H:ReflectionConfigurationFiles=${basedir}/src/main/java/reflect-config.json</buildArgs>
 								<buildArgs>-H:ResourceConfigurationFiles=${basedir}/src/main/java/resource-config.json</buildArgs>
 								<buildArgs>-H:IncludeResources=".*.xml|.*.conf|.*.yml" </buildArgs>
 								<buildArgs>-H:TraceClassInitialization=true</buildArgs>
+								<buildArgs>-Dtruffle.TruffleRuntime=com.oracle.svm.truffle.api.SubstrateTruffleRuntime</buildArgs>
 								<buildArgs>-H:-TruffleCheckBlockListMethods</buildArgs>
+								<buildArgs>-H:-TruffleCheckBlackListedMethods</buildArgs>
 								<buildArgs>-H:+ReportExceptionStackTraces</buildArgs>
 								<buildArgs>-H:+ReportUnsupportedElementsAtRuntime</buildArgs>
 								<buildArgs>--language:js</buildArgs>
 								<!-- The argument to add python below is incompatible in Mac platform-->
 								<buildArgs>--language:python</buildArgs>
+								<buildArgs>-Dpython.StdLibHome=${env.JAVA_HOME}/languages/python/lib-python/3</buildArgs>
+								<buildArgs>-Dpython.CoreHome=${env.JAVA_HOME}/languages/python/lib-graalpython</buildArgs>
 								<buildArgs>--initialize-at-run-time=com.storechain.utils.TaskProvider</buildArgs>
 								<buildArgs>--initialize-at-run-time=org.apache.tomcat.jni.OS</buildArgs>
 								<buildArgs>--initialize-at-run-time=org.apache.tomcat.jni.SSL</buildArgs>

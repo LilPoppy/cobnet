@@ -12,8 +12,8 @@ spring:
    datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://localhost:@db-port@/@db-database@
-      username: root
-      password:
+      username: "@db-user@"
+      password: "@db-password@"
    jpa:
       hibernate:
          ddl-auto: update
@@ -29,7 +29,7 @@ server:
    ssl:
       enable: true
       key-store: classpath:keystore/storechain.p12
-      key-store-password: Jj123456
+      key-store-password: 123456
       key-store-type: PKCS12
       key-alias: storechain
 eureka:

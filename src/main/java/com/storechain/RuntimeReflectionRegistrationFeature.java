@@ -1,6 +1,7 @@
 package com.storechain;
 
 import com.oracle.svm.core.annotate.AutomaticFeature;
+import com.oracle.svm.hosted.FeatureImpl;
 import com.storechain.connection.handler.UnknownPacketHandler;
 import com.storechain.connection.netty.websocket.WebSocketClientConverter;
 import com.storechain.connection.netty.websocket.handler.WebSocketServerInitializeHandler;
@@ -15,6 +16,11 @@ import org.graalvm.nativeimage.hosted.RuntimeReflection;
 public class RuntimeReflectionRegistrationFeature implements Feature {
 	
 	public void beforeAnalysis(BeforeAnalysisAccess access) {
+		
+		FeatureImpl.BeforeAnalysisAccessImpl config = (FeatureImpl.BeforeAnalysisAccessImpl) access;
+		
+		var metaAccess = config.getMetaAccess();
+		
 	    try {
 	        RuntimeReflection.register(NettyBaseServerProvider.class);
 	        RuntimeReflection.register(NettyBaseServerProvider.class.getDeclaredConstructor());
@@ -28,10 +34,18 @@ public class RuntimeReflectionRegistrationFeature implements Feature {
 	        RuntimeReflection.register(WebSocketClientConverter.class.getMethods());
 	        RuntimeReflection.register(UnknownPacketHandler.class);
 	        RuntimeReflection.register(UnknownPacketHandler.class.getMethods());
-	        
-	      } catch (NoSuchMethodException e) { 
-	    	  
-	      }
+	   
+	   
+        } catch (NoSuchMethodException e) { 
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+        } catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 	
 }

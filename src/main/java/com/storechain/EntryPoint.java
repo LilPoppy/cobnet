@@ -30,12 +30,6 @@ public class EntryPoint {
 	
 	public static SystemConfiguration SYSTEM_CONFIG;
 	
-    public static final int WARMUP = 15;
-    public static final int ITERATIONS = 10;
-    public static final String BENCHFILE = "src/bench.js";
-    
-    public static final String SOURCE2 = "function hello(name) {print ('Hello, ' + name);}";
-
     public static final String SOURCE = ""
             + "var N = 2000;\n"
             + "var EXPECTED = 17393;\n"
@@ -90,29 +84,6 @@ public class EntryPoint {
             + "    if (primArray[N] != EXPECTED) { throw new Error('wrong prime found: '+primArray[N]); }\n"
             + "}\n";
     
-    private static long benchScriptEngineIntl(ScriptEngine eng) throws IOException {
-        long sum = 0L;
-        try {
-            eng.eval(SOURCE);
-            Invocable inv = (Invocable) eng;
-            System.out.println("warming up ...");
-            for (int i = 0; i < WARMUP; i++) {
-                inv.invokeFunction("primesMain");
-            }
-            System.out.println("warmup finished, now measuring");
-            for (int i = 0; i < ITERATIONS; i++) {
-                long start = System.currentTimeMillis();
-                inv.invokeFunction("primesMain");
-                long took = System.currentTimeMillis() - start;
-                sum += took;
-                System.out.println("iteration: " + (took));
-            }
-        } catch (Exception ex) {
-            System.out.println(ex);
-        }
-        return sum;
-    }
-    
     static long benchGraalPolyglotContext() throws IOException {
     	
     	/**
@@ -144,19 +115,14 @@ public class EntryPoint {
         
         try(PolyglotContext context = PolyglotContext.create()) {
         	
-            System.out.println(String.format("installed scripts with %s: ", context));
-            
-        	for(String key : context.getEngine().getLanguages().keySet()) {
-        		System.out.println(key);
-        	}
             context.eval(Source.newBuilder("js", SOURCE, "src.js").build());
             PolyglotValue primesMain = context.getBindings("js").getMember("primesMain");
             System.out.println("warming up ...");
-            for (int i = 0; i < WARMUP; i++) {
+            for (int i = 0; i < 15; i++) {
                 primesMain.execute();
             }
             System.out.println("warmup finished, now measuring");
-            for (int i = 0; i < ITERATIONS; i++) {
+            for (int i = 0; i < 10; i++) {
                 long start = System.currentTimeMillis();
                 primesMain.execute();
                 long took = System.currentTimeMillis() - start;
@@ -171,9 +137,8 @@ public class EntryPoint {
 	public static void main(String[] args) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException, IOException {
 
 		benchGraalPolyglotContext();
-		
+
 		EntryPoint.CONTEXT = (ServletWebServerApplicationContext) SpringApplication.run(EntryPoint.class, args);
-		System.out.println(Context.create().getEngine().getLanguages().keySet().toString());
 		EntryPoint.NETTY_CONFIG = EntryPoint.CONTEXT.getBean(NettyConfiguration.class);
 		EntryPoint.SYSTEM_CONFIG = EntryPoint.CONTEXT.getBean(SystemConfiguration.class);
 
@@ -188,8 +153,10 @@ public class EntryPoint {
 				provider.provide(serverConfig);
 			}
 		}
-		
+	
 		benchGraalPolyglotContext();	
+		
+		System.out.println(String.format("installed scripts %s: ", Context.create().getEngine().getLanguages().keySet().toString()));
 	}
 }
 

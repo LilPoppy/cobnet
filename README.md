@@ -31,7 +31,7 @@ For further reference, please consider the following sections:
 * [Spring Data JPA](https://docs.spring.io/spring-boot/docs/2.6.1/reference/htmlsingle/#boot-features-jpa-and-spring-data)
 * [Spring Web](https://docs.spring.io/spring-boot/docs/2.6.1/reference/htmlsingle/#boot-features-developing-web-applications)
 * [Spring Cloud Eureka Client](https://docs.spring.io/spring-cloud-netflix/docs/current/reference/html/#spring-cloud-eureka-client)
-
+* [GraalVM](https://fossies.org/dox/graal-vm-21.3.0/index.html) and [Graalvm SDK](https://www.graalvm.org/sdk/javadoc/overview-summary.html)
 ### Guides
 The following guides illustrate how to use some features concretely:
 
@@ -42,6 +42,7 @@ The following guides illustrate how to use some features concretely:
 * [Building REST services with Spring](https://spring.io/guides/tutorials/bookmarks/)
 * [Spring Boot with Graalvm](https://docs.spring.io/spring-native/docs/current/reference/htmlsingle/#support-spring-boot)
 * [Spring Cloud with Graalvm](https://docs.spring.io/spring-native/docs/current/reference/htmlsingle/#support-spring-cloud)
+* [Graalvm Options](https://chriswhocodes.com/graalvm_native_image_ce_jdk17_options.html)
 
 ### Additional Links
 These additional references should also help you:
