@@ -16,6 +16,25 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  macos-native:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ayltai/setup-graalvm@v1
+        with:
+          java-version: 17
+          graalvm-version: 21.3.0
+          native-image: true
+      - run: gu install python
+      - name: Set up Maven
+        uses: stCarolas/setup-maven@v4.2
+        with:
+          maven-version: 3.8.2
+      - run: java --version
+      - run: native-image --version
+      - run: mvn --version
+      - name: Build with Maven
+        run: mvn -DskipTests -B clean package -Pnative
   linux-build-jvm:
     runs-on: ubuntu-latest
     steps:
