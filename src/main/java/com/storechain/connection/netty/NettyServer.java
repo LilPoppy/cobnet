@@ -21,8 +21,8 @@ import com.storechain.EntryPoint;
 import com.storechain.KeyValuePair;
 import com.storechain.connection.InboundPacket;
 import com.storechain.connection.netty.handler.ChannelInitializeHandler;
-import com.storechain.interfaces.connection.Listener;
-import com.storechain.interfaces.connection.annotation.Handler;
+import com.storechain.interfaces.connection.ConnectionListener;
+import com.storechain.interfaces.connection.annotation.ConnectionHandler;
 import com.storechain.spring.boot.configuration.NettyConfiguration.ServerConfiguration;
 import com.storechain.utils.TaskProvider;
 
@@ -56,7 +56,7 @@ public class NettyServer extends DefaultChannelGroup {
 	
 	private final int port;
 	
-	private final Map<Listener, Handler> handlers = new HashMap<Listener,Handler>();
+	private final Map<ConnectionListener, ConnectionHandler> handlers = new HashMap<ConnectionListener,ConnectionHandler>();
 	
 	private final Set<InetAddress> blocks = new HashSet<InetAddress>();
 	
@@ -76,18 +76,18 @@ public class NettyServer extends DefaultChannelGroup {
 		return SERVERS.stream().filter(server -> server.name.toUpperCase().equals(name.toUpperCase())).findFirst().orElse(null);
 	}
 	
-	public List<Listener> getListeners() {
+	public List<ConnectionListener> getListeners() {
 		return Collections.unmodifiableList(handlers.keySet().stream().toList());
 	}
 	
-	public Handler getHandler(Listener listener) {
+	public ConnectionHandler getHandler(ConnectionListener listener) {
 		return handlers.get(listener);
 	}
 	
-	public void addListener(Listener listener) throws ClassNotFoundException {
+	public void addListener(ConnectionListener listener) throws ClassNotFoundException {
 		
 		try {
-			Handler handler = listener.getClass().getMethod("onEvent", NettyClient.class, InboundPacket.class).getAnnotation(Handler.class);
+			ConnectionHandler handler = listener.getClass().getMethod("onEvent", NettyClient.class, InboundPacket.class).getAnnotation(ConnectionHandler.class);
 			
 			if(handler == null) {
 				throw new ClassNotFoundException("Cannot find annotation of @Handler in onEvent methond.");
@@ -100,7 +100,7 @@ public class NettyServer extends DefaultChannelGroup {
 		} 
 	}
 	
-	public void removeListener(Listener listener) {
+	public void removeListener(ConnectionListener listener) {
 		handlers.remove(listener);
 	}
 	
@@ -116,7 +116,6 @@ public class NettyServer extends DefaultChannelGroup {
 	@SuppressWarnings("unchecked")
 	public void bind(final ChannelInitializeHandler subHandler, int backlog,
 			final Entry<ChannelOption, Object>... childOptions) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
-
 		Entry[] options = { new KeyValuePair<ChannelOption<Integer>, Integer>(ChannelOption.SO_BACKLOG, backlog) };
 		bind(subHandler, options, childOptions);
 	}
@@ -231,7 +230,7 @@ public class NettyServer extends DefaultChannelGroup {
 			this.block(address);
 			
 			
-			this.blockTimers.put(address, TaskProvider.INSTANCE.schedule(new Runnable() 
+			this.blockTimers.put(address, TaskProvider.schedule(new Runnable() 
 			{
 
 				@Override
@@ -242,7 +241,7 @@ public class NettyServer extends DefaultChannelGroup {
 			}, date));
 			
 			
-			TaskProvider.INSTANCE.purge();
+			TaskProvider.purge();
 		}
 
 	}

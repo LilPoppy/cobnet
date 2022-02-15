@@ -11,8 +11,8 @@ import com.storechain.connection.InboundPacket;
 import com.storechain.connection.netty.NettyClient;
 import com.storechain.connection.netty.websocket.WebSocketClient;
 import com.storechain.connection.netty.websocket.WebSocketServer;
-import com.storechain.interfaces.connection.Listener;
-import com.storechain.interfaces.connection.annotation.Handler;
+import com.storechain.interfaces.connection.ConnectionListener;
+import com.storechain.interfaces.connection.annotation.ConnectionHandler;
 
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -43,9 +43,9 @@ public class WebSocketInboundPacketHandler extends SimpleChannelInboundHandler<I
         
         int hitCount = 0;
         
-    	for(Listener listener : server.getListeners()) {
+    	for(ConnectionListener listener : server.getListeners()) {
 
-        	Handler handler = server.getHandler(listener);
+        	ConnectionHandler handler = server.getHandler(listener);
         	
         	if(handler.operation() == operation) {
         		listener.onEvent(client, packet);

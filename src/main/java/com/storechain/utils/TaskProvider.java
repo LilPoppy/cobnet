@@ -14,7 +14,7 @@ import com.storechain.EntryPoint;
 
 public class TaskProvider  {
 	
-	public static final TaskProvider INSTANCE = new TaskProvider();
+	private static final TaskProvider INSTANCE = new TaskProvider();
 	
 	private final ScheduledThreadPoolExecutor executor;
 	
@@ -27,7 +27,7 @@ public class TaskProvider  {
             @Override
             public Thread newThread(Runnable r) {
                 Thread t = new Thread(r);
-                t.setName("TimerProvider:" + number.getAndIncrement());
+                t.setName("TaskProvider:" + number.getAndIncrement());
                 return t;
             }
         });
@@ -40,17 +40,17 @@ public class TaskProvider  {
         executor.allowCoreThreadTimeOut(EntryPoint.SYSTEM_CONFIG.getTaskProvider().isAllowCoreThreadTimeOut());
 	}
 	
-	public ScheduledFuture<?> register(Runnable delegate, long delay, long period, TimeUnit unit, Function<Object[], Boolean> continuous, Object...args) {
+	public static ScheduledFuture<?> register(Runnable delegate, long delay, long period, TimeUnit unit, Function<Object[], Boolean> continuous, Object...args) {
 		
 		TaskScheduleRunnable runnable = new TaskScheduleRunnable(delegate, continuous, args);
 		
-		runnable.self = this.executor.scheduleAtFixedRate(runnable, delay, period, unit);
+		runnable.self = INSTANCE.executor.scheduleAtFixedRate(runnable, delay, period, unit);
 		
 		return runnable.self;
 		
 	}
 	
-	public ScheduledFuture<?> register(Runnable delegate, long delay, long period, TimeUnit unit, final int maxCount, Runnable onDone, Object... args) {
+	public static ScheduledFuture<?> register(Runnable delegate, long delay, long period, TimeUnit unit, final int maxCount, Runnable onDone, Object... args) {
 		
 		return register(delegate, delay, period, unit, new Function<Object[], Boolean>() {
 			
@@ -75,113 +75,113 @@ public class TaskProvider  {
 		}, args);
 	}
 	
-	public ScheduledFuture<?> register(Runnable delegate, long period, TimeUnit unit, int maxCount, Runnable onDone, Object... args) {
+	public static ScheduledFuture<?> register(Runnable delegate, long period, TimeUnit unit, int maxCount, Runnable onDone, Object... args) {
 		return register(delegate, 0, period, unit , maxCount, onDone, args);
 	}
 	
-	public ScheduledFuture<?> register(Runnable delegate, long milliSeconds, int maxCount, Runnable onDone, Object... args) {
+	public static ScheduledFuture<?> register(Runnable delegate, long milliSeconds, int maxCount, Runnable onDone, Object... args) {
 		return register(delegate, milliSeconds, TimeUnit.MICROSECONDS, maxCount, onDone, args);
 	}
 	
-	public ScheduledFuture<?> register(Runnable delegate, long period, TimeUnit unit, int maxCount, Object... args) {
+	public static ScheduledFuture<?> register(Runnable delegate, long period, TimeUnit unit, int maxCount, Object... args) {
 		return register(delegate, period, unit, maxCount, null, args);
 	}
 	
-	public ScheduledFuture<?> register(Runnable delegate, long milliSeconds, int maxCount, Object... args) {
+	public static ScheduledFuture<?> register(Runnable delegate, long milliSeconds, int maxCount, Object... args) {
 		return register(delegate, milliSeconds, TimeUnit.MILLISECONDS, maxCount, args);
 	}
 	
-	public ScheduledFuture<?> register(Runnable delegate, long milliSeconds) {
+	public static ScheduledFuture<?> register(Runnable delegate, long milliSeconds) {
 		return register(delegate, milliSeconds, -1);
 	}
 	
-	public ScheduledFuture<?> register(Runnable delegate, long period, TimeUnit unit) {
+	public static ScheduledFuture<?> register(Runnable delegate, long period, TimeUnit unit) {
 		return register(delegate, period, unit, -1);
 	}
 	
-	public ScheduledFuture<?> register(Runnable delegate, long delay, long period, TimeUnit unit) {
+	public static ScheduledFuture<?> register(Runnable delegate, long delay, long period, TimeUnit unit) {
 		return register(delegate, delay, period, unit, -1);
 	}
 	
 	
-	public ScheduledFuture<?> register(Runnable delegate, long delay, long period, TimeUnit unit, int maxCount, Object... args) {
+	public static ScheduledFuture<?> register(Runnable delegate, long delay, long period, TimeUnit unit, int maxCount, Object... args) {
 		return register(delegate, delay, period, unit, maxCount, null, args);
 	}
 	
-	public ScheduledFuture<?> register(Runnable delegate, Date delay, long milliSeconds, int maxCount, Object... args) {
+	public static ScheduledFuture<?> register(Runnable delegate, Date delay, long milliSeconds, int maxCount, Object... args) {
 		long v = delay.getTime() - System.currentTimeMillis();
 		return register(delegate, v > 0 ? v : 0, milliSeconds, TimeUnit.MILLISECONDS, maxCount, args);
 	}
 	
-	public ScheduledFuture<?> register(Runnable delegate, Date delay, long milliSeconds) {
+	public static ScheduledFuture<?> register(Runnable delegate, Date delay, long milliSeconds) {
 		long v = delay.getTime() - System.currentTimeMillis();
 		return register(delegate, v > 0 ? v : 0, milliSeconds, TimeUnit.MILLISECONDS);
 	}
 	
-	public ScheduledFuture<?> schedule(Runnable delegate, long delay, TimeUnit unit, Object... args) {
+	public static ScheduledFuture<?> schedule(Runnable delegate, long delay, TimeUnit unit, Object... args) {
 		
 		TaskScheduleRunnable runnable = new TaskScheduleRunnable(delegate, args);
 		
-		runnable.self = this.executor.schedule(runnable, delay, unit);
+		runnable.self = INSTANCE.executor.schedule(runnable, delay, unit);
 		
 		return runnable.self;
 	}
 	
-	public ScheduledFuture<?> schedule(Runnable delegate, long milliSeconds, Object... args) {
+	public static ScheduledFuture<?> schedule(Runnable delegate, long milliSeconds, Object... args) {
 		return schedule(delegate, milliSeconds, TimeUnit.MILLISECONDS, args);
 	}
 	
-	public ScheduledFuture<?> schedule(Runnable delegate, Date date, Object... args) {
+	public static ScheduledFuture<?> schedule(Runnable delegate, Date date, Object... args) {
 		long delay = date.getTime() - System.currentTimeMillis();
 		return schedule(delegate, delay > 0 ? delay : 0, TimeUnit.MILLISECONDS, args);
 	}
 	
-	public void purge() {
-		this.executor.purge();
+	public static void purge() {
+		INSTANCE.executor.purge();
 	}
 	
-    public long getActiveCount() {
-        return this.executor.getActiveCount();
+    public static long getActiveCount() {
+        return INSTANCE.executor.getActiveCount();
     }
 
-    public long getCompletedTaskCount() {
-        return this.executor.getCompletedTaskCount();
+    public static long getCompletedTaskCount() {
+        return INSTANCE.executor.getCompletedTaskCount();
     }
     
-    public long getTaskCount() {
-        return this.executor.getTaskCount();
+    public static long getTaskCount() {
+        return INSTANCE.executor.getTaskCount();
     }
 
-    public boolean isShutdown() {
-        return this.executor.isShutdown();
+    public static boolean isShutdown() {
+        return INSTANCE.executor.isShutdown();
     }
 	
-    public boolean isTerminated() {
-        return this.executor.isTerminated();
-    }
-    
-    public int getPoolSize() {
-    	return this.executor.getPoolSize();
+    public static boolean isTerminated() {
+        return INSTANCE.executor.isTerminated();
     }
     
-    public int getQueueCount() {
-    	return this.getQueue().size();
+    public static int getPoolSize() {
+    	return INSTANCE.executor.getPoolSize();
     }
     
-	public BlockingQueue<Runnable> getQueue() {
-		return this.executor.getQueue();
+    public static int getQueueCount() {
+    	return INSTANCE.getQueue().size();
+    }
+    
+	public static BlockingQueue<Runnable> getQueue() {
+		return INSTANCE.executor.getQueue();
 	}
 	
-	public List<Runnable> shutdownNow() {
-		return this.executor.shutdownNow();
+	public static List<Runnable> shutdownNow() {
+		return INSTANCE.executor.shutdownNow();
 	}
 	
-	public void shutdown() {
-		this.executor.shutdown();
+	public static void shutdown() {
+		INSTANCE.executor.shutdown();
 	}
 	
-	public ScheduledThreadPoolExecutor getExecutor() {
-		return executor;
+	public static ScheduledThreadPoolExecutor getExecutor() {
+		return INSTANCE.executor;
 	}
 	
 	@Override
@@ -189,7 +189,7 @@ public class TaskProvider  {
 		return this.executor.toString();
 	}
 
-	private class TaskScheduleRunnable implements Runnable {
+	private static class TaskScheduleRunnable implements Runnable {
 
 		private volatile ScheduledFuture<?> self;
 		private final Runnable delegate;

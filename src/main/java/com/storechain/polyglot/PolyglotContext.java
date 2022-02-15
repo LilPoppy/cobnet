@@ -18,9 +18,11 @@ import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.io.FileSystem;
 import org.graalvm.polyglot.io.ProcessHandler;
 
+import com.storechain.interfaces.EventHandler;
 import com.storechain.polyglot.io.PolyglotFileSystem;
 import com.storechain.polyglot.io.PolyglotMessageTransport;
 import com.storechain.polyglot.io.PolyglotProcessHandler;
+import com.storechain.utils.Event;
 
 import org.graalvm.polyglot.ResourceLimits;
 import org.graalvm.polyglot.io.MessageTransport;
@@ -28,10 +30,19 @@ import org.graalvm.polyglot.io.MessageTransport;
 public final class PolyglotContext implements AutoCloseable {
 	
 	private final Context context;
-
+	
+	public final PolyglotContextCloseEvent closeEvent = new PolyglotContextCloseEvent();
+	
 	public PolyglotContext(String... permittedLanguages) {
 		
-		this.context = Context.create(permittedLanguages);
+		if(permittedLanguages.length > 0) {
+			
+			this.context = Context.create(permittedLanguages);
+			
+		} else {
+			
+			this.context = Context.create();
+		}
 	}
 	
 	public PolyglotContext(Context context) {
@@ -45,11 +56,15 @@ public final class PolyglotContext implements AutoCloseable {
 
     public void close(boolean cancelIfExecuting) {
     	
+    	closeEvent.notifyHandlers(cancelIfExecuting);
+    	
     	this.context.close(cancelIfExecuting);
     }
     
 	@Override
 	public void close() {
+
+		this.closeEvent.notifyHandlers();
 		
 		this.context.close();
 	}
@@ -424,5 +439,16 @@ public final class PolyglotContext implements AutoCloseable {
 			return this;
 		}
 	}
+	
+	public static final class PolyglotContextCloseEvent extends Event {
+		
+		public PolyglotContextCloseEvent(EventHandler... handlers) {
+			
+			super(handlers);
+		}
+		
+	}
+	
+	
 	
 }

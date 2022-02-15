@@ -1,16 +1,21 @@
 package com.storechain.polyglot;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.net.URI;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 import org.graalvm.polyglot.Source;
 import org.graalvm.polyglot.io.ByteSequence;
 
 import com.storechain.polyglot.io.PolyglotByteSequence;
+import com.storechain.utils.ScriptEngineManager;
 
 public final class PolyglotSource {
 	
@@ -29,6 +34,35 @@ public final class PolyglotSource {
 	public static PolyglotSource create(String language, CharSequence source) {
 		
 		return new PolyglotSource(Source.create(language, source));
+	}
+	
+	public static PolyglotSource readFromFile(String language, File file) throws FileNotFoundException, IOException {
+		
+		try(FileReader reader = new FileReader(file)) {
+			
+			char[] chars = new char[(int) file.length()];
+			reader.read(chars);
+			
+			return create(language, new String(chars));
+		}
+	}
+	
+	public static PolyglotSource readFromFIle(String language, String file) throws FileNotFoundException, IOException {
+		
+		return readFromFile(language, new File(file));
+	}
+	
+	public static PolyglotSource readFromResource(String language, String path, Charset charset, String delimiterPattern) {
+		
+        try (Scanner scanner = new Scanner(ScriptEngineManager.class.getResourceAsStream(path), charset)) {
+        	
+        	return create(language, scanner.useDelimiter(delimiterPattern).next());
+        }
+	}
+	
+	public static PolyglotSource readFromResource(String language, String path) {
+		
+		return readFromResource(language, path, StandardCharsets.UTF_8, "\\A");
 	}
 	
 	@Override
@@ -267,7 +301,7 @@ public final class PolyglotSource {
 			return this;
 		}
 		
-		public PolyglotSourceBuilder interactive(boolean interactive){
+		public PolyglotSourceBuilder interactive(boolean interactive) {
 			
 			this.builder = this.builder.interactive(interactive);
 			

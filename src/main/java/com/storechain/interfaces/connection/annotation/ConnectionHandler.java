@@ -9,7 +9,7 @@ import com.storechain.connection.InboundOperation;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Handler {
+public @interface ConnectionHandler {
 	
 	public InboundOperation operation() default InboundOperation.UNKNOWN;
 	
