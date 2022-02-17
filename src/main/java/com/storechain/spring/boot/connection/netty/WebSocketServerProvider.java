@@ -7,7 +7,7 @@ import com.storechain.connection.netty.NettyServer;
 import com.storechain.connection.netty.handler.ChannelInitializeHandler;
 import com.storechain.connection.netty.websocket.WebSocketServer;
 import com.storechain.connection.netty.websocket.handler.WebSocketInitializeHandler;
-import com.storechain.interfaces.spring.connection.NettyServerProvider;
+import com.storechain.interfaces.connection.NettyServerProvider;
 import com.storechain.spring.boot.configuration.NettyConfiguration.ServerConfiguration;
 
 import io.netty.channel.ChannelHandler;

@@ -1,6 +1,6 @@
 package com.storechain.interfaces;
 
-import com.storechain.utils.Event;
+import com.storechain.Event;
 
 public interface EventHandler {
 

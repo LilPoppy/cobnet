@@ -18,6 +18,12 @@ spring:
       hibernate:
          ddl-auto: update
       show-sql: false
+   redis:
+      database: 1
+      host: "@redis-host@"
+      port: 0@redis-port@
+      password: "@redis-password@"
+      timeout: 300ms
 logging:
    file: 
       name: ./logs/spring.log

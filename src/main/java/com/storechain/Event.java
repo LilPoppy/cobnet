@@ -1,15 +1,18 @@
-package com.storechain.utils;
+package com.storechain;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import org.eclipse.jetty.util.ConcurrentHashSet;
 
 import com.storechain.interfaces.EventHandler;
 
 public class Event {
 
-	private final Set<EventHandler> handlers = new HashSet<EventHandler>();
+	private final Set<EventHandler> handlers = ConcurrentHashMap.newKeySet();
 	
 	public Event(EventHandler... handlers) {
 		

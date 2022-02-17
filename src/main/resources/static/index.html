@@ -27,17 +27,35 @@
                 var ta = document.getElementById('responseText');
                 ta.value = "Netty-WebSocket服务器。。。。。。关闭 \r\n";
             };
-        }else{
+        }else {
             alert("您的浏览器不支持WebSocket协议！");
         }
-        function send(message){
-            if(!window.WebSocket){return;}
-            if(socket.readyState == WebSocket.OPEN){
+        
+        function sendText(message) {
+        
+            if(!window.WebSocket){ return; }
+            
+            if(socket.readyState == WebSocket.OPEN) {
+            
                 socket.send(message);
-            }else{
+                
+            } else {
+            
                 alert("WebSocket 连接没有建立成功！" + socket.readyState);
             }
- 
+        }
+        
+        function sendData(data) {
+        
+        	if(!window.WebSocket) { return; }
+
+        	if(socket.readyState == WebSocket.OPEN) {
+        		socket.send(data);
+        		
+        	} else {
+        	
+        		alert("WebSocket 连接没有建立成功！" + socket.readyState);
+        	}
         }
  
     </script>
@@ -45,9 +63,14 @@
 <body>
 <form onSubmit="return false;">
     <label>ID</label><input type="text" name="uid" value="${uid!!}" /> <br />
-    <label>TEXT</label><input type="text" name="message" value="这里输入消息" /> <br />
-    <br /> <input type="button" value="发送ws消息"
-                  onClick="send(this.form.uid.value+':'+this.form.message.value)" />
+    
+    <label>TEXT</label><input type="text" name="message" value="这里输入消息" />
+    <input type="button" value="发送ws消息"
+                  onClick="sendText(this.form.uid.value+':'+this.form.message.value)" />
+    <br/>
+    <label>DATA</label><input type="number" size=4 name="header" value="" /><input type="text" name="data" value="" />
+    <input type="button" value="发送ws数据"
+    			  onClick="sendData(new TextEncoder().encode(this.form.data.value))" /> 
     <hr color="black" />
     <h3>服务端返回的应答消息</h3>
     <textarea id="responseText" style="width: 1024px;height: 300px;"></textarea>

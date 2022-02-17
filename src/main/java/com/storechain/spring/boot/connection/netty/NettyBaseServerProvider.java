@@ -7,7 +7,7 @@ import org.apache.logging.log4j.Logger;
 import com.storechain.connection.netty.NettyServer;
 import com.storechain.connection.netty.handler.ChannelInitializeHandler;
 import com.storechain.interfaces.connection.NettyClientConverter;
-import com.storechain.interfaces.spring.connection.NettyServerProvider;
+import com.storechain.interfaces.connection.NettyServerProvider;
 import com.storechain.spring.boot.configuration.NettyConfiguration.ServerConfiguration;
 
 import io.netty.channel.ChannelHandler;

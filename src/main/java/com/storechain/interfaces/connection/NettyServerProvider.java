@@ -1,4 +1,4 @@
-package com.storechain.interfaces.spring.connection;
+package com.storechain.interfaces.connection;
 
 import com.storechain.spring.boot.configuration.NettyConfiguration;
 

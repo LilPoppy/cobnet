@@ -18,11 +18,11 @@ import org.graalvm.polyglot.HostAccess;
 import org.graalvm.polyglot.io.FileSystem;
 import org.graalvm.polyglot.io.ProcessHandler;
 
+import com.storechain.Event;
 import com.storechain.interfaces.EventHandler;
 import com.storechain.polyglot.io.PolyglotFileSystem;
 import com.storechain.polyglot.io.PolyglotMessageTransport;
 import com.storechain.polyglot.io.PolyglotProcessHandler;
-import com.storechain.utils.Event;
 
 import org.graalvm.polyglot.ResourceLimits;
 import org.graalvm.polyglot.io.MessageTransport;

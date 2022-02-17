@@ -1,6 +1,7 @@
 package com.storechain.connection;
 
 import java.nio.charset.Charset;
+import java.util.IllegalFormatException;
 import java.util.Map;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -37,6 +38,12 @@ public class InboundPacket extends Packet {
     }
     
     public void decodeHeader() {
+    	
+    	if(this.byteBuf.array().length < 4) {
+    		
+    		throw new IllegalArgumentException("Header size is less then 32 bits");
+    	}
+    	
     	this.opcode = decodeUInt();
     }
     
