@@ -31,7 +31,7 @@
 		<spring-cloud.version>2021.0.0</spring-cloud.version>
 		<spring-native.version>0.11.2</spring-native.version>
 		<mvn-native-buildtools.version>0.9.10</mvn-native-buildtools.version>
-		<graalvm.version>22.0.0.2</graalvm.version>
+		<graalvm.version>22.0.0.0</graalvm.version>
 		<dockerfile-maven.version>0.38.0</dockerfile-maven.version>
 		<docker-maintainer>LilPoppy</docker-maintainer>
 		<docker-image-name>${project.artifactId}:${project.version}</docker-image-name>
