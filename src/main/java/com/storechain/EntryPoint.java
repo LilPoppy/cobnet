@@ -88,7 +88,7 @@ public class EntryPoint {
 	public static SystemConfiguration SYSTEM_CONFIG;
 	
     @Autowired
-    private RedisService<?> redisService;
+    private RedisService<String> redisService;
 
     static long benchGraalPolyglotContext() throws IOException {
     	
@@ -150,6 +150,21 @@ public class EntryPoint {
 		initialize(args);
 		
 		benchGraalPolyglotContext();	
+		
+	}
+	
+	@Bean
+	public void test() {
+		
+		var bs = "hello redis".getBytes();
+		var list = new ArrayList<Byte>();
+		
+		for(int i = 0; i < bs.length; i++) {
+			
+			list.add(bs[i]);
+		}
+		
+		redisService.set("nnn", "nnn value");
 		
 	}
 }

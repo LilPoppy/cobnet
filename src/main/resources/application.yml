@@ -24,14 +24,20 @@ spring:
       port: 0@redis-port@
       password: "@redis-password@"
       timeout: 300ms
+      namespace: spring:session
+   session:
+      store-type: redis
 logging:
    file: 
       name: ./logs/spring.log
    level:
       root: INFO
-
 server:
    port: "@tomcat-port@"
+   session: 
+      cookie:
+        http-only: true
+        timeout: 1500
    ssl:
       enable: true
       key-store: classpath:keystore/storechain.p12

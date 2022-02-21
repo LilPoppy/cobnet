@@ -52,6 +52,10 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		<dependency>
+		     <groupId>org.springframework.session</groupId>
+		     <artifactId>spring-session-data-redis</artifactId>
+		</dependency>  
+		<dependency>
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
@@ -373,7 +377,7 @@
 								<buildArgs>-H:+ReportUnsupportedElementsAtRuntime</buildArgs>
 								<buildArgs>--language:js</buildArgs>
 								<!-- The argument to add python below is incompatible in Mac platform-->
-								<!--  <buildArgs>- -language:python</buildArgs> -->
+								<buildArgs>--language:python</buildArgs>-->
 								<buildArgs>-Dpython.StdLibHome=${env.JAVA_HOME}/languages/python/lib-python/3</buildArgs>
 								<buildArgs>-Dpython.CoreHome=${env.JAVA_HOME}/languages/python/lib-graalpython</buildArgs>
 								<buildArgs>--initialize-at-run-time=com.storechain.utils.TaskProvider</buildArgs>
@@ -399,8 +403,9 @@
 								<buildArgs>--initialize-at-run-time=com.zaxxer.hikari.metrics.dropwizard.CodaHaleMetricsTracker</buildArgs>
 								<buildArgs>--initialize-at-run-time=com.netflix.discovery.shared.transport.jersey.JerseyEurekaHttpClientFactory</buildArgs>
 								<buildArgs>--initialize-at-run-time=org.hibernate.secure.internal.StandardJaccServiceImpl</buildArgs>
-								
+								<!-- compatible for graalvm version 22.0.0.2 below -->
 								<buildArgs>--initialize-at-run-time=io.netty.handler.ssl.util.ThreadLocalInsecureRandom,io.netty.channel.unix,io.netty.channel.epoll,io.netty.channel.kqueue</buildArgs>
+								
 								<buildArgs>--initialize-at-run-time=com.storechain.EntryPoint</buildArgs>
 							</buildArgs>
 							
