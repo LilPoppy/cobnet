@@ -29,8 +29,9 @@
 		<websocket-port>8090</websocket-port>
 		<repackage.classifier/>
 		<spring-cloud.version>2021.0.0</spring-cloud.version>
-		<spring-native.version>0.11.1</spring-native.version>
-		<graalvm.version>21.3.0</graalvm.version>
+		<spring-native.version>0.11.2</spring-native.version>
+		<mvn-native-buildtools.version>0.9.10</mvn-native-buildtools.version>
+		<graalvm.version>22.0.0.2</graalvm.version>
 		<dockerfile-maven.version>0.38.0</dockerfile-maven.version>
 		<docker-maintainer>LilPoppy</docker-maintainer>
 		<docker-image-name>${project.artifactId}:${project.version}</docker-image-name>
@@ -54,10 +55,6 @@
 		    <groupId>org.springframework.boot</groupId>
 		    <artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
-		<dependency>
-		     <groupId>org.springframework.session</groupId>
-		     <artifactId>spring-session-data-redis</artifactId>
-		</dependency>  
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -325,7 +322,7 @@
 			<id>native</id>
 			<properties>
 				<repackage.classifier>exec</repackage.classifier>
-				<native-buildtools.version>0.9.9</native-buildtools.version>
+				<native-buildtools.version>${mvn-native-buildtools.version}</native-buildtools.version>
 			</properties>
 			<dependencies>
 				<dependency>
@@ -357,6 +354,7 @@
 						<configuration>
 							<buildArgs>
 								<buildArgs>-DskipTests</buildArgs>
+								<buildArgs>-H:TraceClassInitialization=true</buildArgs>
 								<!--<buildArgs>- -no-server</buildArgs>-->
 								<buildArgs>--no-fallback</buildArgs>
 								<buildArgs>--report-unsupported-elements-at-runtime</buildArgs>
@@ -402,6 +400,7 @@
 								<buildArgs>--initialize-at-run-time=com.netflix.discovery.shared.transport.jersey.JerseyEurekaHttpClientFactory</buildArgs>
 								<buildArgs>--initialize-at-run-time=org.hibernate.secure.internal.StandardJaccServiceImpl</buildArgs>
 								
+								<buildArgs>--initialize-at-run-time=io.netty.handler.ssl.util.ThreadLocalInsecureRandom,io.netty.channel.unix,io.netty.channel.epoll,io.netty.channel.kqueue</buildArgs>
 								<buildArgs>--initialize-at-run-time=com.storechain.EntryPoint</buildArgs>
 							</buildArgs>
 							

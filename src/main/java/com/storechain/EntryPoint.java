@@ -152,18 +152,5 @@ public class EntryPoint {
 		benchGraalPolyglotContext();	
 		
 	}
-	
-	@Bean
-	public void test() {
-		
-		var bs = "hello redis".getBytes();
-		var list = new ArrayList<Byte>();
-		
-		for(int i = 0; i < bs.length; i++) {
-			
-			list.add(bs[i]);
-		}
-		
-	}
 }
 
