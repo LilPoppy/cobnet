@@ -7,10 +7,11 @@ import javax.annotation.Resource;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.connection.RedisStringCommands.SetOption;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.types.Expiration;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Service;
 
 import com.storechain.interfaces.spring.connection.RedisService;
@@ -24,13 +25,27 @@ public class JsonRedisService<V> implements RedisService<V> {
 	@Override
 	public boolean set(String key, V value) {
 		
+        return set(key, value, null, null);
+	}
+    
+	public boolean set(String key, V value, Expiration expiration, SetOption option) {
+		
         boolean result = redisTemplate.execute(new RedisCallback<Boolean>() {
         	
 			@Override
             public Boolean doInRedis(RedisConnection connection) throws DataAccessException {
+				
+				byte[] keyBuf = redisTemplate.getStringSerializer().serialize(key);
+				byte[] valueBuf = ((Jackson2JsonRedisSerializer<?>) redisTemplate.getValueSerializer()).serialize(value);
             	
-                connection.set(redisTemplate.getStringSerializer().serialize(key), ((Jackson2JsonRedisSerializer<?>) redisTemplate.getValueSerializer()).serialize(value));
-                
+				if(expiration != null && option != null) {
+					
+					connection.set(keyBuf, valueBuf, expiration, option);
+				} else {
+					
+	                connection.set(keyBuf, valueBuf);
+				}
+				
                 return true;
             }
         });
@@ -83,5 +98,11 @@ public class JsonRedisService<V> implements RedisService<V> {
         });
         
         return result;
+	}
+
+	@Override
+	public boolean exists(String key) {
+		
+        return redisTemplate.hasKey(key);
 	}
 }

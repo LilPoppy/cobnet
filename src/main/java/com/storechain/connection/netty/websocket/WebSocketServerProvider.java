@@ -1,11 +1,9 @@
-package com.storechain.spring.boot.connection.netty;
+package com.storechain.connection.netty.websocket;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map.Entry;
 
-import com.storechain.connection.netty.NettyServer;
 import com.storechain.connection.netty.handler.ChannelInitializeHandler;
-import com.storechain.connection.netty.websocket.WebSocketServer;
 import com.storechain.connection.netty.websocket.handler.WebSocketInitializeHandler;
 import com.storechain.interfaces.connection.NettyServerProvider;
 import com.storechain.spring.boot.configuration.NettyConfiguration.ServerConfiguration;
@@ -20,7 +18,7 @@ public class WebSocketServerProvider implements NettyServerProvider {
 		WebSocketServer server = new WebSocketServer(config.getName(), config.getPort());
 		
 		ChannelHandler handler;
-		ChannelInitializeHandler sub_handler;
+		ChannelInitializeHandler<?> sub_handler;
 
 		try {
 			
@@ -32,7 +30,7 @@ public class WebSocketServerProvider implements NettyServerProvider {
 			if(sub_handler_class == null) {
 				sub_handler = new WebSocketInitializeHandler(server);
 			} else {
-				sub_handler = (ChannelInitializeHandler) sub_handler_class.getConstructor(WebSocketServer.class).newInstance(server);
+				sub_handler = (ChannelInitializeHandler<?>) sub_handler_class.getConstructor(WebSocketServer.class).newInstance(server);
 			}
 			
 			server.bind(handler, sub_handler, config.getOptions(), config.getChildOptions());

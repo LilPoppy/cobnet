@@ -63,19 +63,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 
 import com.storechain.interfaces.connection.NettyServerProvider;
 import com.storechain.interfaces.spring.connection.RedisService;
 import com.storechain.polyglot.PolyglotContext;
 import com.storechain.spring.boot.configuration.NettyConfiguration;
+import com.storechain.spring.boot.configuration.RedisConfiguration;
 import com.storechain.spring.boot.configuration.SystemConfiguration;
 import com.storechain.utils.ScriptEngineManager;
 
 /**
  * @author lilpoppy  
  */
-//@EnableEurekaClient
+@EnableEurekaClient
 @SpringBootApplication(proxyBeanMethods = false)
 public class EntryPoint {
 
@@ -86,6 +88,8 @@ public class EntryPoint {
 	public static NettyConfiguration NETTY_CONFIG;
 	
 	public static SystemConfiguration SYSTEM_CONFIG;
+	
+	public static RedisConfiguration REDIS_CONFIG;
 	
     @Autowired
     private RedisService<String> redisService;
@@ -131,6 +135,7 @@ public class EntryPoint {
 		EntryPoint.CONTEXT = (ServletWebServerApplicationContext) SpringApplication.run(EntryPoint.class, args);
 		EntryPoint.NETTY_CONFIG = EntryPoint.CONTEXT.getBean(NettyConfiguration.class);
 		EntryPoint.SYSTEM_CONFIG = EntryPoint.CONTEXT.getBean(SystemConfiguration.class);
+		EntryPoint.REDIS_CONFIG = EntryPoint.CONTEXT.getBean(RedisConfiguration.class);
 
 		if(NETTY_CONFIG.isEnable() && NETTY_CONFIG.getServers() != null) {
 			
@@ -153,19 +158,6 @@ public class EntryPoint {
 		
 	}
 	
-	@Bean
-	public void test() {
-		
-		var bs = "hello redis".getBytes();
-		var list = new ArrayList<Byte>();
-		
-		for(int i = 0; i < bs.length; i++) {
-			
-			list.add(bs[i]);
-		}
-		
-		redisService.set("nnn", "nnn value");
-		
-	}
+
 }
 

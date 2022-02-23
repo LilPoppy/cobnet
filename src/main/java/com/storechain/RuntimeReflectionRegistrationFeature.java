@@ -3,10 +3,10 @@ package com.storechain;
 import com.oracle.svm.core.annotate.AutomaticFeature;
 import com.oracle.svm.hosted.FeatureImpl;
 import com.storechain.connection.handler.UnknownPacketHandler;
+import com.storechain.connection.netty.NettyBaseServerProvider;
 import com.storechain.connection.netty.websocket.WebSocketClientConverter;
+import com.storechain.connection.netty.websocket.WebSocketServerProvider;
 import com.storechain.connection.netty.websocket.handler.WebSocketServerInitializeHandler;
-import com.storechain.spring.boot.connection.netty.NettyBaseServerProvider;
-import com.storechain.spring.boot.connection.netty.WebSocketServerProvider;
 
 import org.graalvm.nativeimage.hosted.Feature;
 import org.graalvm.nativeimage.hosted.RuntimeReflection;

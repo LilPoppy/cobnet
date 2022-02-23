@@ -1,10 +1,9 @@
-package com.storechain.spring.boot.connection.netty;
+package com.storechain.connection.netty;
 
 import java.lang.reflect.InvocationTargetException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import com.storechain.connection.netty.NettyServer;
 import com.storechain.connection.netty.handler.ChannelInitializeHandler;
 import com.storechain.interfaces.connection.NettyClientConverter;
 import com.storechain.interfaces.connection.NettyServerProvider;
@@ -22,7 +21,7 @@ public class NettyBaseServerProvider implements NettyServerProvider {
 		NettyServer server = new NettyServer(config.getName(), config.getPort());
 		
 		ChannelHandler handler;
-		ChannelInitializeHandler sub_handler;
+		ChannelInitializeHandler<?> sub_handler;
 		
 		try {
 			Class<?> handler_class = config.getHandler();
@@ -33,33 +32,27 @@ public class NettyBaseServerProvider implements NettyServerProvider {
 				sub_handler_class = ChannelInitializeHandler.class;
 			}
 			
-			NettyClientConverter converter = (NettyClientConverter) client_converter_class.getConstructor().newInstance();
+			NettyClientConverter<?, ?> converter = (NettyClientConverter<?,?>) client_converter_class.getConstructor().newInstance();
 			
 			handler = (ChannelHandler) handler_class.getConstructor().newInstance();
 
-			sub_handler = (ChannelInitializeHandler) sub_handler_class.getConstructor(NettyServer.class, NettyClientConverter.class).newInstance(server, converter);
+			sub_handler = (ChannelInitializeHandler<?>) sub_handler_class.getConstructor(NettyServer.class, NettyClientConverter.class).newInstance(server, converter);
 
 			server.bind(handler, sub_handler, config.getOptions(), config.getChildOptions());
 			
 		} catch(ClassNotFoundException ex) {
 			ex.printStackTrace();
 		} catch (InstantiationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NoSuchMethodException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

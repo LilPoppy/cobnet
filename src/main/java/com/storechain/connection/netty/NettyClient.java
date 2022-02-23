@@ -28,6 +28,7 @@ public class NettyClient<CH extends Channel, T extends Packet> {
         channel = c;
         reader =  packet;
         locker = new ReentrantLock(true);
+        
     }
 	
 	public final T getReader() {

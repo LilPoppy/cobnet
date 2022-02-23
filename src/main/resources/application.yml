@@ -19,14 +19,20 @@ spring:
          ddl-auto: update
       show-sql: false
    redis:
-      database: 1
+      database: 0
       host: "@redis-host@"
       port: 0@redis-port@
       password: "@redis-password@"
       timeout: 300ms
-      namespace: spring:session
+      namespace: spring
+      pool:
+        max-active: 8
+        max-wait: -1
+        max-idle: 8
+        min-idle: 0
    session:
       store-type: redis
+      namespace: spring
 logging:
    file: 
       name: ./logs/spring.log
@@ -36,7 +42,7 @@ server:
    port: "@tomcat-port@"
    session: 
       cookie:
-        http-only: true
+        http-only: false
         timeout: 1500
    ssl:
       enable: true
@@ -58,7 +64,7 @@ netty:
       -
          name: web-socket
          port: "@websocket-port@"
-         provider: com.storechain.spring.boot.connection.netty.WebSocketServerProvider
+         provider: com.storechain.connection.netty.websocket.WebSocketServerProvider
          handler: com.storechain.connection.netty.websocket.handler.WebSocketServerInitializeHandler
          client-converter: com.storechain.connection.netty.websocket.WebSocketClientConverter
          options:

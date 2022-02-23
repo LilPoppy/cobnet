@@ -1,16 +1,18 @@
 package com.storechain.spring.boot.controller;
 
-import java.util.Random;
-
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.session.Session;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
+import com.storechain.spring.boot.service.SessionRepositoryService;
+import com.storechain.utils.SessionManager;
 
-@RestController
+@Controller
 public class TestController {
 
 	@ResponseBody
@@ -21,10 +23,20 @@ public class TestController {
         return "success";
     }
 	
-	@GetMapping("/index")
-	public ModelAndView index(){
-		ModelAndView mav= new ModelAndView("socket");
-		mav.addObject("uid", new Random());
-		return mav;
-	}
+	@ResponseBody
+	@CrossOrigin
+    @RequestMapping(value = "login")
+    public String login (HttpServletRequest request, String userName, String password){
+        String msg="logon failure!";
+        System.out.println("asdasd");
+        if (userName!=null && "admin".equals(userName) && "123".equals(password)){
+            request.getSession().setAttribute("admin", userName);
+            msg = "login successful!";
+            System.out.println(request.getSession().getId());
+        }
+
+        System.out.println(SessionManager.getRepository().findByPrincipalName(userName));
+        
+        return msg;
+    }
 }

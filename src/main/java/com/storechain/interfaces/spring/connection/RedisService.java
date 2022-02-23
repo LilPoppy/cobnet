@@ -14,4 +14,6 @@ public interface RedisService<V> {
 	public boolean expire(String key, Date date);
 	
 	boolean remove(String key);
+	
+    boolean exists(final String key);
 }
