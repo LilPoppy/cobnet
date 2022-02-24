@@ -17,7 +17,7 @@ spring:
    jpa:
       hibernate:
          ddl-auto: update
-      show-sql: false
+      show-sql: true
    redis:
       database: 0
       host: "@redis-host@"

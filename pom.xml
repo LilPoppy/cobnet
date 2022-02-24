@@ -28,7 +28,7 @@
 		<tomcat-port>8089</tomcat-port>
 		<websocket-port>8090</websocket-port>
 		<repackage.classifier/>
-		<spring-cloud.version>2021.0.0</spring-cloud.version>
+		<spring-cloud.version>2021.0.1</spring-cloud.version>
 		<spring-native.version>0.11.2</spring-native.version>
 		<mvn-native-buildtools.version>0.9.10</mvn-native-buildtools.version>
 		<graalvm.version>22.0.0.2</graalvm.version>
@@ -59,6 +59,14 @@
 			<groupId>org.springframework.session</groupId>
 			<artifactId>spring-session-core</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
 		<dependency>
 		    <groupId>org.springframework.security</groupId>
 		    <artifactId>spring-security-core</artifactId>
@@ -93,6 +101,11 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
         </dependency>
         <dependency>
           <groupId>org.webjars</groupId>

@@ -57,22 +57,23 @@ package com.storechain;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
-import org.springframework.context.annotation.Bean;
-
 import com.storechain.interfaces.connection.NettyServerProvider;
-import com.storechain.interfaces.spring.connection.RedisService;
 import com.storechain.polyglot.PolyglotContext;
 import com.storechain.spring.boot.configuration.NettyConfiguration;
 import com.storechain.spring.boot.configuration.RedisConfiguration;
 import com.storechain.spring.boot.configuration.SystemConfiguration;
+import com.storechain.spring.boot.entity.User;
+import com.storechain.utils.DatabaseManager;
 import com.storechain.utils.ScriptEngineManager;
+import com.storechain.utils.SessionManager;
 
 /**
  * @author lilpoppy  
@@ -91,8 +92,7 @@ public class EntryPoint {
 	
 	public static RedisConfiguration REDIS_CONFIG;
 	
-    @Autowired
-    private RedisService<String> redisService;
+	public static SessionManager SESSION_MANAGER;
 
     static long benchGraalPolyglotContext() throws IOException {
     	
@@ -136,7 +136,8 @@ public class EntryPoint {
 		EntryPoint.NETTY_CONFIG = EntryPoint.CONTEXT.getBean(NettyConfiguration.class);
 		EntryPoint.SYSTEM_CONFIG = EntryPoint.CONTEXT.getBean(SystemConfiguration.class);
 		EntryPoint.REDIS_CONFIG = EntryPoint.CONTEXT.getBean(RedisConfiguration.class);
-
+		EntryPoint.SESSION_MANAGER = EntryPoint.CONTEXT.getBean(SessionManager.class);
+		
 		if(NETTY_CONFIG.isEnable() && NETTY_CONFIG.getServers() != null) {
 			
 			for(NettyConfiguration.ServerConfiguration serverConfig : NETTY_CONFIG.getServers()) {
@@ -151,11 +152,10 @@ public class EntryPoint {
     }
     
 	public static void main(String[] args) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException, IOException {
-		
+	
 		initialize(args);
 		
-		benchGraalPolyglotContext();	
-		
+		benchGraalPolyglotContext();
 	}
 	
 

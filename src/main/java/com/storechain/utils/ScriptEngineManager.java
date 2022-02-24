@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.stereotype.Component;
+
 public class ScriptEngineManager {
 	
 	private static final ScriptEngineManager INSTANCE = new ScriptEngineManager();

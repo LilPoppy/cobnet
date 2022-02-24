@@ -1,4 +1,5 @@
-package com.storechain.crypto;
+package com.storechain.algorithm;
+
 
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;

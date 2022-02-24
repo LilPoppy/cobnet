@@ -1,6 +1,5 @@
 package com.storechain.spring.boot.service;
 
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
@@ -12,31 +11,29 @@ import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.types.Expiration;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
+import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.stereotype.Service;
 
-import com.storechain.interfaces.spring.connection.RedisService;
+import com.storechain.interfaces.spring.service.RedisService;
 
 @Service("RedisService")
-public class JsonRedisService<V> implements RedisService<V> {
+public class JsonRedisService<K,V> implements RedisService<K, V> {
 
     @Resource
-    private RedisTemplate<String, V> redisTemplate;
+    private RedisTemplate<K, V> redisTemplate;
     
 	@Override
-	public boolean set(String key, V value) {
-		
-        return set(key, value, null, null);
-	}
-    
-	public boolean set(String key, V value, Expiration expiration, SetOption option) {
+	public boolean set(K key, V value, Expiration expiration, SetOption option) {
 		
         boolean result = redisTemplate.execute(new RedisCallback<Boolean>() {
         	
 			@Override
             public Boolean doInRedis(RedisConnection connection) throws DataAccessException {
 				
-				byte[] keyBuf = redisTemplate.getStringSerializer().serialize(key);
-				byte[] valueBuf = ((Jackson2JsonRedisSerializer<?>) redisTemplate.getValueSerializer()).serialize(value);
+				@SuppressWarnings("unchecked")
+				byte[] keyBuf = (key instanceof String ? (RedisSerializer<K>) redisTemplate.getStringSerializer() : (Jackson2JsonRedisSerializer<K>) redisTemplate.getHashKeySerializer()).serialize(key);
+				@SuppressWarnings("unchecked")
+				byte[] valueBuf = ((Jackson2JsonRedisSerializer<V>) redisTemplate.getValueSerializer()).serialize(value);
             	
 				if(expiration != null && option != null) {
 					
@@ -54,7 +51,7 @@ public class JsonRedisService<V> implements RedisService<V> {
 	}
 
 	@Override
-	public V get(String key) {
+	public V get(K key) {
 		
         V result = redisTemplate.execute(new RedisCallback<V>() {
         	
@@ -62,7 +59,7 @@ public class JsonRedisService<V> implements RedisService<V> {
 			@Override
             public V doInRedis(RedisConnection connection) throws DataAccessException {
             	
-				byte[] value = connection.get(redisTemplate.getStringSerializer().serialize(key));
+				byte[] value = connection.get((key instanceof String ? (RedisSerializer<K>) redisTemplate.getStringSerializer() : (Jackson2JsonRedisSerializer<K>) redisTemplate.getHashKeySerializer()).serialize(key));
                 
                 return (V) redisTemplate.getValueSerializer().deserialize(value);
             }
@@ -72,26 +69,31 @@ public class JsonRedisService<V> implements RedisService<V> {
 	}
 
 	@Override
-	public boolean expire(String key, long expire, TimeUnit unit) {
+	public boolean expire(K key, long expire, TimeUnit unit) {
 		
-		return redisTemplate.expire(key, expire, unit);
+		return redisTemplate.execute(new RedisCallback<Boolean>() {
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public Boolean doInRedis(RedisConnection connection) throws DataAccessException {
+				
+				System.out.println(unit + ":" + expire + "= Seconds:" + TimeUnit.SECONDS.convert(expire, unit));
+				return connection.expire((key instanceof String ? (RedisSerializer<K>) redisTemplate.getStringSerializer() : (Jackson2JsonRedisSerializer<K>) redisTemplate.getHashKeySerializer()).serialize(key), TimeUnit.SECONDS.convert(expire, unit));
+			}
+			
+		});
 	}
 
 	@Override
-	public boolean expire(String key, Date date) {
-
-		return this.expire(key, date.getTime() - System.currentTimeMillis(), TimeUnit.MILLISECONDS);
-	}
-
-	@Override
-	public boolean remove(String key) {
+	public boolean remove(K key) {
 		
         boolean result = redisTemplate.execute(new RedisCallback<Boolean>() {
         	
+			@SuppressWarnings("unchecked")
 			@Override
             public Boolean doInRedis(RedisConnection connection) throws DataAccessException {
             	
-                connection.del(redisTemplate.getStringSerializer().serialize(key));
+                connection.del((key instanceof String ? (RedisSerializer<K>) redisTemplate.getStringSerializer() : (Jackson2JsonRedisSerializer<K>) redisTemplate.getHashKeySerializer()).serialize(key));
                 
                 return true;
             }
@@ -101,8 +103,17 @@ public class JsonRedisService<V> implements RedisService<V> {
 	}
 
 	@Override
-	public boolean exists(String key) {
+	public boolean exists(K key) {
 		
-        return redisTemplate.hasKey(key);
+		return redisTemplate.execute(new RedisCallback<Boolean>() {
+
+			@SuppressWarnings("unchecked")
+			@Override
+			public Boolean doInRedis(RedisConnection connection) throws DataAccessException {
+
+				return connection.exists((key instanceof String ? (RedisSerializer<K>) redisTemplate.getStringSerializer() : (Jackson2JsonRedisSerializer<K>) redisTemplate.getHashKeySerializer()).serialize(key));
+			}
+			
+		});
 	}
 }

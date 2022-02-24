@@ -1,5 +1,10 @@
 [
     {
+        "name": "org.springframework.security.web.authentication.WebAuthenticationDetails",
+        "allPublicConstructors":true,
+        "allPublicMethods":true
+    },
+    {
         "name": "io.netty.channel.ChannelOption",
         "methods":
         [
