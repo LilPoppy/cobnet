@@ -5,10 +5,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.session.FindByIndexNameSessionRepository;
 import org.springframework.session.Session;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
-@Service
-public class SessionRepositoryService<T extends Session> {
+@Repository
+public class SimpleSessionRepository<T extends Session> {
 	
 	@Autowired
 	private FindByIndexNameSessionRepository<T> repository;
@@ -44,6 +44,7 @@ public class SessionRepositoryService<T extends Session> {
 	}
 
 	public FindByIndexNameSessionRepository<T> getRepository() {
+		
 		return repository;
 	}
 

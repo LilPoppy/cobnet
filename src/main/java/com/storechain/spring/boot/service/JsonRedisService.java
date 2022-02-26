@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.storechain.interfaces.spring.service.RedisService;
 
-@Service("RedisService")
+@Service
 public class JsonRedisService<K,V> implements RedisService<K, V> {
 
     @Resource
