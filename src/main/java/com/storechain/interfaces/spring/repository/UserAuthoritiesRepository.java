@@ -1,12 +1,10 @@
 package com.storechain.interfaces.spring.repository;
 
-import java.util.List;
+import org.springframework.stereotype.Repository;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import com.storechain.spring.boot.entity.UserGrantedAuthorities;
 
-import com.storechain.spring.boot.entity.User;
-import com.storechain.spring.boot.entity.UserGrantedAuthority;
-
-public interface UserAuthoritiesRepository extends JpaRepository<User, List<UserGrantedAuthority>> {
+@Repository
+public interface UserAuthoritiesRepository extends ExtensionRepository<UserGrantedAuthorities, Long> {
 
 }

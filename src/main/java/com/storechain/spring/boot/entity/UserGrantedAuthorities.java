@@ -1,29 +1,44 @@
 package com.storechain.spring.boot.entity;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
+import javax.persistence.CascadeType;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
-
 import org.springframework.security.core.GrantedAuthority;
 
-import lombok.Data;
-
 @Entity
-@Data
-@Table(name = "user-authorities")
 public class UserGrantedAuthorities {
 
 	@Id
-	@OneToOne(targetEntity = User.class, mappedBy = "username")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
+	
+	@OneToOne(targetEntity = User.class, cascade = CascadeType.ALL)
+	@JoinColumn(name = "user", referencedColumnName = "username")
 	private User user;
 	
-	@OneToMany(targetEntity = UserGrantedAuthority.class, mappedBy = "authority")
-	private List<UserGrantedAuthority> authorities;
+	@ManyToOne(targetEntity = UserGrantedAuthority.class, cascade =  CascadeType.ALL)
+	@JoinColumn(name = "authorities", referencedColumnName = "authority")
+	@ElementCollection
+	private Collection<UserGrantedAuthority> authorities;
+	
+	public UserGrantedAuthorities() {}
+	
+	public UserGrantedAuthorities(User user, Collection<? extends GrantedAuthority> authorities) {
+		
+		this.user = user;
+		this.authorities = authorities.stream().map(role -> new UserGrantedAuthority(role.getAuthority())).toList();
+	}
 
 	public User getUser() {
 		return user;
@@ -37,24 +52,14 @@ public class UserGrantedAuthorities {
 		return authorities;
 	}
 
-	public void setAuthorities(List<UserGrantedAuthority> authorities) {
-		this.authorities = authorities;
-	}
-	
-	public static UserGrantedAuthorities fromData(User user, List<UserGrantedAuthority> authorities) {
+	public void setAuthorities(Collection<UserGrantedAuthority> authorities) {
 		
-		return new UserGrantedAuthorities() {{
-			
-			this.setUser(user);
-			this.setAuthorities(authorities);
-		}};
+		this.authorities = new ArrayList<UserGrantedAuthority>(authorities);
 	}
 	
-	public static UserGrantedAuthorities fromDataA(User user, List<GrantedAuthority> authorities) {
-		return new UserGrantedAuthorities() {{
-			
-			this.setUser(user);
-			this.setAuthorities(authorities.stream().map(authority -> UserGrantedAuthority.fromData(authority.getAuthority())).toList());
-		}};
+	public <T extends GrantedAuthority> void addAuthority(T... authorities) {
+		
+		this.authorities = Arrays.stream(authorities).map(role -> new UserGrantedAuthority(role.getAuthority())).toList();
 	}
+	
 }

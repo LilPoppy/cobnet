@@ -20,7 +20,7 @@ public class TaskProvider  {
 	
 	private TaskProvider() {
 		
-		this.executor = new ScheduledThreadPoolExecutor(EntryPoint.SYSTEM_CONFIG.getTaskProvider().getThreadCount(), new ThreadFactory() {
+		this.executor = new ScheduledThreadPoolExecutor(SpringContext.getSystemConfiguration().getTaskProvider().getThreadCount(), new ThreadFactory() {
         	
             private final AtomicInteger number = new AtomicInteger(-1);
 
@@ -32,12 +32,12 @@ public class TaskProvider  {
             }
         });
 		
-		executor.setMaximumPoolSize(EntryPoint.SYSTEM_CONFIG.getTaskProvider().getMaxThreadCount());
-        executor.setContinueExistingPeriodicTasksAfterShutdownPolicy(EntryPoint.SYSTEM_CONFIG.getTaskProvider().isContinueExistingPeriodicTasksAfterShutdownPolicy());
-        executor.setExecuteExistingDelayedTasksAfterShutdownPolicy(EntryPoint.SYSTEM_CONFIG.getTaskProvider().isExecuteExistingDelayedTasksAfterShutdownPolicy());
-        executor.setRemoveOnCancelPolicy(EntryPoint.SYSTEM_CONFIG.getTaskProvider().isRemoveOnCancelPolicy());
-        executor.setKeepAliveTime(EntryPoint.SYSTEM_CONFIG.getTaskProvider().getKeepAliveMinutes(), TimeUnit.MINUTES);
-        executor.allowCoreThreadTimeOut(EntryPoint.SYSTEM_CONFIG.getTaskProvider().isAllowCoreThreadTimeOut());
+		executor.setMaximumPoolSize(SpringContext.getSystemConfiguration().getTaskProvider().getMaxThreadCount());
+        executor.setContinueExistingPeriodicTasksAfterShutdownPolicy(SpringContext.getSystemConfiguration().getTaskProvider().isContinueExistingPeriodicTasksAfterShutdownPolicy());
+        executor.setExecuteExistingDelayedTasksAfterShutdownPolicy(SpringContext.getSystemConfiguration().getTaskProvider().isExecuteExistingDelayedTasksAfterShutdownPolicy());
+        executor.setRemoveOnCancelPolicy(SpringContext.getSystemConfiguration().getTaskProvider().isRemoveOnCancelPolicy());
+        executor.setKeepAliveTime(SpringContext.getSystemConfiguration().getTaskProvider().getKeepAliveMinutes(), TimeUnit.MINUTES);
+        executor.allowCoreThreadTimeOut(SpringContext.getSystemConfiguration().getTaskProvider().isAllowCoreThreadTimeOut());
 	}
 	
 	public static ScheduledFuture<?> register(Runnable delegate, long delay, long period, TimeUnit unit, Function<Object[], Boolean> continuous, Object...args) {

@@ -24,6 +24,7 @@ import com.storechain.connection.netty.handler.ChannelInitializeHandler;
 import com.storechain.interfaces.connection.ConnectionListener;
 import com.storechain.interfaces.connection.annotation.ConnectionHandler;
 import com.storechain.spring.boot.configuration.NettyConfiguration.ServerConfiguration;
+import com.storechain.utils.SpringContext;
 import com.storechain.utils.TaskProvider;
 
 import io.netty.bootstrap.ServerBootstrap;
@@ -69,7 +70,7 @@ public class NettyServer extends DefaultChannelGroup {
 		this.name = name;
 		this.channel = channel;
 		this.port = port;
-		this.config = EntryPoint.NETTY_CONFIG.getServerConfig(this);
+		this.config = SpringContext.getNettyConfiguration().getServerConfig(this);
 	}
 	
 	public static NettyServer getInstance(String name) {

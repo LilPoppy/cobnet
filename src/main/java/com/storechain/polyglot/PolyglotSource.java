@@ -55,7 +55,7 @@ public final class PolyglotSource {
 	public static PolyglotSource readFromResource(String language, String path, Charset charset, String delimiterPattern) {
 		
         try (Scanner scanner = new Scanner(ScriptEngineManager.class.getResourceAsStream(path), charset)) {
-        	
+
         	return create(language, scanner.useDelimiter(delimiterPattern).next());
         }
 	}

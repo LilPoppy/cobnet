@@ -21,6 +21,7 @@ import com.storechain.connection.InboundPacketBuilder;
 import com.storechain.connection.netty.handler.ChannelInitializeHandler;
 import com.storechain.connection.netty.websocket.WebSocketClientConverter;
 import com.storechain.connection.netty.websocket.WebSocketServer;
+import com.storechain.utils.SpringContext;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
@@ -52,7 +53,7 @@ public class WebSocketInitializeHandler extends ChannelInitializeHandler<NioSock
         pipe.addLast(new WebSocketActivityHandler(this.server));
         pipe.addLast(new WebSocketInboundPacketHandler(this.server));
         
-		ConfigurableListableBeanFactory beans = EntryPoint.CONTEXT.getBeanFactory();
+		ConfigurableListableBeanFactory beans = SpringContext.getContext().getBeanFactory();
 		
 		TomcatServletWebServerFactory tomcat = beans.getBean(beans.getBeanNamesForType(TomcatServletWebServerFactory.class)[0], TomcatServletWebServerFactory.class);
         

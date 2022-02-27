@@ -1,20 +1,35 @@
 package com.storechain.spring.boot.entity;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.Table;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import lombok.Data;
 
-@Data
 @Entity
-@Table(name = "user-authority")
 public class UserGrantedAuthority implements GrantedAuthority {
 
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int id;
+	
 	private String authority;
+	
+	public UserGrantedAuthority() {}
+	
+	public UserGrantedAuthority(String authority) {
+		
+		this.authority = authority;
+	}
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
 	
 	@Override
 	public String getAuthority() {
@@ -58,13 +73,6 @@ public class UserGrantedAuthority implements GrantedAuthority {
 		
 		return this.authority;
 	}
-	
-	public static UserGrantedAuthority fromData(String role) {
-		
-		return new UserGrantedAuthority() {{
-			
-			setAuthority(role);
-		}};
-	}
+
 
 }

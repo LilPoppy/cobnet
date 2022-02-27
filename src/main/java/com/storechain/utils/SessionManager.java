@@ -9,7 +9,7 @@ public class SessionManager {
 	@SuppressWarnings({ "unchecked", "serial" })
 	public static <T extends Session> SimpleSessionRepository<T> getRepository(Class<? super T> session) {
 		
-		return (SimpleSessionRepository<T>) SpringManager.getContext().getAutowireCapableBeanFactory().getBean(new TypeToken<SimpleSessionRepository<T>>() {}.getRawType());
+		return (SimpleSessionRepository<T>) SpringContext.getContext().getAutowireCapableBeanFactory().getBean(new TypeToken<SimpleSessionRepository<T>>() {}.getRawType());
 	}
 
 }

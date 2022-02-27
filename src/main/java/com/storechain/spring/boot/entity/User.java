@@ -1,7 +1,7 @@
 package com.storechain.spring.boot.entity;
 
-import lombok.Data;
-
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -14,17 +14,17 @@ import javax.persistence.OneToOne;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-@Data
 @Entity
 public class User implements UserDetails {
 
 	@Id
     private String username;
 
+	@Column(nullable = false)
     private String password;
     
-    @ManyToOne(targetEntity = UserGrantedAuthorities.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "authorities")
+    @OneToOne(targetEntity = UserGrantedAuthorities.class, cascade = CascadeType.ALL)
+    @JoinColumn(name = "authorities", referencedColumnName = "authorities")
     private UserGrantedAuthorities authorities;
     
     private boolean expired;
@@ -34,6 +34,30 @@ public class User implements UserDetails {
     private boolean vaildPassword;
     
     private boolean enabled;
+    
+    public User() {}
+    
+    public User(String username, String password, Collection<? extends GrantedAuthority> authorities, boolean expired, boolean locked, boolean vaildPassword, boolean enabled) {
+    	
+    	this.username = username;
+    	this.password = password;
+    	this.authorities = new UserGrantedAuthorities(this, authorities);
+    	this.expired = expired;
+    	this.locked = locked;
+    	this.vaildPassword = vaildPassword;
+    	this.enabled = enabled;
+    }
+    
+    public User(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+    	
+    	this(username, password, authorities, false, false, true, true);
+    }
+    
+    public User(String username, String password, GrantedAuthority... authorities) {
+    	
+    	this(username, password, Arrays.stream(authorities).toList());
+    }
+    
 
 	public String getUsername() {
 		return username;
@@ -63,18 +87,6 @@ public class User implements UserDetails {
 		
 	}
 	
-	public static User fromData(String username, String password, UserGrantedAuthorities authorities, boolean expired, boolean locked, boolean vaildPassword, boolean enabled) {
-		
-		return new User() {{ 
-			setUsername(username);
-			setPassword(password);
-			setAuthorities(authorities);
-			setExpired(expired);
-			setLocked(locked);
-			setVaildPassword(vaildPassword);
-			setEnabled(enabled);
-		}};
-	}
 
 	@Override
 	public boolean isAccountNonExpired() {

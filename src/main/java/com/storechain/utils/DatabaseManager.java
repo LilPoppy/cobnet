@@ -1,65 +1,74 @@
 package com.storechain.utils;
 
 
+import java.io.Serializable;
+import java.util.function.Function;
+import java.util.function.Consumer;
+import javax.persistence.EntityManager;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextException;
+import org.springframework.core.ResolvableType;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
+import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
+import org.springframework.session.Session;
+import org.springframework.stereotype.Component;
 
-import com.google.common.reflect.TypeToken;
-import com.storechain.interfaces.spring.service.RedisService;
+import com.storechain.spring.boot.service.JsonRedisService;
+import com.storechain.spring.boot.service.SimpleSessionRepository;
 
+@Component
 public class DatabaseManager {
 	
-	@SuppressWarnings({ "unchecked", "serial" })
-	public static <K, V> RedisService<K, V> getRedisService(Class<K> key, Class<V> value) {
+	private static ApplicationContext CONTEXT;
+
+	@Autowired
+	public void setContext(ApplicationContext context) {
 		
-		return (RedisService<K, V>) SpringManager.getContext().getAutowireCapableBeanFactory().getBean(new TypeToken<RedisService<K, V>>() {}.getRawType());
+		this.CONTEXT = context;
+	}
+	
+	public static <T extends JsonRedisService<K, V> ,K, V> T getJsonRedisService(Class<K> key, Class<V> value) {
+		
+		return  (T) CONTEXT.getBeanProvider(ResolvableType.forClassWithGenerics(JsonRedisService.class, key, value)).getObject();
+	}
+	
+	public static <E extends SimpleSessionRepository<T>, T extends Session> T getSimpleSessionRepository(Class<T> session) {
+		
+		return (T) CONTEXT.getBeanProvider(ResolvableType.forClassWithGenerics(SimpleSessionRepository.class, session)).getObject();
+	}
+	
+	
+	public static <E extends JpaRepository<T, ID>, T, ID extends Serializable, RESULT> RESULT commitJpaRepository(Class<? extends E> repo, Function<E, RESULT> predicate) {
+		
+		var context = SpringContext.getContext();
+		
+		if(context == null) {
+			
+			throw new ApplicationContextException("Spring Application is not initialized.");
+		}
+		
+		EntityManager manager = context.getBean(EntityManager.class);
+		
+		JpaRepositoryFactory factory = new JpaRepositoryFactory(manager);
+		
+		try {
+			
+			manager.getTransaction().begin();
+			
+			return predicate.apply(factory.getRepository(repo));
+			
+		} finally {
+			
+			manager.getTransaction().commit();
+		}
+
+	}
+	
+	public static <E extends JpaRepository<T, ID>, T, ID extends Serializable, RESULT> void commitJpaRepository(Class<? extends E> repo, Consumer<E> action) {
+		
+		commitJpaRepository(repo, CommonConverter.adapt(action));
 	}
 
-	@SuppressWarnings({ "unchecked", "serial" })
-	public static <T> RedisService<String, T> getRedisService(Class<T> value) {
-		
-		return (RedisService<String, T>) SpringManager.getContext().getAutowireCapableBeanFactory().getBean(new TypeToken<RedisService<String, T>>() {}.getRawType());
-	}
-	
-	@SuppressWarnings({ "unchecked", "serial" })
-	public static <K, V> RedisTemplate<K, V> getRedisTemplate(Class<K> key, Class<V> value) {
-		
-		return (RedisTemplate<K, V>) SpringManager.getContext().getAutowireCapableBeanFactory().getBean(new TypeToken<RedisTemplate<K,V>>() {}.getRawType());
-	}
-	
-	public static <T, ID> CrudRepository<T, ID> getCrudRepository(Class<? extends CrudRepository<T, ID>> repo) {
-		
-		return SpringManager.getContext().getAutowireCapableBeanFactory().getBean(repo);
-	}
-	
-	@SuppressWarnings({ "serial", "unchecked" })
-	public static <T, ID> CrudRepository<T, ID> getCrudRepository(Class<T> entity, Class<ID> primaryKey) {
-		
-		return (CrudRepository<T, ID>) SpringManager.getContext().getAutowireCapableBeanFactory().getBean(new TypeToken<CrudRepository<T, ID>>() {}.getRawType());
-	}
-	
-	public static <T, ID> PagingAndSortingRepository<T, ID> getPagingAndSortingRepository(Class<? extends PagingAndSortingRepository<T, ID>> repo) {
-		
-		return SpringManager.getContext().getAutowireCapableBeanFactory().getBean(repo);
-	}
-	
-	@SuppressWarnings({ "serial", "unchecked" })
-	public static <T, ID> PagingAndSortingRepository<T, ID> getPagingAndSortingRepository(Class<T> entity, Class<ID> primaryKey) {
-		
-		return (PagingAndSortingRepository<T, ID>) SpringManager.getContext().getAutowireCapableBeanFactory().getBean(new TypeToken<PagingAndSortingRepository<T, ID>>() {}.getRawType());
-	}
-
-	public static <T, ID> JpaRepository<T, ID> getJpaRepository(Class<? extends JpaRepository<T, ID>> repo) {
-	    
-	    return SpringManager.getContext().getAutowireCapableBeanFactory().getBean(repo);
-	}
-	
-	@SuppressWarnings({ "serial", "unchecked" })
-	public static <T, ID> JpaRepository<T, ID> getJpaRepository(Class<T> entity, Class<ID> primaryKey) {
-		
-		return (JpaRepository<T, ID>) SpringManager.getContext().getAutowireCapableBeanFactory().getBean(new TypeToken<JpaRepository<T, ID>>() {}.getRawType());
-	}
-	
 }
