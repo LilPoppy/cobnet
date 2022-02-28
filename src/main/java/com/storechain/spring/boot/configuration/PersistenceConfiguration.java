@@ -4,7 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import com.storechain.interfaces.spring.repository.UserGrantedAuthorityRepository;
+
+import com.storechain.interfaces.spring.repository.PermissionRepository;
+import com.storechain.interfaces.spring.repository.UserAuthorityRepository;
 import com.storechain.interfaces.spring.repository.UserRepository;
 import com.storechain.spring.boot.service.JpaExtensionRepository;
 
@@ -38,16 +40,24 @@ public class PersistenceConfiguration {
 		return repo;
 	}
 	
-	public UserGrantedAuthorityRepository getAnotherRepo() {
+	public UserAuthorityRepository getAnotherRepo() {
 		
 		return anotherRepo;
+	}
+	
+	public PermissionRepository getKkRepo() {
+		
+		return kkRepo;
 	}
 
 	@Autowired
 	private UserRepository repo;
 	
 	@Autowired
-	private UserGrantedAuthorityRepository anotherRepo;
+	private UserAuthorityRepository anotherRepo;
+	
+	@Autowired
+	private PermissionRepository kkRepo;
 
 	public static class DataSourceConfiguration {
 

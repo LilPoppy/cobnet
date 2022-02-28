@@ -1,6 +1,13 @@
+project:
+   information:
+      group-id: "@project.groupId@"
+      artifact-id: "@project.artifactId@"
+      version: "@project.version@"
+      name: "@project.name@"
+      description: "@project.description@"
 spring:
    application:
-      name: StoreChain-Server
+      name: ${project.information.name}
    sleuth:
       async:
          enabled: false
@@ -88,3 +95,5 @@ system:
       remove-on-cancel-policy: true
       continue-existing-periodic-tasks-after-shutdown-policy: false
       execute-existing-delayed-tasks-after-shutdown-policy: false
+security:
+   authority-default-power: 3

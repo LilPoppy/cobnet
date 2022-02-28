@@ -3,21 +3,30 @@ package com.storechain;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
+
+import javax.persistence.EntityManager;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
+
 import com.storechain.interfaces.connection.NettyServerProvider;
-import com.storechain.interfaces.spring.repository.UserGrantedAuthorityRepository;
+import com.storechain.interfaces.spring.repository.UserAuthorityRepository;
 import com.storechain.polyglot.PolyglotContext;
 import com.storechain.spring.boot.configuration.NettyConfiguration;
 import com.storechain.spring.boot.entity.User;
-import com.storechain.spring.boot.entity.UserGrantedAuthority;
+import com.storechain.spring.boot.entity.UserAuthority;
 import com.storechain.utils.DatabaseManager;
 import com.storechain.utils.ScriptEngineManager;
 import com.storechain.utils.SpringContext;
+import java.util.function.Function;
 
 /**
  * @author lilpoppy  
@@ -26,14 +35,15 @@ import com.storechain.utils.SpringContext;
 @SpringBootApplication(proxyBeanMethods = false)
 public class EntryPoint {
 	
-	private final static String logo = "\n\n\n"
-			+ "      _     _ _ ____                              \n"
+	
+	private final static String LOGO = "\n\n\n"
+			+ "      _     _ _ ____             |{$project.name}|\n"
 			+ "     | |   (_) |  _ \\ ___  _ __  _ __  _   _     \n"
 			+ "     | |   | | | |_) / _ \\| '_ \\| '_ \\| | | |  \n"
 			+ "     | |___| | |  __/ (_) | |_) | |_) | |_| |     \n"
 			+ "     |_____|_|_|_|   \\___/| .__/| .__/ \\__, |   \n"
 			+ "==========================|_|===|_|====|___/======\n"
-			+ "::  LilPoppy ::                                   \n"
+			+ "::  LilPoppy ::               ({$project.version})\n"
 			+ "                              ******\n"
 			+ "                             *00000000*\n"
 			+ "                          *000000000000*\n"
@@ -51,13 +61,13 @@ public class EntryPoint {
 			+ "     ============0000000000*******************\n"
 			+ "      *0000000000000000000*******************\n"
 			+ "         ******00000000000******************\n"
-			+ "                 *00000000******************\n"
+			+ "   |             *00000000******************\n"
 			+ "   |               *000000*****************\n"
 			+ "   |               *00000*****************\n"
-			+ "   |               *0000*  **************\n"
-			+ "*==-==*            *0000*     **********\n"
+			+ "*==-==*            *0000*  **************\n"
+			+ "*~~~~~*            *0000*     **********\n"
 			+ "00   000*          *0000*         *****\n"
-			+ "*~~~~~000***     **00000*\n"
+			+ "*     000***     **00000*\n"
 			+ "*     0*00000***00000000*\n"
 			+ "******)*****00000000000*\n"
 			+ "         *0000000000000*\n"
@@ -136,7 +146,7 @@ public class EntryPoint {
 
     	SpringApplication.run(EntryPoint.class, args);
     	
-    	log.debug(logo);
+    	log.info(getLogo());
 
 		if(SpringContext.getNettyConfiguration().isEnable() && SpringContext.getNettyConfiguration().getServers() != null) {
 			
@@ -156,20 +166,22 @@ public class EntryPoint {
 	public static void main(String[] args) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException, IOException, NoSuchFieldException {
 	
 		initialize(args);
-		var entity = new UserGrantedAuthority("admin");
+		UserAuthority entity = new UserAuthority("admin");
 		
 		SpringContext.getPersistenceConfiguration().getAnotherRepo().save(entity);
 		User user = new User("admin", "123456", entity);
 
-		SpringContext.getPersistenceConfiguration().getRepo().save(user);
 		
-		DatabaseManager.commitJpaRepository(UserGrantedAuthorityRepository.class, new Consumer<UserGrantedAuthorityRepository>(){
+		//SpringContext.getPersistenceConfiguration().getAnotherRepo().save(entity);
+		//SpringContext.getPersistenceConfiguration().getKkRepo().save(auths);
 
-			@Override
-			public void accept(UserGrantedAuthorityRepository t) {
-				t.save(entity);
-			}
-		});
+		
+	    SpringContext.getPersistenceConfiguration().getRepo().save(user);
+		
+		UserAuthorityRepository repo = new JpaRepositoryFactory(SpringContext.getContext().getBean(EntityManager.class)).getRepository(UserAuthorityRepository.class);
+		
+		//repo.save(entity);
+
 		//DatabaseManager.getJpaRepository(UserGrantedAuthorityRepository.class).save(UserGrantedAuthority.fromData("Tester"));
 		//DatabaseManager.getJpaRepository(UserGrantedAuthorityRepository.class).save(UserGrantedAuthority.fromData("Admin"));
 		//DatabaseManager.getJpaRepository(UserGrantedAuthorityRepository.class).save(UserGrantedAuthority.fromData("User"));
@@ -184,5 +196,79 @@ public class EntryPoint {
 	}
 	
 
+	private static String getLogo() {
+		
+		String[] array = EntryPoint.LOGO.split("\n");
+		
+		String name = SpringContext.getProjectInformationConfiguration().getName();
+
+		String version = SpringContext.getProjectInformationConfiguration().getVersion();
+		
+		StringBuilder sb = new StringBuilder();
+		
+		String[] adjust = {"{$project.name}", "{$project.version}"};
+		
+		int index = 0;
+		
+		lineloop:
+		for(int i = 0; i < array.length; i++) {
+			
+			String line = array[i];
+			
+			for(int j = index; j < adjust.length; j++) {
+				
+				String key = adjust[j];
+				
+				int posStart = line.indexOf(key);
+				int posEnd = posStart + key.length();
+				int length = line.length();
+				
+				if(posStart > -1) {
+					
+					String format = null;
+					
+					switch(index) {
+					case 0:
+						format = name;
+						break;
+					case 1:
+						format = version;
+						break;
+					}
+					
+					if(format != null) {
+						
+						StringBuilder builder = new StringBuilder(line).delete(posStart, posEnd).insert(posStart, format);
+
+						
+						if(builder.length() > length) {
+							
+							builder.delete(posStart - 1 - (builder.length() - length), posStart - 1);
+							
+						} else {
+							
+							for(int k = 0; k < Math.abs(format.length() - key.length()); k++) {
+								
+								builder.insert(posStart - 1, " ");
+							}
+						}
+						
+						builder.append("\n");
+						
+						sb.append(builder);
+						
+						index++;
+						
+						continue lineloop;
+					}
+				}
+			}
+			
+			sb.append(line).append("\n");
+			
+		}
+		
+		return sb.toString();
+	}
 }
 

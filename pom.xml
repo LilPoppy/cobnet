@@ -11,7 +11,7 @@
 	<groupId>com.storechain</groupId>
 	<artifactId>storechain-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>storechain-server</name>
+	<name>Storechain Server</name>
 	<description>A simple server for storechain</description>
 	<properties>
 		<java.version>17</java.version>
@@ -208,6 +208,7 @@
 			         </systemPropertyVariables>
 				</configuration>
 			</plugin>
+			<!--
 			<plugin>
 				<groupId>org.hibernate.orm.tooling</groupId>
 				<artifactId>hibernate-enhance-maven-plugin</artifactId>
@@ -228,6 +229,7 @@
 					</execution>
 				</executions>
 			</plugin>
+			-->
 		</plugins>
 	</build>
 	

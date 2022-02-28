@@ -3,12 +3,18 @@ package com.storechain.spring.boot.entity;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 import org.springframework.security.core.GrantedAuthority;
@@ -23,10 +29,16 @@ public class User implements UserDetails {
 	@Column(nullable = false)
     private String password;
     
-    @OneToOne(targetEntity = UserGrantedAuthorities.class, cascade = CascadeType.ALL)
-    @JoinColumn(name = "authorities", referencedColumnName = "authorities")
-    private UserGrantedAuthorities authorities;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "user_authorities", joinColumns = { @JoinColumn(name = "user", referencedColumnName = "username") },
+            inverseJoinColumns = {@JoinColumn(name = "authority", referencedColumnName = "authority")})
+    private Collection<UserAuthority> authorities = new ArrayList<>();
     
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_permissions", joinColumns = { @JoinColumn(name = "user", referencedColumnName = "username") },
+    		inverseJoinColumns = {@JoinColumn(name = "permissions", referencedColumnName = "name") })
+    private Collection<UserPermission> permissions = new ArrayList<>();
+
     private boolean expired;
     
     private boolean locked;
@@ -41,7 +53,7 @@ public class User implements UserDetails {
     	
     	this.username = username;
     	this.password = password;
-    	this.authorities = new UserGrantedAuthorities(this, authorities);
+    	setAuthorities(authorities);
     	this.expired = expired;
     	this.locked = locked;
     	this.vaildPassword = vaildPassword;
@@ -76,15 +88,20 @@ public class User implements UserDetails {
 	}
 
 	@Override
-	public Collection<GrantedAuthority> getAuthorities() {
+	public Collection<? extends GrantedAuthority> getAuthorities() {
 		
-		return (Collection<GrantedAuthority>) authorities.getAuthorities();
+		return authorities;
 	}
 
-	public void setAuthorities(UserGrantedAuthorities authorities) {
+
+	public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
 		
-		this.authorities = authorities;
+		this.authorities = authorities.stream().map(role -> new UserAuthority(role.getAuthority())).toList();
+	}
+	
+	public <T extends GrantedAuthority> void setAuthorities(T... authorities) {
 		
+		this.setAuthorities(Arrays.asList(authorities));
 	}
 	
 
@@ -143,5 +160,13 @@ public class User implements UserDetails {
 	public String toString() {
 		
 		return super.toString() + "(" + this.username + ")";
+	}
+
+	public Collection<UserPermission> getPermissions() {
+		return permissions;
+	}
+
+	public void setPermissions(Collection<UserPermission> permissions) {
+		this.permissions = permissions;
 	}
 }

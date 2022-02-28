@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.storechain.spring.boot.configuration.NettyConfiguration;
 import com.storechain.spring.boot.configuration.PersistenceConfiguration;
+import com.storechain.spring.boot.configuration.ProjectInformationConfiguration;
 import com.storechain.spring.boot.configuration.RedisConfiguration;
 import com.storechain.spring.boot.configuration.SecurityConfiguration;
 import com.storechain.spring.boot.configuration.SessionConfiguration;
@@ -29,7 +30,7 @@ public final class SpringContext {
 	
 	private static PersistenceConfiguration PERSISTENCE_CONFIGURATION;
 	
-	private SpringContext() { }
+	private static ProjectInformationConfiguration PROJECT_INFOMATION_CONFIGURATION;
 	
 	public static ServletWebServerApplicationContext getContext() {
 		
@@ -58,6 +59,10 @@ public final class SpringContext {
 
 	public static PersistenceConfiguration getPersistenceConfiguration() {
 		return PERSISTENCE_CONFIGURATION;
+	}
+	
+	public static ProjectInformationConfiguration getProjectInformationConfiguration() {
+		return PROJECT_INFOMATION_CONFIGURATION;
 	}
 
 	@Component
@@ -97,6 +102,11 @@ public final class SpringContext {
 		@Autowired
 		public void setPersistenceConfiguration(PersistenceConfiguration config) {
 			SpringContext.PERSISTENCE_CONFIGURATION = config;
+		}
+		
+		@Autowired
+		public void setProjectInformationConfiguration(ProjectInformationConfiguration config) {
+			SpringContext.PROJECT_INFOMATION_CONFIGURATION = config;
 		}
 		
 	}

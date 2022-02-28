@@ -1,7 +1,7 @@
 package com.storechain.spring.boot.configuration;
 
-import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,27 +21,33 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
 import com.storechain.connection.handler.http.security.HttpAccessDeniedHandler;
 import com.storechain.connection.handler.http.security.HttpAuthenticationFailureHandler;
 import com.storechain.connection.handler.http.security.HttpAuthenticationSuccessHandler;
 import com.storechain.connection.handler.http.security.HttpInvalidSessionHandler;
+import com.storechain.interfaces.spring.repository.UserAuthorityRepository;
 import com.storechain.interfaces.spring.repository.UserRepository;
 import com.storechain.spring.boot.entity.User;
+import com.storechain.spring.boot.entity.UserAuthority;
+import com.storechain.utils.SpringContext;
+
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @EnableGlobalMethodSecurity(securedEnabled = true)
 @EnableWebSecurity(debug = false)
 @Configuration
+@ConfigurationProperties("security")
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	
 	final static String[] PERMIT_MATCHERS = {"/register", "/doRegister", "/login", "/doLogin"};
 
+	private byte authorityDefaultPower;
+	
+	private String userDefaultAuthority;
+	
 	@Autowired
-	private ApplicationContext context;
+	private UserAuthorityRepository authorityRepository;
 	
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -60,7 +66,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public UserDetailsService userDetailsServiceBean() {
     	
-		return (UserDetailsService) context.getAutowireCapableBeanFactory().getBean(UserRepository.class);
+		return (UserDetailsService) SpringContext.getContext().getAutowireCapableBeanFactory().getBean(UserRepository.class);
     }
 
     @Override
@@ -83,7 +89,26 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         super.configure(auth);
     }
     
-    @Component
+    public byte getAuthorityDefaultPower() {
+		return authorityDefaultPower;
+	}
+
+	public void setAuthorityDefaultPower(byte authorityDefaultPower) {
+		this.authorityDefaultPower = authorityDefaultPower;
+	}
+
+	public UserAuthority getUserDefaultAuthority() {
+		
+		var optional = this.authorityRepository.findById(userDefaultAuthority);
+		
+		return optional.isEmpty() ? null : optional.get();
+	}
+
+	public void setUserDefaultAuthority(String userDefaultAuthority) {
+		this.userDefaultAuthority = userDefaultAuthority;
+	}
+
+	@Component
     final static class SimpleAuthenticationProvider implements AuthenticationProvider {
 
     	@Autowired
