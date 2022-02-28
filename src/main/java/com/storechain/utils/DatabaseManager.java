@@ -15,28 +15,29 @@ import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.session.Session;
 import org.springframework.stereotype.Component;
 
+import com.storechain.interfaces.spring.repository.UserPermissionRepository;
+import com.storechain.interfaces.spring.repository.UserRepository;
+import com.storechain.interfaces.spring.repository.UserRoleRepository;
 import com.storechain.spring.boot.service.JsonRedisService;
 import com.storechain.spring.boot.service.SimpleSessionRepository;
 
 @Component
 public class DatabaseManager {
-	
-	private static ApplicationContext CONTEXT;
 
-	@Autowired
-	public void setContext(ApplicationContext context) {
-		
-		this.CONTEXT = context;
-	}
+	private static UserRepository USER_REPOSITORY;
 	
+	private static UserRoleRepository USER_ROLE_REPOSITORY;
+	
+	private static UserPermissionRepository USER_PERMISSION_REPOSITORY;
+
 	public static <T extends JsonRedisService<K, V> ,K, V> T getJsonRedisService(Class<K> key, Class<V> value) {
 		
-		return  (T) CONTEXT.getBeanProvider(ResolvableType.forClassWithGenerics(JsonRedisService.class, key, value)).getObject();
+		return  (T) SpringContext.getContext().getBeanProvider(ResolvableType.forClassWithGenerics(JsonRedisService.class, key, value)).getObject();
 	}
 	
 	public static <E extends SimpleSessionRepository<T>, T extends Session> T getSimpleSessionRepository(Class<T> session) {
 		
-		return (T) CONTEXT.getBeanProvider(ResolvableType.forClassWithGenerics(SimpleSessionRepository.class, session)).getObject();
+		return (T) SpringContext.getContext().getBeanProvider(ResolvableType.forClassWithGenerics(SimpleSessionRepository.class, session)).getObject();
 	}
 	
 	
@@ -69,6 +70,43 @@ public class DatabaseManager {
 	public static <E extends JpaRepository<T, ID>, T, ID extends Serializable, RESULT> void commitJpaRepository(Class<? extends E> repo, Consumer<E> action) {
 		
 		commitJpaRepository(repo, CommonConverter.adapt(action));
+	}
+	
+	public static UserRepository getUserRepository() {
+		
+		return DatabaseManager.USER_REPOSITORY;
+	}
+	
+	public static UserRoleRepository getUserRoleRepository() {
+		
+		return DatabaseManager.USER_ROLE_REPOSITORY;
+	}
+	
+	public static UserPermissionRepository getUserPermissionRepository() {
+		
+		return DatabaseManager.USER_PERMISSION_REPOSITORY;
+	}
+	
+	@Component
+	private final static class DatabaseManagerBean {
+		
+		@Autowired
+		public void setUserRepository(UserRepository repository) {
+			
+			DatabaseManager.USER_REPOSITORY = repository;
+		}
+		
+		@Autowired
+		public void setUserRoleRepository(UserRoleRepository repository) {
+			
+			DatabaseManager.USER_ROLE_REPOSITORY = repository;
+		}
+		
+		@Autowired
+		public void setUserPermissionRepository(UserPermissionRepository repository) {
+			
+			DatabaseManager.USER_PERMISSION_REPOSITORY = repository;
+		}
 	}
 
 }

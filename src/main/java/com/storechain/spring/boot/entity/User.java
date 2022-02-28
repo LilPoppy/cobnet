@@ -3,9 +3,10 @@ package com.storechain.spring.boot.entity;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Set;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,15 +14,20 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.storechain.interfaces.security.permission.Permissible;
+import com.storechain.interfaces.security.permission.Permission;
+import com.storechain.security.OperatorRole;
+import com.storechain.security.permission.OwnedPermissionCollection;
+import com.storechain.utils.DatabaseManager;
+
+import reactor.util.annotation.NonNull;
+
 @Entity
-public class User implements UserDetails {
+public class User implements UserDetails, Permissible {
 
 	@Id
     private String username;
@@ -30,14 +36,14 @@ public class User implements UserDetails {
     private String password;
     
     @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_authorities", joinColumns = { @JoinColumn(name = "user", referencedColumnName = "username") },
-            inverseJoinColumns = {@JoinColumn(name = "authority", referencedColumnName = "authority")})
-    private Collection<UserAuthority> authorities = new ArrayList<>();
+    @JoinTable(name = "user_roles", joinColumns = { @JoinColumn(name = "user", referencedColumnName = "username") },
+            inverseJoinColumns = {@JoinColumn(name = "role", referencedColumnName = "role")})
+    private List<UserRole> roles = new ArrayList<>();
     
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_permissions", joinColumns = { @JoinColumn(name = "user", referencedColumnName = "username") },
     		inverseJoinColumns = {@JoinColumn(name = "permissions", referencedColumnName = "name") })
-    private Collection<UserPermission> permissions = new ArrayList<>();
+    private List<UserPermission> permissions = new ArrayList<UserPermission>();
 
     private boolean expired;
     
@@ -49,25 +55,25 @@ public class User implements UserDetails {
     
     public User() {}
     
-    public User(String username, String password, Collection<? extends GrantedAuthority> authorities, boolean expired, boolean locked, boolean vaildPassword, boolean enabled) {
+    public User(@NonNull String username, @NonNull String password, @NonNull List<UserRole> roles, boolean expired, boolean locked, boolean vaildPassword, boolean enabled) {
     	
     	this.username = username;
     	this.password = password;
-    	setAuthorities(authorities);
+    	this.roles = new ArrayList<>(roles);
     	this.expired = expired;
     	this.locked = locked;
     	this.vaildPassword = vaildPassword;
     	this.enabled = enabled;
     }
     
-    public User(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+    public User(@NonNull String username, @NonNull String password, @NonNull List<UserRole> roles) {
     	
-    	this(username, password, authorities, false, false, true, true);
+    	this(username, password, roles, false, false, true, true);
     }
     
-    public User(String username, String password, GrantedAuthority... authorities) {
+    public User(@NonNull String username, @NonNull String password, UserRole... roles) {
     	
-    	this(username, password, Arrays.stream(authorities).toList());
+    	this(username, password, Arrays.stream(roles).toList());
     }
     
 
@@ -87,23 +93,31 @@ public class User implements UserDetails {
 		this.password = password;
 	}
 
-	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
-		
-		return authorities;
-	}
 
-
-	public void setAuthorities(Collection<? extends GrantedAuthority> authorities) {
+	public void setRoles(Collection<? extends Permissible> authorities) {
 		
-		this.authorities = authorities.stream().map(role -> new UserAuthority(role.getAuthority())).toList();
+		this.roles = authorities.stream().map(role -> DatabaseManager.getUserRoleRepository().findByRoleIgnoreCase(role.getIdentity())).toList();
 	}
 	
-	public <T extends GrantedAuthority> void setAuthorities(T... authorities) {
+	public <T extends Permissible> void setAuthorities(T... authorities) {
 		
-		this.setAuthorities(Arrays.asList(authorities));
+		this.setRoles(Arrays.asList(authorities));
 	}
 	
+	public Collection<? extends UserRole> getRoles() {
+		
+		return Collections.unmodifiableCollection(roles);
+	}
+	
+	public Collection<? extends UserPermission> getPermissions() {
+		//TODO combin all roles and self permissions
+		return Collections.unmodifiableCollection(permissions);
+	}
+	
+	public OwnedPermissionCollection getOwnedPermissionCollection() {
+		
+		return new OwnedPermissionCollection(permissions);
+	}
 
 	@Override
 	public boolean isAccountNonExpired() {
@@ -162,11 +176,41 @@ public class User implements UserDetails {
 		return super.toString() + "(" + this.username + ")";
 	}
 
-	public Collection<UserPermission> getPermissions() {
-		return permissions;
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		
+		return this.getPermissions();
 	}
 
-	public void setPermissions(Collection<UserPermission> permissions) {
-		this.permissions = permissions;
+	@Override
+	public OperatorRole getOperatorRole() {
+		
+		Optional<UserRole> role = this.roles.stream().max((x, y) -> Integer.compare(x.getPower(), y.getPower()));
+		
+		return role.isEmpty() ? OperatorRole.VISITOR : role.get().getOperatorRole();
+	}
+
+	@Override
+	public String getIdentity() {
+		
+		return this.username;
+	}
+
+	@Override
+	public boolean hasPermitted(String authority) {
+
+		return this.getPermissions().stream().anyMatch(permission -> permission.compareTo(authority) >= 0);
+	}
+
+	@Override
+	public <T extends Permission> void addPermission(T permission) {
+		
+		this.getOwnedPermissionCollection().add(permission);
+	}
+
+	@Override
+	public <T extends Permission> void removePermission(T permission) {
+		
+		this.getOwnedPermissionCollection().remove(permission);
 	}
 }

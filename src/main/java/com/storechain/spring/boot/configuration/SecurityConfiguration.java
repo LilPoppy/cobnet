@@ -25,10 +25,10 @@ import com.storechain.connection.handler.http.security.HttpAccessDeniedHandler;
 import com.storechain.connection.handler.http.security.HttpAuthenticationFailureHandler;
 import com.storechain.connection.handler.http.security.HttpAuthenticationSuccessHandler;
 import com.storechain.connection.handler.http.security.HttpInvalidSessionHandler;
-import com.storechain.interfaces.spring.repository.UserAuthorityRepository;
+import com.storechain.interfaces.spring.repository.UserRoleRepository;
 import com.storechain.interfaces.spring.repository.UserRepository;
 import com.storechain.spring.boot.entity.User;
-import com.storechain.spring.boot.entity.UserAuthority;
+import com.storechain.spring.boot.entity.UserRole;
 import com.storechain.utils.SpringContext;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -47,7 +47,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	private String userDefaultAuthority;
 	
 	@Autowired
-	private UserAuthorityRepository authorityRepository;
+	private UserRoleRepository authorityRepository;
 	
     @Bean
     public PasswordEncoder passwordEncoder(){
@@ -97,7 +97,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		this.authorityDefaultPower = authorityDefaultPower;
 	}
 
-	public UserAuthority getUserDefaultAuthority() {
+	public UserRole getUserDefaultAuthority() {
 		
 		var optional = this.authorityRepository.findById(userDefaultAuthority);
 		

@@ -5,8 +5,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import com.storechain.interfaces.spring.repository.PermissionRepository;
-import com.storechain.interfaces.spring.repository.UserAuthorityRepository;
+import com.storechain.interfaces.spring.repository.UserPermissionRepository;
+import com.storechain.interfaces.spring.repository.UserRoleRepository;
 import com.storechain.interfaces.spring.repository.UserRepository;
 import com.storechain.spring.boot.service.JpaExtensionRepository;
 
@@ -40,12 +40,12 @@ public class PersistenceConfiguration {
 		return repo;
 	}
 	
-	public UserAuthorityRepository getAnotherRepo() {
+	public UserRoleRepository getAnotherRepo() {
 		
 		return anotherRepo;
 	}
 	
-	public PermissionRepository getKkRepo() {
+	public UserPermissionRepository getKkRepo() {
 		
 		return kkRepo;
 	}
@@ -54,10 +54,11 @@ public class PersistenceConfiguration {
 	private UserRepository repo;
 	
 	@Autowired
-	private UserAuthorityRepository anotherRepo;
+	private UserRoleRepository anotherRepo;
 	
 	@Autowired
-	private PermissionRepository kkRepo;
+	private UserPermissionRepository kkRepo;
+	
 
 	public static class DataSourceConfiguration {
 

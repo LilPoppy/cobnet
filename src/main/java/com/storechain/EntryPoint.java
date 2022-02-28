@@ -18,11 +18,12 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 
 import com.storechain.interfaces.connection.NettyServerProvider;
-import com.storechain.interfaces.spring.repository.UserAuthorityRepository;
+import com.storechain.interfaces.spring.repository.UserRoleRepository;
 import com.storechain.polyglot.PolyglotContext;
 import com.storechain.spring.boot.configuration.NettyConfiguration;
 import com.storechain.spring.boot.entity.User;
-import com.storechain.spring.boot.entity.UserAuthority;
+import com.storechain.spring.boot.entity.UserRole;
+import com.storechain.spring.boot.entity.UserPermission;
 import com.storechain.utils.DatabaseManager;
 import com.storechain.utils.ScriptEngineManager;
 import com.storechain.utils.SpringContext;
@@ -166,19 +167,21 @@ public class EntryPoint {
 	public static void main(String[] args) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException, IOException, NoSuchFieldException {
 	
 		initialize(args);
-		UserAuthority entity = new UserAuthority("admin");
+		UserRole admin = new UserRole("admin");
 		
-		SpringContext.getPersistenceConfiguration().getAnotherRepo().save(entity);
-		User user = new User("admin", "123456", entity);
+		UserRole tester = new UserRole("tester");
+		SpringContext.getPersistenceConfiguration().getAnotherRepo().save(admin);
+		
+		
+		User user = new User("admin", "123456", admin);
 
-		
 		//SpringContext.getPersistenceConfiguration().getAnotherRepo().save(entity);
 		//SpringContext.getPersistenceConfiguration().getKkRepo().save(auths);
-
+		SpringContext.getPersistenceConfiguration().getRepo().save(user);
+		SpringContext.getPersistenceConfiguration().getKkRepo().save(new UserPermission("read", "test.read"));
+	    //System.out.println(SpringContext.getPersistenceConfiguration().getRepo().findByUsernameIgnoreCase("admin").getAuthorities());
 		
-	    SpringContext.getPersistenceConfiguration().getRepo().save(user);
-		
-		UserAuthorityRepository repo = new JpaRepositoryFactory(SpringContext.getContext().getBean(EntityManager.class)).getRepository(UserAuthorityRepository.class);
+		//UserAuthorityRepository repo = new JpaRepositoryFactory(SpringContext.getContext().getBean(EntityManager.class)).getRepository(UserAuthorityRepository.class);
 		
 		//repo.save(entity);
 
