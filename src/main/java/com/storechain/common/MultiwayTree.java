@@ -6,6 +6,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Stack;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import com.storechain.interfaces.TreeNode;
 
@@ -76,7 +78,44 @@ public class MultiwayTree<T extends Comparable<T>> extends AbstractList<Multiway
     	return Collections.unmodifiableList(children);
     }
     
-    public void bfs(Function<? super MultiwayTree<T>, Boolean> predicated) {
+    public void dfs(Function<? super MultiwayTree<T>, Boolean> predicate, Runnable new_line) {
+    	
+		Stack<MultiwayTree<T>> stack = new Stack<>();
+		
+		stack.add(this);
+		
+		while (!stack.isEmpty()) {
+
+			MultiwayTree<T> node = stack.pop();
+			
+			if(node.getLevel() == this.getLevel() + 1) {
+				
+	            if(new_line != null) {
+	            	
+	            	new_line.run();
+	            }
+			}
+			
+        	if((predicate == null && new_line == null) || !predicate.apply(node)) {
+        		
+        		return;
+        	}
+        		
+    		for(int j = node.children.size() - 1; j >= 0; j--) {
+    			
+    			stack.add(node.children.get(j));
+    		}
+        	
+		}
+
+    }
+    
+    public void dfs(Function<? super MultiwayTree<T>, Boolean> predicate) {
+    	
+    	this.dfs(predicate, null);
+    }
+    
+    public void bfs(Function<? super MultiwayTree<T>, Boolean> predicate, Runnable new_line) {
     	
         Queue<MultiwayTree<T>> queue = new LinkedList<>();
         
@@ -90,7 +129,7 @@ public class MultiwayTree<T extends Comparable<T>> extends AbstractList<Multiway
             	
             	MultiwayTree<T> node = queue.poll();
                 
-            	if(!predicated.apply(node)) {
+            	if((predicate == null && new_line == null) || !predicate.apply(node)) {
             		
             		return;
             	}
@@ -99,8 +138,19 @@ public class MultiwayTree<T extends Comparable<T>> extends AbstractList<Multiway
                 	
                     queue.offer(item);
                 }
+                
+            }
+            
+            if(new_line != null) {
+            	
+            	new_line.run();
             }
         }
+    }
+    
+    public void bfs(Function<? super MultiwayTree<T>, Boolean> predicate) {
+    	
+    	this.bfs(predicate, null);
     }
     
 	@Override
@@ -155,6 +205,23 @@ public class MultiwayTree<T extends Comparable<T>> extends AbstractList<Multiway
     	return node;
     }
     
+    public void flip() {
+    	
+        for (MultiwayTree<T> child: this.children) {
+        	
+            child.flip();
+        }
+ 
+        int n = this.children.size();
+        
+        for (int i = 0, j = n - 1; i < j; i++, j--)
+        {
+        	MultiwayTree<T> temp = this.children.get(i);
+        	this.children.set(i, this.children.get(j));
+        	this.children.set(j, temp);
+        }
+    }
+    
 
 	@Override
 	public int compareTo(MultiwayTree<T> o) {
@@ -170,6 +237,29 @@ public class MultiwayTree<T extends Comparable<T>> extends AbstractList<Multiway
 	@Override
 	protected List<MultiwayTree<T>> getList() {
 		return this.children;
+	}
+	
+	
+	public static <T extends Comparable<T>> MultiwayTreeNode<T> from(T[] instances) {
+		
+		if(instances.length > 0) {
+			
+			var root = new MultiwayTreeNode<T>(instances[0]);
+			
+			if(instances.length > 1) {
+				
+				MultiwayTreeNode<T> node = from(instances);
+				
+				if(node != null) {
+					
+					root.add(node);
+				}
+			}
+			
+			return root;
+		}
+
+		return null;
 	}
 	
 	public static MultiwayTreeNode<String> from(String text, String regex, int limit) {
@@ -211,35 +301,5 @@ public class MultiwayTree<T extends Comparable<T>> extends AbstractList<Multiway
 		return from(text, "\\.");
 	}
 	
-	public static class MultiwayTreeNode<T extends Comparable<T>> extends MultiwayTree<T> {
-
-		protected MultiwayTree<T> parent;
-		
-		public MultiwayTreeNode(T value, MultiwayTreeNode<T> parent) {
-			super(value);
-			this.parent = parent;
-		}
-		
-		public MultiwayTreeNode(T value) {
-			this(value, null);
-		}
-		
-		@Override
-		public int getLevel() {
-			
-			if(this.parent == null) {
-				
-				return 0;
-			}
-
-			return this.parent.getLevel() + 1;
-		}
-		
-		public MultiwayTree<T> getParent() {
-			
-			return this.parent;
-		}
-		
-	}
 	
 }

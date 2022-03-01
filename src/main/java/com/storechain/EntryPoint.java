@@ -287,10 +287,36 @@ public class EntryPoint {
 		
 		root.add(MultiwayTree.from("e.f.g.h"));
 		
-		System.out.println(root.contains(MultiwayTree.from("a.e.f.g.h")));
+		root.add(MultiwayTree.from("i.j.k"));
 		
-	//root.get(1).add(MultiwayTree.fromString( "i.j.k"));
-		System.out.println(root.stream().flatMap(MultiwayTree::stream).map(t -> t.getValue()).collect(Collectors.toList()));
+		System.out.println(root.get(0).getValue());
+		
+		root.get(0).add(MultiwayTree.from("l.m.n"));
+		
+		System.out.println("dfs:");
+		
+		root.dfs(node -> {
+			
+			System.out.print(node.getValue() + " ");
+			
+			return true;
+		}, () -> System.out.println(""));
+		
+		
+		
+		System.out.println("\nbfs:");
+		
+		root.bfs(node -> {
+			
+			System.out.print(node.getValue() + " ");
+			
+			return true;
+		}, () -> System.out.println());
+		
+		//System.out.println(root.contains(MultiwayTree.from("a.e.f.g.h")));
+		
+	
+		//System.out.println(root.stream().flatMap(MultiwayTree::stream).map(t -> t.getValue()).collect(Collectors.toList()));
 
 		root.contains(root);
 		//System.out.println(root.getChildByLevel(3).getValue());

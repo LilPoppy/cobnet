@@ -91,7 +91,7 @@ public class DatabaseManager {
 	}
 	
 	@Component
-	private final static class DatabaseManagerBean {
+	final static class DatabaseManagerBean {
 		
 		@Autowired
 		public void setUserRepository(UserRepository repository) {
