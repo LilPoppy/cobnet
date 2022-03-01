@@ -7,7 +7,7 @@ import java.util.Map;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.storechain.Endian;
+import com.storechain.common.Endian;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;

@@ -9,7 +9,8 @@ import java.util.Map.Entry;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import com.storechain.Endian;
+
+import com.storechain.common.Endian;
 import com.storechain.connection.netty.NettyServer;
 
 import io.netty.channel.ChannelOption;

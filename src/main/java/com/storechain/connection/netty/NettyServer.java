@@ -18,7 +18,7 @@ import java.util.concurrent.ScheduledFuture;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
 import com.storechain.EntryPoint;
-import com.storechain.KeyValuePair;
+import com.storechain.common.KeyValuePair;
 import com.storechain.connection.InboundPacket;
 import com.storechain.connection.netty.handler.ChannelInitializeHandler;
 import com.storechain.interfaces.connection.ConnectionListener;

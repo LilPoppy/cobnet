@@ -1,6 +1,6 @@
 package com.storechain.utils;
 
-import com.storechain.Event;
+import com.storechain.common.Event;
 import com.storechain.interfaces.EventHandler;
 import com.storechain.polyglot.PolyglotContext;
 import com.storechain.polyglot.PolyglotEngine;

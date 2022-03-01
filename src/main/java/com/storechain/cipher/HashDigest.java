@@ -1,4 +1,4 @@
-package com.storechain.algorithm;
+package com.storechain.cipher;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

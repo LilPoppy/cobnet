@@ -7,7 +7,7 @@ import org.bouncycastle.util.Arrays;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.storechain.Endian;
+import com.storechain.common.Endian;
 import com.storechain.connection.netty.NettyServer;
 import com.storechain.constants.LogicConstants;
 import com.storechain.interfaces.connection.Encodable;

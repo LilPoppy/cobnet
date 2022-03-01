@@ -1,4 +1,4 @@
-package com.storechain;
+package com.storechain.common;
 
 import java.util.Map.Entry;
 

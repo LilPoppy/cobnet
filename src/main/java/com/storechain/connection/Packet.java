@@ -3,7 +3,7 @@ package com.storechain.connection;
 import java.nio.charset.Charset;
 
 import com.google.common.io.BaseEncoding;
-import com.storechain.Endian;
+import com.storechain.common.Endian;
 
 import io.netty.buffer.ByteBuf;
 import reactor.core.Disposable;

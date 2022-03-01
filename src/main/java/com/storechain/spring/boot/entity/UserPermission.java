@@ -6,6 +6,7 @@ import javax.persistence.Id;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import com.storechain.common.MultiwayTree;
 import com.storechain.interfaces.security.permission.Permission;
 import com.storechain.utils.SpringContext;
 
@@ -32,6 +33,7 @@ public class UserPermission implements Permission {
     	this.name = name;
     	this.authority = authority;
     	this.description = description;
+    	this.power = power;
     }
     
     public UserPermission(@NonNull String name, @NonNull String authority, int power) {
@@ -108,8 +110,8 @@ public class UserPermission implements Permission {
 	@Override
 	public int compareTo(String authority) {
 
-		//TODO Multiway search tree 
-		return 0;
+		//TODO 
+		return MultiwayTree.from(this.authority).compareTo(MultiwayTree.from(authority));
 	}
 
 }

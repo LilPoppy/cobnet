@@ -1,4 +1,4 @@
-package com.storechain.utils;
+package com.storechain.common;
 
 import java.util.function.Consumer;
 import java.util.function.Function;

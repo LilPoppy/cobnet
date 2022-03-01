@@ -15,6 +15,7 @@ import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.session.Session;
 import org.springframework.stereotype.Component;
 
+import com.storechain.common.CommonConverter;
 import com.storechain.interfaces.spring.repository.UserPermissionRepository;
 import com.storechain.interfaces.spring.repository.UserRepository;
 import com.storechain.interfaces.spring.repository.UserRoleRepository;
@@ -29,6 +30,8 @@ public class DatabaseManager {
 	private static UserRoleRepository USER_ROLE_REPOSITORY;
 	
 	private static UserPermissionRepository USER_PERMISSION_REPOSITORY;
+	
+	public DatabaseManager() {}
 
 	public static <T extends JsonRedisService<K, V> ,K, V> T getJsonRedisService(Class<K> key, Class<V> value) {
 		

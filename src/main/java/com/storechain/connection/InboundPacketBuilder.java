@@ -2,7 +2,7 @@ package com.storechain.connection;
 
 import java.nio.charset.Charset;
 
-import com.storechain.Endian;
+import com.storechain.common.Endian;
 import com.storechain.interfaces.connection.PacketBuilder;
 
 public class InboundPacketBuilder implements PacketBuilder<InboundPacket> {
