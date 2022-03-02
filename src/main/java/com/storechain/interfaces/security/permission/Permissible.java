@@ -10,12 +10,12 @@ public interface Permissible extends Operator {
 	
 	 public Collection<? extends Permission> getPermissions();
 	 
-	 public default boolean hasPermitted(Permission permission) {
+	 public default boolean isPermitted(Permission permission) {
 		 
-		 return this.hasPermitted(permission.getAuthority());
+		 return this.isPermitted(permission.getAuthority());
 	 }
 	 
-	 public boolean hasPermitted(String authority);
+	 public boolean isPermitted(String authority);
 	 
 	 public <T extends Permission> void addPermission(T permission);
 	 

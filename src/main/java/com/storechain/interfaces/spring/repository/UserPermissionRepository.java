@@ -1,10 +1,9 @@
 package com.storechain.interfaces.spring.repository;
 
-import org.springframework.stereotype.Repository;
-
 import com.storechain.spring.boot.entity.UserPermission;
 
-@Repository
-public interface UserPermissionRepository extends ExtensionRepository<UserPermission, String>  {
+
+public interface UserPermissionRepository extends ExtensionRepository<UserPermission, String> {
+
 
 }

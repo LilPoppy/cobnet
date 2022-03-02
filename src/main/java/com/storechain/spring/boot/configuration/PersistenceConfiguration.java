@@ -1,13 +1,8 @@
 package com.storechain.spring.boot.configuration;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-
-import com.storechain.interfaces.spring.repository.UserPermissionRepository;
-import com.storechain.interfaces.spring.repository.UserRoleRepository;
-import com.storechain.interfaces.spring.repository.UserRepository;
 import com.storechain.spring.boot.service.JpaExtensionRepository;
 
 @Configuration
@@ -36,30 +31,6 @@ public class PersistenceConfiguration {
 		this.jpa = jpa;
 	}
 	
-	public UserRepository getRepo() {
-		return repo;
-	}
-	
-	public UserRoleRepository getAnotherRepo() {
-		
-		return anotherRepo;
-	}
-	
-	public UserPermissionRepository getKkRepo() {
-		
-		return kkRepo;
-	}
-
-	@Autowired
-	private UserRepository repo;
-	
-	@Autowired
-	private UserRoleRepository anotherRepo;
-	
-	@Autowired
-	private UserPermissionRepository kkRepo;
-	
-
 	public static class DataSourceConfiguration {
 
 		private String driverClassName;

@@ -7,7 +7,6 @@ import java.util.function.Consumer;
 import javax.persistence.EntityManager;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextException;
 import org.springframework.core.ResolvableType;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -106,7 +105,7 @@ public class DatabaseManager {
 		}
 		
 		@Autowired
-		public void setUserPermissionRepository(UserPermissionRepository repository) {
+		public void setUserPermission(UserPermissionRepository repository) {
 			
 			DatabaseManager.USER_PERMISSION_REPOSITORY = repository;
 		}

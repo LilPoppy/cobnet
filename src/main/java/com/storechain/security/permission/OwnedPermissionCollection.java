@@ -1,27 +1,59 @@
 package com.storechain.security.permission;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
-import com.storechain.common.AbstractList;
-import com.storechain.interfaces.security.permission.Permission;
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+
+import com.storechain.common.AbstractSet;
+import com.storechain.common.MultiwayTreeNode;
+import com.storechain.interfaces.security.permission.Permissible;
+import com.storechain.spring.boot.entity.EntityBase;
 import com.storechain.spring.boot.entity.UserPermission;
+import com.storechain.utils.DatabaseManager;
 
-public class OwnedPermissionCollection extends AbstractList<Permission> {
-
-	private List<? extends Permission> permissions;
+public class OwnedPermissionCollection extends AbstractSet<UserPermission> {
 	
-	public OwnedPermissionCollection(List<UserPermission> permissions) {
+	private final Set<UserPermission> permissions;
+	
+	public OwnedPermissionCollection(Set<UserPermission> permissions) {
 		
 		this.permissions = permissions;
 	}
 	
-	public OwnedPermissionCollection() {
+	@Override
+	protected Set<UserPermission> getSet() {
 		
-		this(new ArrayList<>());
+		return this.permissions;
 	}
 	
+	@Override
+	public boolean add(UserPermission permission) {
+		
+		if(permission instanceof UserPermission) {
+			
+			if(DatabaseManager.getUserPermissionRepository() != null) {
+				
+				Optional<UserPermission> optional = DatabaseManager.getUserPermissionRepository().findOne(Example.of((UserPermission)permission, ExampleMatcher.matching().withIgnorePaths("last_modify_time").withIgnoreCase()));
+				
+				if(optional.isEmpty()) {
+					
+					DatabaseManager.getUserPermissionRepository().save((UserPermission) permission);	
+				} else {
+					
+					if(optional.get().getLastModfiedTime().before(((UserPermission) permission).getLastModfiedTime())) {
+						
+						DatabaseManager.getUserPermissionRepository().save((UserPermission) permission);	
+					}
+				}
+			}
+		}
+
+		return super.add(permission);
+	}
 	
+
 	public void add(UserPermission... permissions) {
 		
 		for(int i = 0; i < permissions.length; i++) {
@@ -29,14 +61,21 @@ public class OwnedPermissionCollection extends AbstractList<Permission> {
 			this.add(permissions[i]);
 		}
 	}
-
-	@Override
-	protected List<Permission> getList() {
-		
-		return (List<Permission>) this.permissions;
-	}
-
 	
-
-
+	public boolean hasPermission(UserPermission permission) {
+		
+		MultiwayTreeNode<String> root = new MultiwayTreeNode<String>("collection");
+		
+		for(UserPermission content : this) {
+			
+			root.add(MultiwayTreeNode.from(content.getAuthority()));
+		}
+		
+		return root.contains(MultiwayTreeNode.from(permission.getAuthority()), "*");
+	}
+	
+	public boolean hasPermission(String permission) {
+		
+		return this.hasPermission(new UserPermission(permission));
+	}
 }

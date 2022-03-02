@@ -3,33 +3,22 @@ package com.storechain;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-
-import javax.persistence.EntityManager;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
-import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
-
-import com.storechain.common.MultiwayTree;
+import com.storechain.common.MultiwayTreeNode;
 import com.storechain.interfaces.connection.NettyServerProvider;
-import com.storechain.interfaces.spring.repository.UserRoleRepository;
 import com.storechain.polyglot.PolyglotContext;
+import com.storechain.security.OperatorRole;
 import com.storechain.spring.boot.configuration.NettyConfiguration;
 import com.storechain.spring.boot.entity.User;
-import com.storechain.spring.boot.entity.UserRole;
 import com.storechain.spring.boot.entity.UserPermission;
+import com.storechain.spring.boot.entity.UserRole;
 import com.storechain.utils.DatabaseManager;
 import com.storechain.utils.ScriptEngineManager;
 import com.storechain.utils.SpringContext;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * @author lilpoppy  
@@ -250,84 +239,21 @@ public class EntryPoint {
     
 
 	public static void main(String[] args) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException, IOException, NoSuchFieldException {
-	
+
 		initialize(args);
-		UserRole admin = new UserRole("admin");
 		
-		UserRole tester = new UserRole("tester");
-		SpringContext.getPersistenceConfiguration().getAnotherRepo().save(admin);
-		
-		
-		User user = new User("admin", "123456", admin);
 
-		//SpringContext.getPersistenceConfiguration().getAnotherRepo().save(entity);
-		//SpringContext.getPersistenceConfiguration().getKkRepo().save(auths);
-		SpringContext.getPersistenceConfiguration().getRepo().save(user);
-		SpringContext.getPersistenceConfiguration().getKkRepo().save(new UserPermission("read", "test.read"));
-	    //System.out.println(SpringContext.getPersistenceConfiguration().getRepo().findByUsernameIgnoreCase("admin").getAuthorities());
-		
-		//UserAuthorityRepository repo = new JpaRepositoryFactory(SpringContext.getContext().getBean(EntityManager.class)).getRepository(UserAuthorityRepository.class);
-		
-		//repo.save(entity);
 
-		//DatabaseManager.getJpaRepository(UserGrantedAuthorityRepository.class).save(UserGrantedAuthority.fromData("Tester"));
-		//DatabaseManager.getJpaRepository(UserGrantedAuthorityRepository.class).save(UserGrantedAuthority.fromData("Admin"));
-		//DatabaseManager.getJpaRepository(UserGrantedAuthorityRepository.class).save(UserGrantedAuthority.fromData("User"));
 
-		//DatabaseManager.getJpaRepository(UserAuthoritiesRepository.class).save(UserGrantedAuthorities.fromData(user, new ArrayList<>() {{
-		//	this.add(UserGrantedAuthority.fromData("Tester"));
-		//}}));
+		User user = new User("admin", "123456", new UserRole("admin", OperatorRole.ADMIN, new UserPermission("admin.read"), new UserPermission("admin.write"), new UserPermission("admin.test")));
 
+		DatabaseManager.getUserRepository().save(user);
 		//DatabaseManager.getJpaRepository(UserRepository.class).save(user);
 		//figlet();
 		//benchGraalPolyglotContext();
         
 		
-		var root = MultiwayTree.from("a.b.c.d");
-		
-		root.add(MultiwayTree.from("e.f.g.h"));
-		
-		root.add(MultiwayTree.from("i.j.k"));
-		
-		System.out.println(root.get(0).getValue());
-		
-		root.get(0).add(MultiwayTree.from("l.m.n"));
-		
-		System.out.println("dfs:");
-		
-		root.dfs(node -> {
-			
-			System.out.print(node.getValue() + " ");
-			
-			return true;
-		}, () -> System.out.println(""));
-		
-		
-		
-		System.out.println("\nbfs:");
-		
-		root.bfs(node -> {
-			
-			System.out.print(node.getValue() + " ");
-			
-			return true;
-		}, () -> System.out.println());
-		
-		//System.out.println(root.contains(MultiwayTree.from("a.e.f.g.h")));
-		
-	
-		//System.out.println(root.stream().flatMap(MultiwayTree::stream).map(t -> t.getValue()).collect(Collectors.toList()));
-
-		root.contains(root);
-		//System.out.println(root.getChildByLevel(3).getValue());
-		System.out.println("height:" + root.getDepth());
-		System.out.println("width:" + root.getBreadth());
-		System.out.println("root level:" + root.getLevel());
-		System.out.println(root.get(0).getValue() + " level :" + root.get(0).getLevel());
-		System.out.println(root.get(0).get(0).getValue() + " level :" + root.get(0).get(0).getLevel());
-		System.out.println(root.get(0).get(0).get(0).getValue() + " level :" + root.get(0).get(0).get(0).getLevel());
-		
-		
+		//System.exit(0);
 		
 		
 	}

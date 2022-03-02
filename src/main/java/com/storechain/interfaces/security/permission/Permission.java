@@ -4,8 +4,6 @@ import org.springframework.security.core.GrantedAuthority;
 
 public interface Permission extends GrantedAuthority, Comparable<Permission> {
 
-	public String getName();
-	
 	public String getDescription();
 	
 	public int getPower();
