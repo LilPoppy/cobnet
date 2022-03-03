@@ -27,15 +27,16 @@ public final class UserRole extends EntityBase implements Permissible {
 	
 	private OperatorRole rule;
 
+	private transient OwnedPermissionCollection permissionCollection;
+	
 	@ManyToMany
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JoinTable(name = "role_permissions", joinColumns = {
 			@JoinColumn(name = "role", referencedColumnName = "role") }, inverseJoinColumns = {
-					@JoinColumn(name = "permissions", referencedColumnName = "authority") })
+					@JoinColumn(name = "permission", referencedColumnName = "authority") })
 	private Set<UserPermission> permissions = new HashSet<UserPermission>();
 
-	public UserRole() {
-	}
+	public UserRole() {}
 
 	public UserRole(@NonNull String role, OperatorRole rule) {
 
@@ -79,7 +80,12 @@ public final class UserRole extends EntityBase implements Permissible {
 
 	public OwnedPermissionCollection getOwnedPermissionCollection() {
 
-		return new OwnedPermissionCollection(this.permissions);
+		if(this.permissionCollection == null) {
+			
+			this.permissionCollection = new OwnedPermissionCollection(this, this.permissions);
+		}
+		
+		return this.permissionCollection;
 	}
 
 	@Override
@@ -128,14 +134,7 @@ public final class UserRole extends EntityBase implements Permissible {
 	@Override
 	public boolean isPermitted(String authority) {
 		
-		MultiwayTreeNode<String> root = new MultiwayTreeNode<String>(this.role);
-		
-		for(Permission permission : this.getPermissions()) {
-			
-			root.add(MultiwayTreeNode.from(permission.getAuthority()));
-		}
-		
-		return root.contains(MultiwayTreeNode.from(authority));
+		return this.getOwnedPermissionCollection().hasPermission(authority);
 	}
 
 	@Override

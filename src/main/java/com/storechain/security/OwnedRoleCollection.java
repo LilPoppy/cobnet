@@ -32,7 +32,7 @@ public class OwnedRoleCollection extends AbstractSet<UserRole> {
 		
 		if(DatabaseManager.getUserRoleRepository() != null) {
 			
-			Optional<UserRole> optional = DatabaseManager.getUserRoleRepository().findOne(Example.of(role, ExampleMatcher.matching().withIgnorePaths("last_modify_time").withIgnoreCase()));
+			Optional<UserRole> optional = DatabaseManager.getUserRoleRepository().findOne(Example.of(role, ExampleMatcher.matching().withIgnorePaths("created_time", "last_modified_time").withIgnoreCase()));
 			
 			if(optional.isEmpty()) {
 				
@@ -48,5 +48,10 @@ public class OwnedRoleCollection extends AbstractSet<UserRole> {
 		
 		return super.add(role);
     }
+	
+	public Optional<UserRole> getByName(String name) {
+		
+		return this.stream().filter(role -> role.getRole().equalsIgnoreCase(name)).findFirst();
+	}
 
 }

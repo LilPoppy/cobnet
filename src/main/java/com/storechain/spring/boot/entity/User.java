@@ -41,16 +41,20 @@ public final class User extends EntityBase implements UserDetails, Permissible {
 	@Column(nullable = false)
     private String password;
     
+	private transient OwnedRoleCollection roleCollection;
+	
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "user_roles", joinColumns = { @JoinColumn(name = "user", referencedColumnName = "username") },
             inverseJoinColumns = { @JoinColumn(name = "role", referencedColumnName = "role") })
     private Set<UserRole> roles = new HashSet<>();
     
+	private transient OwnedPermissionCollection permissionsCollection;
+    
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "user_permissions", joinColumns = { @JoinColumn(name = "user", referencedColumnName = "username") },
-    		inverseJoinColumns = { @JoinColumn(name = "permissions", referencedColumnName = "authority") })
+    		inverseJoinColumns = { @JoinColumn(name = "permission", referencedColumnName = "authority") })
     private Set<UserPermission> permissions = new HashSet<UserPermission>();
 
     private boolean expired;
@@ -122,12 +126,22 @@ public final class User extends EntityBase implements UserDetails, Permissible {
 	
 	public OwnedRoleCollection getOwnedRoleCollection() {
 		
-		return new OwnedRoleCollection(roles);
+		if(this.roleCollection == null) {
+			
+			this.roleCollection = new OwnedRoleCollection(this.roles);
+		}
+		
+		return this.roleCollection;
 	}
 	
 	public OwnedPermissionCollection getOwnedPermissionCollection() {
 		
-		return new OwnedPermissionCollection(permissions);
+		if(this.permissionsCollection == null) {
+			
+			this.permissionsCollection = new OwnedPermissionCollection(this, this.permissions);
+		}
+		
+		return this.permissionsCollection;
 	}
 
 	@Override
@@ -210,7 +224,7 @@ public final class User extends EntityBase implements UserDetails, Permissible {
 	@Override
 	public boolean isPermitted(String authority) {
 
-		return Stream.of(this.getOwnedRoleCollection().stream().map(collection -> collection.getOwnedPermissionCollection()).toList(), this.getOwnedPermissionCollection()).anyMatch(collection -> ((OwnedPermissionCollection)collection).hasPermission(authority));
+		return this.getOwnedPermissionCollection().hasPermission(authority) || this.getOwnedRoleCollection().stream().anyMatch(role -> role.isPermitted(authority));
 	}
 
 	@Override

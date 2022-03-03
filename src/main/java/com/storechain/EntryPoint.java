@@ -241,19 +241,37 @@ public class EntryPoint {
 	public static void main(String[] args) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException, IOException, NoSuchFieldException {
 
 		initialize(args);
+
+		UserPermission[] permissions = new UserPermission[1000];
+		
+		for(int i = 0 ; i < 1000; i++) {
+			
+			permissions[i] = new UserPermission("test." + i);
+		}
+		
+		User user = new User("admin", "123456", new UserRole("admin", OperatorRole.ADMIN, new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")));
+
+		
+		DatabaseManager.getUserRepository().save(user);
+
 		
 
-
-
-		User user = new User("admin", "123456", new UserRole("admin", OperatorRole.ADMIN, new UserPermission("admin.read"), new UserPermission("admin.write"), new UserPermission("admin.test")));
-
-		DatabaseManager.getUserRepository().save(user);
 		//DatabaseManager.getJpaRepository(UserRepository.class).save(user);
 		//figlet();
 		//benchGraalPolyglotContext();
         
+        long start = System.currentTimeMillis();
+        
+		for(int i = 0; i < 1; i++) {
+
+			System.out.println(user.isPermitted("user.read.lm"));
+		}
 		
-		//System.exit(0);
+        long took = System.currentTimeMillis() - start;
+        
+        System.out.println("took:" + took);
+        
+		System.exit(0);
 		
 		
 	}

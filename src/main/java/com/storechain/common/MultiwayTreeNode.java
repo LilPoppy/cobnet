@@ -6,12 +6,16 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import com.storechain.interfaces.TreeNode;
 
-public class MultiwayTreeNode<T extends Comparable<T>> extends AbstractList<MultiwayTreeNode<T>> implements TreeNode<T> {
+public class MultiwayTreeNode<T> extends AbstractList<MultiwayTreeNode<T>> implements TreeNode<T> {
 	
 	private final T value;
 	
@@ -78,7 +82,7 @@ public class MultiwayTreeNode<T extends Comparable<T>> extends AbstractList<Mult
     	
     	var children = new ArrayList<Integer>();
     	
-    	this.bfs(child -> children.add(child.getLevel()));
+    	this.bfs((child,index) -> children.add(child.getLevel()));
     	
     	int depth = children.stream().max((x, y) -> Integer.compare(x, y)).orElse(0);
     	
@@ -113,7 +117,7 @@ public class MultiwayTreeNode<T extends Comparable<T>> extends AbstractList<Mult
     	
     	List<MultiwayTreeNode<T>> children = new ArrayList<>();
     	
-    	this.bfs(child -> 
+    	this.bfs((child, index) -> 
     	{
     		if(child.getLevel() == level) {
     			
@@ -126,50 +130,17 @@ public class MultiwayTreeNode<T extends Comparable<T>> extends AbstractList<Mult
     	return Collections.unmodifiableList(children);
     }
     
+    public Optional<MultiwayTreeNode<T>> getFirstChildByValue(T value) {
+    	
+    	return this.children.stream().filter(child -> child.getValue().equals(value)).findFirst();
+    }
+    
     @Override
     public boolean contains(Object obj) {
     	
-    	throw new UnsupportedOperationException("Use another contains instread.");
-    }
-    
-	public boolean contains(MultiwayTreeNodeChild<T> node) {
-		
-		return this.contains((MultiwayTreeNodeChild<T>)node, null);
-	}
-    
-    
-	public boolean contains(MultiwayTreeNodeChild<T> node, T... bypass) {
-		
-		return this.contains((MultiwayTreeNode<T>)node, bypass);
-	}
-	
-	public boolean contains(MultiwayTreeNode<T> node) {
-		
-		return this.contains(node, null);
-	}
-    
-    public boolean contains(MultiwayTreeNode<T> node, T... bypass) {
-    	
-    	int size = this.size();
-    	
-    	for(int i = 0; i < size; i++) {
+    	for(var child : this) {
     		
-    		var child = this.get(i);
-    		
-    		if(bypass != null && bypass.length > 0) {
-    			
-        		if(Arrays.stream(bypass).anyMatch(pass -> node.getValue().equals(pass) || node.getValue().compareTo(pass) == 0)) {
-        			
-        			return true;
-        		}	
-    		}
-    		
-    		if(child.getValue().equals(node.getValue()) || child.getValue().compareTo(node.getValue()) == 0) {
-    			
-    			if(node.size() > 0) {
-    				
-    				return node.stream().allMatch(t -> child.contains(t, bypass));
-    			} 
+    		if(child.value.equals(obj)) {
     			
     			return true;
     		}
@@ -177,26 +148,23 @@ public class MultiwayTreeNode<T extends Comparable<T>> extends AbstractList<Mult
     	
     	return false;
     }
+
     
-    public void dfs(Function<? super MultiwayTreeNode<T>, Boolean> predicate, Runnable new_line) {
+    public void dfs(BiFunction<? super MultiwayTreeNode<T>, Integer, Boolean> predicate, Runnable new_line) {
     	
 		Stack<MultiwayTreeNode<T>> stack = new Stack<>();
 		
 		stack.add(this);
 		
+		int index = 0;
+		
 		while (!stack.isEmpty()) {
 
 			MultiwayTreeNode<T> node = stack.pop();
 			
-			if(node.getLevel() == this.getLevel() + 1) {
-				
-	            if(new_line != null) {
-	            	
-	            	new_line.run();
-	            }
-			}
+			index++;
 			
-        	if((predicate == null && new_line == null) || !predicate.apply(node)) {
+        	if((predicate == null && new_line == null) || !predicate.apply(node, index)) {
         		
         		return;
         	}
@@ -205,21 +173,31 @@ public class MultiwayTreeNode<T extends Comparable<T>> extends AbstractList<Mult
     			
     			stack.add(node.children.get(j));
     		}
+    		
+			if(stack.isEmpty() || node.getLevel() + 1 == stack.peek().getLevel()) {
+				
+	            if(new_line != null) {
+	            	new_line.run();
+	            }
+			}
+
         	
 		}
 
     }
     
-    public void dfs(Function<? super MultiwayTreeNode<T>, Boolean> predicate) {
+    public void dfs(BiFunction<? super MultiwayTreeNode<T>, Integer, Boolean> predicate) {
     	
     	this.dfs(predicate, null);
     }
     
-    public void bfs(Function<? super MultiwayTreeNode<T>, Boolean> predicate, Runnable new_line) {
+    public void bfs(BiFunction<? super MultiwayTreeNode<T>, Integer, Boolean> predicate, Runnable new_line) {
     	
         Queue<MultiwayTreeNode<T>> queue = new LinkedList<>();
         
         queue.offer(this);
+        
+        int index = 0;
         
         while(!queue.isEmpty()) {
         	
@@ -227,10 +205,11 @@ public class MultiwayTreeNode<T extends Comparable<T>> extends AbstractList<Mult
             
             for(int i = 0; i < len; i++) {
             	
+            	index++;
             	MultiwayTreeNode<T> node = queue.poll();
                 
-            	if((predicate == null && new_line == null) || !predicate.apply(node)) {
-            		
+            	if((predicate == null && new_line == null) || !predicate.apply(node, index)) {
+
             		return;
             	}
             	
@@ -248,7 +227,7 @@ public class MultiwayTreeNode<T extends Comparable<T>> extends AbstractList<Mult
         }
     }
     
-    public void bfs(Function<? super MultiwayTreeNode<T>, Boolean> predicate) {
+    public void bfs(BiFunction<? super MultiwayTreeNode<T>, Integer, Boolean> predicate) {
     	
     	this.bfs(predicate, null);
     }
@@ -351,7 +330,7 @@ public class MultiwayTreeNode<T extends Comparable<T>> extends AbstractList<Mult
             child.flip();
         }
  
-        int n = this.children.size();
+        int n = this.size();
         
         for (int i = 0, j = n - 1; i < j; i++, j--)
         {
@@ -370,7 +349,7 @@ public class MultiwayTreeNode<T extends Comparable<T>> extends AbstractList<Mult
     	
     	MultiwayTreeNodeChild<T> node = new MultiwayTreeNodeChild<T>(this.getValue());
     	
-    	for(MultiwayTreeNode<T> child : this.children) {
+    	for(MultiwayTreeNode<T> child : this) {
     		
     		if(child instanceof MultiwayTreeNodeChild<T>) {
     			
@@ -395,7 +374,7 @@ public class MultiwayTreeNode<T extends Comparable<T>> extends AbstractList<Mult
     	
     	MultiwayTreeNode<T> node = new MultiwayTreeNode<T>(this.getValue());
     	
-    	for(MultiwayTreeNode<T> child : this.children) {
+    	for(MultiwayTreeNode<T> child : this) {
     		
     		if(child instanceof MultiwayTreeNodeChild<T>) {
     			

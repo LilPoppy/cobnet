@@ -1,6 +1,6 @@
 package com.storechain.common;
 
-public final class MultiwayTreeNodeChild<T extends Comparable<T>> extends MultiwayTreeNode<T> {
+public final class MultiwayTreeNodeChild<T> extends MultiwayTreeNode<T> {
 
 	protected MultiwayTreeNode<T> parent;
 	

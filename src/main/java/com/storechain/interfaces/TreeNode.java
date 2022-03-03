@@ -1,6 +1,6 @@
 package com.storechain.interfaces;
 
-public interface TreeNode<T extends Comparable<T>> {
+public interface TreeNode<T> {
 	
 	public default boolean isRoot() {
 		
