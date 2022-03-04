@@ -271,7 +271,7 @@ public class EntryPoint {
         
         System.out.println("took:" + took);
         
-		System.exit(0);
+        
 		
 		
 	}

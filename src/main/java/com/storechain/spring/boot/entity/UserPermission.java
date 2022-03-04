@@ -31,7 +31,7 @@ public final class UserPermission extends EntityBase implements Permission {
     
     public UserPermission(@NonNull String authority, String description) {
     	
-    	this(authority, description, SpringContext.getSecurityConfiguration().getAuthorityDefaultPower());
+    	this(authority, description, SpringContext.getSecurityConfiguration().getPermissionDefaultPower());
     }
     
     public UserPermission(@NonNull String authority, int power) {

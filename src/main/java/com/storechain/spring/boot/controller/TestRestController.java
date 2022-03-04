@@ -9,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,6 +22,7 @@ public class TestRestController {
 	@Autowired
 	private AuthenticationProvider provider;
 	
+	@PostAuthorize("hasAuthority('FOO_READ_PRIVILEGE')")
 	@PostMapping("/doLogin")
 	public ModelAndView login(HttpServletRequest request, String username, String password) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
 
@@ -58,6 +60,7 @@ public class TestRestController {
     	return model;
 	}
 	
+	@PostAuthorize("hasPermission(returnObject, 'read')")
     @PostMapping("/doRegister")
     public String register(String username, String password) {
     	System.out.println("@asdasdE@");

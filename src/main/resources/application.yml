@@ -96,4 +96,5 @@ system:
       continue-existing-periodic-tasks-after-shutdown-policy: false
       execute-existing-delayed-tasks-after-shutdown-policy: false
 security:
-   authority-default-power: 3
+   permission-default-power: 3
+   user-default-role: "user"
