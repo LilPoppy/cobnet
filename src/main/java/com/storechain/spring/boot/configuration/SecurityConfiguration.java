@@ -42,7 +42,7 @@ import com.storechain.utils.SpringContext;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-@EnableGlobalMethodSecurity(securedEnabled = true)
+//@EnableGlobalMethodSecurity(securedEnabled = true)
 @EnableWebSecurity(debug = false)
 @Configuration
 @ConfigurationProperties("security")
