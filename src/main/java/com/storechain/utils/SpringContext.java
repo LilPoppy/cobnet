@@ -1,9 +1,20 @@
 package com.storechain.utils;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
 import org.springframework.context.ApplicationContext;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.storechain.spring.boot.configuration.NettyConfiguration;
 import com.storechain.spring.boot.configuration.PersistenceConfiguration;
@@ -63,6 +74,45 @@ public final class SpringContext {
 	
 	public static ProjectInformationConfiguration getProjectInformationConfiguration() {
 		return PROJECT_INFOMATION_CONFIGURATION;
+	}
+	
+	
+	public static ServletRequest getCurrentRequest() {
+		
+	    RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+	    
+	    if (attributes instanceof ServletRequestAttributes) {
+	    	
+	        return ((ServletRequestAttributes)attributes).getRequest();
+	    }
+	    
+	    return null;
+	}
+	
+	public static ServletResponse getCurrentResponse() {
+		
+	    RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+	    
+	    if (attributes instanceof ServletRequestAttributes) {
+	    	
+	    	return ((ServletRequestAttributes)attributes).getResponse();
+	    }
+	    
+	    return null;
+	}
+	
+    public static Object getDynamicValue(String[] parameterNames, Object[] args, String key) {
+		
+    	ExpressionParser parser = new SpelExpressionParser();
+    	
+		StandardEvaluationContext context = new StandardEvaluationContext();
+		
+		for (int i = 0; i < parameterNames.length; i++) {
+			
+			context.setVariable(parameterNames[i], args[i]);
+		}
+		
+		return parser.parseExpression(key).getValue(context, Object.class);
 	}
 
 	@Component

@@ -1,6 +1,5 @@
 package com.storechain.spring.boot.controller;
 
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -17,9 +16,10 @@ public class TestController {
         return "loginPage";
     }
 
-    @PreAuthorize("hasPermission(#id, 'Foo', 'read')")
+    //@PreAuthorize("hasPermission(#id, 'Foo', 'read')")
     @GetMapping("/register")
     public String register() {
         return "registerPage";
     }
+    
 }

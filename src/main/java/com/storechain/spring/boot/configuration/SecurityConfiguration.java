@@ -1,28 +1,33 @@
 package com.storechain.spring.boot.configuration;
 
-import java.io.Serializable;
+import java.io.IOException;
+import java.lang.reflect.Method;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
+import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.access.PermissionEvaluator;
-import org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler;
-import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
-import org.springframework.security.config.annotation.method.configuration.GlobalMethodSecurityConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -32,8 +37,8 @@ import com.storechain.connection.handler.http.security.HttpAccessDeniedHandler;
 import com.storechain.connection.handler.http.security.HttpAuthenticationFailureHandler;
 import com.storechain.connection.handler.http.security.HttpAuthenticationSuccessHandler;
 import com.storechain.connection.handler.http.security.HttpInvalidSessionHandler;
-import com.storechain.interfaces.spring.repository.UserRoleRepository;
-import com.storechain.interfaces.spring.repository.UserRepository;
+import com.storechain.connection.handler.http.security.HttpLogoutHandler;
+import com.storechain.interfaces.annotation.AccessSecured;
 import com.storechain.spring.boot.entity.User;
 import com.storechain.spring.boot.entity.UserRole;
 import com.storechain.utils.DatabaseManager;
@@ -42,13 +47,13 @@ import com.storechain.utils.SpringContext;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-//@EnableGlobalMethodSecurity(securedEnabled = true)
 @EnableWebSecurity(debug = false)
 @Configuration
 @ConfigurationProperties("security")
+@EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-	final static String[] PERMIT_MATCHERS = { "/register", "/doRegister", "/login", "/doLogin" };
+	final static String[] PERMITTED_MATCHERS = { "/register", "/doRegister", "/login", "/doLogin" };
 
 	private byte permissionDefaultPower;
 
@@ -71,23 +76,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Bean
 	public UserDetailsService userDetailsServiceBean() {
 
-		return (UserDetailsService) SpringContext.getContext().getAutowireCapableBeanFactory()
-				.getBean(UserRepository.class);
+		return (UserDetailsService) DatabaseManager.getUserRepository();
 	}
 
 	@Override
 	protected void configure(HttpSecurity security) throws Exception {
-
+		
 		security.csrf().disable().formLogin().loginPage("/login").successHandler(new HttpAuthenticationSuccessHandler())
 				.failureHandler(new HttpAuthenticationFailureHandler()).and().exceptionHandling()
-				.accessDeniedHandler(new HttpAccessDeniedHandler()).and().authorizeRequests()
-				.antMatchers(PERMIT_MATCHERS).permitAll().anyRequest().authenticated().and().logout()
-				.logoutUrl("/logout").invalidateHttpSession(true).and().sessionManagement()
-				.invalidSessionStrategy(new HttpInvalidSessionHandler()).maximumSessions(3);
+				.accessDeniedHandler(new HttpAccessDeniedHandler()).and()
+				.authorizeRequests().antMatchers(PERMITTED_MATCHERS).permitAll().anyRequest().authenticated().and()
+				.logout().logoutUrl("/logout").invalidateHttpSession(true).logoutSuccessUrl("/").addLogoutHandler(new HttpLogoutHandler()).and()
+				.sessionManagement().invalidSessionStrategy(new HttpInvalidSessionHandler()).maximumSessions(1);
 	}
 
 	public void configure(WebSecurity web) {
-		web.ignoring().antMatchers(PERMIT_MATCHERS);
+		web.ignoring().antMatchers(PERMITTED_MATCHERS);
 	}
 
 	@Override
@@ -113,33 +117,33 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 
 	@Component
-	final static class SimpleAuthenticationProvider implements AuthenticationProvider {
-
-		@Autowired
-		private UserRepository repository;
-
-		private Object monitor = new Object();
+	final static class UserAuthenticationProvider implements AuthenticationProvider {
 
 		@Override
 		public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-			UsernamePasswordAuthenticationToken token = (UsernamePasswordAuthenticationToken) authentication;
+			if(authentication.getCredentials() != null) {
 
-			synchronized (monitor) {
-
-				User user = (User) repository.loadUserByUsername(token.getName());
+				User user = (User) DatabaseManager.getUserRepository().loadUserByUsername(authentication.getName());
 
 				if (user == null) {
 					throw new UsernameNotFoundException("User is not exist.");
 				}
 
-				if (!user.getPassword().equals(token.getCredentials().toString())) {
+				if (!user.getPassword().equals(authentication.getCredentials().toString())) {
 
 					throw new BadCredentialsException("Wrong password");
 				}
-
+				
+				UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), user.getAuthorities());;
+				
+				token.setDetails(user);
+				
 				return token;
+				
 			}
+
+			return authentication;
 		}
 
 		@Override
@@ -149,56 +153,78 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		}
 	}
 
-	@Configuration
-	@EnableGlobalMethodSecurity(prePostEnabled = true)
-	public static class MethodSecurityConfig extends GlobalMethodSecurityConfiguration {
+	@Aspect
+	@Component
+	static final class AccessSecureAspect {
+		
+	    @Around("@annotation(com.storechain.interfaces.annotation.AccessSecured)")
+	    public Object processMethodsAnnotatedWithAccessSecuredAnnotation(ProceedingJoinPoint joinPoint) throws Throwable {
 
-		@Override
-		protected MethodSecurityExpressionHandler createExpressionHandler() {
-			DefaultMethodSecurityExpressionHandler expressionHandler = new DefaultMethodSecurityExpressionHandler();
-			expressionHandler.setPermissionEvaluator(new CustomPermissionEvaluator());
-			return expressionHandler;
-		}
-	}
-	
-	final static class CustomPermissionEvaluator implements PermissionEvaluator {
+	        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+	        Method method = signature.getMethod();
+	        
+	        AccessSecured annotation = method.getAnnotation(AccessSecured.class);
 
-		@Override
-		public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
+	        String[] roles = annotation.roles();
+	        String[] permissions = annotation.permissions();
+	        
+	        Object detail = SecurityContextHolder.getContext().getAuthentication().getDetails();
 
-			if ((authentication == null) || (targetDomainObject == null) || !(permission instanceof String)) {
+	        User user = annotation.user().length() > 0 || detail == null || !(detail instanceof User) ? DatabaseManager.getUserRepository().findByUsernameIgnoreCase((String) SpringContext.getDynamicValue(signature.getParameterNames(), joinPoint.getArgs(), annotation.user().length() > 0 ? annotation.user() : (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal())) : (User) detail;
+	        
+	        if(user != null) {
+	        	
+		        if(roles.length > 0) {
+		        	
+			        if (user.hasRole(roles)) {
+			        	
+			            return joinPoint.proceed();
+			            
+			        } else {
 
-				return false;
-			}
+			        	accessDenied();
+			        	return null;
+			        }
+		        }
+		        
+		        if(permissions.length > 0) {
+		        	
+			        if (user.hasPermission(permissions)) {
+			        	
+			            return joinPoint.proceed();
+			        } else {
+			        	
+			        	accessDenied();
+			        	return null;
+			        }
+		        }
+	        } else if(roles.length > 0 && permissions.length > 0) {
+	        	
+	        	accessDenied();
+	        	return null;
+	        }
 
-			String targetType = targetDomainObject.getClass().getSimpleName().toUpperCase();
-
-			return hasPrivilege(authentication, targetType, permission.toString().toUpperCase());
-		}
-
-		@Override
-		public boolean hasPermission(Authentication authentication, Serializable targetId, String targetType, Object permission) {
-
-			if ((authentication == null) || (targetType == null) || !(permission instanceof String)) {
-				return false;
-			}
-			return hasPrivilege(authentication, targetType.toUpperCase(), permission.toString().toUpperCase());
-		}
-
-		private boolean hasPrivilege(Authentication authentication, String targetType, String permission) {
-			
-			System.out.println("authentication: " + authentication);
-			System.out.println("targetType: " + targetType);
-			System.out.println("permission: " + permission);
-			for (GrantedAuthority grantedAuth : authentication.getAuthorities()) {
-				if (grantedAuth.getAuthority().startsWith(targetType)
-						&& grantedAuth.getAuthority().contains(permission)) {
-					return true;
+	        
+	        return joinPoint.proceed();
+	    }
+	    
+	    private void accessDenied() {
+	    	
+	    	ServletRequest request = SpringContext.getCurrentRequest();
+	    	
+	    	if(request instanceof HttpServletRequest) {
+	    		
+	    		HttpServletResponse response = (HttpServletResponse) SpringContext.getCurrentResponse();
+	    		
+	    		try {
+					new HttpAccessDeniedHandler().handle((HttpServletRequest) request, response, new AccessDeniedException("An exception occurred when getting access denied response."));
+				} catch (IOException | ServletException e) {
+					e.printStackTrace();
 				}
-			}
-			return false;
-		}
-
+	    		
+	    		return;
+	    	}
+	    	
+	    }
 	}
-
 }

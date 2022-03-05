@@ -1,5 +1,6 @@
 package com.storechain.spring.boot.entity;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,10 +18,13 @@ import com.storechain.interfaces.security.permission.Permissible;
 import com.storechain.interfaces.security.permission.Permission;
 import com.storechain.security.OperatorRole;
 import com.storechain.security.permission.OwnedPermissionCollection;
+
+import lombok.Data;
 import reactor.util.annotation.NonNull;
 
 @Entity
-public final class UserRole extends EntityBase implements Permissible {
+@Data
+public final class UserRole extends EntityBase implements Permissible, Serializable {
 
 	@Id
 	private String role;

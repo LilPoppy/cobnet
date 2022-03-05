@@ -11,7 +11,7 @@ import org.json.JSONObject;
 import org.springframework.security.web.session.InvalidSessionStrategy;
 import org.springframework.stereotype.Component;
 
-@Component("HttpInvalidSessionHandler")
+@Component
 public class HttpInvalidSessionHandler implements InvalidSessionStrategy {
 
 	@Override

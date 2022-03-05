@@ -242,6 +242,10 @@ public class EntryPoint {
 
 		initialize(args);
 
+		MultiwayTreeNode.from("test.aaa").bfs((t, index) -> {
+			System.out.println(t.getValue());
+			return true;
+		});
 		UserPermission[] permissions = new UserPermission[1000];
 		
 		for(int i = 0 ; i < 1000; i++) {
@@ -254,7 +258,7 @@ public class EntryPoint {
 		
 		DatabaseManager.getUserRepository().save(user);
 
-		
+
 
 		//DatabaseManager.getJpaRepository(UserRepository.class).save(user);
 		//figlet();

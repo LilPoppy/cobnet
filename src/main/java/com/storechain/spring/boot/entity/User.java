@@ -226,6 +226,11 @@ public final class User extends EntityBase implements UserDetails, Permissible {
 
 		return this.getOwnedPermissionCollection().hasPermission(authority) || this.getOwnedRoleCollection().stream().anyMatch(role -> role.isPermitted(authority));
 	}
+	
+	public boolean hasPermission(String... authorities) {
+		
+		return Arrays.stream(authorities).allMatch(authority -> this.isPermitted(authority));
+	}
 
 	@Override
 	public <T extends Permission> void addPermission(T permission) {
@@ -237,5 +242,15 @@ public final class User extends EntityBase implements UserDetails, Permissible {
 	public <T extends Permission> void removePermission(T permission) {
 		
 		this.getOwnedPermissionCollection().remove(permission);
+	}
+	
+	public boolean hasRole(String... roles) {
+		
+		return Arrays.stream(roles).allMatch(role -> isRole(role));
+	}
+	
+	public boolean isRole(String name) {
+		
+		return this.roles.stream().anyMatch(role -> role.getRole().toLowerCase().equals(name.toLowerCase()));
 	}
 }

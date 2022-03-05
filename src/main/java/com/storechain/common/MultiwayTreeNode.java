@@ -432,7 +432,7 @@ public class MultiwayTreeNode<T> extends AbstractList<MultiwayTreeNode<T>> imple
 			
 			if(nodes.length > 1) {
 				
-				text = text.substring(nodes[0].length() + 1, text.length());
+				text = String.join(regex, Arrays.copyOfRange(nodes, 1, nodes.length));
 				
 				if(text.length() > 0) {
 					
