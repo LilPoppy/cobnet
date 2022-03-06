@@ -16,6 +16,8 @@ import org.springframework.stereotype.Component;
 
 import com.storechain.common.CommonConverter;
 import com.storechain.interfaces.spring.repository.UserPermissionRepository;
+import com.storechain.interfaces.spring.repository.UserProviderAuthorityRepository;
+import com.storechain.interfaces.spring.repository.UserProviderRepository;
 import com.storechain.interfaces.spring.repository.UserRepository;
 import com.storechain.interfaces.spring.repository.UserRoleRepository;
 import com.storechain.spring.boot.service.JsonRedisService;
@@ -29,6 +31,10 @@ public class DatabaseManager {
 	private static UserRoleRepository USER_ROLE_REPOSITORY;
 	
 	private static UserPermissionRepository USER_PERMISSION_REPOSITORY;
+	
+	private static UserProviderRepository USER_PROVIDER_REPOSITORY;
+	
+	private static UserProviderAuthorityRepository USER_PROVIDER_AUTHORITY_REPOSITORY;
 	
 	public DatabaseManager() {}
 
@@ -89,6 +95,16 @@ public class DatabaseManager {
 		return DatabaseManager.USER_PERMISSION_REPOSITORY;
 	}
 	
+	public static UserProviderRepository getUserProviderRepository() {
+		
+		return DatabaseManager.USER_PROVIDER_REPOSITORY;
+	}
+	
+	public static UserProviderAuthorityRepository getUserProviderAuthorityRepository() {
+		
+		return DatabaseManager.USER_PROVIDER_AUTHORITY_REPOSITORY;
+	}
+	
 	@Component
 	final static class DatabaseManagerBean {
 		
@@ -108,6 +124,18 @@ public class DatabaseManager {
 		public void setUserPermission(UserPermissionRepository repository) {
 			
 			DatabaseManager.USER_PERMISSION_REPOSITORY = repository;
+		}
+		
+		@Autowired
+		public void setUserProviderRepository(UserProviderRepository repository) {
+			
+			DatabaseManager.USER_PROVIDER_REPOSITORY = repository;
+		}
+		
+		@Autowired
+		public void setUserProviderAuthorityRepository(UserProviderAuthorityRepository repository) {
+			
+			DatabaseManager.USER_PROVIDER_AUTHORITY_REPOSITORY = repository;
 		}
 	}
 

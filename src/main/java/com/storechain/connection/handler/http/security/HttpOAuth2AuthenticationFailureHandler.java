@@ -13,13 +13,13 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.stereotype.Component;
 
 @Component
-public class HttpAuthenticationFailureHandler implements AuthenticationFailureHandler {
+public class HttpOAuth2AuthenticationFailureHandler implements AuthenticationFailureHandler {
 
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
 
 		response.setContentType("application/json;charset=utf-8");
-		
+		System.out.println("关联失败！");
         try(PrintWriter writer = response.getWriter()) {
         	
         	writer.write(JSONObject.stringToValue("login failure!").toString().toCharArray());

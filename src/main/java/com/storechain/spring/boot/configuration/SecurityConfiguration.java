@@ -2,7 +2,11 @@ package com.storechain.spring.boot.configuration;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.annotation.Resource;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +19,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,24 +27,33 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
+import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Component;
 import com.storechain.connection.handler.http.security.HttpAccessDeniedHandler;
-import com.storechain.connection.handler.http.security.HttpAuthenticationFailureHandler;
-import com.storechain.connection.handler.http.security.HttpAuthenticationSuccessHandler;
+import com.storechain.connection.handler.http.security.HttpOAuth2AuthenticationFailureHandler;
+import com.storechain.connection.handler.http.security.HttpOAuth2AuthenticationSuccessHandler;
 import com.storechain.connection.handler.http.security.HttpInvalidSessionHandler;
 import com.storechain.connection.handler.http.security.HttpLogoutHandler;
 import com.storechain.interfaces.annotation.AccessSecured;
 import com.storechain.spring.boot.entity.User;
+import com.storechain.spring.boot.entity.UserProvider;
+import com.storechain.spring.boot.entity.UserProviderAuthority;
 import com.storechain.spring.boot.entity.UserRole;
 import com.storechain.utils.DatabaseManager;
 import com.storechain.utils.SpringContext;
@@ -49,16 +63,19 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 @EnableWebSecurity(debug = false)
 @Configuration
-@ConfigurationProperties("security")
+@ConfigurationProperties("spring.security")
 @EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
-	final static String[] PERMITTED_MATCHERS = { "/register", "/doRegister", "/login", "/doLogin" };
-
+	final static String[] PERMITTED_MATCHERS = { "/register", "/doRegister", "/login", "/doLogin", "/login/oauth2/code/google",  "/oauth2/authorization/google", "/userinfo"};
+	
 	private byte permissionDefaultPower;
 
 	private String userDefaultRole;
-
+	
+	@Resource
+	private Environment environment;
+	
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -82,21 +99,42 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity security) throws Exception {
 		
-		security.csrf().disable().formLogin().loginPage("/login").successHandler(new HttpAuthenticationSuccessHandler())
-				.failureHandler(new HttpAuthenticationFailureHandler()).and().exceptionHandling()
-				.accessDeniedHandler(new HttpAccessDeniedHandler()).and()
+		security.csrf().disable()
 				.authorizeRequests().antMatchers(PERMITTED_MATCHERS).permitAll().anyRequest().authenticated().and()
-				.logout().logoutUrl("/logout").invalidateHttpSession(true).logoutSuccessUrl("/").addLogoutHandler(new HttpLogoutHandler()).and()
-				.sessionManagement().invalidSessionStrategy(new HttpInvalidSessionHandler()).maximumSessions(1);
-	}
-
-	public void configure(WebSecurity web) {
-		web.ignoring().antMatchers(PERMITTED_MATCHERS);
+				.oauth2Login().userInfoEndpoint().oidcUserService(oidcUserService()).and().loginPage("/login").successHandler(new HttpOAuth2AuthenticationSuccessHandler()).failureHandler(new HttpOAuth2AuthenticationFailureHandler()).and()
+				.exceptionHandling().accessDeniedHandler(new HttpAccessDeniedHandler()).and()
+				.logout().logoutUrl("/logout").invalidateHttpSession(true).addLogoutHandler(new HttpLogoutHandler()).and()
+				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.NEVER).invalidSessionStrategy(new HttpInvalidSessionHandler()).maximumSessions(1);
 	}
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		super.configure(auth);
+	}
+	
+	private OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService() {
+		final OidcUserService delegate = new OidcUserService();
+
+		return (userRequest) -> {
+			
+			OidcUser oidcUser = delegate.loadUser(userRequest);
+
+			String identity = "";
+			
+			if(oidcUser.getEmail() != null && oidcUser.getEmail().length() > 0 && oidcUser.getEmailVerified()) {
+				
+				identity = oidcUser.getEmail();
+			}
+			
+			if(oidcUser.getPhoneNumber() != null && oidcUser.getPhoneNumber().length() > 0 && oidcUser.getPhoneNumberVerified()) {
+				
+				identity = oidcUser.getPhoneNumber();
+			}
+			
+			oidcUser = new UserProvider(identity, userRequest.getClientRegistration().getClientId(), oidcUser.getName(), userRequest.getAccessToken().getTokenValue(),oidcUser.getIdToken().getTokenValue(), oidcUser.getAuthorities().stream().map(authority -> new UserProviderAuthority(authority.getAuthority())).toList(), new HashMap<>(oidcUser.getClaims()));
+			
+			return oidcUser;
+		};
 	}
 
 	public byte getPermissionDefaultPower() {
@@ -115,6 +153,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public void setUserDefaultRole(String userDefaultRole) {
 		this.userDefaultRole = userDefaultRole;
 	}
+	
 
 	@Component
 	final static class UserAuthenticationProvider implements AuthenticationProvider {
@@ -122,6 +161,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		@Override
 		public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
+			System.out.println("使用了Provider");
+			
 			if(authentication.getCredentials() != null) {
 
 				User user = (User) DatabaseManager.getUserRepository().loadUserByUsername(authentication.getName());

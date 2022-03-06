@@ -91,11 +91,5 @@ public final class UserPermission extends EntityBase implements Permission {
 
 		return this.authority;
 	}
-	
-	@Override
-	public int compareTo(String authority) {
-
-		return 0;//MultiwayTreeNode.from("permission." + this.authority).contains(MultiwayTreeNode.from(authority), "*") ? 0 : -1;
-	}
 
 }

@@ -8,6 +8,8 @@ project:
 spring:
    application:
       name: ${project.information.name}
+   main:
+      allow-circular-references: true
    sleuth:
       async:
          enabled: false
@@ -40,6 +42,30 @@ spring:
    session:
       store-type: redis
       namespace: spring
+   security:
+      permission-default-power: 3
+      user-default-role: "user"
+      oauth2:
+         client:
+            registration:
+               google:
+                  clientId: "811637203260-c71hf4g335jiq50aas1e8o02tk15iq0s.apps.googleusercontent.com"
+                  clientSecret: "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"
+                  client-authentication-method: basic
+                  authorization-grant-type: authorization_code
+                  redirect-uri-template: "{baseUrl}/login/oauth2/code/{registrationId}"
+                  scope: openid, profile, email, address, phone
+                  client-name: Google Login
+               resource:
+                  user-info-uri: https://www.googleapis.com/userinfo/v2/me
+                  prefer-token-info: false
+            provider: 
+               google:   
+                  authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+                  token-uri: https://www.googleapis.com/oauth2/v4/token
+                  user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+                  jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
+                  user-name-attribute: sub
 logging:
    file: 
       name: ./logs/spring.log
@@ -95,6 +121,4 @@ system:
       remove-on-cancel-policy: true
       continue-existing-periodic-tasks-after-shutdown-policy: false
       execute-existing-delayed-tasks-after-shutdown-policy: false
-security:
-   permission-default-power: 3
-   user-default-role: "user"
+

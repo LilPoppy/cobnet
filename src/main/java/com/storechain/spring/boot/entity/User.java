@@ -28,6 +28,7 @@ import com.storechain.common.MultiwayTreeNode;
 import com.storechain.interfaces.security.permission.Permissible;
 import com.storechain.interfaces.security.permission.Permission;
 import com.storechain.security.OperatorRole;
+import com.storechain.security.OwnedProviderCollection;
 import com.storechain.security.OwnedRoleCollection;
 import com.storechain.security.permission.OwnedPermissionCollection;
 import reactor.util.annotation.NonNull;
@@ -56,6 +57,14 @@ public final class User extends EntityBase implements UserDetails, Permissible {
     @JoinTable(name = "user_permissions", joinColumns = { @JoinColumn(name = "user", referencedColumnName = "username") },
     		inverseJoinColumns = { @JoinColumn(name = "permission", referencedColumnName = "authority") })
     private Set<UserPermission> permissions = new HashSet<UserPermission>();
+    
+    private transient OwnedProviderCollection providerCollection;
+    
+    @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(name = "user_providers", joinColumns = { @JoinColumn(name = "user", referencedColumnName = "username") },
+	inverseJoinColumns = { @JoinColumn(name = "identify", referencedColumnName = "identify"), @JoinColumn(name = "provider", referencedColumnName = "provider") })
+    private Set<UserProvider> providers = new HashSet<UserProvider>();
 
     private boolean expired;
     
@@ -122,6 +131,16 @@ public final class User extends EntityBase implements UserDetails, Permissible {
 	public Set<? extends UserPermission> getPermissions() {
 		
 		return Stream.of(roles.stream().map(role -> role.getPermissions()).flatMap(Collection::stream).collect(Collectors.toList()), permissions).flatMap(Collection::stream).distinct().collect(Collectors.toUnmodifiableSet());
+	}
+	
+	public OwnedProviderCollection getOwnedProviderCollection() {
+		
+		if(this.providerCollection == null) {
+			
+			this.providerCollection = new OwnedProviderCollection(this.providers);
+		}
+		
+		return this.providerCollection;
 	}
 	
 	public OwnedRoleCollection getOwnedRoleCollection() {
@@ -253,4 +272,6 @@ public final class User extends EntityBase implements UserDetails, Permissible {
 		
 		return this.roles.stream().anyMatch(role -> role.getRole().toLowerCase().equals(name.toLowerCase()));
 	}
+	
+	
 }

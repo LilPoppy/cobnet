@@ -1,23 +1,31 @@
 package com.storechain.spring.boot.controller;
 
-import java.lang.reflect.Field;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.ui.Model;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
+import org.thymeleaf.util.StringUtils;
 
 import com.storechain.interfaces.annotation.AccessSecured;
 
@@ -26,6 +34,12 @@ public class TestRestController {
 	
 	@Autowired
 	private AuthenticationProvider provider;
+	
+    @Autowired
+    private ClientRegistrationRepository clientRegistrationRepository;
+    
+	@Autowired
+	private OAuth2AuthorizedClientService authorizedClientService;
 	
 	@PostMapping("/doLogin")
 	public ModelAndView login(HttpServletRequest request, String username, String password) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
@@ -77,6 +91,14 @@ public class TestRestController {
     	System.out.println("成功！");
     	
     	return "success";
+    }
+    
+    @PostMapping("/process")
+    public String loginInfo(OAuth2AuthenticationToken authentication) {
+    	
+    	System.out.println(authentication);
+    	
+    	return "process";
     }
     
     
