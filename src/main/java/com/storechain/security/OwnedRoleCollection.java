@@ -51,7 +51,7 @@ public class OwnedRoleCollection extends AbstractSet<UserRole> {
 	
 	public Optional<UserRole> getByName(String name) {
 		
-		return this.stream().filter(role -> role.getRole().equalsIgnoreCase(name)).findFirst();
+		return this.stream().filter(role -> role.getName().equalsIgnoreCase(name)).findFirst();
 	}
 
 }

@@ -99,6 +99,14 @@ The GraalVM native-image compiler should be installed and configured on your mac
 To create the executable, run the following goal:
 
 ```
+$ mvn clean package
+```
+
+```
+$ java -agentlib:native-image-agent=config-merge-dir=src/main/java/ -jar target/storechain-server.jar
+```
+
+```
 $ mvn clean package -Pnative
 ```
 

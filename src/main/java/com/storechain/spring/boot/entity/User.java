@@ -25,16 +25,17 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.storechain.common.MultiwayTreeNode;
+import com.storechain.interfaces.security.Operator;
 import com.storechain.interfaces.security.permission.Permissible;
 import com.storechain.interfaces.security.permission.Permission;
-import com.storechain.security.OperatorRole;
+import com.storechain.security.RoleRule;
 import com.storechain.security.OwnedProviderCollection;
 import com.storechain.security.OwnedRoleCollection;
 import com.storechain.security.permission.OwnedPermissionCollection;
 import reactor.util.annotation.NonNull;
 
 @Entity
-public final class User extends EntityBase implements UserDetails, Permissible {
+public final class User extends EntityBase implements UserDetails, Permissible, Operator {
 
 	@Id
     private String username;
@@ -63,7 +64,7 @@ public final class User extends EntityBase implements UserDetails, Permissible {
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "user_providers", joinColumns = { @JoinColumn(name = "user", referencedColumnName = "username") },
-	inverseJoinColumns = { @JoinColumn(name = "identify", referencedColumnName = "identify"), @JoinColumn(name = "provider", referencedColumnName = "provider") })
+	inverseJoinColumns = { @JoinColumn(name = "identity", referencedColumnName = "identity") })
     private Set<UserProvider> providers = new HashSet<UserProvider>();
 
     private boolean expired;
@@ -227,11 +228,11 @@ public final class User extends EntityBase implements UserDetails, Permissible {
 	}
 
 	@Override
-	public OperatorRole getOperatorRole() {
+	public RoleRule getRule() {
 		
 		Optional<UserRole> role = this.roles.stream().max((x, y) -> Integer.compare(x.getPower(), y.getPower()));
 		
-		return role.isEmpty() ? OperatorRole.VISITOR : role.get().getOperatorRole();
+		return role.isEmpty() ? RoleRule.VISITOR : role.get().getRule();
 	}
 
 	@Override
@@ -270,7 +271,13 @@ public final class User extends EntityBase implements UserDetails, Permissible {
 	
 	public boolean isRole(String name) {
 		
-		return this.roles.stream().anyMatch(role -> role.getRole().toLowerCase().equals(name.toLowerCase()));
+		return this.roles.stream().anyMatch(role -> role.getName().toLowerCase().equals(name.toLowerCase()));
+	}
+
+	@Override
+	public String getName() {
+
+		return this.username;
 	}
 	
 	

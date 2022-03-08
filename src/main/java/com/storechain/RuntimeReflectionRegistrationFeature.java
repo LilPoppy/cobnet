@@ -7,6 +7,7 @@ import com.storechain.connection.netty.NettyBaseServerProvider;
 import com.storechain.connection.netty.websocket.WebSocketClientConverter;
 import com.storechain.connection.netty.websocket.WebSocketServerProvider;
 import com.storechain.connection.netty.websocket.handler.WebSocketServerInitializeHandler;
+import com.storechain.interfaces.security.annotation.AccessSecured;
 
 import org.graalvm.nativeimage.hosted.Feature;
 import org.graalvm.nativeimage.hosted.RuntimeReflection;
@@ -22,6 +23,7 @@ public class RuntimeReflectionRegistrationFeature implements Feature {
 		var metaAccess = config.getMetaAccess();
 		
 	    try {
+	    	RuntimeReflection.register(AccessSecured.class);
 	        RuntimeReflection.register(NettyBaseServerProvider.class);
 	        RuntimeReflection.register(NettyBaseServerProvider.class.getDeclaredConstructor());
 	        RuntimeReflection.register(WebSocketServerProvider.class);

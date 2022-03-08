@@ -1,6 +1,7 @@
 package com.storechain.spring.boot.entity.utils;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.persistence.AttributeConverter;
@@ -29,8 +30,8 @@ public class JsonMapConverter implements AttributeConverter<Map<String,Object>, 
 	@Override
 	public Map<String, Object> convertToEntityAttribute(String dbData) {
 		try {
-
-			return MAPPER.readValue(dbData, Map.class);
+			
+			return dbData != null ? MAPPER.readValue(dbData, Map.class) : new HashMap<String,Object>();
 
 		} catch (IOException ex) {
 

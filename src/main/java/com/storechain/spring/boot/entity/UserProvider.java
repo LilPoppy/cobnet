@@ -1,6 +1,7 @@
 package com.storechain.spring.boot.entity;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -25,37 +25,36 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 
-import com.storechain.security.OwnedProviderAuthorityCollection;
+import com.storechain.interfaces.security.Operator;
+import com.storechain.interfaces.security.permission.Permissible;
+import com.storechain.interfaces.security.permission.Permission;
+import com.storechain.security.RoleRule;
+import com.storechain.security.permission.OwnedPermissionCollection;
 import com.storechain.spring.boot.entity.utils.JsonMapConverter;
+import com.storechain.utils.DatabaseManager;
 
 import lombok.Data;
 import reactor.util.annotation.NonNull;
 
 @Entity
 @Data
-public class UserProvider extends EntityBase implements OidcUser, Serializable {
+public class UserProvider extends EntityBase implements OidcUser, Serializable, Operator, Permissible {
 
 	@Id
-	private String identify;
-	
-	private String name;
-	
-	@Column(nullable = false)
-	private String accessToken;
+	private String identity;
 	
 	@Column(nullable = false)
 	private String idToken;
 	
 	@Column(nullable = false)
-	private String provider;
+	private String accessToken;
 	
-	public transient OwnedProviderAuthorityCollection authorityCollection;
+	public transient OwnedPermissionCollection permissionCollection;
 	
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinTable(name = "user_provider_authorities", joinColumns = { @JoinColumn(name = "id", referencedColumnName = "identify"), @JoinColumn(name = "provider", referencedColumnName = "provider") },
+    @JoinTable(name = "user_provider_authorities", joinColumns = { @JoinColumn(name = "identity", referencedColumnName = "identity") },
     		inverseJoinColumns = { @JoinColumn(name = "authority", referencedColumnName = "name") })
 	private Set<UserProviderAuthority> authorities = new HashSet<UserProviderAuthority>();
 	
@@ -64,39 +63,53 @@ public class UserProvider extends EntityBase implements OidcUser, Serializable {
     
     public UserProvider() {}
     
-    public UserProvider(String identify, @NonNull String provider, String name, @NonNull String accessToken , @NonNull String idToken, List<UserProviderAuthority> authorities, Map<String, Object> attributes) {
+    public UserProvider(@NonNull String identity, @NonNull String provider, @NonNull String idToken, @NonNull String accessToken , List<UserProviderAuthority> authorities, Map<String, Object> attributes) {
     	
-    	this.identify = identify;
-    	this.provider = provider;
-    	this.name = name;
-    	this.accessToken = accessToken;
+    	this.identity = provider + ":" + identity;
     	this.idToken = idToken;
-    	this.getOwnedProviderAuthorityCollection().addAll(authorities);
+    	this.accessToken = accessToken;
+    	this.getOwnedPermissionCollection().addAll(authorities);
     	attributes.keySet().forEach(key -> this.attributes.put(key, attributes.get(key)));
     }
     
     public String getIdentity() {
     	
-    	return this.identify;
+    	String[] nodes = this.identity.split(":");
+    	
+    	if(nodes.length > 0) {
+    		
+        	return String.join(":", Arrays.copyOfRange(nodes, 1, nodes.length));
+    	}
+    	
+    	return null;
     }
 
 	public String getProvider() {
-		return this.provider;
+		
+		return this.identity.split(":")[0];
 	}
 
 	public void setProvider(String provider) {
-		this.provider = provider;
+		
+		String[] nodes = this.identity.split(":");
+		
+		if(nodes.length > 0) {
+			
+			nodes[0] = provider;
+
+			this.identity = String.join(":", Arrays.copyOfRange(nodes, 1, nodes.length));
+		}
 	}
 	
 	
-	public OwnedProviderAuthorityCollection getOwnedProviderAuthorityCollection() {
+	public OwnedPermissionCollection getOwnedPermissionCollection() {
 		
-		if(this.authorityCollection == null) {
+		if(this.permissionCollection == null) {
 			
-			this.authorityCollection = new OwnedProviderAuthorityCollection(this.authorities);
+			this.permissionCollection = new OwnedPermissionCollection(this, this.authorities);
 		}
 		
-		return this.authorityCollection;
+		return this.permissionCollection;
 	}
 	
 	public Map<String, Object> getAttributes() {
@@ -109,15 +122,24 @@ public class UserProvider extends EntityBase implements OidcUser, Serializable {
 		
 		return Collections.unmodifiableCollection(this.authorities);
 	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 	
 	@Override
 	public String getName() {
 		
-		return this.name;
+		return this.getFullName();
+	}
+	
+	public User getUser() {
+		
+		return DatabaseManager.getUserRepository().findFirstByProviders(this);
+	}
+
+	public String getAccessToken() {
+		return accessToken;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
 	}
 
 	@Override
@@ -134,23 +156,68 @@ public class UserProvider extends EntityBase implements OidcUser, Serializable {
 
 	@Override
 	public OidcIdToken getIdToken() {
-		
-		OidcIdToken.Builder builder = OidcIdToken.withTokenValue(this.idToken);
-		
-		for(String key : this.attributes.keySet()) {
-			
-			builder.claim(key, this.attributes.get(key));
+
+		return OidcIdToken.withTokenValue(this.idToken).build();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+
+		if (this == obj) {
+
+			return true;
 		}
+
+		if (obj instanceof UserProvider) {
+			
+			UserProvider other = (UserProvider) obj;
+			
+			return this.identity.equals(other.identity) && this.idToken.equals(other.idToken) && this.accessToken.equals(other.accessToken) && this.attributes.equals(other.attributes) && this.authorities.equals(other.authorities);
+		}
+
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
 		
-		return builder.build();
+		return this.identity.hashCode() + this.idToken.hashCode() + this.accessToken.hashCode() + this.attributes.entrySet().stream().map(entry -> entry.hashCode()).collect(Collectors.summingInt(Integer::intValue)) + this.authorities.stream().map(authority -> authority.hashCode()).collect(Collectors.summingInt(Integer::intValue));
+	}
+	
+	@Override
+	public String toString() {
+		
+		return String.join("\n", "Identity:" + identity, "IdToken:" + this.idToken, "AccessToken:" + this.accessToken, "Attributes:" + this.attributes.entrySet(), "Authorities:" + this.authorities);
 	}
 
-	public String getToken() {
-		return this.idToken;
+	@Override
+	public RoleRule getRule() {
+		
+		return this.getUser() == null ? RoleRule.PRE_USER : RoleRule.PRE_USER;
 	}
 
-	public void setToken(String token) {
-		this.idToken = token;
+	@Override
+	public Collection<? extends Permission> getPermissions() {
+		
+		return Collections.unmodifiableSet(this.authorities);
 	}
 
+	@Override
+	public boolean isPermitted(String authority) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public <T extends Permission> void addPermission(T permission) {
+		
+		this.getOwnedPermissionCollection().add(permission);
+		
+	}
+
+	@Override
+	public <T extends Permission> void removePermission(T permission) {
+		
+		this.getOwnedPermissionCollection().remove(permission);
+	}
 }

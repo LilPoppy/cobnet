@@ -2,40 +2,44 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
     <meta charset="UTF-8" />
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Please sign in</title>
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+	<link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous">
 </head>
 <body>
-	<div style="float: right" th:fragment="logout" sec:authorize="isAuthenticated()">
+	<div style="float: top-right" th:fragment="logout" sec:authorize="isAuthenticated()">
 		<div style="float:left">
-			<span style="font-weight:bold">User: </span><span sec:authentication="name"></span>
+			<span style="font-weight:bold"></span><span sec:authentication="name"></span>
 		</div>
-		<div style="float:none">&nbsp;</div>
+		<div style="float:left">&nbsp;</div>
 		<div style="float:right">
 			<form action="#" th:action="@{/logout}" method="post">
 				<input type="submit" value="Logout" />
 			</form>
 		</div>
 	</div>
-    <h1>登录</h1>
-    <form action="/doLogin" method="post">
-        <table>
-            <tr>
-                <td>用户名:</td>
-                <td><input name="username" type="text" /></td>
-            </tr>
-            <tr>
-                <td>密码:</td>
-                <td><input name="password" type="password" /></td>
-            </tr>
-        </table>
-        <button type="submit">Enter</button>
-    </form>
-	<p th:each="url : ${urls}">
-	    <a th:text="${url.key}" th:href="${url.value}">Client</a>
-	</p>
-	<div>&nbsp;</div>
-	<div>
-		<a href="/userinfo" th:href="@{/userinfo}">Display User Information</a>
+	<div class="container">
+		<form class="form-signin" method="post" action="/doLogin">
+    		<h2 class="form-signin-heading">Please sign in</h2>
+			<p>
+  				<label for="username" class="sr-only">Username</label>
+  				<input type="text" id="username" name="username" class="form-control" placeholder="Username" required autofocus>
+			</p>
+			<p>
+  				<label for="password" class="sr-only">Password</label>
+  				<input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
+			</p>
+			<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+			<br />
+			<p th:each="url : ${urls}">
+			    <a th:text="${url.key}" th:href="${url.value}">Client</a>
+			</p>
+			<div> &nbsp;</div>
+			<div>
+				<a href="/userinfo" th:href="@{/userinfo}">Display User Information</a>
+			</div>
+  		</form>
 	</div>
 </body>
 </html>

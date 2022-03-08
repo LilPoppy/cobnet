@@ -14,29 +14,32 @@ import com.storechain.common.AbstractSet;
 import com.storechain.common.MultiwayTreeNode;
 import com.storechain.common.MultiwayTreeNodeChild;
 import com.storechain.interfaces.security.permission.Permissible;
+import com.storechain.interfaces.security.permission.Permission;
 import com.storechain.spring.boot.entity.EntityBase;
 import com.storechain.spring.boot.entity.UserPermission;
+import com.storechain.spring.boot.entity.UserProviderAuthority;
 import com.storechain.utils.DatabaseManager;
 
-public class OwnedPermissionCollection extends AbstractSet<UserPermission> {
+public class OwnedPermissionCollection extends AbstractSet<Permission> {
 	
 	private final Permissible permissible;
-	private final Set<UserPermission> permissions;
+	private final Set<Permission> permissions;
 	
-	public OwnedPermissionCollection(Permissible permissible, Set<UserPermission> permissions) {
+	public OwnedPermissionCollection(Permissible permissible, Set<? extends Permission> permissions) {
 		
 		this.permissible = permissible;
-		this.permissions = permissions;
+		this.permissions = (Set<Permission>) permissions;
 	}
 	
+	
 	@Override
-	protected Set<UserPermission> getSet() {
+	protected Set<Permission> getSet() {
 		
 		return this.permissions;
 	}
 	
 	@Override
-	public boolean add(UserPermission permission) {
+	public boolean add(Permission permission) {
 		
 		if(permission instanceof UserPermission) {
 			
@@ -56,12 +59,31 @@ public class OwnedPermissionCollection extends AbstractSet<UserPermission> {
 				}
 			}
 		}
+		
+		if(permission instanceof UserProviderAuthority) {
+			
+			if(DatabaseManager.getUserProviderAuthorityRepository() != null) {
+				
+				Optional<UserProviderAuthority> optional = DatabaseManager.getUserProviderAuthorityRepository().findOne(Example.of((UserProviderAuthority)permission, ExampleMatcher.matching().withIgnorePaths("created_time", "last_modified_time").withIgnoreCase()));
+				
+				if(optional.isEmpty()) {
+					
+					DatabaseManager.getUserProviderAuthorityRepository().save((UserProviderAuthority) permission);	
+				} else {
+					
+					if(optional.get().getLastModfiedTime().before(((UserProviderAuthority) permission).getLastModfiedTime())) {
+						
+						DatabaseManager.getUserProviderAuthorityRepository().save((UserProviderAuthority) permission);	
+					}
+				}
+			}
+		}
 
 		return super.add(permission);
 	}
 	
 
-	public void add(UserPermission... permissions) {
+	public void add(Permission... permissions) {
 		
 		for(int i = 0; i < permissions.length; i++) {
 			
@@ -73,7 +95,7 @@ public class OwnedPermissionCollection extends AbstractSet<UserPermission> {
 		
 		MultiwayTreeNode<String> root = new MultiwayTreeNode<String>(this.permissible.getIdentity());
 		
-		for(UserPermission permission : this.permissions) {
+		for(Permission permission : this.permissions) {
 			
 			addToParent(root, MultiwayTreeNodeChild.from(permission.getAuthority()));
 		}
@@ -139,7 +161,7 @@ public class OwnedPermissionCollection extends AbstractSet<UserPermission> {
 		return false;
 	}
 	
-	public boolean hasPermission(UserPermission permission) {
+	public boolean hasPermission(Permission permission) {
 		
 		return this.hasPermission(permission.getAuthority());
 	}

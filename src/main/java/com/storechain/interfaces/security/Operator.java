@@ -1,9 +1,15 @@
 package com.storechain.interfaces.security;
 
-import com.storechain.security.OperatorRole;
+import java.util.Collection;
+
+import org.springframework.security.core.GrantedAuthority;
+
+import com.storechain.security.RoleRule;
 
 public interface Operator {
 	
-	public OperatorRole getOperatorRole();
+	public String getName();
+	
+	public Collection<? extends GrantedAuthority> getAuthorities();
 	
 }

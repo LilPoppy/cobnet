@@ -1,5 +1,6 @@
 package com.storechain.spring.boot.controller;
 
+import java.util.Collections;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -7,11 +8,13 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.ui.Model;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -22,12 +25,15 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 import org.thymeleaf.util.StringUtils;
 
-import com.storechain.interfaces.annotation.AccessSecured;
+import com.storechain.interfaces.security.annotation.AccessSecured;
+import com.storechain.spring.boot.configuration.SecurityConfiguration;
 
 @RestController
 public class TestRestController {
@@ -62,7 +68,7 @@ public class TestRestController {
             
 	        SecurityContextHolder.getContext().setAuthentication(authentication);
 	        HttpSession session = request.getSession();
-	        session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext()); // 这个非常重要，否则验证后将无法登陆
+	        session.setAttribute(SecurityConfiguration.SESSION_KEY, SecurityContextHolder.getContext()); // 这个非常重要，否则验证后将无法登陆
 	        
 	    	model.setViewName("index");
 	        model.addObject("message","登录用户：" + authentication.getName());
@@ -93,13 +99,16 @@ public class TestRestController {
     	return "success";
     }
     
-    @PostMapping("/process")
-    public String loginInfo(OAuth2AuthenticationToken authentication) {
+    @RequestMapping(value = "/userinfo", method = RequestMethod.GET)
+    public Map<String, Object> userinfo(Model model, Authentication authentication) {
     	
-    	System.out.println(authentication);
+    	System.out.println("/userinfo");
+    	System.out.println("验证主体：" + authentication);
     	
-    	return "process";
+        return Collections.singletonMap("name", authentication.getPrincipal().toString());
     }
+    
+    
     
     
 }

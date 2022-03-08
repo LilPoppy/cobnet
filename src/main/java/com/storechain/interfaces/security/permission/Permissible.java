@@ -2,12 +2,17 @@ package com.storechain.interfaces.security.permission;
 
 import java.util.Collection;
 
-import com.storechain.interfaces.security.Operator;
+import org.springframework.security.core.GrantedAuthority;
 
-public interface Permissible extends Operator {
+import com.storechain.interfaces.security.Operator;
+import com.storechain.security.RoleRule;
+
+public interface Permissible {
 
 	 public String getIdentity();
-	
+	 
+	 public RoleRule getRule();
+	 
 	 public Collection<? extends Permission> getPermissions();
 	 
 	 public default boolean isPermitted(Permission permission) {

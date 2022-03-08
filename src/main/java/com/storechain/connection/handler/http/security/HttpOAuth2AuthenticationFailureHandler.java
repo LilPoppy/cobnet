@@ -19,10 +19,10 @@ public class HttpOAuth2AuthenticationFailureHandler implements AuthenticationFai
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
 
 		response.setContentType("application/json;charset=utf-8");
-		System.out.println("关联失败！");
+		
         try(PrintWriter writer = response.getWriter()) {
         	
-        	writer.write(JSONObject.stringToValue("login failure!").toString().toCharArray());
+        	writer.write(JSONObject.stringToValue("Authentication failure handler.").toString().toCharArray());
         	writer.flush();
         }
 	}

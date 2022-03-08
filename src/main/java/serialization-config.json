@@ -4,11 +4,27 @@
     "customTargetConstructorClass":"java.lang.Object"
   },
   {
+    "name":"com.storechain.spring.boot.controller.TestRestController$$EnhancerBySpringCGLIB$$542892a9",
+    "customTargetConstructorClass":"java.lang.Object"
+  },
+  {
     "name":"com.storechain.spring.boot.controller.TestRestController$$EnhancerBySpringCGLIB$$686a2c86",
     "customTargetConstructorClass":"java.lang.Object"
   },
   {
+    "name":"com.storechain.spring.boot.controller.TestRestController$$EnhancerBySpringCGLIB$$6e78a43e",
+    "customTargetConstructorClass":"java.lang.Object"
+  },
+  {
     "name":"com.storechain.spring.boot.controller.TestRestController$$EnhancerBySpringCGLIB$$7cae48d4",
+    "customTargetConstructorClass":"java.lang.Object"
+  },
+  {
+    "name":"com.storechain.spring.boot.service.SimpleSessionRepository$$EnhancerBySpringCGLIB$$4a4d8a33",
+    "customTargetConstructorClass":"java.lang.Object"
+  },
+  {
+    "name":"com.storechain.spring.boot.service.SimpleSessionRepository$$EnhancerBySpringCGLIB$$52908c33",
     "customTargetConstructorClass":"java.lang.Object"
   },
   {

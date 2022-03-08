@@ -6,6 +6,12 @@
     "interfaces":["com.storechain.interfaces.spring.repository.UserPermissionRepository","org.springframework.data.repository.Repository","org.springframework.transaction.interceptor.TransactionalProxy","org.springframework.aop.framework.Advised","org.springframework.core.DecoratingProxy"]}
   ,
   {
+    "interfaces":["com.storechain.interfaces.spring.repository.UserProviderAuthorityRepository","org.springframework.data.repository.Repository","org.springframework.transaction.interceptor.TransactionalProxy","org.springframework.aop.framework.Advised","org.springframework.core.DecoratingProxy"]}
+  ,
+  {
+    "interfaces":["com.storechain.interfaces.spring.repository.UserProviderRepository","org.springframework.data.repository.Repository","org.springframework.transaction.interceptor.TransactionalProxy","org.springframework.aop.framework.Advised","org.springframework.core.DecoratingProxy"]}
+  ,
+  {
     "interfaces":["com.storechain.interfaces.spring.repository.UserRepository","org.springframework.data.repository.Repository","org.springframework.transaction.interceptor.TransactionalProxy","org.springframework.aop.framework.Advised","org.springframework.core.DecoratingProxy"]}
   ,
   {
@@ -55,6 +61,36 @@
   ,
   {
     "interfaces":["net.bytebuddy.description.type.TypeDescription$ForLoadedType$Dispatcher"]}
+  ,
+  {
+    "interfaces":["net.bytebuddy.description.type.TypeDescription$Generic$AnnotationReader$Delegator$ForLoadedExecutableExceptionType$Dispatcher"]}
+  ,
+  {
+    "interfaces":["net.bytebuddy.description.type.TypeDescription$Generic$AnnotationReader$Delegator$ForLoadedExecutableParameterType$Dispatcher"]}
+  ,
+  {
+    "interfaces":["net.bytebuddy.description.type.TypeDescription$Generic$AnnotationReader$Delegator$ForLoadedMethodReturnType$Dispatcher"]}
+  ,
+  {
+    "interfaces":["net.bytebuddy.description.type.TypeDescription$Generic$AnnotationReader$ForComponentType$AnnotatedParameterizedType"]}
+  ,
+  {
+    "interfaces":["net.bytebuddy.description.type.TypeDescription$Generic$AnnotationReader$ForTypeArgument$AnnotatedParameterizedType"]}
+  ,
+  {
+    "interfaces":["net.bytebuddy.description.type.TypeDescription$Generic$AnnotationReader$ForTypeVariableBoundType$AnnotatedTypeVariable"]}
+  ,
+  {
+    "interfaces":["net.bytebuddy.description.type.TypeDescription$Generic$AnnotationReader$ForTypeVariableBoundType$OfFormalTypeVariable$FormalTypeVariable"]}
+  ,
+  {
+    "interfaces":["net.bytebuddy.description.type.TypeDescription$Generic$AnnotationReader$ForWildcardUpperBoundType$AnnotatedWildcardType"]}
+  ,
+  {
+    "interfaces":["net.bytebuddy.dynamic.loading.ClassInjector$UsingLookup$MethodHandles"]}
+  ,
+  {
+    "interfaces":["net.bytebuddy.dynamic.loading.ClassInjector$UsingLookup$MethodHandles$Lookup"]}
   ,
   {
     "interfaces":["org.hibernate.Session","org.springframework.orm.jpa.EntityManagerProxy"]}
@@ -121,6 +157,9 @@
   ,
   {
     "interfaces":["org.springframework.security.core.session.SessionRegistry","org.springframework.context.ApplicationListener"]}
+  ,
+  {
+    "interfaces":["org.springframework.security.oauth2.client.registration.ClientRegistrationRepository","java.lang.Iterable"]}
   ,
   {
     "interfaces":["org.springframework.session.FindByIndexNameSessionRepository","org.springframework.data.redis.connection.MessageListener"]}

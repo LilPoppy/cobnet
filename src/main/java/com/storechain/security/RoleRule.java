@@ -1,15 +1,17 @@
 package com.storechain.security;
 
-public enum OperatorRole {
+public enum RoleRule {
 	
 	VISITOR(0),
-	USER(1),
-	SERVER(2),
-	ADMIN(3);
+	PRE_USER(1),
+	EXTERNAL(2),
+	USER(3),
+	SERVER(4),
+	ADMIN(5);
 	
 	private final int level;
 	
-	private OperatorRole(int level) {
+	private RoleRule(int level) {
 		
 		this.level = level;
 	}

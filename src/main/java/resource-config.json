@@ -86,6 +86,18 @@
       "pattern":"\\Qcom/storechain/connection/handler/http/security/HttpInvalidSessionHandler.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/storechain/connection/handler/http/security/HttpLogoutHandler.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/storechain/connection/handler/http/security/HttpOAuth2AuthenticationFailureHandler.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/storechain/connection/handler/http/security/HttpOAuth2AuthenticationSuccessHandler.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/storechain/connection/handler/http/security/HttpSessionAuthenticationHandler.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/storechain/connection/netty/NettyClient.class\\E"
     }, 
     {
@@ -122,6 +134,9 @@
       "pattern":"\\Qcom/storechain/interfaces/security/Operator.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/storechain/interfaces/security/annotation/AccessSecured.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/storechain/interfaces/security/permission/Permissible.class\\E"
     }, 
     {
@@ -132,6 +147,12 @@
     }, 
     {
       "pattern":"\\Qcom/storechain/interfaces/spring/repository/UserPermissionRepository.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/storechain/interfaces/spring/repository/UserProviderAuthorityRepository.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/storechain/interfaces/spring/repository/UserProviderRepository.class\\E"
     }, 
     {
       "pattern":"\\Qcom/storechain/interfaces/spring/repository/UserRepository.class\\E"
@@ -170,10 +191,16 @@
       "pattern":"\\Qcom/storechain/spring/boot/configuration/RedisConfiguration.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/storechain/spring/boot/configuration/SecurityConfiguration$AccessSecureAspect.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/storechain/spring/boot/configuration/SecurityConfiguration$SecureProjectAspect.class\\E"
     }, 
     {
       "pattern":"\\Qcom/storechain/spring/boot/configuration/SecurityConfiguration$UserAuthenticationProvider.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/storechain/spring/boot/configuration/SecurityConfiguration$UserLoginAuthenticationFilter.class\\E"
     }, 
     {
       "pattern":"\\Qcom/storechain/spring/boot/configuration/SecurityConfiguration.class\\E"
@@ -203,7 +230,16 @@
       "pattern":"\\Qcom/storechain/spring/boot/entity/UserPermission.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/storechain/spring/boot/entity/UserProvider.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/storechain/spring/boot/entity/UserProviderAuthority.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/storechain/spring/boot/entity/UserRole.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/storechain/spring/boot/entity/utils/JsonMapConverter.class\\E"
     }, 
     {
       "pattern":"\\Qcom/storechain/spring/boot/service/JsonRedisService.class\\E"
@@ -338,6 +374,12 @@
       "pattern":"\\Qorg/springframework/beans/factory/BeanFactoryAware.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/beans/factory/BeanNameAware.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/beans/factory/DisposableBean.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/beans/factory/InitializingBean.class\\E"
     }, 
     {
@@ -345,6 +387,9 @@
     }, 
     {
       "pattern":"\\Qorg/springframework/beans/factory/config/BeanFactoryPostProcessor.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/beans/factory/config/BeanPostProcessor.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/AbstractDependsOnBeanFactoryPostProcessor.class\\E"
@@ -711,6 +756,27 @@
     }, 
     {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/security/SecurityDataConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/security/oauth2/client/reactive/ReactiveOAuth2ClientAutoConfiguration$NonServletApplicationCondition$ServletApplicationCondition.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/security/oauth2/client/reactive/ReactiveOAuth2ClientAutoConfiguration$NonServletApplicationCondition.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/security/oauth2/client/reactive/ReactiveOAuth2ClientAutoConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/security/oauth2/client/servlet/OAuth2ClientAutoConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/security/oauth2/client/servlet/OAuth2ClientRegistrationRepositoryConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/security/oauth2/client/servlet/OAuth2WebSecurityConfiguration$OAuth2SecurityFilterChainConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/security/oauth2/client/servlet/OAuth2WebSecurityConfiguration.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/security/reactive/ReactiveUserDetailsServiceAutoConfiguration$ReactiveUserDetailsServiceCondition$RSocketSecurityEnabledCondition.class\\E"
@@ -1244,6 +1310,9 @@
       "pattern":"\\Qorg/springframework/context/ApplicationContextAware.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/context/ApplicationEventPublisherAware.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/context/ApplicationListener.class\\E"
     }, 
     {
@@ -1251,6 +1320,9 @@
     }, 
     {
       "pattern":"\\Qorg/springframework/context/EnvironmentAware.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/context/MessageSourceAware.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/context/ResourceLoaderAware.class\\E"
@@ -1290,6 +1362,9 @@
     }, 
     {
       "pattern":"\\Qorg/springframework/core/annotation/Order.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/core/env/EnvironmentCapable.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/data/jdbc/repository/config/AbstractJdbcConfiguration.class\\E"
@@ -1373,6 +1448,9 @@
       "pattern":"\\Qorg/springframework/scheduling/annotation/SchedulingConfigurer.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/security/authentication/AbstractAuthenticationToken.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/security/authentication/AuthenticationProvider.class\\E"
     }, 
     {
@@ -1421,6 +1499,15 @@
       "pattern":"\\Qorg/springframework/security/config/annotation/web/configuration/HttpSecurityConfiguration.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/security/config/annotation/web/configuration/OAuth2ClientConfiguration$OAuth2ClientWebMvcImportSelector.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/security/config/annotation/web/configuration/OAuth2ClientConfiguration$OAuth2ClientWebMvcSecurityConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/security/config/annotation/web/configuration/OAuth2ClientConfiguration.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/security/config/annotation/web/configuration/OAuth2ImportSelector.class\\E"
     }, 
     {
@@ -1451,6 +1538,15 @@
       "pattern":"\\Qorg/springframework/security/config/annotation/web/configuration/WebSecurityConfigurerAdapter.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/security/core/AuthenticatedPrincipal.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/security/core/Authentication.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/security/core/CredentialsContainer.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/security/core/GrantedAuthority.class\\E"
     }, 
     {
@@ -1460,13 +1556,43 @@
       "pattern":"\\Qorg/springframework/security/core/userdetails/UserDetailsService.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/security/oauth2/client/userinfo/OAuth2UserService.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/security/oauth2/core/ClaimAccessor.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/security/oauth2/core/OAuth2AuthenticatedPrincipal.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/security/oauth2/core/oidc/IdTokenClaimAccessor.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/security/oauth2/core/oidc/StandardClaimAccessor.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/security/oauth2/core/oidc/user/OidcUser.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/security/oauth2/core/user/OAuth2User.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/security/web/access/AccessDeniedHandler.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/security/web/authentication/AbstractAuthenticationProcessingFilter.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/security/web/authentication/AuthenticationFailureHandler.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/security/web/authentication/AuthenticationSuccessHandler.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/security/web/authentication/logout/LogoutHandler.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/security/web/authentication/session/SessionAuthenticationStrategy.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/security/web/session/InvalidSessionStrategy.class\\E"
@@ -1506,6 +1632,9 @@
     }, 
     {
       "pattern":"\\Qorg/springframework/web/context/ServletContextAware.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/web/filter/GenericFilterBean.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/web/servlet/config/annotation/DelegatingWebMvcConfiguration.class\\E"

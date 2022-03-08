@@ -5,15 +5,16 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import com.storechain.interfaces.security.permission.Permission;
 
 import lombok.Data;
 import reactor.util.annotation.NonNull;
 
 @Entity
 @Data
-public class UserProviderAuthority extends EntityBase implements GrantedAuthority, Serializable  {
+public class UserProviderAuthority extends EntityBase implements Permission, Serializable  {
 
 
 	private static final long serialVersionUID = -1424826140778795160L;
@@ -62,5 +63,16 @@ public class UserProviderAuthority extends EntityBase implements GrantedAuthorit
 	public int hashCode() {
 
 		return this.name.hashCode();
+	}
+
+	@Override
+	public String getDescription() {
+		return "";
+	}
+
+	@Override
+	public int getPower() {
+		
+		return 0;
 	}
 }

@@ -11,7 +11,7 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import com.storechain.common.MultiwayTreeNode;
 import com.storechain.interfaces.connection.NettyServerProvider;
 import com.storechain.polyglot.PolyglotContext;
-import com.storechain.security.OperatorRole;
+import com.storechain.security.RoleRule;
 import com.storechain.spring.boot.configuration.NettyConfiguration;
 import com.storechain.spring.boot.entity.User;
 import com.storechain.spring.boot.entity.UserPermission;
@@ -25,6 +25,7 @@ import com.storechain.utils.SpringContext;
  */
 @EnableEurekaClient
 @SpringBootApplication(proxyBeanMethods = false)
+//@EnableAutoConfiguration(exclude = { WebMvcAutoConfiguration.class })
 public class EntryPoint {
 	
 	
@@ -86,7 +87,7 @@ public class EntryPoint {
 			+ "      *********        *00000*\n"
 			+ "                        ****";
 
-	private static String getLogo() {
+    public static String getLogo() {
 		
 		String[] array = EntryPoint.LOGO.split("\n");
 		
@@ -236,7 +237,25 @@ public class EntryPoint {
 		}
     }
     
-    
+// Graalvm not supported
+//	@Bean
+//	public BeanPostProcessor beanPostProcessor() {
+//		
+//		return new BeanPostProcessor() {
+//			
+//			@Override
+//		    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+//			
+//		        return bean;
+//		    }
+//			
+//		    @Override
+//		    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+//
+//		        return bean;
+//		    }
+//		};
+//	}
 
 	public static void main(String[] args) throws NoSuchMethodException, SecurityException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, ClassNotFoundException, IOException, NoSuchFieldException {
 
@@ -253,7 +272,7 @@ public class EntryPoint {
 			permissions[i] = new UserPermission("test." + i);
 		}
 		
-		User user = new User("admin", "123456", new UserRole("admin", OperatorRole.ADMIN, new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")));
+		User user = new User("admin", "123456", new UserRole("admin", RoleRule.ADMIN, new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")));
 
 		
 		DatabaseManager.getUserRepository().save(user);

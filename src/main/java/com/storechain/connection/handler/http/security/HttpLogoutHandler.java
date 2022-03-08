@@ -27,7 +27,7 @@ public class HttpLogoutHandler implements LogoutHandler {
 	        	writer.flush();
 	        	
 	        } catch (IOException e) {
-				// TODO Auto-generated catch block
+	        	
 				e.printStackTrace();
 			}	
 		}

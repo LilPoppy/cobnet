@@ -16,7 +16,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 import com.storechain.common.MultiwayTreeNode;
 import com.storechain.interfaces.security.permission.Permissible;
 import com.storechain.interfaces.security.permission.Permission;
-import com.storechain.security.OperatorRole;
+import com.storechain.security.RoleRule;
 import com.storechain.security.permission.OwnedPermissionCollection;
 
 import lombok.Data;
@@ -29,7 +29,7 @@ public final class UserRole extends EntityBase implements Permissible, Serializa
 	@Id
 	private String role;
 	
-	private OperatorRole rule;
+	private RoleRule rule;
 
 	private transient OwnedPermissionCollection permissionCollection;
 	
@@ -42,13 +42,13 @@ public final class UserRole extends EntityBase implements Permissible, Serializa
 
 	public UserRole() {}
 
-	public UserRole(@NonNull String role, OperatorRole rule) {
+	public UserRole(@NonNull String role, RoleRule rule) {
 
 		this.role = role;
 		this.rule = rule;
 	}
 	
-	public UserRole(@NonNull String role, OperatorRole rule, UserPermission... permissions) {
+	public UserRole(@NonNull String role, RoleRule rule, UserPermission... permissions) {
 		
 		this(role, rule);
 		
@@ -57,7 +57,7 @@ public final class UserRole extends EntityBase implements Permissible, Serializa
 	
 	public UserRole(@NonNull String role) {
 		
-		this(role, OperatorRole.USER);
+		this(role, RoleRule.USER);
 	}
 	
 	public UserRole(@NonNull String role, UserPermission... permissions) {
@@ -67,7 +67,8 @@ public final class UserRole extends EntityBase implements Permissible, Serializa
 		this.getOwnedPermissionCollection().add(permissions);
 	}
 	
-	public String getRole() {
+	
+	public String getName() {
 
 		return this.role;
 	}
@@ -114,7 +115,7 @@ public final class UserRole extends EntityBase implements Permissible, Serializa
 
 		if (obj instanceof UserRole) {
 
-			return this.role.equals(((UserRole) obj).getRole());
+			return this.role.equals(((UserRole) obj).getRule());
 		}
 
 		return false;
@@ -123,17 +124,9 @@ public final class UserRole extends EntityBase implements Permissible, Serializa
 	@Override
 	public String toString() {
 
-		return "[" + this.role + "," + this.rule.toString() + "]";
-	}
-	
-	public int getLevel() {
-		return this.getOperatorRole().getLevel();
+		return "[" + this.role + "]";
 	}
 
-	@Override
-	public OperatorRole getOperatorRole() {
-		return this.rule;
-	}
 
 	@Override
 	public boolean isPermitted(String authority) {
@@ -152,6 +145,11 @@ public final class UserRole extends EntityBase implements Permissible, Serializa
 	public <T extends Permission> void removePermission(T permission) {
 		
 		this.getOwnedPermissionCollection().remove(permission);
+	}
+
+	@Override
+	public RoleRule getRule() {
+		return this.rule;
 	}
 
 }
