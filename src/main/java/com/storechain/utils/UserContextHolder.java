@@ -68,6 +68,7 @@ public class UserContextHolder {
 		if((operator instanceof ExternalUser)) {
 			
 			user.getOwnedExternalUserCollection().add((ExternalUser)operator);
+			
 			DatabaseManager.getUserRepository().save(user);
 			
 			SecurityContextHolder.getContext().setAuthentication(new UserAuthenticationToken(user));

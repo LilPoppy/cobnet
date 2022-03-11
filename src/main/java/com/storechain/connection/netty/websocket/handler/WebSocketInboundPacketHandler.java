@@ -8,8 +8,8 @@ import org.slf4j.LoggerFactory;
 import com.storechain.EntryPoint;
 import com.storechain.connection.InboundOperation;
 import com.storechain.connection.InboundPacket;
-import com.storechain.connection.netty.NettyClient;
-import com.storechain.connection.netty.websocket.WebSocketClient;
+import com.storechain.connection.netty.NettySession;
+import com.storechain.connection.netty.websocket.WebSocketSession;
 import com.storechain.connection.netty.websocket.WebSocketServer;
 import com.storechain.interfaces.connection.ConnectionListener;
 import com.storechain.interfaces.connection.annotation.ConnectionHandler;
@@ -34,7 +34,7 @@ public class WebSocketInboundPacketHandler extends SimpleChannelInboundHandler<I
 		
     	InboundOperation operation = packet.getOperation();
     	
-        NettyClient client = ctx.channel().attr(WebSocketClient.CLIENT_KEY).get();
+        NettySession client = ctx.channel().attr(WebSocketSession.CLIENT_KEY).get();
         
         if(operation == InboundOperation.UNKNOWN) {
         	

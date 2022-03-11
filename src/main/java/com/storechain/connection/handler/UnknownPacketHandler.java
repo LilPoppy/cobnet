@@ -8,7 +8,7 @@ import org.slf4j.LoggerFactory;
 import com.storechain.EntryPoint;
 import com.storechain.connection.InboundOperation;
 import com.storechain.connection.InboundPacket;
-import com.storechain.connection.netty.NettyClient;
+import com.storechain.connection.netty.NettySession;
 import com.storechain.connection.netty.NettyServer;
 import com.storechain.interfaces.connection.ConnectionListener;
 import com.storechain.interfaces.connection.annotation.ConnectionHandler;
@@ -25,7 +25,7 @@ public class UnknownPacketHandler implements ConnectionListener {
 
 	@ConnectionHandler(operation = InboundOperation.UNKNOWN)
 	@Override
-	public void onEvent(NettyClient client, InboundPacket packet) {
+	public void onEvent(NettySession client, InboundPacket packet) {
 		
 		if(server.getConfiguration().isKickUnknownPacketUser()) {
 			if(client.isConnected()) {

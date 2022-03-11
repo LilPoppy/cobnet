@@ -99,7 +99,7 @@ netty:
          port: "@websocket-port@"
          provider: com.storechain.connection.netty.websocket.WebSocketServerProvider
          handler: com.storechain.connection.netty.websocket.handler.WebSocketServerInitializeHandler
-         client-converter: com.storechain.connection.netty.websocket.WebSocketClientConverter
+         session-builder: com.storechain.connection.netty.websocket.WebSocketSessionBuilder
          options:
             -
                SO_BACKLOG: 1024

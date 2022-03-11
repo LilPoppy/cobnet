@@ -64,7 +64,7 @@ public class NettyConfiguration {
 		
 		private String provider = "com.storechain.spring.boot.connection.netty.NettyBaseServerProvider";
 		
-		private String clientConverter = "com.storechain.connection.netty.NettyBaseClientConverter";
+		private String sessionBuilder = "com.storechain.connection.netty.NettyBaseSessionBuilder";
 		
 		private String handler = "io.netty.handler.logging.LoggingHandler";
 		
@@ -221,12 +221,12 @@ public class NettyConfiguration {
 			this.provider = provider;
 		}
 
-		public Class<?> getClientConverter() throws ClassNotFoundException {
-			return Class.forName(clientConverter);
+		public Class<?> getSessionBuilder() throws ClassNotFoundException {
+			return Class.forName(sessionBuilder);
 		}
 
-		public void setClientConverter(String clientConverter) {
-			this.clientConverter = clientConverter;
+		public void setSessionBuilder(String clientConverter) {
+			this.sessionBuilder = clientConverter;
 		}
 
 		public Class<?> getHandler() throws ClassNotFoundException {

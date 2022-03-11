@@ -1,6 +1,5 @@
 package com.storechain.connection.netty.websocket.handler;
 
-import com.storechain.EntryPoint;
 import com.storechain.connection.netty.handler.InboundHandler;
 import com.storechain.connection.netty.websocket.WebSocketServer;
 

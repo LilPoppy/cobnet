@@ -19,7 +19,7 @@ import com.storechain.EntryPoint;
 import com.storechain.connection.InboundPacket;
 import com.storechain.connection.InboundPacketBuilder;
 import com.storechain.connection.netty.handler.ChannelInitializeHandler;
-import com.storechain.connection.netty.websocket.WebSocketClientConverter;
+import com.storechain.connection.netty.websocket.WebSocketSessionBuilder;
 import com.storechain.connection.netty.websocket.WebSocketServer;
 import com.storechain.utils.SpringContext;
 
@@ -36,7 +36,7 @@ public class WebSocketInitializeHandler extends ChannelInitializeHandler<NioSock
 	private final WebSocketServer server;
 
 	public WebSocketInitializeHandler(WebSocketServer server) throws NoSuchMethodException, SecurityException {
-		super(server, new WebSocketClientConverter());
+		super(server, new WebSocketSessionBuilder());
 		this.server = server;
 	}
 

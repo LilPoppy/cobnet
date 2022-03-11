@@ -11,7 +11,6 @@ public class SessionManager {
 		
 		return SpringContext.getSecurityConfiguration().getSessionRegistry();
 	}
-	
 
 	@SuppressWarnings({ "unchecked", "serial" })
 	public static <T extends Session> SimpleSessionRepository<T> getRepository(Class<? super T> session) {

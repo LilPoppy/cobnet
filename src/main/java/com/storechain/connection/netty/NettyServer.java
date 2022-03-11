@@ -17,7 +17,6 @@ import java.util.concurrent.ScheduledFuture;
 
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
-import com.storechain.EntryPoint;
 import com.storechain.common.KeyValuePair;
 import com.storechain.connection.InboundPacket;
 import com.storechain.connection.netty.handler.ChannelInitializeHandler;
@@ -42,7 +41,8 @@ import io.netty.util.concurrent.GlobalEventExecutor;
 
 import org.slf4j.Logger;
 
-//TODO serialize server cache to SQL or something else and reload it when server starts again.
+//TODO serialize server cache to store in Redis and reload it when server starts again.
+//TODO change NettySession to extends Channel and 
 public class NettyServer extends DefaultChannelGroup {
 	
 	public static final AttributeKey<NettyServer> SERVER_KEY = AttributeKey.valueOf("StoreChain-Server");
@@ -88,7 +88,7 @@ public class NettyServer extends DefaultChannelGroup {
 	public void addListener(ConnectionListener listener) throws ClassNotFoundException {
 		
 		try {
-			ConnectionHandler handler = listener.getClass().getMethod("onEvent", NettyClient.class, InboundPacket.class).getAnnotation(ConnectionHandler.class);
+			ConnectionHandler handler = listener.getClass().getMethod("onEvent", NettySession.class, InboundPacket.class).getAnnotation(ConnectionHandler.class);
 			
 			if(handler == null) {
 				throw new ClassNotFoundException("Cannot find annotation of @Handler in onEvent methond.");
@@ -181,17 +181,17 @@ public class NettyServer extends DefaultChannelGroup {
 		thread.start();
 	}
 	
-	public List<NettyClient> getConnections() {
-		return Collections.unmodifiableList(this.stream().map(channel -> channel.attr(NettyClient.CLIENT_KEY).get()).toList()); 
+	public List<NettySession> getConnections() {
+		return Collections.unmodifiableList(this.stream().map(channel -> channel.attr(NettySession.CLIENT_KEY).get()).toList()); 
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public boolean add(NettyClient client) {
+	public boolean add(NettySession client) {
 		return this.add(client.channel);
 	}
 	
 	@SuppressWarnings("rawtypes")
-	public boolean remove(NettyClient client) {
+	public boolean remove(NettySession client) {
 		return this.remove(client.channel);
 	}
 	
@@ -203,7 +203,7 @@ public class NettyServer extends DefaultChannelGroup {
 		return this.blocks.contains(address);
 	}
 	
-	public synchronized void block(NettyClient client) {
+	public synchronized void block(NettySession client) {
 		this.block(client.getAddress().getAddress());
 	}
 	
@@ -219,7 +219,7 @@ public class NettyServer extends DefaultChannelGroup {
 	}
 	
 	
-	public synchronized void block(NettyClient client, Date date) {
+	public synchronized void block(NettySession client, Date date) {
 		this.block(client.getAddress().getAddress(), date);
 	}
 	
@@ -259,7 +259,7 @@ public class NettyServer extends DefaultChannelGroup {
 		return this.blocks.remove(address);
 	}
 	
-	public synchronized boolean unblock(NettyClient client) {
+	public synchronized boolean unblock(NettySession client) {
 		return this.unblock(client.getAddress().getAddress());
 	}
 

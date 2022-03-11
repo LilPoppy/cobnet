@@ -16,7 +16,6 @@ public class WebSocketServer extends NettyServer {
 		super(name, port);
 	}
 	
-	
 	@Async
 	@SuppressWarnings("unchecked")
 	public void bind(int backlog, final Entry<ChannelOption, Object>... childOptions) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {

@@ -71,7 +71,10 @@ RUN gu install native-image && gu install python && native-image --version
     
 CMD java -version
 
-RUN source "$HOME/.sdkman/bin/sdkman-init.sh" && mvn clean package && java -agentlib:native-image-agent=config-merge-dir=src/main/java/ -jar target/storechain-server.jar -DCi && mvn clean package -Pnative
+RUN source "$HOME/.sdkman/bin/sdkman-init.sh"; \
+	mvn clean package; \
+	java -agentlib:native-image-agent=config-merge-dir=src/main/java/ -jar target/storechain-server.jar -DCi; \
+	mvn clean package -Pnative;
 
 MAINTAINER $AUTHORS
 

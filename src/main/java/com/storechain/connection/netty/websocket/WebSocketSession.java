@@ -2,7 +2,7 @@ package com.storechain.connection.netty.websocket;
 
 import com.storechain.connection.InboundPacket;
 import com.storechain.connection.Packet;
-import com.storechain.connection.netty.NettyClient;
+import com.storechain.connection.netty.NettySession;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -10,9 +10,10 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
-public class WebSocketClient extends NettyClient<NioSocketChannel, InboundPacket> {
+public class WebSocketSession extends NettySession<NioSocketChannel, InboundPacket> {
 
-	public WebSocketClient(WebSocketServer server, NioSocketChannel c) {
+	public WebSocketSession(WebSocketServer server, NioSocketChannel c) {
+
 		super(server, c, new InboundPacket(Unpooled.buffer(), server.getConfiguration().getDecodeEndian(), server.getConfiguration().getCharset()));
 	}
 	

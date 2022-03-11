@@ -5,7 +5,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.storechain.connection.netty.handler.ChannelInitializeHandler;
-import com.storechain.interfaces.connection.NettyClientConverter;
+import com.storechain.interfaces.connection.NettySessionBuilder;
 import com.storechain.interfaces.connection.NettyServerProvider;
 import com.storechain.spring.boot.configuration.NettyConfiguration.ServerConfiguration;
 
@@ -26,17 +26,17 @@ public class NettyBaseServerProvider implements NettyServerProvider {
 		try {
 			Class<?> handler_class = config.getHandler();
 			Class<?> sub_handler_class = config.getSubHandler();
-			Class<?> client_converter_class = config.getClientConverter();
+			Class<?> session_builder_class = config.getSessionBuilder();
 			
 			if(sub_handler_class == null) {
 				sub_handler_class = ChannelInitializeHandler.class;
 			}
 			
-			NettyClientConverter<?, ?> converter = (NettyClientConverter<?,?>) client_converter_class.getConstructor().newInstance();
+			NettySessionBuilder<?, ?> builder = (NettySessionBuilder<?,?>) session_builder_class.getConstructor().newInstance();
 			
 			handler = (ChannelHandler) handler_class.getConstructor().newInstance();
 
-			sub_handler = (ChannelInitializeHandler<?>) sub_handler_class.getConstructor(NettyServer.class, NettyClientConverter.class).newInstance(server, converter);
+			sub_handler = (ChannelInitializeHandler<?>) sub_handler_class.getConstructor(NettyServer.class, NettySessionBuilder.class).newInstance(server, builder);
 
 			server.bind(handler, sub_handler, config.getOptions(), config.getChildOptions());
 			

@@ -415,7 +415,7 @@
 								<buildArgs>--allow-incomplete-classpath</buildArgs>
 							    <!--<buildArgs>-H:+AddAllCharsets</buildArgs>-->
 							    <buildArgs>-Dlogging.config=logback-config.xml</buildArgs>
-								<buildArgs>--features=com.storechain.RuntimeReflectionRegistrationFeature,com.oracle.svm.truffle.TruffleFeature,com.oracle.svm.truffle.TruffleBaseFeature,org.graalvm.home.HomeFinderFeature</buildArgs>
+								<buildArgs>--features=com.storechain.RuntimeReflectionRegistrationFeature</buildArgs>
 								<buildArgs>-H:ConfigurationFileDirectories==${basedir}/src/main/java/</buildArgs>
 								<buildArgs>-H:IncludeResources=".*.xml|.*.conf|.*.yml" </buildArgs>
 								<buildArgs>-H:TraceClassInitialization=true</buildArgs>
