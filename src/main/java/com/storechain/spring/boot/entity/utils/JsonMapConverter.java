@@ -7,19 +7,28 @@ import java.util.Map;
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 @Converter(autoApply = true)
-public class JsonMapConverter implements AttributeConverter<Map<String,Object>, String> {
+public class JsonMapConverter implements AttributeConverter<HashMap<String,Object>, String> {
 
-	private final static ObjectMapper MAPPER = new ObjectMapper();
-
+	private final ObjectMapper mapper;
+	
+	public JsonMapConverter() {
+		
+		this.mapper = new ObjectMapper();
+		this.mapper.registerModule(new JavaTimeModule());
+	}
+	
 	@Override
-	public String convertToDatabaseColumn(Map<String,Object> meta) {
+	public String convertToDatabaseColumn(HashMap<String, Object> meta) {
 		try {
-
-			return MAPPER.writeValueAsString(meta);
+			return mapper.writeValueAsString(meta);
 
 		} catch (JsonProcessingException ex) {
 
@@ -28,10 +37,10 @@ public class JsonMapConverter implements AttributeConverter<Map<String,Object>, 
 	}
 
 	@Override
-	public Map<String, Object> convertToEntityAttribute(String dbData) {
+	public HashMap<String, Object> convertToEntityAttribute(String dbData) {
 		try {
 			
-			return dbData != null ? MAPPER.readValue(dbData, Map.class) : new HashMap<String,Object>();
+			return dbData != null ? mapper.readValue(dbData, HashMap.class) : new HashMap<String,Object>();
 
 		} catch (IOException ex) {
 

@@ -11,6 +11,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Component;
 
+import com.storechain.utils.UserContextHolder;
+
 @Component
 public class HttpLogoutHandler implements LogoutHandler {
 
@@ -25,12 +27,16 @@ public class HttpLogoutHandler implements LogoutHandler {
 	        	
 	        	writer.write(JSONObject.stringToValue("You must be sign in first!").toString().toCharArray());
 	        	writer.flush();
+	        	return;
 	        	
 	        } catch (IOException e) {
 	        	
 				e.printStackTrace();
 			}	
 		}
+		
+		UserContextHolder.logout();
+		
 	}
 
 }

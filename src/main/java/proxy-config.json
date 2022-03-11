@@ -3,6 +3,12 @@
     "interfaces":["com.netflix.discovery.EurekaClientConfig","org.springframework.core.Ordered"]}
   ,
   {
+    "interfaces":["com.storechain.interfaces.spring.repository.ExternalUserAuthorityRepository","org.springframework.data.repository.Repository","org.springframework.transaction.interceptor.TransactionalProxy","org.springframework.aop.framework.Advised","org.springframework.core.DecoratingProxy"]}
+  ,
+  {
+    "interfaces":["com.storechain.interfaces.spring.repository.ExternalUserRepository","org.springframework.data.repository.Repository","org.springframework.transaction.interceptor.TransactionalProxy","org.springframework.aop.framework.Advised","org.springframework.core.DecoratingProxy"]}
+  ,
+  {
     "interfaces":["com.storechain.interfaces.spring.repository.UserPermissionRepository","org.springframework.data.repository.Repository","org.springframework.transaction.interceptor.TransactionalProxy","org.springframework.aop.framework.Advised","org.springframework.core.DecoratingProxy"]}
   ,
   {
@@ -175,6 +181,9 @@
   ,
   {
     "interfaces":["org.springframework.web.servlet.config.annotation.WebMvcConfigurer","org.springframework.context.ApplicationContextAware"]}
+  ,
+  {
+    "interfaces": [ "org.springframework.beans.factory.config.BeanPostProcessor", "org.springframework.beans.factory.BeanFactoryAware", "org.springframework.beans.factory.BeanClassLoaderAware"]}
   ,
   {
     "interfaces":["org.springframework.web.servlet.config.annotation.WebMvcConfigurer","org.springframework.web.context.ServletContextAware"]}

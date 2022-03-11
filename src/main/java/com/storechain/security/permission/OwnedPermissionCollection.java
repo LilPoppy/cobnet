@@ -17,7 +17,7 @@ import com.storechain.interfaces.security.permission.Permissible;
 import com.storechain.interfaces.security.permission.Permission;
 import com.storechain.spring.boot.entity.EntityBase;
 import com.storechain.spring.boot.entity.UserPermission;
-import com.storechain.spring.boot.entity.UserProviderAuthority;
+import com.storechain.spring.boot.entity.ExternalUserAuthority;
 import com.storechain.utils.DatabaseManager;
 
 public class OwnedPermissionCollection extends AbstractSet<Permission> {
@@ -60,20 +60,20 @@ public class OwnedPermissionCollection extends AbstractSet<Permission> {
 			}
 		}
 		
-		if(permission instanceof UserProviderAuthority) {
+		if(permission instanceof ExternalUserAuthority) {
 			
-			if(DatabaseManager.getUserProviderAuthorityRepository() != null) {
+			if(DatabaseManager.getExternalUserAuthorityRepository() != null) {
 				
-				Optional<UserProviderAuthority> optional = DatabaseManager.getUserProviderAuthorityRepository().findOne(Example.of((UserProviderAuthority)permission, ExampleMatcher.matching().withIgnorePaths("created_time", "last_modified_time").withIgnoreCase()));
+				Optional<ExternalUserAuthority> optional = DatabaseManager.getExternalUserAuthorityRepository().findOne(Example.of((ExternalUserAuthority)permission, ExampleMatcher.matching().withIgnorePaths("created_time", "last_modified_time").withIgnoreCase()));
 				
 				if(optional.isEmpty()) {
 					
-					DatabaseManager.getUserProviderAuthorityRepository().save((UserProviderAuthority) permission);	
+					DatabaseManager.getExternalUserAuthorityRepository().save((ExternalUserAuthority) permission);	
 				} else {
 					
-					if(optional.get().getLastModfiedTime().before(((UserProviderAuthority) permission).getLastModfiedTime())) {
+					if(optional.get().getLastModfiedTime().before(((ExternalUserAuthority) permission).getLastModfiedTime())) {
 						
-						DatabaseManager.getUserProviderAuthorityRepository().save((UserProviderAuthority) permission);	
+						DatabaseManager.getExternalUserAuthorityRepository().save((ExternalUserAuthority) permission);	
 					}
 				}
 			}

@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component;
 
 import com.storechain.common.CommonConverter;
 import com.storechain.interfaces.spring.repository.UserPermissionRepository;
-import com.storechain.interfaces.spring.repository.UserProviderAuthorityRepository;
-import com.storechain.interfaces.spring.repository.UserProviderRepository;
+import com.storechain.interfaces.spring.repository.ExternalUserAuthorityRepository;
+import com.storechain.interfaces.spring.repository.ExternalUserRepository;
 import com.storechain.interfaces.spring.repository.UserRepository;
 import com.storechain.interfaces.spring.repository.UserRoleRepository;
 import com.storechain.spring.boot.service.JsonRedisService;
@@ -32,9 +32,9 @@ public class DatabaseManager {
 	
 	private static UserPermissionRepository USER_PERMISSION_REPOSITORY;
 	
-	private static UserProviderRepository USER_PROVIDER_REPOSITORY;
+	private static ExternalUserRepository EXTERNAL_USER_REPOSITORY;
 	
-	private static UserProviderAuthorityRepository USER_PROVIDER_AUTHORITY_REPOSITORY;
+	private static ExternalUserAuthorityRepository EXTERNAL_USER_AUTHORITY_REPOSITORY;
 	
 	public DatabaseManager() {}
 
@@ -95,14 +95,14 @@ public class DatabaseManager {
 		return DatabaseManager.USER_PERMISSION_REPOSITORY;
 	}
 	
-	public static UserProviderRepository getUserProviderRepository() {
+	public static ExternalUserRepository getExternalUserRepository() {
 		
-		return DatabaseManager.USER_PROVIDER_REPOSITORY;
+		return DatabaseManager.EXTERNAL_USER_REPOSITORY;
 	}
 	
-	public static UserProviderAuthorityRepository getUserProviderAuthorityRepository() {
+	public static ExternalUserAuthorityRepository getExternalUserAuthorityRepository() {
 		
-		return DatabaseManager.USER_PROVIDER_AUTHORITY_REPOSITORY;
+		return DatabaseManager.EXTERNAL_USER_AUTHORITY_REPOSITORY;
 	}
 	
 	@Component
@@ -127,15 +127,15 @@ public class DatabaseManager {
 		}
 		
 		@Autowired
-		public void setUserProviderRepository(UserProviderRepository repository) {
+		public void setExternalUserRepository(ExternalUserRepository repository) {
 			
-			DatabaseManager.USER_PROVIDER_REPOSITORY = repository;
+			DatabaseManager.EXTERNAL_USER_REPOSITORY = repository;
 		}
 		
 		@Autowired
-		public void setUserProviderAuthorityRepository(UserProviderAuthorityRepository repository) {
+		public void setExternalUserAuthorityRepository(ExternalUserAuthorityRepository repository) {
 			
-			DatabaseManager.USER_PROVIDER_AUTHORITY_REPOSITORY = repository;
+			DatabaseManager.EXTERNAL_USER_AUTHORITY_REPOSITORY = repository;
 		}
 	}
 

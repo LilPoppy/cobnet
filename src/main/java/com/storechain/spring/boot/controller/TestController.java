@@ -24,9 +24,6 @@ public class TestController {
     @Autowired
     private ClientRegistrationRepository oauth2RegistrationRepository;
     
-	@Autowired
-	private OAuth2AuthorizedClientService authorizedClientService;
-    
     @GetMapping("/index")
     public String index(){
         return "index";
@@ -35,7 +32,7 @@ public class TestController {
     @GetMapping("/login")
     public String login(HttpServletRequest request, Model model) {
     	
-    	System.out.println("当前login界面的Session是：" + request.getSession().getId());
+    	System.out.println("session：" + request.getSession().getId());
     	
     	String redirect = request.getHeader("Referer");
     	
@@ -57,7 +54,6 @@ public class TestController {
         return "loginPage";
     }
 
-    //@PreAuthorize("hasPermission(#id, 'Foo', 'read')")
     @GetMapping("/register")
     public String register() {
         return "registerPage";

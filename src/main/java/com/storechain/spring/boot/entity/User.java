@@ -18,6 +18,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -29,7 +30,7 @@ import com.storechain.interfaces.security.Operator;
 import com.storechain.interfaces.security.permission.Permissible;
 import com.storechain.interfaces.security.permission.Permission;
 import com.storechain.security.RoleRule;
-import com.storechain.security.OwnedProviderCollection;
+import com.storechain.security.OwnedExternalUserCollection;
 import com.storechain.security.OwnedRoleCollection;
 import com.storechain.security.permission.OwnedPermissionCollection;
 import reactor.util.annotation.NonNull;
@@ -59,13 +60,14 @@ public final class User extends EntityBase implements UserDetails, Permissible, 
     		inverseJoinColumns = { @JoinColumn(name = "permission", referencedColumnName = "authority") })
     private Set<UserPermission> permissions = new HashSet<UserPermission>();
     
-    private transient OwnedProviderCollection providerCollection;
+    private transient OwnedExternalUserCollection externalUserCollection;
     
-    @ManyToMany
+//    @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinTable(name = "user_providers", joinColumns = { @JoinColumn(name = "user", referencedColumnName = "username") },
-	inverseJoinColumns = { @JoinColumn(name = "identity", referencedColumnName = "identity") })
-    private Set<UserProvider> providers = new HashSet<UserProvider>();
+//    @JoinTable(name = "external_users", joinColumns = { @JoinColumn(name = "user", referencedColumnName = "username") },
+//	inverseJoinColumns = { @JoinColumn(name = "identity", referencedColumnName = "identity") })
+    @OneToMany(mappedBy="user")
+    private Set<ExternalUser> externalUsers = new HashSet<ExternalUser>();
 
     private boolean expired;
     
@@ -99,7 +101,7 @@ public final class User extends EntityBase implements UserDetails, Permissible, 
     	this(username, password, Arrays.stream(roles).toList());
     }
     
-
+    @Override
 	public String getUsername() {
 		return username;
 	}
@@ -134,14 +136,19 @@ public final class User extends EntityBase implements UserDetails, Permissible, 
 		return Stream.of(roles.stream().map(role -> role.getPermissions()).flatMap(Collection::stream).collect(Collectors.toList()), permissions).flatMap(Collection::stream).distinct().collect(Collectors.toUnmodifiableSet());
 	}
 	
-	public OwnedProviderCollection getOwnedProviderCollection() {
+	public Set<? extends ExternalUser> getExternalUsers() {
 		
-		if(this.providerCollection == null) {
+		return Collections.unmodifiableSet(this.externalUsers);
+	}
+	
+	public OwnedExternalUserCollection getOwnedExternalUserCollection() {
+		
+		if(this.externalUserCollection == null) {
 			
-			this.providerCollection = new OwnedProviderCollection(this.providers);
+			this.externalUserCollection = new OwnedExternalUserCollection(this, this.externalUsers);
 		}
 		
-		return this.providerCollection;
+		return this.externalUserCollection;
 	}
 	
 	public OwnedRoleCollection getOwnedRoleCollection() {
@@ -272,13 +279,5 @@ public final class User extends EntityBase implements UserDetails, Permissible, 
 	public boolean isRole(String name) {
 		
 		return this.roles.stream().anyMatch(role -> role.getName().toLowerCase().equals(name.toLowerCase()));
-	}
-
-	@Override
-	public String getName() {
-
-		return this.username;
-	}
-	
-	
+	}	
 }

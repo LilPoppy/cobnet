@@ -14,7 +14,7 @@ import reactor.util.annotation.NonNull;
 
 @Entity
 @Data
-public class UserProviderAuthority extends EntityBase implements Permission, Serializable  {
+public class ExternalUserAuthority extends EntityBase implements Permission, Serializable  {
 
 
 	private static final long serialVersionUID = -1424826140778795160L;
@@ -22,9 +22,9 @@ public class UserProviderAuthority extends EntityBase implements Permission, Ser
 	@Id
 	private String name;
 	
-	public UserProviderAuthority() {}
+	public ExternalUserAuthority() {}
 	
-	public UserProviderAuthority(@NonNull String name) {
+	public ExternalUserAuthority(@NonNull String name) {
 		
 		this.name = name;
 	}
@@ -51,9 +51,9 @@ public class UserProviderAuthority extends EntityBase implements Permission, Ser
 			return this.name.equals(((SimpleGrantedAuthority) obj).getAuthority());
 		}
 
-		if (obj instanceof UserProviderAuthority) {
+		if (obj instanceof ExternalUserAuthority) {
 
-			return this.name.equals(((UserPermission) obj).getAuthority());
+			return this.name.equals(((ExternalUserAuthority) obj).getAuthority());
 		}
 
 		return false;

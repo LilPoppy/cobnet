@@ -11,6 +11,9 @@ import com.storechain.interfaces.security.annotation.AccessSecured;
 
 import org.graalvm.nativeimage.hosted.Feature;
 import org.graalvm.nativeimage.hosted.RuntimeReflection;
+import org.springframework.beans.factory.BeanClassLoaderAware;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 
 // All the reflection references must defined here before pack native.
 @AutomaticFeature
@@ -36,7 +39,11 @@ public class RuntimeReflectionRegistrationFeature implements Feature {
 	        RuntimeReflection.register(WebSocketClientConverter.class.getMethods());
 	        RuntimeReflection.register(UnknownPacketHandler.class);
 	        RuntimeReflection.register(UnknownPacketHandler.class.getMethods());
-	   
+	        RuntimeReflection.register(BeanPostProcessor.class);
+	        RuntimeReflection.register(BeanFactoryAware.class);
+	        RuntimeReflection.register(BeanClassLoaderAware.class);
+
+	        
 	   
         } catch (NoSuchMethodException e) { 
 			// TODO Auto-generated catch block

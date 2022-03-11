@@ -34,18 +34,13 @@ import org.thymeleaf.util.StringUtils;
 
 import com.storechain.interfaces.security.annotation.AccessSecured;
 import com.storechain.spring.boot.configuration.SecurityConfiguration;
+import com.storechain.utils.UserContextHolder;
 
 @RestController
 public class TestRestController {
 	
 	@Autowired
 	private AuthenticationProvider provider;
-	
-    @Autowired
-    private ClientRegistrationRepository clientRegistrationRepository;
-    
-	@Autowired
-	private OAuth2AuthorizedClientService authorizedClientService;
 	
 	@PostMapping("/doLogin")
 	public ModelAndView login(HttpServletRequest request, String username, String password) throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
@@ -68,18 +63,18 @@ public class TestRestController {
             
 	        SecurityContextHolder.getContext().setAuthentication(authentication);
 	        HttpSession session = request.getSession();
-	        session.setAttribute(SecurityConfiguration.SESSION_KEY, SecurityContextHolder.getContext()); // 这个非常重要，否则验证后将无法登陆
+	        session.setAttribute(SecurityConfiguration.SESSION_KEY, SecurityContextHolder.getContext()); //redis context storage
 	        
 	    	model.setViewName("index");
-	        model.addObject("message","登录用户：" + authentication.getName());
-	        model.addObject("ok",1);//这样view/customLogin.jsp得到成功标记后可以做url跳转。
-	        System.out.println("登陆成功！" + authentication.getName());
+	        model.addObject("message","User：" + authentication.getName());
+	        model.addObject("ok",1);//success signed
+	        System.out.println("Successfully!" + authentication.getName());
     		
 
 	    } catch (AuthenticationException ex) {
-	    	System.out.println("用户名或密码错误！");
-	    	model.addObject("message","用户名或密码错误");
-	    	model.addObject("ok",0);//为了view/customLogin.jsp得到失败标记后可以提醒用户重新输入用户名、密码。
+	    	System.out.println("Username or password is incorrect!");
+	    	model.addObject("message","Username or password is incorrect!");
+	    	model.addObject("ok",0);//failed signed
 	    }
     	
     	return model;
@@ -88,13 +83,15 @@ public class TestRestController {
     @PostMapping("/doRegister")
     public String register(String username, String password) {
     	
-        return username.length() > 0 && password.length() > 0 ? "注册成功" : "注册失败";
+        return username.length() > 0 && password.length() > 0 ? "success" : "failed";
     }
     
     @AccessSecured(permissions = "user.test")
     @GetMapping("/test")
     public String test() {
-    	System.out.println("成功！");
+    	System.out.println("success！");
+    	
+    	UserContextHolder.logout();
     	
     	return "success";
     }
@@ -103,8 +100,8 @@ public class TestRestController {
     public Map<String, Object> userinfo(Model model, Authentication authentication) {
     	
     	System.out.println("/userinfo");
-    	System.out.println("验证主体：" + authentication);
-    	
+    	System.out.println(authentication.getPrincipal());
+  
         return Collections.singletonMap("name", authentication.getPrincipal().toString());
     }
     

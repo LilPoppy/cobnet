@@ -8,7 +8,7 @@ import com.storechain.security.RoleRule;
 
 public interface Operator {
 	
-	public String getName();
+	public String getUsername();
 	
 	public Collection<? extends GrantedAuthority> getAuthorities();
 	

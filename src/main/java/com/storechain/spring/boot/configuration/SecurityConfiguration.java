@@ -29,7 +29,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -76,16 +75,19 @@ import com.storechain.connection.handler.http.security.HttpAccessDeniedHandler;
 import com.storechain.connection.handler.http.security.HttpOAuth2AuthenticationFailureHandler;
 import com.storechain.connection.handler.http.security.HttpOAuth2AuthenticationSuccessHandler;
 import com.storechain.connection.handler.http.security.HttpSessionAuthenticationHandler;
+import com.storechain.interfaces.security.Operator;
 import com.storechain.interfaces.security.annotation.AccessSecured;
+import com.storechain.interfaces.security.permission.Permissible;
 import com.storechain.connection.handler.http.security.HttpInvalidSessionHandler;
 import com.storechain.connection.handler.http.security.HttpLogoutHandler;
 import com.storechain.security.UserAuthenticationToken;
 import com.storechain.spring.boot.entity.User;
-import com.storechain.spring.boot.entity.UserProvider;
-import com.storechain.spring.boot.entity.UserProviderAuthority;
+import com.storechain.spring.boot.entity.ExternalUser;
+import com.storechain.spring.boot.entity.ExternalUserAuthority;
 import com.storechain.spring.boot.entity.UserRole;
 import com.storechain.utils.DatabaseManager;
 import com.storechain.utils.SpringContext;
+import com.storechain.utils.UserContextHolder;
 
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -93,14 +95,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 @EnableWebSecurity(debug = false)
 @Configuration
 @ConfigurationProperties("spring.security")
-@EnableGlobalMethodSecurity(securedEnabled = true)
+//@EnableGlobalMethodSecurity(securedEnabled = true)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	public static final String PREVIOUS_URL = "previousUrl";
 	
 	public static final String SESSION_KEY = "SPRING_SECURITY_CONTEXT";
-	
-	public static final Class<?>[] REMOVED_FILTERS = { OAuth2LoginAuthenticationFilter.class };
 	
 	final static String[] PERMITTED_MATCHERS = { "/register", "/doRegister", "/login", "/doLogin", "/login/oauth2/code/google",  "/oauth2/authorization/google" };
 	
@@ -149,8 +149,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	}
 
 	
-
-	
 	@Override
 	protected void configure(HttpSecurity security) throws Exception {
 		//OAuth2AuthenticationToken
@@ -189,45 +187,54 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		
 		return (request) -> {
 
-			OidcUser user = delegate.loadUser(request);
+			OidcUser oidc = delegate.loadUser(request);
 			
-			String identity = "";
+			String username = "";
 			
 			String provider = request.getClientRegistration().getRegistrationId();
 			
-			String email = user.getEmail();
+			String email = oidc.getEmail();
 			
-			List<UserProviderAuthority> authorities = user.getAuthorities().stream().map(authority -> new UserProviderAuthority(authority.getAuthority())).toList();
+			List<ExternalUserAuthority> authorities = oidc.getAuthorities().stream().map(authority -> new ExternalUserAuthority(authority.getAuthority())).toList();
 			
-			HashMap<String, Object> attributes = new HashMap<>(user.getAttributes());
+			HashMap<String, Object> attributes = new HashMap<>(oidc.getAttributes());
 			
-			if(email != null && email.length() > 0 && user.getEmailVerified()) {
+			if(email != null && email.length() > 0 && oidc.getEmailVerified()) {
 				
-				identity = email;
+				username = email;
 			}
 			
-			String phone = user.getPhoneNumber();
+			String phone = oidc.getPhoneNumber();
 			
-			if(phone != null && phone.length() > 0 && user.getPhoneNumberVerified()) {
+			if(phone != null && phone.length() > 0 && oidc.getPhoneNumberVerified()) {
 				
-				identity = phone;
+				username = phone;
 			}
 			
-			user = new UserProvider(identity, provider, request.getIdToken().getTokenValue(), request.getAccessToken().getTokenValue(), authorities, attributes);
+			oidc = new ExternalUser(username, provider, request.getIdToken().getTokenValue(), request.getAccessToken().getTokenValue(), authorities, attributes);
 			
-		    UserProvider data = DatabaseManager.getUserProviderRepository().findByIdentityIgnoreCase(identity, provider);
+		    ExternalUser existed = DatabaseManager.getExternalUserRepository().findByProvidereAndUsernameIgnoreCase(provider, username);
+
+		    if(existed != null) {
+		    	
+		    	existed.setIdToken(request.getIdToken().getTokenValue());
+		    	existed.setAccessToken(request.getAccessToken().getTokenValue());
+		    	existed.setAttributes(attributes);
+		    	existed.getOwnedPermissionCollection().clear();
+		    	existed.getOwnedPermissionCollection().addAll(authorities);
+		    } else {
+		
+		    	existed = (ExternalUser) oidc;
+		    }
+		    
+			User user = existed.getUser();
 			
-			if(data == null || !user.equals(data)) {
+			if(user != null) {
+
+				DatabaseManager.getExternalUserRepository().save(existed);
+			}
 				
-				data = (UserProvider) user;
-				
-				if(data.getUser() != null) {
-					
-					DatabaseManager.getUserProviderRepository().save(data);
-				}
-			} 
-				
-			return data;
+			return existed;
 		};
 	}
 
@@ -247,7 +254,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	public void setUserDefaultRole(String userDefaultRole) {
 		this.userDefaultRole = userDefaultRole;
 	}
-
 	
 	@Component
 	final static class UserAuthenticationProvider implements AuthenticationProvider {
@@ -255,6 +261,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		@Override
 		public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
+			
 			if((authentication instanceof UsernamePasswordAuthenticationToken || authentication instanceof UserAuthenticationToken) && authentication.getCredentials() != null) {
 
 				User user = (User) DatabaseManager.getUserRepository().loadUserByUsername(authentication.getName());
@@ -268,7 +275,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 					throw new BadCredentialsException("Wrong password");
 				}
 				
-				return new UserAuthenticationToken(user, authentication.getCredentials());
+				UserAuthenticationToken token = new UserAuthenticationToken(user, authentication.getCredentials());
+				
+				token.setDetails(authentication.getDetails());
+				
+				return token;
 			}
 			
 			
@@ -375,7 +386,30 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 		private UserAuthenticationToken createAuthenticationResult(OAuth2LoginAuthenticationToken authenticationResult) {
 			
-			return new UserAuthenticationToken((UserProvider)authenticationResult.getPrincipal());
+			Operator user = (Operator) authenticationResult.getPrincipal();
+
+			if(user instanceof ExternalUser) {
+				
+				ExternalUser external = (ExternalUser) user;
+				
+				user = external.getUser();
+
+				if(user != null) {
+
+					if(!((User) user).getExternalUsers().stream().anyMatch(child -> child.equals(external))) {
+						
+						((User) user).getOwnedExternalUserCollection().add(external);
+						
+						DatabaseManager.getUserRepository().save((User)user);
+					}
+					
+				} else {
+					
+					user = external;
+				}
+			}
+
+			return new UserAuthenticationToken(user);
 		}
 		
 		private MultiValueMap<String, String> toMultiMap(Map<String, String[]> map) {
@@ -430,7 +464,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		
 	}
 
-
 	@Aspect
 	@Component
 	static final class AccessSecureAspect {
@@ -446,15 +479,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	        String[] roles = annotation.roles();
 	        String[] permissions = annotation.permissions();
 	        
-	        Object detail = SecurityContextHolder.getContext().getAuthentication().getDetails();
-
-	        User user = annotation.user().length() > 0 || detail == null || !(detail instanceof User) ? DatabaseManager.getUserRepository().findByUsernameIgnoreCase((String) SpringContext.getDynamicValue(signature.getParameterNames(), joinPoint.getArgs(), annotation.user().length() > 0 ? annotation.user() : (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal())) : (User) detail;
-	        
-	        if(user != null) {
-	        	
+        	Operator operator = UserContextHolder.getOperator();
+        	
+        	if(operator != null && operator instanceof Permissible) {
+        		
+        		Permissible permissible = (Permissible) operator;
+        		
 		        if(roles.length > 0) {
 		        	
-			        if (user.hasRole(roles)) {
+			        if (permissible instanceof User && ((User)permissible).hasRole(roles)) {
 			        	
 			            return joinPoint.proceed();
 			            
@@ -467,21 +500,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		        
 		        if(permissions.length > 0) {
 		        	
-			        if (user.hasPermission(permissions)) {
+			        if (Arrays.stream(permissions).allMatch(permission -> permissible.isPermitted(permission))) {
 			        	
 			            return joinPoint.proceed();
+			            
 			        } else {
 			        	
 			        	accessDenied();
 			        	return null;
 			        }
 		        }
-	        } else if(roles.length > 0 && permissions.length > 0) {
-	        	
+        	} else if(roles.length > 0 && permissions.length > 0) {
+        		
 	        	accessDenied();
 	        	return null;
-	        }
-
+        	}
+	        
 	        
 	        return joinPoint.proceed();
 	    }

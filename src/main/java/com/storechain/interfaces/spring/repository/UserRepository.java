@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 
 import com.storechain.spring.boot.entity.User;
-import com.storechain.spring.boot.entity.UserProvider;
 
 @Repository
 public interface UserRepository extends ExtensionRepository<User, String>, UserDetailsService {
@@ -21,7 +20,5 @@ public interface UserRepository extends ExtensionRepository<User, String>, UserD
 	}
     
     User findByUsernameIgnoreCase(@Param("username") String username);
-    
-    User findFirstByProviders(UserProvider provider);
-	
+
 }

@@ -146,6 +146,12 @@
       "pattern":"\\Qcom/storechain/interfaces/spring/repository/ExtensionRepository.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/storechain/interfaces/spring/repository/ExternalUserAuthorityRepository.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/storechain/interfaces/spring/repository/ExternalUserRepository.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/storechain/interfaces/spring/repository/UserPermissionRepository.class\\E"
     }, 
     {
@@ -222,6 +228,12 @@
     }, 
     {
       "pattern":"\\Qcom/storechain/spring/boot/entity/EntityBase.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/storechain/spring/boot/entity/ExternalUser.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/storechain/spring/boot/entity/ExternalUserAuthority.class\\E"
     }, 
     {
       "pattern":"\\Qcom/storechain/spring/boot/entity/User.class\\E"

@@ -3,11 +3,16 @@ package com.storechain;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
+import java.util.HashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.storechain.common.MultiwayTreeNode;
 import com.storechain.interfaces.connection.NettyServerProvider;
 import com.storechain.polyglot.PolyglotContext;
@@ -293,9 +298,11 @@ public class EntryPoint {
         long took = System.currentTimeMillis() - start;
         
         System.out.println("took:" + took);
-        
-        
-		
+
+		if(Arrays.stream(args).anyMatch(arg -> arg.toUpperCase().equals("-DCI"))) {
+			
+			System.exit(0);
+		}
 		
 	}
 	

@@ -2,6 +2,7 @@ package com.storechain.security;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import com.storechain.interfaces.security.Operator;
+import com.storechain.spring.boot.entity.User;
 
 public class UserAuthenticationToken extends AbstractAuthenticationToken {
 
@@ -34,6 +35,11 @@ public class UserAuthenticationToken extends AbstractAuthenticationToken {
 	public Operator getPrincipal() {
 		
 		return this.principal;
+	}
+	
+	public boolean isRegistered() {
+		
+		return this.principal instanceof User;
 	}
 
 }
