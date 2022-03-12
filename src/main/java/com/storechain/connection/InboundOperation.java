@@ -5,6 +5,7 @@ import java.util.Arrays;
 public enum InboundOperation {
 
 	UNKNOWN(0),
+	AUTHENTICATION(1),
 	RECONNECT(5);
 	
 	private final long opcode;

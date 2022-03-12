@@ -13,7 +13,7 @@
 
         if(window.WebSocket){
 
-            socket = new WebSocket("wss://localhost:8090/connect");
+            socket = new WebSocket("wss://localhost:8090/web-socket");
 
             socket.onmessage = function(event){
                 var ta = document.getElementById('responseText');
@@ -63,7 +63,7 @@
 
 <body>
 <form onSubmit="return false;">
-    <label>ID</label><input type="text" name="uid" value="${uid!!}" /> <br />
+    <label>ID</label><input type="text" name="token" value="${token}" /> <br />
     
     <label>TEXT</label><input type="text" name="message" value="这里输入消息" />
     <input type="button" value="发送ws消息"

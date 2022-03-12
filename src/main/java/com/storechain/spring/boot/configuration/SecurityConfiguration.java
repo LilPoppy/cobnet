@@ -102,7 +102,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	
 	public static final String SESSION_KEY = "SPRING_SECURITY_CONTEXT";
 	
-	final static String[] PERMITTED_MATCHERS = { "/register", "/doRegister", "/login", "/doLogin", "/login/oauth2/code/google",  "/oauth2/authorization/google" };
+	final static String[] PERMITTED_MATCHERS = { "/register", "/doRegister", "/login", "/authentication", "/doLogin", "/login/oauth2/code/google",  "/oauth2/authorization/google" };
 	
 	private byte permissionDefaultPower;
 

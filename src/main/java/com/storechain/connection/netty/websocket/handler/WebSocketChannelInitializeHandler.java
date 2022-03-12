@@ -15,11 +15,10 @@ import org.springframework.boot.web.server.Ssl;
 import org.springframework.boot.web.server.WebServerException;
 import org.springframework.util.ResourceUtils;
 
-import com.storechain.EntryPoint;
 import com.storechain.connection.InboundPacket;
 import com.storechain.connection.InboundPacketBuilder;
+import com.storechain.connection.netty.builder.WebSocketChannelBuilder;
 import com.storechain.connection.netty.handler.ChannelInitializeHandler;
-import com.storechain.connection.netty.websocket.WebSocketSessionBuilder;
 import com.storechain.connection.netty.websocket.WebSocketServer;
 import com.storechain.utils.SpringContext;
 
@@ -31,27 +30,26 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.stream.ChunkedWriteHandler;
 
-public class WebSocketInitializeHandler extends ChannelInitializeHandler<NioSocketChannel> {
+public class WebSocketChannelInitializeHandler extends ChannelInitializeHandler<NioSocketChannel> {
 	
-	private final WebSocketServer server;
 
-	public WebSocketInitializeHandler(WebSocketServer server) throws NoSuchMethodException, SecurityException {
-		super(server, new WebSocketSessionBuilder());
-		this.server = server;
+	public WebSocketChannelInitializeHandler(WebSocketServer server) throws NoSuchMethodException, SecurityException {
+		super(server, new WebSocketChannelBuilder());
 	}
 
 	@Override
     protected void initChannel(NioSocketChannel ch) throws Exception {
+
         ChannelPipeline pipe = ch.pipeline();
 
         pipe.addLast(new HttpServerCodec());
         pipe.addLast(new ChunkedWriteHandler());
         pipe.addLast(new HttpObjectAggregator(65535));
         pipe.addLast(new WebSocketInboundUrlHandler());
-        pipe.addLast(new WebSocketServerProtocolHandler("/connect"));
-        pipe.addLast(new WebSocketInboundBinaryFrameHandler<InboundPacket>(server, new InboundPacketBuilder()));
-        pipe.addLast(new WebSocketActivityHandler(this.server));
-        pipe.addLast(new WebSocketInboundPacketHandler(this.server));
+        pipe.addLast(new WebSocketServerProtocolHandler("/" + this.getServer().getName()));
+        pipe.addLast(new WebSocketInboundBinaryFrameHandler<InboundPacket>(this.getServer(), new InboundPacketBuilder()));
+        pipe.addLast(new WebSocketActivityHandler((WebSocketServer)this.getServer()));
+        pipe.addLast(new WebSocketInboundPacketHandler((WebSocketServer)this.getServer()));
         
 		ConfigurableListableBeanFactory beans = SpringContext.getContext().getBeanFactory();
 		
@@ -85,7 +83,10 @@ public class WebSocketInitializeHandler extends ChannelInitializeHandler<NioSock
         engine.setUseClientMode(false);
         engine.setNeedClientAuth(false);
         
-        pipe.addFirst("ssl", new WebSocketSslHandler(engine));
+        if(ssl != null) {
+        	
+            pipe.addFirst("ssl", new WebSocketSslHandler(engine));
+        }
         
         super.initChannel(ch);
     }

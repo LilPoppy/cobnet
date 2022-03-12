@@ -5,13 +5,14 @@ import java.util.Date;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.storechain.EntryPoint;
 import com.storechain.connection.InboundOperation;
 import com.storechain.connection.InboundPacket;
-import com.storechain.connection.netty.NettySession;
+import com.storechain.connection.netty.NettyNioSocketChannel;
 import com.storechain.connection.netty.NettyServer;
 import com.storechain.interfaces.connection.ConnectionListener;
 import com.storechain.interfaces.connection.annotation.ConnectionHandler;
+
+import io.netty.channel.Channel;
 
 public class UnknownPacketHandler implements ConnectionListener {
 	
@@ -25,13 +26,17 @@ public class UnknownPacketHandler implements ConnectionListener {
 
 	@ConnectionHandler(operation = InboundOperation.UNKNOWN)
 	@Override
-	public void onEvent(NettySession client, InboundPacket packet) {
+	public void onEvent(Channel channel, InboundPacket packet) {
 		
 		if(server.getConfiguration().isKickUnknownPacketUser()) {
-			if(client.isConnected()) {
-				log.warn(String.format("Kicking %s by sending unknown packet.", client.getFullIPAddress()));
-				client.close();	
-				server.block(client, new Date(System.currentTimeMillis() + (5 * 1000)));
+			
+			NettyNioSocketChannel<?> target = (NettyNioSocketChannel<?>) channel;
+			
+			if(target.isConnected()) {
+				
+				log.warn(String.format("Kicking %s by sending unknown packet.", target.getFullIPAddress()));
+				target.close();	
+				server.block(target, new Date(System.currentTimeMillis() + (5 * 1000)));
 			}
 		}
 		
@@ -39,7 +44,8 @@ public class UnknownPacketHandler implements ConnectionListener {
 
 	@Override
 	public NettyServer getServer() {
-		return server;
+		
+		return this.server;
 	}
 
 }

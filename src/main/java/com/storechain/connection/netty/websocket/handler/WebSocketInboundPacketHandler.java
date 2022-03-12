@@ -1,24 +1,19 @@
 package com.storechain.connection.netty.websocket.handler;
 
-
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.storechain.EntryPoint;
 import com.storechain.connection.InboundOperation;
 import com.storechain.connection.InboundPacket;
-import com.storechain.connection.netty.NettySession;
-import com.storechain.connection.netty.websocket.WebSocketSession;
+import com.storechain.connection.netty.websocket.WebSocketChannel;
 import com.storechain.connection.netty.websocket.WebSocketServer;
 import com.storechain.interfaces.connection.ConnectionListener;
 import com.storechain.interfaces.connection.annotation.ConnectionHandler;
 
-import io.netty.channel.ChannelHandler;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
-@ChannelHandler.Sharable
 public class WebSocketInboundPacketHandler extends SimpleChannelInboundHandler<InboundPacket> {
 	
 	private final WebSocketServer server;
@@ -34,8 +29,8 @@ public class WebSocketInboundPacketHandler extends SimpleChannelInboundHandler<I
 		
     	InboundOperation operation = packet.getOperation();
     	
-        NettySession client = ctx.channel().attr(WebSocketSession.CLIENT_KEY).get();
-        
+    	Channel channel = ctx.channel().attr(WebSocketChannel.CLIENT_KEY).get();
+
         if(operation == InboundOperation.UNKNOWN) {
         	
         	log.warn(String.format("Unknown packet:[(%d) %s]", packet.getOpcode(), packet.toString()));
@@ -48,13 +43,13 @@ public class WebSocketInboundPacketHandler extends SimpleChannelInboundHandler<I
         	ConnectionHandler handler = server.getHandler(listener);
         	
         	if(handler.operation() == operation) {
-        		listener.onEvent(client, packet);
+        		listener.onEvent(channel, packet);
         		hitCount++;
         	}
         	
         	for(InboundOperation op : handler.operations()) {
         		if(op != handler.operation()) {
-        			listener.onEvent(client, packet);
+        			listener.onEvent(channel, packet);
         			hitCount++;
         		}
         	}

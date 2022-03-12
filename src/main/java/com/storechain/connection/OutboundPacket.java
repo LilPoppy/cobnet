@@ -22,6 +22,11 @@ public class OutboundPacket extends Packet {
 	
 	private ByteBuf byteBuf;
 	
+	public OutboundPacket(NettyServer server, OutboundOperation operation) {
+		
+		this(server, operation.code());
+	}
+	
     public OutboundPacket(NettyServer server, long opcode) {
         this(server);
         encodeUInt(opcode);

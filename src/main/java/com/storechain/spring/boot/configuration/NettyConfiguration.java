@@ -62,17 +62,17 @@ public class NettyConfiguration {
 		
 		private int port = 8090;
 		
-		private String provider = "com.storechain.spring.boot.connection.netty.NettyBaseServerProvider";
+		private String provider = "com.storechain.connection.netty.provider.NettyBaseServerProvider";
 		
-		private String sessionBuilder = "com.storechain.connection.netty.NettyBaseSessionBuilder";
+		private String channelBuilder = "com.storechain.connection.netty.builder.NettyBaseChannelBuilder";
 		
 		private String handler = "io.netty.handler.logging.LoggingHandler";
 		
 		private String subHandler;
 		
-		private List<Map<ChannelOption, Object>> options;
+		private List<Map<ChannelOption<?>, ?>> options;
 		
-		private List<Map<ChannelOption, Object>> childOptions;
+		private List<Map<ChannelOption<?>, ?>> childOptions;
 		
 		private Endian encodeEndian = Endian.LITTLE;
 		
@@ -189,27 +189,26 @@ public class NettyConfiguration {
 			this.subHandler = subHandler;
 		}
 		
-		public Entry<ChannelOption, Object>[] getOptions() {
-			Map<ChannelOption, Object> map = this.options != null && this.options.size() > 0 ? this.options.get(0) : new HashMap<ChannelOption, Object>();
+		public Entry<ChannelOption<?>, ?>[] getOptions() {
+			Map<ChannelOption<?>, ?> map = this.options != null && this.options.size() > 0 ? this.options.get(0) : new HashMap<ChannelOption<?>, Object>();
 			
-			Entry<ChannelOption, Object>[] array = new Entry[map.size()];
-
+			Entry<ChannelOption<?>, ?>[] array = new Entry[map.size()];
 			return map.entrySet().toArray(array);
 		}
 
-		public void setOptions(List<Map<ChannelOption, Object>> options) {
+		public void setOptions(List<Map<ChannelOption<?>, ?>> options) {
 			this.options = options;
 		}
 
-		public Entry<ChannelOption, Object>[] getChildOptions() {
-			Map<ChannelOption, Object> map = this.childOptions != null && this.childOptions.size() > 0 ? this.childOptions.get(0) : new HashMap<ChannelOption, Object>();;
+		public Entry<ChannelOption<?>, ?>[] getChildOptions() {
+			Map<ChannelOption<?>, ?> map = this.childOptions != null && this.childOptions.size() > 0 ? this.childOptions.get(0) : new HashMap<ChannelOption<?>, Object>();;
 			
-			Entry<ChannelOption, Object>[] array = new Entry[map.size()];
+			Entry<ChannelOption<?>, ?>[] array = new Entry[map.size()];
 
 			return map.entrySet().toArray(array);
 		}
 
-		public void setChildOptions(List<Map<ChannelOption, Object>> childOptions) {
+		public void setChildOptions(List<Map<ChannelOption<?>, ?>> childOptions) {
 			this.childOptions = childOptions;
 		}
 
@@ -221,12 +220,12 @@ public class NettyConfiguration {
 			this.provider = provider;
 		}
 
-		public Class<?> getSessionBuilder() throws ClassNotFoundException {
-			return Class.forName(sessionBuilder);
+		public Class<?> getChannelBuilderr() throws ClassNotFoundException {
+			return Class.forName(channelBuilder);
 		}
 
-		public void setSessionBuilder(String clientConverter) {
-			this.sessionBuilder = clientConverter;
+		public void setChannelBuilder(String channelBuilder) {
+			this.channelBuilder = channelBuilder;
 		}
 
 		public Class<?> getHandler() throws ClassNotFoundException {

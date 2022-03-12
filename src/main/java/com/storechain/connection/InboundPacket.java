@@ -49,7 +49,16 @@ public class InboundPacket extends Packet {
     
     public byte[] decode(long length) {
     	
-    	ByteBuf buf = Unpooled.buffer();
+    	
+    	ByteBuf buf = null;
+    	
+    	if(length > Integer.MAX_VALUE) {
+    		
+    		buf = Unpooled.buffer();
+    	} else {
+    		
+    		buf = Unpooled.buffer((int)length);
+    	}
     	
     	long left = length;
 		
@@ -138,13 +147,11 @@ public class InboundPacket extends Packet {
     	return new String(this.decode(size), this.charset);
     }
     
-    @SuppressWarnings("rawtypes")
-	public Map decodeMap() throws JsonMappingException, JsonProcessingException {
+	public Map<?,?> decodeMap() throws JsonMappingException, JsonProcessingException {
     	return new ObjectMapper().readValue(decodeString(), Map.class);
     }
     
-    @SuppressWarnings("rawtypes")
-	public Map decodeBigMap() throws JsonMappingException, JsonProcessingException {
+	public Map<?,?> decodeBigMap() throws JsonMappingException, JsonProcessingException {
     	return new ObjectMapper().readValue(decodeText(), Map.class);
     }
 

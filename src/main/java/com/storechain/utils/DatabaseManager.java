@@ -12,6 +12,7 @@ import org.springframework.core.ResolvableType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.support.JpaRepositoryFactory;
 import org.springframework.session.Session;
+import org.springframework.session.data.redis.RedisIndexedSessionRepository;
 import org.springframework.stereotype.Component;
 
 import com.storechain.common.CommonConverter;
@@ -21,7 +22,7 @@ import com.storechain.interfaces.spring.repository.ExternalUserRepository;
 import com.storechain.interfaces.spring.repository.UserRepository;
 import com.storechain.interfaces.spring.repository.UserRoleRepository;
 import com.storechain.spring.boot.service.JsonRedisService;
-import com.storechain.spring.boot.service.SimpleSessionRepository;
+import com.storechain.spring.boot.service.ManagedSessionRepository;
 
 @Component
 public class DatabaseManager {
@@ -36,6 +37,11 @@ public class DatabaseManager {
 	
 	private static ExternalUserAuthorityRepository EXTERNAL_USER_AUTHORITY_REPOSITORY;
 	
+	private static ManagedSessionRepository<?> MANAGED_SESSION_REPOSITORY;
+	
+	private static RedisIndexedSessionRepository REDIS_INDEXED_SESSION_REPOSITORY;
+	
+	
 	public DatabaseManager() {}
 
 	public static <T extends JsonRedisService<K, V> ,K, V> T getJsonRedisService(Class<K> key, Class<V> value) {
@@ -43,9 +49,9 @@ public class DatabaseManager {
 		return  (T) SpringContext.getContext().getBeanProvider(ResolvableType.forClassWithGenerics(JsonRedisService.class, key, value)).getObject();
 	}
 	
-	public static <E extends SimpleSessionRepository<T>, T extends Session> T getSimpleSessionRepository(Class<T> session) {
-		
-		return (T) SpringContext.getContext().getBeanProvider(ResolvableType.forClassWithGenerics(SimpleSessionRepository.class, session)).getObject();
+	public static <E extends ManagedSessionRepository<T>, T extends Session> T getManagedSessionRepository(Class<T> session) {
+
+		return (T) SpringContext.getContext().getBeanProvider(ResolvableType.forClassWithGenerics(ManagedSessionRepository.class, session)).getObject();
 	}
 	
 	
@@ -105,6 +111,16 @@ public class DatabaseManager {
 		return DatabaseManager.EXTERNAL_USER_AUTHORITY_REPOSITORY;
 	}
 	
+	public static ManagedSessionRepository<?> getManagedSessionRepository() {
+		
+		return DatabaseManager.MANAGED_SESSION_REPOSITORY;
+	}
+	
+	public static RedisIndexedSessionRepository getRedisIndexedSessionRepository() {
+		
+		return DatabaseManager.REDIS_INDEXED_SESSION_REPOSITORY;
+	}
+	
 	@Component
 	final static class DatabaseManagerBean {
 		
@@ -136,6 +152,18 @@ public class DatabaseManager {
 		public void setExternalUserAuthorityRepository(ExternalUserAuthorityRepository repository) {
 			
 			DatabaseManager.EXTERNAL_USER_AUTHORITY_REPOSITORY = repository;
+		}
+		
+		@Autowired
+		public void setManagedSessionRepository(ManagedSessionRepository<?> repository) {
+			
+			DatabaseManager.MANAGED_SESSION_REPOSITORY = repository;
+		}
+		
+		@Autowired
+		public void setRedisIndexedSessionRepository(RedisIndexedSessionRepository repository) {
+			
+			DatabaseManager.REDIS_INDEXED_SESSION_REPOSITORY = repository;
 		}
 	}
 

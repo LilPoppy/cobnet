@@ -1,11 +1,12 @@
-package com.storechain.connection.netty;
+package com.storechain.connection.netty.provider;
 
 import java.lang.reflect.InvocationTargetException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.storechain.connection.netty.NettyServer;
 import com.storechain.connection.netty.handler.ChannelInitializeHandler;
-import com.storechain.interfaces.connection.NettySessionBuilder;
+import com.storechain.interfaces.connection.NettyChannelBuilder;
 import com.storechain.interfaces.connection.NettyServerProvider;
 import com.storechain.spring.boot.configuration.NettyConfiguration.ServerConfiguration;
 
@@ -21,22 +22,23 @@ public class NettyBaseServerProvider implements NettyServerProvider {
 		NettyServer server = new NettyServer(config.getName(), config.getPort());
 		
 		ChannelHandler handler;
+		
 		ChannelInitializeHandler<?> sub_handler;
 		
 		try {
 			Class<?> handler_class = config.getHandler();
 			Class<?> sub_handler_class = config.getSubHandler();
-			Class<?> session_builder_class = config.getSessionBuilder();
+			Class<?> session_builder_class = config.getChannelBuilderr();
 			
 			if(sub_handler_class == null) {
 				sub_handler_class = ChannelInitializeHandler.class;
 			}
 			
-			NettySessionBuilder<?, ?> builder = (NettySessionBuilder<?,?>) session_builder_class.getConstructor().newInstance();
+			NettyChannelBuilder<?, ?> builder = (NettyChannelBuilder<?, ?>) session_builder_class.getConstructor().newInstance();
 			
 			handler = (ChannelHandler) handler_class.getConstructor().newInstance();
 
-			sub_handler = (ChannelInitializeHandler<?>) sub_handler_class.getConstructor(NettyServer.class, NettySessionBuilder.class).newInstance(server, builder);
+			sub_handler = (ChannelInitializeHandler<?>) sub_handler_class.getConstructor(NettyServer.class, NettyChannelBuilder.class).newInstance(server, builder);
 
 			server.bind(handler, sub_handler, config.getOptions(), config.getChildOptions());
 			

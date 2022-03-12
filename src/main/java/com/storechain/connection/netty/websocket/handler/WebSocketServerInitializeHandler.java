@@ -6,6 +6,7 @@ import javax.net.ssl.SSLHandshakeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.storechain.connection.handler.AuthenticationPacketHandler;
 import com.storechain.connection.handler.UnknownPacketHandler;
 import com.storechain.connection.netty.websocket.WebSocketServer;
 
@@ -18,11 +19,13 @@ public class WebSocketServerInitializeHandler extends LoggingHandler {
 	
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-    	super.channelRegistered(ctx);
     	
+    	super.channelRegistered(ctx);
+
 		WebSocketServer server = (WebSocketServer) ctx.channel().attr(WebSocketServer.SERVER_KEY).get();
-		
+
 	    server.addListener(new UnknownPacketHandler(server));
+	    server.addListener(new AuthenticationPacketHandler(server));
     }
     
 	@Override

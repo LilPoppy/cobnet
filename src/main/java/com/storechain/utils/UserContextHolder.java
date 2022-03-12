@@ -15,6 +15,7 @@ import com.storechain.spring.boot.entity.ExternalUser;
 import com.storechain.spring.boot.entity.User;
 
 public class UserContextHolder {
+	
 
 	public static Operator getOperator() {
 		

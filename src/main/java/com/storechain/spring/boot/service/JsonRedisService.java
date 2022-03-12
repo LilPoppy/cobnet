@@ -116,4 +116,9 @@ public class JsonRedisService<K,V> implements RedisService<K, V> {
 			
 		});
 	}
+	
+	public RedisTemplate<K, V> getRedisTemplate() {
+		
+		return this.redisTemplate;
+	}
 }

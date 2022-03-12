@@ -27,6 +27,7 @@ import com.storechain.utils.SpringContext;
 import com.storechain.utils.TaskProvider;
 
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelOption;
@@ -88,7 +89,7 @@ public class NettyServer extends DefaultChannelGroup {
 	public void addListener(ConnectionListener listener) throws ClassNotFoundException {
 		
 		try {
-			ConnectionHandler handler = listener.getClass().getMethod("onEvent", NettySession.class, InboundPacket.class).getAnnotation(ConnectionHandler.class);
+			ConnectionHandler handler = listener.getClass().getMethod("onEvent", Channel.class, InboundPacket.class).getAnnotation(ConnectionHandler.class);
 			
 			if(handler == null) {
 				throw new ClassNotFoundException("Cannot find annotation of @Handler in onEvent methond.");
@@ -114,24 +115,21 @@ public class NettyServer extends DefaultChannelGroup {
 	}
 	
 	@Async
-	@SuppressWarnings("unchecked")
 	public void bind(final ChannelInitializeHandler subHandler, int backlog,
-			final Entry<ChannelOption, Object>... childOptions) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+			final Entry<ChannelOption<?>, ?>... childOptions) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		Entry[] options = { new KeyValuePair<ChannelOption<Integer>, Integer>(ChannelOption.SO_BACKLOG, backlog) };
 		bind(subHandler, options, childOptions);
 	}
 	
 	@Async
-	@SuppressWarnings("unchecked")
-	public void bind(final ChannelInitializeHandler subHandler, final Entry<ChannelOption, Object>[] options, final Entry<ChannelOption, Object>... childOptions) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+	public void bind(final ChannelInitializeHandler subHandler, final Entry<ChannelOption<?>, ?>[] options, final Entry<ChannelOption<?>, ?>... childOptions) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		bind(new LoggingHandler(LogLevel.INFO), subHandler, options, childOptions);
 	}
 	
 	
 	@Async
-	@SuppressWarnings("unchecked")
-	public void bind(final ChannelHandler handler, final ChannelInitializeHandler subHandler, final Entry<ChannelOption, Object>[] objects,
-			final Entry<ChannelOption, Object>... object) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+	public void bind(final ChannelHandler handler, final ChannelInitializeHandler subHandler, final Entry<ChannelOption<?>, ?>[] objects,
+			final Entry<ChannelOption<?>, ?>... object) throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
 		NettyServer server = this;
 		Thread thread = new Thread(new Runnable() {
 			public void run() {
@@ -143,14 +141,14 @@ public class NettyServer extends DefaultChannelGroup {
 					sb.handler(handler);
 
 					for (int i = 0; i < objects.length; i++) {
-						sb.option(objects[i].getKey(), objects[i].getValue());
+						sb.option((ChannelOption<Object>)objects[i].getKey(), objects[i].getValue());
 					}
 
 					sb.childHandler(subHandler);
 					sb.channel(NioServerSocketChannel.class);
 					
 					for (int i = 0; i < object.length; i++) {
-						sb.childOption(object[i].getKey(), object[i].getValue());
+						sb.childOption((ChannelOption<Object>)object[i].getKey(), object[i].getValue());
 					}
 					
 					ChannelFuture future = sb.bind(port);
@@ -181,18 +179,18 @@ public class NettyServer extends DefaultChannelGroup {
 		thread.start();
 	}
 	
-	public List<NettySession> getConnections() {
-		return Collections.unmodifiableList(this.stream().map(channel -> channel.attr(NettySession.CLIENT_KEY).get()).toList()); 
+	public List<Channel> getConnections() {
+		
+		return Collections.unmodifiableList(this.stream().map(channel -> channel.attr(NettyNioSocketChannel.CLIENT_KEY).get()).toList()); 
 	}
 	
-	@SuppressWarnings("rawtypes")
-	public boolean add(NettySession client) {
-		return this.add(client.channel);
+	public boolean add(NettyNioSocketChannel<?> channel) {
+
+		return this.add(channel);
 	}
 	
-	@SuppressWarnings("rawtypes")
-	public boolean remove(NettySession client) {
-		return this.remove(client.channel);
+	public boolean remove(NettyNioSocketChannel<?> channel) {
+		return this.remove(channel);
 	}
 	
 	public synchronized List<InetAddress> getBlackList() {
@@ -203,8 +201,8 @@ public class NettyServer extends DefaultChannelGroup {
 		return this.blocks.contains(address);
 	}
 	
-	public synchronized void block(NettySession client) {
-		this.block(client.getAddress().getAddress());
+	public synchronized void block(NettyNioSocketChannel<?> channel) {
+		this.block(channel.getRemoteAddress().getAddress());
 	}
 	
 	public synchronized void block(InetAddress address) {
@@ -219,8 +217,8 @@ public class NettyServer extends DefaultChannelGroup {
 	}
 	
 	
-	public synchronized void block(NettySession client, Date date) {
-		this.block(client.getAddress().getAddress(), date);
+	public synchronized void block(NettyNioSocketChannel<?> channel, Date date) {
+		this.block(channel.getRemoteAddress().getAddress(), date);
 	}
 	
 
@@ -259,8 +257,8 @@ public class NettyServer extends DefaultChannelGroup {
 		return this.blocks.remove(address);
 	}
 	
-	public synchronized boolean unblock(NettySession client) {
-		return this.unblock(client.getAddress().getAddress());
+	public synchronized boolean unblock(NettyNioSocketChannel<?> channel) {
+		return this.unblock(channel.getRemoteAddress().getAddress());
 	}
 
 	public String getName() {

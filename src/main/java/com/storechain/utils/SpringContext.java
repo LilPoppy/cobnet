@@ -78,7 +78,7 @@ public final class SpringContext {
 	
 	
 	public static ServletRequest getCurrentRequest() {
-		
+
 	    RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
 	    
 	    if (attributes instanceof ServletRequestAttributes) {

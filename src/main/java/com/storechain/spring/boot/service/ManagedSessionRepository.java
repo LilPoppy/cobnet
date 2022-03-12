@@ -1,14 +1,13 @@
 package com.storechain.spring.boot.service;
 
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.session.FindByIndexNameSessionRepository;
 import org.springframework.session.Session;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class SimpleSessionRepository<T extends Session> {
+public class ManagedSessionRepository<T extends Session> {
 	
 	@Autowired
 	private FindByIndexNameSessionRepository<T> repository;
@@ -21,6 +20,12 @@ public class SimpleSessionRepository<T extends Session> {
 	public void save(T session) {
 		
 		this.repository.save(session);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public void save(Object session) {
+		
+		this.save((T)session);
 	}
 	
 	public T findById(String id) {
@@ -46,10 +51,6 @@ public class SimpleSessionRepository<T extends Session> {
 	public FindByIndexNameSessionRepository<T> getRepository() {
 		
 		return repository;
-	}
-
-	public void setRepository(FindByIndexNameSessionRepository<T> sessions) {
-		this.repository = sessions;
 	}
 
 }
