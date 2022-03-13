@@ -2,21 +2,6 @@
   "resources":{
   "includes":[
     {
-      "pattern":"META-INF/services/com.oracle.truffle.api.TruffleLanguage$Provider"
-    }, 
-    {
-      "pattern":"META-INF/services/com.oracle.truffle.api.instrumentation.TruffleInstrument$Provider"
-    }, 
-    {
-      "pattern":"META-INF/services/com.oracle.truffle.js.runtime.Evaluator"
-    }, 
-    {
-      "pattern":"META-INF/services/com.oracle.truffle.js.runtime.builtins.JSFunctionLookup"
-    }, 
-    {
-      "pattern":"META-INF/services/java.nio.file.spi.FileSystemProvider"
-    }, 
-    {
       "pattern":"\\QMETA-INF/native/libnetty_resolver_dns_native_macos_x86_64.jnilib\\E"
     }, 
     {
@@ -77,12 +62,6 @@
       "pattern":"\\Qcom/storechain/connection/handler/http/security/HttpAccessDeniedHandler.class\\E"
     }, 
     {
-      "pattern":"\\Qcom/storechain/connection/handler/http/security/HttpAuthenticationFailureHandler.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/connection/handler/http/security/HttpAuthenticationSuccessHandler.class\\E"
-    }, 
-    {
       "pattern":"\\Qcom/storechain/connection/handler/http/security/HttpInvalidSessionHandler.class\\E"
     }, 
     {
@@ -98,7 +77,7 @@
       "pattern":"\\Qcom/storechain/connection/handler/http/security/HttpSessionAuthenticationHandler.class\\E"
     }, 
     {
-      "pattern":"\\Qcom/storechain/connection/netty/NettyClient.class\\E"
+      "pattern":"\\Qcom/storechain/connection/netty/NettyNioSocketChannel.class\\E"
     }, 
     {
       "pattern":"\\Qcom/storechain/connection/netty/NettyServer.class\\E"
@@ -116,13 +95,13 @@
       "pattern":"\\Qcom/storechain/interfaces/TreeNode.class\\E"
     }, 
     {
-      "pattern":"\\Qcom/storechain/interfaces/annotation/AccessSecured.class\\E"
+      "pattern":"\\Qcom/storechain/interfaces/connection/AuthenticatableChannel.class\\E"
     }, 
     {
       "pattern":"\\Qcom/storechain/interfaces/connection/ConnectionListener.class\\E"
     }, 
     {
-      "pattern":"\\Qcom/storechain/interfaces/connection/NettyClientConverter.class\\E"
+      "pattern":"\\Qcom/storechain/interfaces/connection/NettyChannelBuilder.class\\E"
     }, 
     {
       "pattern":"\\Qcom/storechain/interfaces/connection/NettyServerProvider.class\\E"
@@ -153,12 +132,6 @@
     }, 
     {
       "pattern":"\\Qcom/storechain/interfaces/spring/repository/UserPermissionRepository.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/interfaces/spring/repository/UserProviderAuthorityRepository.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/interfaces/spring/repository/UserProviderRepository.class\\E"
     }, 
     {
       "pattern":"\\Qcom/storechain/interfaces/spring/repository/UserRepository.class\\E"
@@ -200,9 +173,6 @@
       "pattern":"\\Qcom/storechain/spring/boot/configuration/SecurityConfiguration$AccessSecureAspect.class\\E"
     }, 
     {
-      "pattern":"\\Qcom/storechain/spring/boot/configuration/SecurityConfiguration$SecureProjectAspect.class\\E"
-    }, 
-    {
       "pattern":"\\Qcom/storechain/spring/boot/configuration/SecurityConfiguration$UserAuthenticationProvider.class\\E"
     }, 
     {
@@ -242,12 +212,6 @@
       "pattern":"\\Qcom/storechain/spring/boot/entity/UserPermission.class\\E"
     }, 
     {
-      "pattern":"\\Qcom/storechain/spring/boot/entity/UserProvider.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/entity/UserProviderAuthority.class\\E"
-    }, 
-    {
       "pattern":"\\Qcom/storechain/spring/boot/entity/UserRole.class\\E"
     }, 
     {
@@ -257,7 +221,7 @@
       "pattern":"\\Qcom/storechain/spring/boot/service/JsonRedisService.class\\E"
     }, 
     {
-      "pattern":"\\Qcom/storechain/spring/boot/service/SimpleSessionRepository.class\\E"
+      "pattern":"\\Qcom/storechain/spring/boot/service/ManagedSessionRepository.class\\E"
     }, 
     {
       "pattern":"\\Qcom/storechain/utils/DatabaseManager$DatabaseManagerBean.class\\E"
@@ -270,6 +234,9 @@
     }, 
     {
       "pattern":"\\Qcom/storechain/utils/SpringContext.class\\E"
+    }, 
+    {
+      "pattern":"\\Qio/netty/channel/Channel.class\\E"
     }, 
     {
       "pattern":"\\Qio/netty/channel/ChannelDuplexHandler.class\\E"
@@ -293,6 +260,9 @@
       "pattern":"\\Qio/netty/channel/ChannelOutboundHandler.class\\E"
     }, 
     {
+      "pattern":"\\Qio/netty/channel/ChannelOutboundInvoker.class\\E"
+    }, 
+    {
       "pattern":"\\Qio/netty/channel/SimpleChannelInboundHandler.class\\E"
     }, 
     {
@@ -312,6 +282,9 @@
     }, 
     {
       "pattern":"\\Qio/netty/handler/ssl/SslHandler.class\\E"
+    }, 
+    {
+      "pattern":"\\Qio/netty/util/AttributeMap.class\\E"
     }, 
     {
       "pattern":"\\Qjar:file:/Library/Developer/repo/.workspace/StoreChain-Server/target/storechain-server.jar!/BOOT-INF/classes!/keystore/storechain.p12\\E"
@@ -989,9 +962,6 @@
       "pattern":"\\Qorg/springframework/boot/autoconfigure/web/embedded/EmbeddedWebServerFactoryCustomizerAutoConfiguration.class\\E"
     }, 
     {
-      "pattern":"\\Qorg/springframework/boot/autoconfigure/web/reactive/WebSessionIdResolverAutoConfiguration.class\\E"
-    }, 
-    {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/web/servlet/ConditionalOnMissingFilterBean.class\\E"
     }, 
     {
@@ -1020,6 +990,12 @@
     }, 
     {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/web/servlet/ServletWebServerFactoryAutoConfiguration$BeanPostProcessorsRegistrar.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/web/servlet/ServletWebServerFactoryAutoConfiguration$ForwardedHeaderFilterConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/web/servlet/ServletWebServerFactoryAutoConfiguration$ForwardedHeaderFilterCustomizer.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/web/servlet/ServletWebServerFactoryAutoConfiguration.class\\E"
@@ -1490,18 +1466,6 @@
       "pattern":"\\Qorg/springframework/security/config/annotation/configuration/ObjectPostProcessorConfiguration.class\\E"
     }, 
     {
-      "pattern":"\\Qorg/springframework/security/config/annotation/method/configuration/EnableGlobalMethodSecurity.class\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/springframework/security/config/annotation/method/configuration/GlobalMethodSecurityConfiguration.class\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/springframework/security/config/annotation/method/configuration/GlobalMethodSecuritySelector.class\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/springframework/security/config/annotation/method/configuration/MethodSecurityMetadataSourceAdvisorRegistrar.class\\E"
-    }, 
-    {
       "pattern":"\\Qorg/springframework/security/config/annotation/web/WebSecurityConfigurer.class\\E"
     }, 
     {
@@ -1668,9 +1632,6 @@
     }, 
     {
       "pattern":"\\Qtemplates/index.html\\E"
-    }, 
-    {
-      "pattern":"com/oracle/truffle/nfi/impl/NFILanguageImpl.class"
     }
   ]},
   "bundles":[

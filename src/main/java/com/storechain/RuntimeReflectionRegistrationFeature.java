@@ -39,12 +39,7 @@ public class RuntimeReflectionRegistrationFeature implements Feature {
 	        RuntimeReflection.register(WebSocketChannelBuilder.class.getMethods());
 	        RuntimeReflection.register(UnknownPacketHandler.class);
 	        RuntimeReflection.register(UnknownPacketHandler.class.getMethods());
-	        RuntimeReflection.register(BeanPostProcessor.class);
-	        RuntimeReflection.register(BeanFactoryAware.class);
-	        RuntimeReflection.register(BeanClassLoaderAware.class);
 
-	        
-	   
         } catch (NoSuchMethodException e) { 
 			// TODO Auto-generated catch block
 			e.printStackTrace();

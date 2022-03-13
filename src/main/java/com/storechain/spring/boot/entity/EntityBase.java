@@ -2,10 +2,7 @@ package com.storechain.spring.boot.entity;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.OrderColumn;
+import javax.persistence.*;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -15,8 +12,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @EntityListeners(AuditingEntityListener.class)
 public class EntityBase {
 
-    @CreatedDate
-    @Column(name = "created_time", nullable = false, updatable = false)
+    @Column(name = "created_time")
+	@CreatedDate
 	private Date createdTime;
 	
     @LastModifiedDate

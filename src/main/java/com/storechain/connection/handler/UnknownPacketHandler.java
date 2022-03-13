@@ -28,7 +28,7 @@ public class UnknownPacketHandler implements ConnectionListener {
 	@Override
 	public void onEvent(Channel channel, InboundPacket packet) {
 		
-		if(server.getConfiguration().isKickUnknownPacketUser()) {
+		if(!server.getConfiguration().isAllowUnknownPacket()) {
 			
 			NettyNioSocketChannel<?> target = (NettyNioSocketChannel<?>) channel;
 			

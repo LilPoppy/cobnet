@@ -1,0 +1,26 @@
+[
+  {
+    "interfaces" :[ "org.springframework.beans.factory.config.BeanPostProcessor", "org.springframework.beans.factory.BeanFactoryAware",  "org.springframework.beans.factory.BeanClassLoaderAware"]}
+  ,
+  {
+    "interfaces" :[ "org.springframework.boot.web.server.WebServerFactoryCustomizer", "org.springframework.core.Ordered"]}
+  ,
+  {
+    "interfaces" :["org.springframework.context.ApplicationContextAware",  "org.springframework.core.env.EnvironmentCapable",  "org.springframework.context.EnvironmentAware",  "javax.servlet.Servlet",  "javax.servlet.ServletConfig",  "java.io.Serializable"]}
+  ,
+  {
+    "interfaces" :["org.springframework.boot.autoconfigure.web.servlet.DispatcherServletPath", "org.springframework.boot.web.servlet.ServletContextInitializer",  "org.springframework.core.Ordered"]}
+  ,
+  {
+    "interfaces" :["org.springframework.boot.web.server.ErrorPageRegistrar", "org.springframework.core.Ordered"]}
+  ,
+  {
+    "interfaces" :["org.springframework.boot.web.servlet.ServletContextInitializer", "org.springframework.core.Ordered"]}
+  ,
+  {
+    "interfaces" :["org.springframework.context.ApplicationContextAware", "org.springframework.boot.web.servlet.ServletContextInitializer", "org.springframework.core.Ordered"]}
+  ,
+  {
+    "interfaces" :["org.springframework.beans.factory.InitializingBean", "org.springframework.beans.factory.DisposableBean", "org.springframework.data.redis.connection.RedisConnectionFactory", "org.springframework.data.redis.connection.ReactiveRedisConnectionFactory"]}
+
+]

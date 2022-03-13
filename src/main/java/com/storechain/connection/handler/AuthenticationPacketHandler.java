@@ -2,6 +2,7 @@ package com.storechain.connection.handler;
 
 import java.util.UUID;
 
+import com.storechain.utils.SpringContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.context.SecurityContext;
@@ -76,9 +77,14 @@ public class AuthenticationPacketHandler implements ConnectionListener{
 					}
 				}
 			}
-			
+
 			log.info(String.format("Channel %s has authentication failed with token: %s.", channel.remoteAddress().toString(), token));
-			
+
+			if(!this.server.getConfiguration().isAllowUnauthorized()) {
+
+				this.server.close();
+			}
+
 			return;
 		}
 		

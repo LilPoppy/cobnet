@@ -5,7 +5,7 @@
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.6.3</version>
+		<version>2.6.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.storechain</groupId>
@@ -29,8 +29,8 @@
 		<websocket-port>8090</websocket-port>
 		<repackage.classifier/>
 		<spring-cloud.version>2021.0.1</spring-cloud.version>
-		<spring-native.version>0.11.2</spring-native.version>
-		<mvn-native-buildtools.version>0.9.10</mvn-native-buildtools.version>
+		<spring-native.version>0.11.3</spring-native.version>
+		<native-build-tools.version>0.9.10</native-build-tools.version>
 		<graalvm.version>22.0.0.2</graalvm.version>
 		<dockerfile-maven.version>0.38.0</dockerfile-maven.version>
 		<docker-maintainer>LilPoppy</docker-maintainer>
@@ -376,7 +376,7 @@
 			<id>native</id>
 			<properties>
 				<repackage.classifier>exec</repackage.classifier>
-				<native-buildtools.version>${mvn-native-buildtools.version}</native-buildtools.version>
+				<native-buildtools.version>${native-build-tools.version}</native-buildtools.version>
 			</properties>
 			<dependencies>
 				<dependency>
@@ -403,7 +403,7 @@
 					<plugin>
 						<groupId>org.graalvm.buildtools</groupId>
 						<artifactId>native-maven-plugin</artifactId>
-						<version>${native-buildtools.version}</version>
+						<version>${native-build-tools.version}</version>
 						<extensions>true</extensions>
 						<configuration>
 							<buildArgs>
@@ -417,6 +417,7 @@
 							    <buildArgs>-Dlogging.config=logback-config.xml</buildArgs>
 								<buildArgs>--features=com.storechain.RuntimeReflectionRegistrationFeature</buildArgs>
 								<buildArgs>-H:ConfigurationFileDirectories==${basedir}/src/main/java/</buildArgs>
+								<buildArgs>-H:DynamicProxyConfigurationFiles=${basedir}/src/main/java/extra-proxy-config.json</buildArgs>
 								<buildArgs>-H:IncludeResources=".*.xml|.*.conf|.*.yml" </buildArgs>
 								<buildArgs>-H:TraceClassInitialization=true</buildArgs>
 								<buildArgs>-Dtruffle.TruffleRuntime=com.oracle.svm.truffle.api.SubstrateTruffleRuntime</buildArgs>
@@ -427,7 +428,9 @@
 								<buildArgs>--language:js</buildArgs>
 								<!-- The argument to add python below is incompatible in Mac platform-->
 								<!-- <buildArgs>- -language:python</buildArgs>-->
+								<!--suppress UnresolvedMavenProperty -->
 								<buildArgs>-Dpython.StdLibHome=${env.JAVA_HOME}/languages/python/lib-python/3</buildArgs>
+								<!--suppress UnresolvedMavenProperty -->
 								<buildArgs>-Dpython.CoreHome=${env.JAVA_HOME}/languages/python/lib-graalpython</buildArgs>
 								<buildArgs>--initialize-at-run-time=com.storechain.utils.TaskProvider</buildArgs>
 								<buildArgs>--initialize-at-run-time=org.apache.tomcat.jni.OS</buildArgs>
@@ -452,7 +455,7 @@
 								<buildArgs>--initialize-at-run-time=com.zaxxer.hikari.metrics.dropwizard.CodaHaleMetricsTracker</buildArgs>
 								<buildArgs>--initialize-at-run-time=com.netflix.discovery.shared.transport.jersey.JerseyEurekaHttpClientFactory</buildArgs>
 								<buildArgs>--initialize-at-run-time=org.hibernate.secure.internal.StandardJaccServiceImpl</buildArgs>
-								<!-- compatible for graalvm version 22.0.0.2 below -->
+								<!-- Incompatible at initialize at build time for graalvm version 22.0.0.2 -->
 								<buildArgs>--initialize-at-run-time=io.netty.handler.ssl.util.ThreadLocalInsecureRandom,io.netty.channel.unix,io.netty.channel.epoll,io.netty.channel.kqueue</buildArgs>
 								
 								<buildArgs>--initialize-at-run-time=com.storechain.EntryPoint</buildArgs>

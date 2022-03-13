@@ -103,7 +103,7 @@ $ mvn clean package
 ```
 
 ```
-$ java -agentlib:native-image-agent=config-merge-dir=src/main/java/ -jar target/storechain-server.jar
+$ java -agentlib:native-image-agent=config-merge-dir=src/main/java/ -jar target/storechain-server.jar -DCI
 ```
 
 ```

@@ -87,11 +87,13 @@ public class NettyConfiguration {
 		private boolean logChannelRead;
 		
 		private boolean logChannelWrite;
-		
-		private boolean kickUnknownPacketUser;
-		
+
 		private boolean logBannedIpActive;
 		
+		private boolean allowUnknownPacket;
+
+		private boolean allowUnauthorized;
+
 		public String getName() {
 			return name;
 		}
@@ -164,12 +166,20 @@ public class NettyConfiguration {
 			this.logChannelWrite = logChannelWrite;
 		}
 
-		public boolean isKickUnknownPacketUser() {
-			return kickUnknownPacketUser;
+		public boolean isAllowUnknownPacket() {
+			return allowUnknownPacket;
 		}
 
-		public void setKickUnknownPacketUser(boolean kickUnknownPacketUser) {
-			this.kickUnknownPacketUser = kickUnknownPacketUser;
+		public void setAllowUnknownPacket(boolean allowUnknownPacket) {
+			this.allowUnknownPacket = allowUnknownPacket;
+		}
+
+		public void setAllowUnauthorized(boolean allowUnauthorized) {
+			this.allowUnauthorized = allowUnauthorized;
+		}
+
+		public boolean isAllowUnauthorized() {
+			return allowUnauthorized;
 		}
 
 		public boolean isLogBannedIpActive() {

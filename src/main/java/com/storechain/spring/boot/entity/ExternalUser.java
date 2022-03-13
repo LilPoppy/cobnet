@@ -1,45 +1,24 @@
 package com.storechain.spring.boot.entity;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.oauth2.core.oidc.OidcIdToken;
-import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
-import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.storechain.interfaces.security.Operator;
 import com.storechain.interfaces.security.permission.Permissible;
 import com.storechain.interfaces.security.permission.Permission;
 import com.storechain.security.RoleRule;
 import com.storechain.security.permission.OwnedPermissionCollection;
 import com.storechain.spring.boot.entity.utils.JsonMapConverter;
-import com.storechain.utils.DatabaseManager;
-
 import lombok.Data;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import reactor.util.annotation.NonNull;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -67,10 +46,11 @@ public class ExternalUser extends EntityBase implements OidcUser, Serializable, 
     @JoinTable(name = "external_user_authorities", joinColumns = { @JoinColumn(name = "identity", referencedColumnName = "identity") },
     		inverseJoinColumns = { @JoinColumn(name = "authority", referencedColumnName = "name") })
 	private Set<ExternalUserAuthority> authorities = new HashSet<ExternalUserAuthority>();
-	
+
+	@SuppressWarnings("JpaAttributeTypeInspection")
     @Convert(converter = JsonMapConverter.class)
     @Column(columnDefinition = "json")
-	private Map<String, Object> attributes = new HashMap<String, Object>();
+	private HashMap<String, Object> attributes = new HashMap<String, Object>();
     
     public ExternalUser() {}
     

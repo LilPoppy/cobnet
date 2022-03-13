@@ -15,7 +15,6 @@ public class SessionManager {
 		return SpringContext.getSecurityConfiguration().getSessionRegistry();
 	}
 
-	@SuppressWarnings({ "unchecked", "serial" })
 	public static <T extends Session> ManagedSessionRepository<T> getRepository(Class<? super T> session) {
 		
 		return (ManagedSessionRepository<T>) SpringContext.getContext().getAutowireCapableBeanFactory().getBean(new TypeToken<ManagedSessionRepository<T>>() {}.getRawType());

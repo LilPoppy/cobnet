@@ -1,18 +1,6 @@
 package com.storechain;
 
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.HashMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.storechain.common.MultiwayTreeNode;
 import com.storechain.interfaces.connection.NettyServerProvider;
 import com.storechain.polyglot.PolyglotContext;
@@ -24,6 +12,15 @@ import com.storechain.spring.boot.entity.UserRole;
 import com.storechain.utils.DatabaseManager;
 import com.storechain.utils.ScriptEngineManager;
 import com.storechain.utils.SpringContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+
+import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 
 /**
  * @author lilpoppy  
@@ -242,20 +239,24 @@ public class EntryPoint {
 		}
     }
     
-// Graalvm not supported
+
 //	@Bean
 //	public BeanPostProcessor beanPostProcessor() {
-//		
+//
 //		return new BeanPostProcessor() {
-//			
+//
 //			@Override
 //		    public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-//			
+//
+//				System.out.println("** " + beanName + " ** (" + bean.getClass().getName() + ") post process after initialization," );
+//
 //		        return bean;
 //		    }
-//			
+//
 //		    @Override
 //		    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+//
+//				System.out.println("** " + beanName + " ** (" + bean.getClass().getName() + ") post process before initialization," );
 //
 //		        return bean;
 //		    }

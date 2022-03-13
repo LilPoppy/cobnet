@@ -1,18 +1,25 @@
 package com.storechain.spring.boot.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties("system")
 public class SystemConfiguration {
-	
 
-	private TaskProviderConfiguration taskProvider; 
-	
+	private TaskProviderConfiguration taskProvider;
+
+	public ObjectMapper objectMapperBean() {
+
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JavaTimeModule());
+
+		return mapper;
+	}
 
 	@Configuration
-	@ConfigurationProperties
 	public static class TaskProviderConfiguration {
 	
 		private int threadCount = 8;

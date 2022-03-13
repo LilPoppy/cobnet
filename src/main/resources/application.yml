@@ -111,12 +111,13 @@ netty:
          log-user-inactive: true
          log-channel-read: true
          log-channel-write: true
-         kick-unknown-packet-user: true
          log-banned-ip-active: true
+         allow-unauthorized: false
+         allow-unknown-packet: false
 system:
    task-provider:
       thread-count: 16
-      maxThreadCount: -1
+      max-thread-count: -1
       keep-alive-minutes: 5
       allow-core-thread-timeout: true
       remove-on-cancel-policy: true

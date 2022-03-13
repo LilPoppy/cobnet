@@ -13,17 +13,14 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @Converter(autoApply = true)
 public class JsonMapConverter implements AttributeConverter<HashMap<String,Object>, String> {
 
-	private final ObjectMapper mapper;
-	
-	public JsonMapConverter() {
-		
-		this.mapper = new ObjectMapper();
-		this.mapper.registerModule(new JavaTimeModule());
-	}
+	@Autowired
+	private ObjectMapper mapper;
+
 	
 	@Override
 	public String convertToDatabaseColumn(HashMap<String, Object> meta) {

@@ -7,6 +7,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.storechain.spring.boot.dto.AuthenticateResult;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,19 +32,20 @@ public class TestRestController {
 	
 	@Autowired
 	private AuthenticationProvider provider;
+
+	@Autowired
+	private ObjectMapper mapper;
 	
 	@PostMapping(value = "/authentication")
 	public Map<String, Object> authentication(HttpServletRequest request, String username, String password) {
-		
-		HashMap<String, Object> result = new HashMap<>();
-		
-		result.put("result", false);
-		
+
+		AuthenticateResult result = new AuthenticateResult(false, null);
+
 		username = username.trim();
 		
 		if(username == null ||username.isEmpty() || password == null || password.isEmpty()) {
 
-			return result;
+			return mapper.convertValue(result, Map.class);
 		}
 		
 		UsernamePasswordAuthenticationToken authRequest = new UsernamePasswordAuthenticationToken(username, password);
@@ -51,19 +54,19 @@ public class TestRestController {
     		
             Authentication authentication = provider.authenticate(authRequest);
             
-            result.put("result", true);
+            result.setResult(true);
             
 	        SecurityContextHolder.getContext().setAuthentication(authentication);
 	        
 	        HttpSession session = request.getSession();
 	        
-	        session.setAttribute(SecurityConfiguration.SESSION_KEY, SecurityContextHolder.getContext()); //redis context storage
+	        session.setAttribute(SecurityConfiguration.SESSION_KEY, SecurityContextHolder.getContext());
 	        
 	        String token = UUID.randomUUID().toString();
 	        
 	        session.setAttribute(AuthenticationPacketHandler.AUTHENTICATION_TOKEN_KEY, token);
 
-	        result.put("token", token);
+	        result.setToken(token);
 	        
 	        System.out.println("Successfully!" + authentication.getName());
     		
@@ -73,7 +76,7 @@ public class TestRestController {
 	    	System.out.println("Username or password is incorrect!");
 	    }
     	
-    	return result;
+    	return mapper.convertValue(result, Map.class);
 	}
 	
 	@PostMapping(value="/doLogin")
@@ -89,7 +92,7 @@ public class TestRestController {
 			
 			view.setViewName("/index");
 		} else {
-			
+
 			view.setViewName("/login");
 		}
 
