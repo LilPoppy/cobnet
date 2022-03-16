@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>org.springframework.boot</groupId>
@@ -8,11 +8,12 @@
 		<version>2.6.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.storechain</groupId>
-	<artifactId>storechain-server</artifactId>
+	<groupId>com.lilpoppy</groupId>
+	<artifactId>cobnet</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Storechain Server</name>
-	<description>A simple server for storechain</description>
+	<name>CoBNet</name>
+	<packaging>jar</packaging>
+	<description>Code being net written under spring-native, the convenient solution of native-cloud.</description>
 	<properties>
 		<java.version>17</java.version>
 		<db-database>testdb</db-database>
@@ -40,8 +41,13 @@
 	</properties>
 	<dependencies>
 		<dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter</artifactId>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -52,8 +58,8 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 		<dependency>
-		     <groupId>org.springframework.session</groupId>
-		     <artifactId>spring-session-data-redis</artifactId>
+			<groupId>org.springframework.session</groupId>
+			<artifactId>spring-session-data-redis</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.session</groupId>
@@ -64,135 +70,140 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>org.springframework.security</groupId>
-    		<artifactId>spring-security-core</artifactId>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-oauth2-client</artifactId>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>org.springframework.security</groupId>
-		    <artifactId>spring-security-oauth2-jose</artifactId>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-jose</artifactId>
 		</dependency>
-	    <dependency>
-	      	<groupId>org.springframework.security</groupId>
-	      	<artifactId>spring-security-oauth2-client</artifactId>
-	    </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-        </dependency>
 		<dependency>
-		    <groupId>org.springframework.boot</groupId>
-		    <artifactId>spring-boot-starter-data-redis</artifactId>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-oauth2-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 			<exclusions>
-		        <exclusion>
-		            <groupId>org.apache.tomcat.embed</groupId>
-		            <artifactId>tomcat-embed-websocket</artifactId>
-		        </exclusion>
-         	</exclusions>
+				<exclusion>
+					<groupId>org.apache.tomcat.embed</groupId>
+					<artifactId>tomcat-embed-websocket</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>org.springframework.cloud</groupId>
-		    <artifactId>spring-cloud-commons</artifactId>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-commons</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.fasterxml.jackson.dataformat</groupId>
 			<artifactId>jackson-dataformat-yaml</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>com.fasterxml.jackson.datatype</groupId>
-		    <artifactId>jackson-datatype-jsr310</artifactId>
-		</dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-          <groupId>org.webjars</groupId>
-          <artifactId>webjars-locator-core</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>org.webjars</groupId>
-          <artifactId>sockjs-client</artifactId>
-          <version>1.0.2</version>
-        </dependency>
-        <dependency>
-          <groupId>org.webjars</groupId>
-          <artifactId>stomp-websocket</artifactId>
-          <version>2.3.3</version>
-        </dependency>
-        <dependency>
-          <groupId>org.webjars</groupId>
-          <artifactId>bootstrap</artifactId>
-          <version>3.3.7</version>
-        </dependency>
-        <dependency>
-          <groupId>org.webjars</groupId>
-          <artifactId>jquery</artifactId>
-          <version>3.1.1-1</version>
-        </dependency>
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>jstl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.jetty</groupId>
-            <artifactId>jetty-server</artifactId>
-        </dependency>
-		<dependency>
-		    <groupId>org.graalvm.sdk</groupId>
-		    <artifactId>graal-sdk</artifactId>
-		    <version>${graalvm.version}</version>
-		    <scope>provided</scope>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-jsr310</artifactId>
 		</dependency>
 		<dependency>
-		    <groupId>org.graalvm.nativeimage</groupId>
-		    <artifactId>svm</artifactId>
-		    <version>${graalvm.version}</version>
-		    <scope>provided</scope>
-		</dependency>
-        <dependency>
-            <groupId>org.graalvm.tools</groupId>
-            <artifactId>profiler</artifactId>
-            <version>${graalvm.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.graalvm.tools</groupId>
-            <artifactId>chromeinspector</artifactId>
-            <version>${graalvm.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-		<dependency>
-		    <groupId>org.apache.commons</groupId>
-		    <artifactId>commons-pool2</artifactId>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<scope>runtime</scope>
 		</dependency>
 		<dependency>
-		    <groupId>org.json</groupId>
-		    <artifactId>json</artifactId>
-		    <version>20211205</version>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-api</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>webjars-locator-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>sockjs-client</artifactId>
+			<version>1.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>stomp-websocket</artifactId>
+			<version>2.3.3</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>bootstrap</artifactId>
+			<version>3.3.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.webjars</groupId>
+			<artifactId>jquery</artifactId>
+			<version>3.1.1-1</version>
+		</dependency>
+		<dependency>
+			<groupId>io.netty</groupId>
+			<artifactId>netty-all</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-server</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.sdk</groupId>
+			<artifactId>graal-sdk</artifactId>
+			<version>${graalvm.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.nativeimage</groupId>
+			<artifactId>svm</artifactId>
+			<version>${graalvm.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.tools</groupId>
+			<artifactId>profiler</artifactId>
+			<version>${graalvm.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.graalvm.tools</groupId>
+			<artifactId>chromeinspector</artifactId>
+			<version>${graalvm.version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-pool2</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20211205</version>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
@@ -206,9 +217,9 @@
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
-	
+
 	<build>
-        <finalName>${project.artifactId}</finalName>
+		<finalName>${project.artifactId}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
@@ -221,12 +232,11 @@
 							<BP_NATIVE_IMAGE>true</BP_NATIVE_IMAGE>
 						</env>
 					</image>
-			         <systemPropertyVariables>
-			         	<springAot>true</springAot>
-			         </systemPropertyVariables>
+					<systemPropertyVariables>
+						<springAot>true</springAot>
+					</systemPropertyVariables>
 				</configuration>
 			</plugin>
-			<!--
 			<plugin>
 				<groupId>org.hibernate.orm.tooling</groupId>
 				<artifactId>hibernate-enhance-maven-plugin</artifactId>
@@ -247,10 +257,9 @@
 					</execution>
 				</executions>
 			</plugin>
-			-->
 		</plugins>
 	</build>
-	
+
 	<repositories>
 		<repository>
 			<id>spring-releases</id>
@@ -293,7 +302,7 @@
 											<VERSION>${project.version}</VERSION>
 											<AUTHORS>${docker-maintainer}</AUTHORS>
 											<AUTHORS_EMAIL>lilpoppy96@gmail.com</AUTHORS_EMAIL>
-											<SOURCE_REPO>https://github.com/SpamanDev/StoreChain-Server</SOURCE_REPO>
+											<SOURCE_REPO>https://github.com/SpamanDev/${project.name}}</SOURCE_REPO>
 											<GRAALVM_VERSION>${graalvm.version}</GRAALVM_VERSION>
 											<JAVA_VERSION>java${java.version}</JAVA_VERSION>
 											<WORK_DIR>/build</WORK_DIR>
@@ -315,10 +324,10 @@
 										<from>mysql:latest</from>
 										<maintainer>${docker-maintainer}</maintainer>
 										<ports>${db-port}</ports>
-									    <tags>
-    										<tag>latest</tag>
-    										<tag>${project.version}</tag>
-  										</tags>
+										<tags>
+											<tag>latest</tag>
+											<tag>${project.version}</tag>
+										</tags>
 									</build>
 								</image>
 							</images>
@@ -331,43 +340,43 @@
 								<id>build-image</id>
 								<phase>package</phase>
 								<goals>
-							   		<goal>build</goal>
+									<goal>build</goal>
 								</goals>
 							</execution>
 						</executions>
 					</plugin>
 					<plugin>
-			            <groupId>com.dkanejs.maven.plugins</groupId>
-			            <artifactId>docker-compose-maven-plugin</artifactId>
-			            <executions>
-			            	<execution>
-			            		<id>up</id>
-			            		<phase>package</phase>
-			            		<goals>
-			            			<goal>up</goal>
-			            		</goals>
-			            		<configuration>
-			            			<composeFile>${project.basedir}/docker-compose.yml</composeFile>
-			            			<detachedMode>true</detachedMode>
-			            			<envVars>
-			            				<IMAGE_NAME>${docker-image-name}</IMAGE_NAME>
-			            				<CONTAINER_NAME>${docker-container-name}</CONTAINER_NAME>
-			            				<EXPOSE>${tomcat-port}</EXPOSE>
-			            				<WEBSOCKET_EXPOSE>${websocket-port}</WEBSOCKET_EXPOSE>
-			            				<DB_IMAGE_NAME>${docker-db-image-name}</DB_IMAGE_NAME>
-			            				<DB_AUTO_RECONNECT>${db-auto-reconnect}</DB_AUTO_RECONNECT>
-			            				<DB_USE_SSL>${db-use-ssl}</DB_USE_SSL>
-			            				<DB_EXPOSE>${db-port}</DB_EXPOSE>
-			            				<DB_DATABASE>${db-database}</DB_DATABASE>
-			            				<DB_USER>${db-user}</DB_USER>
-			            				<DB_PASSWORD>${db-password}</DB_PASSWORD>
-			            			</envVars>
-			            			<buildArgs>
-			            				<forceRm>true</forceRm>
-			            			</buildArgs>
-			            		</configuration>
-			            	</execution>
-			            </executions>
+						<groupId>com.dkanejs.maven.plugins</groupId>
+						<artifactId>docker-compose-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>up</id>
+								<phase>package</phase>
+								<goals>
+									<goal>up</goal>
+								</goals>
+								<configuration>
+									<composeFile>${project.basedir}/docker-compose.yml</composeFile>
+									<detachedMode>true</detachedMode>
+									<envVars>
+										<IMAGE_NAME>${docker-image-name}</IMAGE_NAME>
+										<CONTAINER_NAME>${docker-container-name}</CONTAINER_NAME>
+										<EXPOSE>${tomcat-port}</EXPOSE>
+										<WEBSOCKET_EXPOSE>${websocket-port}</WEBSOCKET_EXPOSE>
+										<DB_IMAGE_NAME>${docker-db-image-name}</DB_IMAGE_NAME>
+										<DB_AUTO_RECONNECT>${db-auto-reconnect}</DB_AUTO_RECONNECT>
+										<DB_USE_SSL>${db-use-ssl}</DB_USE_SSL>
+										<DB_EXPOSE>${db-port}</DB_EXPOSE>
+										<DB_DATABASE>${db-database}</DB_DATABASE>
+										<DB_USER>${db-user}</DB_USER>
+										<DB_PASSWORD>${db-password}</DB_PASSWORD>
+									</envVars>
+									<buildArgs>
+										<forceRm>true</forceRm>
+									</buildArgs>
+								</configuration>
+							</execution>
+						</executions>
 					</plugin>
 				</plugins>
 			</build>
@@ -398,6 +407,12 @@
 									<goal>generate</goal>
 								</goals>
 							</execution>
+							<execution>
+								<id>test-generate</id>
+								<goals>
+									<goal>test-generate</goal>
+								</goals>
+							</execution>
 						</executions>
 					</plugin>
 					<plugin>
@@ -407,16 +422,17 @@
 						<extensions>true</extensions>
 						<configuration>
 							<buildArgs>
-								<buildArgs>-DskipTests</buildArgs>
+<!--								<buildArgs>-DskipTests</buildArgs>-->
 								<buildArgs>-H:TraceClassInitialization=true</buildArgs>
 								<!--<buildArgs>- -no-server</buildArgs>-->
 								<buildArgs>--no-fallback</buildArgs>
 								<buildArgs>--report-unsupported-elements-at-runtime</buildArgs>
 								<buildArgs>--allow-incomplete-classpath</buildArgs>
-							    <!--<buildArgs>-H:+AddAllCharsets</buildArgs>-->
-							    <buildArgs>-Dlogging.config=logback-config.xml</buildArgs>
-								<buildArgs>--features=com.storechain.RuntimeReflectionRegistrationFeature</buildArgs>
+								<!--<buildArgs>-H:+AddAllCharsets</buildArgs>-->
+								<buildArgs>-Dlogging.config=logback-config.xml</buildArgs>
+								<buildArgs>--features=com.cobnet.RuntimeReflectionRegistrationFeature</buildArgs>
 								<buildArgs>-H:ConfigurationFileDirectories==${basedir}/src/main/java/</buildArgs>
+								<buildArgs>-H:ReflectionConfigurationFiles=${basedir}/src/main/java/extra-reflect-config.json</buildArgs>
 								<buildArgs>-H:DynamicProxyConfigurationFiles=${basedir}/src/main/java/extra-proxy-config.json</buildArgs>
 								<buildArgs>-H:IncludeResources=".*.xml|.*.conf|.*.yml" </buildArgs>
 								<buildArgs>-H:TraceClassInitialization=true</buildArgs>
@@ -432,35 +448,35 @@
 								<buildArgs>-Dpython.StdLibHome=${env.JAVA_HOME}/languages/python/lib-python/3</buildArgs>
 								<!--suppress UnresolvedMavenProperty -->
 								<buildArgs>-Dpython.CoreHome=${env.JAVA_HOME}/languages/python/lib-graalpython</buildArgs>
-								<buildArgs>--initialize-at-run-time=com.storechain.utils.TaskProvider</buildArgs>
-								<buildArgs>--initialize-at-run-time=org.apache.tomcat.jni.OS</buildArgs>
-								<buildArgs>--initialize-at-run-time=org.apache.tomcat.jni.SSL</buildArgs>
-								<buildArgs>--initialize-at-run-time=org.python.modules.posix.PosixModule</buildArgs>
-								<buildArgs>--initialize-at-run-time=org.apache.tomcat.util.net.openssl.OpenSSLEngine</buildArgs>
-								<buildArgs>--initialize-at-run-time=org.python.modules.Setup</buildArgs>
-								<buildArgs>--initialize-at-run-time=org.springframework.core.io.VfsUtils</buildArgs>
-								
-								<buildArgs>--initialize-at-run-time=org.springframework.data.web.XmlBeamHttpMessageConverter</buildArgs>
-								<buildArgs>--initialize-at-run-time=org.springframework.data.web.ProjectingJackson2HttpMessageConverter</buildArgs>
-								<buildArgs>--initialize-at-run-time=org.springframework.boot.autoconfigure.neo4j.Neo4jAutoConfiguration</buildArgs>
-								<buildArgs>--initialize-at-run-time=org.springframework.boot.logging.log4j2.Log4J2LoggingSystem</buildArgs>
-								<buildArgs>--initialize-at-run-time=org.springframework.boot.liquibase.LiquibaseChangelogMissingFailureAnalyzer</buildArgs>
-								<buildArgs>--initialize-at-run-time=org.springframework.web.multipart.commons.CommonsFileUploadSupport</buildArgs>
-								<buildArgs>--initialize-at-run-time=org.springframework.http.converter.json.Jackson2ObjectMapperBuilder$XmlObjectMapperInitializer</buildArgs>
-								<buildArgs>--initialize-at-run-time=org.springframework.boot.r2dbc.EmbeddedDatabaseConnection</buildArgs>
-								<buildArgs>--initialize-at-run-time=io.netty.handler.ssl.ConscryptAlpnSslEngine</buildArgs>
-								<buildArgs>--initialize-at-run-time=io.netty.util.internal.logging.Log4JLogger</buildArgs>
-								<buildArgs>--initialize-at-run-time=reactor.core.publisher.Traces$SharedSecretsCallSiteSupplierFactory$TracingException</buildArgs>
-								<buildArgs>--initialize-at-run-time=com.zaxxer.hikari.metrics.micrometer.MicrometerMetricsTracker</buildArgs>
-								<buildArgs>--initialize-at-run-time=com.zaxxer.hikari.metrics.dropwizard.CodaHaleMetricsTracker</buildArgs>
-								<buildArgs>--initialize-at-run-time=com.netflix.discovery.shared.transport.jersey.JerseyEurekaHttpClientFactory</buildArgs>
-								<buildArgs>--initialize-at-run-time=org.hibernate.secure.internal.StandardJaccServiceImpl</buildArgs>
+<!--								<buildArgs>&#45;&#45;initialize-at-run-time=com.cobnet.utils.TaskProvider</buildArgs>-->
+<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.apache.tomcat.jni.OS</buildArgs>-->
+<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.apache.tomcat.jni.SSL</buildArgs>-->
+<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.python.modules.posix.PosixModule</buildArgs>-->
+<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.apache.tomcat.util.net.openssl.OpenSSLEngine</buildArgs>-->
+<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.python.modules.Setup</buildArgs>-->
+<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.core.io.VfsUtils</buildArgs>-->
+
+<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.data.web.XmlBeamHttpMessageConverter</buildArgs>-->
+<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.data.web.ProjectingJackson2HttpMessageConverter</buildArgs>-->
+<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.boot.autoconfigure.neo4j.Neo4jAutoConfiguration</buildArgs>-->
+<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.boot.logging.log4j2.Log4J2LoggingSystem</buildArgs>-->
+<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.boot.liquibase.LiquibaseChangelogMissingFailureAnalyzer</buildArgs>-->
+<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.web.multipart.commons.CommonsFileUploadSupport</buildArgs>-->
+<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.http.converter.json.Jackson2ObjectMapperBuilder$XmlObjectMapperInitializer</buildArgs>-->
+<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.boot.r2dbc.EmbeddedDatabaseConnection</buildArgs>-->
+<!--								<buildArgs>&#45;&#45;initialize-at-run-time=io.netty.handler.ssl.ConscryptAlpnSslEngine</buildArgs>-->
+<!--								<buildArgs>&#45;&#45;initialize-at-run-time=io.netty.util.internal.logging.Log4JLogger</buildArgs>-->
+<!--								<buildArgs>&#45;&#45;initialize-at-run-time=reactor.core.publisher.Traces$SharedSecretsCallSiteSupplierFactory$TracingException</buildArgs>-->
+<!--								<buildArgs>&#45;&#45;initialize-at-run-time=com.zaxxer.hikari.metrics.micrometer.MicrometerMetricsTracker</buildArgs>-->
+<!--								<buildArgs>&#45;&#45;initialize-at-run-time=com.zaxxer.hikari.metrics.dropwizard.CodaHaleMetricsTracker</buildArgs>-->
+<!--								<buildArgs>&#45;&#45;initialize-at-run-time=com.netflix.discovery.shared.transport.jersey.JerseyEurekaHttpClientFactory</buildArgs>-->
+<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.hibernate.secure.internal.StandardJaccServiceImpl</buildArgs>-->
 								<!-- Incompatible at initialize at build time for graalvm version 22.0.0.2 -->
 								<buildArgs>--initialize-at-run-time=io.netty.handler.ssl.util.ThreadLocalInsecureRandom,io.netty.channel.unix,io.netty.channel.epoll,io.netty.channel.kqueue</buildArgs>
-								
-								<buildArgs>--initialize-at-run-time=com.storechain.EntryPoint</buildArgs>
+
+<!--								<buildArgs>&#45;&#45;initialize-at-run-time=com.cobnet.EntryPoint</buildArgs>-->
 							</buildArgs>
-							
+
 						</configuration>
 						<executions>
 							<execution>

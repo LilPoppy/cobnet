@@ -22,5 +22,42 @@
   ,
   {
     "interfaces" :["org.springframework.beans.factory.InitializingBean", "org.springframework.beans.factory.DisposableBean", "org.springframework.data.redis.connection.RedisConnectionFactory", "org.springframework.data.redis.connection.ReactiveRedisConnectionFactory"]}
-
+  ,
+  {
+    "interfaces" : ["org.springframework.web.servlet.config.annotation.WebMvcConfigurer", "org.springframework.context.ApplicationContextAware"]}
+  ,
+  {
+    "interfaces" : [ "org.springframework.security.config.annotation.ObjectPostProcessor", "org.springframework.beans.factory.DisposableBean",  "org.springframework.beans.factory.SmartInitializingSingleton"]}
+  ,
+  { "interfaces" : [ "org.springframework.security.oauth2.client.registration.ClientRegistrationRepository", "java.lang.Iterable"]}
+  ,
+  {
+    "interfaces" : [ "org.springframework.web.servlet.config.annotation.WebMvcConfigurer", "org.springframework.web.context.ServletContextAware"]}
+  ,
+  {
+    "interfaces" : [ "org.springframework.cache.CacheManager", "org.springframework.beans.factory.InitializingBean"]}
+  ,
+  {
+    "interfaces" : [ "javax.sql.DataSource",  "java.io.Closeable", "com.zaxxer.hikari.HikariConfigMXBean"]}
+  ,
+  {
+    "interfaces" :[ "org.springframework.context.ResourceLoaderAware", "org.springframework.beans.factory.InitializingBean"]}
+  ,
+  {
+    "interfaces" :[ "org.springframework.boot.web.embedded.tomcat.ConfigurableTomcatWebServerFactory", "org.springframework.context.ResourceLoaderAware", "org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory", "org.springframework.boot.web.server.ConfigurableWebServerFactory"]}
+  ,
+  {
+    "interfaces" :[ "org.springframework.context.ResourceLoaderAware", "org.springframework.context.weaving.LoadTimeWeaverAware", "org.springframework.beans.factory.FactoryBean", "org.springframework.beans.factory.BeanClassLoaderAware", "org.springframework.beans.factory.BeanFactoryAware", "org.springframework.beans.factory.BeanNameAware", "org.springframework.beans.factory.InitializingBean", "org.springframework.beans.factory.DisposableBean", "org.springframework.orm.jpa.EntityManagerFactoryInfo", "org.springframework.dao.support.PersistenceExceptionTranslator", "java.io.Serializable"]}
+  ,
+  {
+    "interfaces" :[ "org.hibernate.SessionFactory", "org.springframework.orm.jpa.EntityManagerFactoryInfo", "java.io.Serializable"]}
+  ,
+  {
+    "interfaces" :[ "org.springframework.web.context.request.AsyncWebRequestInterceptor", "org.springframework.beans.factory.BeanFactoryAware"]}
+  ,
+  {
+    "interfaces" :[ "org.springframework.web.servlet.config.annotation.WebMvcConfigurer", "org.springframework.beans.factory.BeanClassLoaderAware"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.context.ResourceLoaderAware", "org.springframework.context.ApplicationContextAware",  "org.springframework.web.context.ServletContextAware"]}
 ]

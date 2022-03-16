@@ -5,11 +5,27 @@ project:
       version: "@project.version@"
       name: "@project.name@"
       description: "@project.description@"
+   task-provider:
+      thread-count: 16
+      max-thread-count: -1
+      keep-alive-minutes: 5
+      allow-core-thread-timeout: true
+      remove-on-cancel-policy: true
+      continue-existing-periodic-tasks-after-shutdown-policy: false
+      execute-existing-delayed-tasks-after-shutdown-policy: false
 spring:
    application:
       name: ${project.information.name}
    main:
-      allow-circular-references: true
+      allow-circular-references: false
+   thymeleaf:
+      enabled: true
+      cache: false
+      check-template: true
+      check-template-location: true
+      encoding: UTF-8
+      prefix: classpath:/webapp/WEB-INF/templates/
+      suffix: .html
    sleuth:
       async:
          enabled: false
@@ -114,13 +130,3 @@ netty:
          log-banned-ip-active: true
          allow-unauthorized: false
          allow-unknown-packet: false
-system:
-   task-provider:
-      thread-count: 16
-      max-thread-count: -1
-      keep-alive-minutes: 5
-      allow-core-thread-timeout: true
-      remove-on-cancel-policy: true
-      continue-existing-periodic-tasks-after-shutdown-policy: false
-      execute-existing-delayed-tasks-after-shutdown-policy: false
-

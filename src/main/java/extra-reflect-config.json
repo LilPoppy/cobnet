@@ -1,0 +1,7 @@
+[
+  {
+    "name":"org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.EmptyHandler",
+    "methods":[{ "name":"<init>","parameterTypes":[] } , { "name": "handle", "parameterTypes": [] }],
+    "queryAllDeclaredMethods": true
+  }
+]

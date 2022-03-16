@@ -8,6 +8,21 @@
       "pattern":"\\QMETA-INF/native/libnetty_transport_native_kqueue_x86_64.jnilib\\E"
     }, 
     {
+      "pattern":"\\QMETA-INF/services/com.oracle.truffle.api.TruffleLanguage$Provider\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/services/com.oracle.truffle.api.TruffleRuntimeAccess\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/services/com.oracle.truffle.api.instrumentation.TruffleInstrument$Provider\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/services/com.oracle.truffle.js.runtime.Evaluator\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/services/java.nio.file.spi.FileSystemProvider\\E"
+    }, 
+    {
       "pattern":"\\QMETA-INF/services/java.sql.Driver\\E"
     }, 
     {
@@ -18,6 +33,12 @@
     }, 
     {
       "pattern":"\\QMETA-INF/services/org.apache.logging.log4j.util.PropertySource\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/services/org.graalvm.compiler.truffle.runtime.LoopNodeFactory\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/services/org.graalvm.polyglot.impl.AbstractPolyglotImpl\\E"
     }, 
     {
       "pattern":"\\QMETA-INF/spring-autoconfigure-metadata.properties\\E"
@@ -32,6 +53,57 @@
       "pattern":"\\Qapplication.yml\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/common/MultiwayTreeNode.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/common/collection/AbstractListWrapper.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/common/utils/AbstractListWrapper.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/event/ArgsApplicationEvent.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/event/polyglot/PolyglotEvent.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/PolyglotContextGroup.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/TreeNode.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/ProjectConfiguration$InformationConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/ProjectConfiguration$TaskProviderConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/ProjectConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/RedisConfiguration$PoolConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/RedisConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/core/ProjectBeanHolder$AutowireLoader.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/core/ProjectBeanHolder$BeanRegister.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/core/ScriptEngineManager$PolyglotContextCloseEventListener.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/core/ScriptEngineManager.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/google/common/reflect/TypeCapture.class\\E"
     }, 
     {
@@ -39,6 +111,12 @@
     }, 
     {
       "pattern":"\\Qcom/mysql/cj/TlsSettings.properties\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/oracle/truffle/llvm/nfi/SulongNFI.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/oracle/truffle/nfi/backend/libffi/LibFFILanguage.class\\E"
     }, 
     {
       "pattern":"\\Qcom/storechain/\\E"
@@ -290,6 +368,9 @@
       "pattern":"\\Qjar:file:/Library/Developer/repo/.workspace/StoreChain-Server/target/storechain-server.jar!/BOOT-INF/classes!/keystore/storechain.p12\\E"
     }, 
     {
+      "pattern":"\\Qjar:file:/Users/lilpoppy/Downloads/cobnet/target/cobnet.jar!/BOOT-INF/classes!/keystore/storechain.p12\\E"
+    }, 
+    {
       "pattern":"\\Qkeystore/storechain.p12\\E"
     }, 
     {
@@ -480,6 +561,12 @@
     }, 
     {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/data/jdbc/JdbcRepositoriesRegistrar.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/data/jpa/JpaRepositoriesAutoConfiguration$BootstrapExecutorCondition$DeferredBootstrapMode.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/data/jpa/JpaRepositoriesAutoConfiguration$BootstrapExecutorCondition$LazyBootstrapMode.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/data/jpa/JpaRepositoriesAutoConfiguration$BootstrapExecutorCondition.class\\E"
@@ -1298,6 +1385,9 @@
       "pattern":"\\Qorg/springframework/context/ApplicationContextAware.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/context/ApplicationEvent.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/context/ApplicationEventPublisherAware.class\\E"
     }, 
     {
@@ -1628,10 +1718,19 @@
       "pattern":"\\Qreactor/core/Disposable.class\\E"
     }, 
     {
+      "pattern":"\\Qsrc.js\\E"
+    }, 
+    {
       "pattern":"\\Qtemplates/\\E"
     }, 
     {
       "pattern":"\\Qtemplates/index.html\\E"
+    }, 
+    {
+      "pattern":"\\Qwebapp/WEB-INF/templates/\\E"
+    }, 
+    {
+      "pattern":"\\Qwebapp/WEB-INF/templates/index.html\\E"
     }
   ]},
   "bundles":[
