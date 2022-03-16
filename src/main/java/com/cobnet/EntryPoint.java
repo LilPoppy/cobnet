@@ -1,16 +1,13 @@
 package com.cobnet;
 
-import com.cobnet.spring.boot.core.ScriptEngineManager;
-import com.cobnet.polyglot.PolyglotContext;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
-
 import java.io.IOException;
-
+import java.util.Arrays;
 
 @EnableEurekaClient
 @SpringBootApplication(proxyBeanMethods = false)
@@ -80,45 +77,12 @@ public class EntryPoint {
 
 		SpringApplication.run(EntryPoint.class, args);
 
-		benchGraalPolyglotContext();
-
 		LOG.info(EntryPoint.getLogo());
-	}
 
-	static long benchGraalPolyglotContext() throws IOException {
+		if(Arrays.stream(args).anyMatch(arg -> arg.toUpperCase().equals("agent"))) {
 
-		System.out.println("=== Graal.js via org.graalvm.polyglot.Context === ");
-
-		long sum = 0;
-
-		PolyglotContext context = ScriptEngineManager.firstOrNewContext();
-
-		ScriptEngineManager.evalFromResource(context, "js", "/src.js");
-
-		System.out.println("warming up ...");
-
-		for (int i = 0; i < 15; i++) {
-
-			ScriptEngineManager.execute(context, "js", "primesMain");
+			System.exit(0);
 		}
-
-		System.out.println("warmup finished, now measuring");
-
-		for (int i = 0; i < 10; i++) {
-
-			long start = System.currentTimeMillis();
-			ScriptEngineManager.execute(context, "js", "primesMain");
-			long took = System.currentTimeMillis() - start;
-			sum += took;
-			System.out.println("iteration: " + took);
-		}
-
-		System.out.println(String.format("installed guest languages: %s ", ScriptEngineManager.getAvailableLanguages()));
-
-		System.out.println(ScriptEngineManager.getContexts());
-
-		return sum;
-
 	}
 
 	public static String getLogo() {

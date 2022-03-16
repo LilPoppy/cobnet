@@ -8,9 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.hash.Jackson2HashMapper;
 import org.springframework.stereotype.Component;
 
 public class ProjectBeanHolder {
@@ -24,6 +23,8 @@ public class ProjectBeanHolder {
     private static ApplicationEventPublisher APPLICATION_EVENT_PUBLISHER;
 
     private static ObjectMapper OBJECT_MAPPER;
+
+    private static Jackson2HashMapper HASH_MAPPER;
 
     private static ScriptEngineManager SCRIPT_ENGINE_MANAGER;
 
@@ -64,6 +65,11 @@ public class ProjectBeanHolder {
     public static ObjectMapper getObjectMapper() {
 
         return ProjectBeanHolder.OBJECT_MAPPER;
+    }
+
+    public static Jackson2HashMapper getHashMapper() {
+
+        return ProjectBeanHolder.HASH_MAPPER;
     }
 
     public static ScriptEngineManager getScriptEngineManager() {
@@ -140,6 +146,12 @@ public class ProjectBeanHolder {
         }
 
         @Autowired
+        public void setHashMapper(Jackson2HashMapper mapper) {
+
+            ProjectBeanHolder.HASH_MAPPER = mapper;
+        }
+
+        @Autowired
         public void setScriptEngineManager(ScriptEngineManager manager) {
 
             ProjectBeanHolder.SCRIPT_ENGINE_MANAGER = manager;
@@ -197,6 +209,12 @@ public class ProjectBeanHolder {
             mapper.registerModule(new JavaTimeModule());
 
             return mapper;
+        }
+
+        @Bean
+        public Jackson2HashMapper hashMapperBean(@Autowired ObjectMapper mapper) {
+
+            return new Jackson2HashMapper(mapper,true);
         }
 
         @Bean

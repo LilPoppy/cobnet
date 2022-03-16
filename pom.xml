@@ -201,9 +201,13 @@
 			<artifactId>commons-pool2</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<version>20211205</version>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
@@ -443,7 +447,7 @@
 								<buildArgs>-H:+ReportUnsupportedElementsAtRuntime</buildArgs>
 								<buildArgs>--language:js</buildArgs>
 								<!-- The argument to add python below is incompatible in Mac platform-->
-								<!-- <buildArgs>- -language:python</buildArgs>-->
+<!--								<buildArgs>&#45;&#45;language:python</buildArgs>-->
 								<!--suppress UnresolvedMavenProperty -->
 								<buildArgs>-Dpython.StdLibHome=${env.JAVA_HOME}/languages/python/lib-python/3</buildArgs>
 								<!--suppress UnresolvedMavenProperty -->
@@ -473,7 +477,8 @@
 <!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.hibernate.secure.internal.StandardJaccServiceImpl</buildArgs>-->
 								<!-- Incompatible at initialize at build time for graalvm version 22.0.0.2 -->
 								<buildArgs>--initialize-at-run-time=io.netty.handler.ssl.util.ThreadLocalInsecureRandom,io.netty.channel.unix,io.netty.channel.epoll,io.netty.channel.kqueue</buildArgs>
-
+								<buildArgs>--initialize-at-run-time=io.netty.handler.ssl.JdkNpnApplicationProtocolNegotiator</buildArgs>
+								<buildArgs>--initialize-at-run-time=io.netty.handler.ssl.JettyNpnSslEngine</buildArgs>
 <!--								<buildArgs>&#45;&#45;initialize-at-run-time=com.cobnet.EntryPoint</buildArgs>-->
 							</buildArgs>
 

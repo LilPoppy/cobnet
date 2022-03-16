@@ -73,8 +73,8 @@ CMD java -version
 
 RUN source "$HOME/.sdkman/bin/sdkman-init.sh"; \
 	mvn clean package; \
-	java -agentlib:native-image-agent=config-merge-dir=src/main/java/ -jar target/storechain-server.jar -DCi; \
-	mvn clean package -Pnative;
+	java -agentlib:native-image-agent=config-merge-dir=src/main/java/ -jar target/storechain-server.jar agent; \
+	mvn clean package -Pnative test;
 
 MAINTAINER $AUTHORS
 

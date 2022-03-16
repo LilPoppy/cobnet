@@ -1,5 +1,6 @@
 package com.cobnet.spring.boot.configuration;
 
+import com.cobnet.redis.RedisMode;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,19 +10,23 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
+import org.springframework.data.redis.connection.*;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettucePoolingClientConfiguration;
 import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.time.Duration;
+import java.util.List;
 
 @Configuration
 @ConfigurationProperties("spring.redis")
+@EnableRedisRepositories
 public class RedisConfiguration extends CachingConfigurerSupport {
+
+    private RedisMode mode;
 
     private String host;
 
@@ -37,17 +42,51 @@ public class RedisConfiguration extends CachingConfigurerSupport {
 
     private String namespace;
 
+    private SentinelConfiguration sentinel;
+
+    private ClusterConfiguration cluster;
+
     private PoolConfiguration pool;
 
     @Bean
-    public LettuceConnectionFactory connectionFactory() {
+    public LettuceConnectionFactory connectionFactoryBean() {
 
-        RedisStandaloneConfiguration standalone = new RedisStandaloneConfiguration();
-        standalone.setHostName(this.getHost());
-        standalone.setPort(this.getPort());
-        standalone.setDatabase(this.getDatabase());
-        standalone.setPassword(this.getPassword());
-        standalone.setUsername(this.getUsername());
+        org.springframework.data.redis.connection.RedisConfiguration configuration = null;
+
+        switch (this.mode) {
+            case STAND_ALONE -> {
+                RedisStandaloneConfiguration standalone = new RedisStandaloneConfiguration();
+                standalone.setHostName(this.getHost());
+                standalone.setPort(this.getPort());
+                standalone.setDatabase(this.getDatabase());
+                standalone.setPassword(this.getPassword());
+                standalone.setUsername(this.getUsername());
+                configuration = standalone;
+            }
+            case CLUSTER -> {
+                RedisClusterConfiguration cluster = new RedisClusterConfiguration(this.getCluster().getNodes());
+                cluster.setUsername(this.getUsername());
+                cluster.setPassword(this.getPassword());
+                cluster.setMaxRedirects(this.getCluster().getMaxRedirects());
+                configuration = cluster;
+            }
+            case SENTINEL -> {
+                RedisSentinelConfiguration sentinel = new RedisSentinelConfiguration();
+                sentinel.setDatabase(this.getDatabase());
+                sentinel.setMaster(this.getSentinel().getMaster());
+                sentinel.setUsername(this.getUsername());
+                sentinel.setPassword(this.getPassword());
+                sentinel.setSentinelPassword(this.sentinel.getPassword());
+                sentinel.setSentinels(this.getSentinel().getNodes().stream().map(node -> {
+
+                    String[] args = node.split(":");
+
+                    return new RedisNode(args[0], Integer.parseInt(args[1]));
+
+                }).toList());
+                configuration = sentinel;
+            }
+        }
 
         GenericObjectPoolConfig<?> pool = new GenericObjectPoolConfig<>();
         pool.setMaxIdle(this.getPool().getMaxIdle());
@@ -55,61 +94,116 @@ public class RedisConfiguration extends CachingConfigurerSupport {
         pool.setMaxTotal(this.getPool().getMaxActive());
         pool.setMaxWait(this.getPool().getMaxWait());
 
-        return new LettuceConnectionFactory(standalone, LettucePoolingClientConfiguration.builder().clientName(this.getNamespace()).commandTimeout(this.getTimeout()).poolConfig(pool).build());
+        return new LettuceConnectionFactory(configuration, LettucePoolingClientConfiguration.builder().clientName(this.getNamespace()).commandTimeout(this.getTimeout()).poolConfig(pool).build());
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
+    public RedisTemplate<String, Object> redisTemplateBean(RedisConnectionFactory factory) {
 
         RedisTemplate<String, Object> template = new RedisTemplate<>();
 
         template.setConnectionFactory(factory);
 
-        Jackson2JsonRedisSerializer<?> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
+        StringRedisSerializer keySerializer = new StringRedisSerializer();
+        Jackson2JsonRedisSerializer<?> valueSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
 
         ObjectMapper mapper = new ObjectMapper();
-
         mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         mapper.activateDefaultTyping(mapper.getPolymorphicTypeValidator(), ObjectMapper.DefaultTyping.NON_FINAL);
         mapper.registerModule(new JavaTimeModule());
+        valueSerializer.setObjectMapper(mapper);
 
-        serializer.setObjectMapper(mapper);
-
-        template.setKeySerializer(new StringRedisSerializer());
-        template.setHashKeySerializer(serializer);
-        template.setValueSerializer(serializer);
-        template.setHashValueSerializer(serializer);
+        template.setKeySerializer(keySerializer);
+        template.setValueSerializer(valueSerializer);
+        template.setHashKeySerializer(keySerializer);
+//        template.setHashValueSerializer(valueSerializer);     we keep the hash value as binary
         template.afterPropertiesSet();
 
         return template;
     }
 
     @Bean
-    public HashOperations<String, String, Object> hashOperations(RedisTemplate<String, Object> redisTemplate) {
+    public HashOperations<String, String, Object> hashOperationsBean(RedisTemplate<String, Object> redisTemplate) {
         return redisTemplate.opsForHash();
     }
 
     @Bean
-    public ValueOperations<String, Object> valueOperations(RedisTemplate<String, Object> redisTemplate) {
+    public ValueOperations<String, Object> valueOperationsBean(RedisTemplate<String, Object> redisTemplate) {
         return redisTemplate.opsForValue();
     }
 
     @Bean
-    public ListOperations<String, Object> listOperations(RedisTemplate<String, Object> redisTemplate) {
+    public ListOperations<String, Object> listOperationsBean(RedisTemplate<String, Object> redisTemplate) {
         return redisTemplate.opsForList();
     }
 
     @Bean
-    public SetOperations<String, Object> setOperations(RedisTemplate<String, Object> redisTemplate) {
+    public SetOperations<String, Object> setOperationsBean(RedisTemplate<String, Object> redisTemplate) {
         return redisTemplate.opsForSet();
     }
 
     @Bean
-    public ZSetOperations<String, Object> zSetOperations(RedisTemplate<String, Object> redisTemplate) {
+    public ZSetOperations<String, Object> zSetOperationsBean(RedisTemplate<String, Object> redisTemplate) {
         return redisTemplate.opsForZSet();
     }
 
-    public static class PoolConfiguration {
+    static class ClusterConfiguration {
+
+        private List<String> nodes;
+
+        private int maxRedirects;
+
+        public void setMaxRedirects(int maxRedirects) {
+            this.maxRedirects = maxRedirects;
+        }
+
+        public int getMaxRedirects() {
+            return maxRedirects;
+        }
+
+        public void setNodes(List<String> nodes) {
+            this.nodes = nodes;
+        }
+
+        public List<String> getNodes() {
+            return nodes;
+        }
+    }
+
+    static class SentinelConfiguration {
+
+        private String master;
+
+        private List<String> nodes;
+
+        private String password;
+
+        public void setMaster(String master) {
+            this.master = master;
+        }
+
+        public void setNodes(List<String> nodes) {
+            this.nodes = nodes;
+        }
+
+        public String getMaster() {
+            return master;
+        }
+
+        public List<String> getNodes() {
+            return nodes;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+    }
+
+    static class PoolConfiguration {
 
         private int maxActive;
 
@@ -150,6 +244,14 @@ public class RedisConfiguration extends CachingConfigurerSupport {
         public void setMaxWait(Duration maxWait) {
             this.maxWait = maxWait;
         }
+    }
+
+    public RedisMode getMode() {
+        return mode;
+    }
+
+    public void setMode(RedisMode mode) {
+        this.mode = mode;
     }
 
     public String getHost() {
@@ -207,6 +309,25 @@ public class RedisConfiguration extends CachingConfigurerSupport {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public ClusterConfiguration getCluster() {
+
+        return cluster;
+    }
+
+    public void setCluster(ClusterConfiguration cluster) {
+
+        this.cluster = cluster;
+    }
+
+    public SentinelConfiguration getSentinel() {
+        return sentinel;
+    }
+
+    public void setSentinel(SentinelConfiguration sentinel) {
+
+        this.sentinel = sentinel;
     }
 
     public PoolConfiguration getPool() {

@@ -44,12 +44,20 @@ spring:
          ddl-auto: update
       show-sql: false
    redis:
+      mode: stand-alone
       database: 0
       host: "@redis-host@"
       port: 0@redis-port@
       password: "@redis-password@"
       timeout: 300ms
       namespace: spring
+      cluster:
+         nodes: "@redis-host@:@redis-port@"
+         max-redirects: 3
+      sentinel:
+         master: master
+         nodes: "@redis-host@:@redis-port@"
+         password: 123456
       pool:
         max-active: 8
         max-wait: -1

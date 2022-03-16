@@ -91,6 +91,6 @@ jobs:
       - run: native-image --version
       - run: mvn --version
       - name: Build with Maven
-        run: mvn -DskipTests -B clean package -Pnative
+        run: mvn clean package -Pnative test
 
       
