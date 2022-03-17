@@ -30,11 +30,21 @@ jobs:
         uses: stCarolas/setup-maven@v4.2
         with:
           maven-version: 3.8.2
+      - uses: mirromutth/mysql-action@v1.1
+        with:
+          host port: 3306
+          container port: 3306
+          character set server: 'utf8mb4'
+          collation server: 'utf8mb4_general_ci'
+          mysql version: '8.0'
+          mysql database: 'tesbdb'
+          mysql user: 'root'
+          mysql password: '123456'
       - run: java --version
       - run: native-image --version
       - run: mvn --version
       - name: Build with Maven
-        run: mvn -DskipTests -B clean package -Pnative
+        run: mvn clean package -Pnative
   linux-build-jvm:
     runs-on: ubuntu-latest
     steps:
@@ -87,6 +97,16 @@ jobs:
         uses: stCarolas/setup-maven@v4.2
         with:
           maven-version: 3.8.2
+      - uses: mirromutth/mysql-action@v1.1
+        with:
+          host port: 3306
+          container port: 3306
+          character set server: 'utf8mb4'
+          collation server: 'utf8mb4_general_ci'
+          mysql version: '8.0'
+          mysql database: 'tesbdb'
+          mysql user: 'root'
+          mysql password: '123456'
       - run: java --version
       - run: native-image --version
       - run: mvn --version
