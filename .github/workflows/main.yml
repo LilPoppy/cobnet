@@ -33,7 +33,7 @@ jobs:
       - name: Setup Redis
         uses: shogo82148/actions-setup-redis@v1
         with:
-          redis-version: '6.x'
+          redis-version: 'latest'
       - name: Setup MySQL
         uses: shogo82148/actions-setup-mysql@v1
         with:
@@ -54,14 +54,14 @@ jobs:
           java-version: 17
           graalvm-version: 22.0.0.2
           native-image: false
-      - name: Set up Maven
+      - name: Setup Maven
         uses: stCarolas/setup-maven@v4.2
         with:
           maven-version: 3.8.2
       - name: Setup Redis
         uses: shogo82148/actions-setup-redis@v1
         with:
-          redis-version: '6.x'
+          redis-version: 'latest'
       - name: Setup MySQL
         uses: shogo82148/actions-setup-mysql@v1
         with:
@@ -80,7 +80,7 @@ jobs:
         with:
           distribution: 'temurin' # See 'Supported distributions' for available options
           java-version: '17'
-      - name: Set up Maven
+      - name: Setup Maven
         uses: stCarolas/setup-maven@v4.2
         with:
           maven-version: 3.8.2
@@ -92,7 +92,7 @@ jobs:
         run: mvn -DskipTests -B clean package -Pdocker
       - run: docker images
       - run: docker image prune -f
-      - run: docker rm -f storechain-server-db storechain-server
+      - run: docker rm -f cobnet-db cobnet
   linux-build-native:
     runs-on: self-hosted
     steps:
@@ -103,14 +103,14 @@ jobs:
           graalvm-version: 22.0.0.2
           native-image: true
       - run: gu install python
-      - name: Set up Maven
+      - name: Setup Maven
         uses: stCarolas/setup-maven@v4.2
         with:
           maven-version: 3.8.2
       - name: Setup Redis
         uses: shogo82148/actions-setup-redis@v1
         with:
-          redis-version: '6.x'
+          redis-version: 'latest'
       - name: Setup MySQL
         uses: shogo82148/actions-setup-mysql@v1
         with:
