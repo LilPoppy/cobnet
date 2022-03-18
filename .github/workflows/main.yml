@@ -34,6 +34,7 @@ jobs:
         uses: shogo82148/actions-setup-redis@v1
         with:
           redis-version: 'latest'
+          redis-port: 6379
           auto-start: false
       - run: redis-server --daemonize yes
       - run: redis-cli ping
