@@ -34,6 +34,8 @@ jobs:
         uses: shogo82148/actions-setup-redis@v1
         with:
           redis-version: 'latest'
+      - run: start redis-server
+      - run: redis-server
       - run: redis-cli ping
       - name: Setup MySQL
         uses: shogo82148/actions-setup-mysql@v1
