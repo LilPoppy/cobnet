@@ -31,7 +31,9 @@ jobs:
         with:
           maven-version: 3.8.2
       - name: Setup Redis
-        uses: getong/redis-action@v1
+        uses: uses: supercharge/redis-github-action@1.4.0
+        with:
+          redis-version: 6
       - name: Setup MySQL
         uses: shogo82148/actions-setup-mysql@v1
         with:
