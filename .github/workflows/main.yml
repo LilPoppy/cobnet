@@ -26,10 +26,14 @@ jobs:
           graalvm-version: 22.0.0.2
           native-image: true
       - run: gu install python
-      - name: Set up Maven
+      - name: Setup Maven
         uses: stCarolas/setup-maven@v4.2
         with:
           maven-version: 3.8.2
+      - name: Setup Redis
+        uses: shogo82148/actions-setup-redis@v1
+        with:
+          redis-version: '6.x'
       - name: Setup MySQL
         uses: shogo82148/actions-setup-mysql@v1
         with:
@@ -93,6 +97,10 @@ jobs:
         uses: stCarolas/setup-maven@v4.2
         with:
           maven-version: 3.8.2
+      - name: Setup Redis
+        uses: shogo82148/actions-setup-redis@v1
+        with:
+          redis-version: '6.x'
       - name: Setup MySQL
         uses: shogo82148/actions-setup-mysql@v1
         with:
