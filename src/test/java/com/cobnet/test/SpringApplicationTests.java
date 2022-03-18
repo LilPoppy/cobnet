@@ -8,10 +8,10 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -24,11 +24,7 @@ class SpringApplicationTests {
 	private RedisTemplate<String, Object> redisTemplate;
 
 	@Test
-	void contextLoads() {
-	}
-
-	@Test
-	void polyglotTests() throws IOException {
+	void polyglot() throws IOException {
 
 		System.out.println("=== Graal.js via org.graalvm.polyglot.Context === ");
 
@@ -59,7 +55,7 @@ class SpringApplicationTests {
 	}
 
 	@Test
-	void redisTests() {
+	void redis() {
 
 		String key = "Bob Smith";
 
@@ -73,15 +69,17 @@ class SpringApplicationTests {
 		person.lastname = "Smith";
 		person.localDateTime = LocalDateTime.now();
 
+		//TODO not work?
+		ProjectBeanHolder.getRedisTemplate().convertAndSend(new ChannelTopic("chat").getTopic(), "Hello from Redis");
+
 		ProjectBeanHolder.getRedisHashOperations().putAll(key,  ProjectBeanHolder.getHashMapper().toHash(person));
 
 		System.out.println(ProjectBeanHolder.getHashMapper().fromHash(ProjectBeanHolder.getRedisHashOperations().entries(key)));
 
-		ProjectBeanHolder.getRedisTemplate().expire(key, 1, TimeUnit.SECONDS);
+		ProjectBeanHolder.getRedisTemplate().expire(key, 5, TimeUnit.SECONDS);
 	}
 
-
-	static class Person implements Serializable {
+	static class Person {
 
 		public String getFirstname() {
 			return firstname;
@@ -137,6 +135,7 @@ class SpringApplicationTests {
 	}
 
 	static class Address {
+
 		public String getCity() {
 			return city;
 		}

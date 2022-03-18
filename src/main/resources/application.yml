@@ -18,6 +18,7 @@ spring:
       name: ${project.information.name}
    main:
       allow-circular-references: false
+      allow-bean-definition-overriding: true
    thymeleaf:
       enabled: true
       cache: false
@@ -44,13 +45,16 @@ spring:
          ddl-auto: update
       show-sql: false
    redis:
-      mode: stand-alone
+      message:
+         topics: "chat"
+      mode: stand-alone #cluster #sentinal
       database: 0
       host: "@redis-host@"
       port: 0@redis-port@
       password: "@redis-password@"
       timeout: 300ms
       namespace: spring
+      pipelining-buffered: 1
       cluster:
          nodes: "@redis-host@:@redis-port@"
          max-redirects: 3
