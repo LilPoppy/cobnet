@@ -35,7 +35,7 @@ jobs:
         with:
           mysql-version: '8.0'
           root-password: 123456
-      - run: mysql -uroot -p123456 -hlocalhost -e 'CREATE DATABASE testdb'
+      - run: mysql -uroot -p123456 -h127.0.0.1 -e 'CREATE DATABASE testdb'
       - run: java --version
       - run: native-image --version
       - run: mvn --version
@@ -98,7 +98,7 @@ jobs:
         with:
           mysql-version: '8.0'
           root-password: 123456
-      - run: mysql -uroot -p123456 -hlocalhost -e 'CREATE DATABASE testdb'
+      - run: mysql -uroot -p123456 -h127.0.0.1 -e 'CREATE DATABASE testdb'
       - run: java --version
       - run: native-image --version
       - run: mvn --version
