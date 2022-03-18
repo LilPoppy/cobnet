@@ -58,6 +58,16 @@ jobs:
         uses: stCarolas/setup-maven@v4.2
         with:
           maven-version: 3.8.2
+    - name: Setup Redis
+        uses: shogo82148/actions-setup-redis@v1
+        with:
+          redis-version: '6.x'
+      - name: Setup MySQL
+        uses: shogo82148/actions-setup-mysql@v1
+        with:
+          mysql-version: '8.0'
+          root-password: 123456
+      - run: mysql -uroot -p123456 -h127.0.0.1 -e 'CREATE DATABASE testdb'
       - run: java --version
       - run: mvn --version
       - name: Build with Maven
