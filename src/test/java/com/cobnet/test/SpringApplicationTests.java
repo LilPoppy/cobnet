@@ -33,7 +33,8 @@ class SpringApplicationTests {
 		 * [ERROR] polyglot  Time elapsed: 0.042 s  <<< ERROR!
 		 * java.lang.ExceptionInInitializerError
 		 * 	at com.cobnet.test.SpringApplicationTests.polyglot(SpringApplicationTests.java:31)
-		 * Caused by: java.lang.NullPointerException: Cannot invoke "com.oracle.truffle.api.impl.TVMCI.createRuntimeSupport(Object)" because the return value of "com.oracle.truffle.api.impl.Accessor.access$000()" is null
+		 * Caused by: java.lang.NullPointerException: Cannot invoke "com.oracle.truffle.api.impl.TVMCI.createRuntimeSupport(Object)"
+		 * because the return value of "com.oracle.truffle.api.impl.Accessor.access$000()" is null
 		 * 	at com.cobnet.test.SpringApplicationTests.polyglot(SpringApplicationTests.java:31)
 		 */
 

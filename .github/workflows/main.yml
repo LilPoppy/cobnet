@@ -94,7 +94,7 @@ jobs:
         run: mvn -DskipTests -B clean package -Pdocker
       - run: docker images
       - run: docker image prune -f
-      - run: docker rm -f CoBNet-db CoBNet
+      - run: docker rm -f cobnet-db cobnet
   linux-build-native:
     runs-on: self-hosted
     steps:
@@ -113,6 +113,7 @@ jobs:
         uses: shogo82148/actions-setup-redis@v1
         with:
           redis-version: 'latest'
+      - run: sudo apt install libncurses5
       - name: Setup MySQL
         uses: shogo82148/actions-setup-mysql@v1
         with:
