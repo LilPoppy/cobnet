@@ -34,8 +34,7 @@ jobs:
         uses: shogo82148/actions-setup-mysql@v1
         with:
           mysql-version: '8.0'
-          user: root
-          password: 123456
+          user-password: 123456
       - run: java --version
       - run: native-image --version
       - run: mvn --version
