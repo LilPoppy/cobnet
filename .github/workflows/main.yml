@@ -31,9 +31,10 @@ jobs:
         with:
           maven-version: 3.8.2
       - name: Setup Redis
-        uses: supercharge/redis-github-action@1.4.0
+        uses: shogo82148/actions-setup-redis@v1
         with:
-          redis-version: 6
+          redis-version: 'latest'
+      - run: redis-cli ping
       - name: Setup MySQL
         uses: shogo82148/actions-setup-mysql@v1
         with:
