@@ -231,9 +231,228 @@
   ]
 },
 {
+  "name":"com.cobnet.connection.handler.http.HttpAuthenticationFailureHandler",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[{"name":"onAuthenticationFailure","parameterTypes":["javax.servlet.http.HttpServletRequest","javax.servlet.http.HttpServletResponse","org.springframework.security.core.AuthenticationException"] }]
+},
+{
+  "name":"com.cobnet.connection.handler.http.HttpAuthenticationSuccessHandler",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[{"name":"onAuthenticationSuccess","parameterTypes":["javax.servlet.http.HttpServletRequest","javax.servlet.http.HttpServletResponse","org.springframework.security.core.Authentication"] }]
+},
+{
   "name":"com.cobnet.interfaces.PolyglotContextGroup",
   "queryAllDeclaredMethods":true,
   "queryAllPublicMethods":true
+},
+{
+  "name":"com.cobnet.interfaces.spring.repository.JpaExtensionRepository",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true
+},
+{
+  "name":"com.cobnet.interfaces.spring.repository.UserRoleRepository",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true
+},
+{
+  "name":"com.cobnet.spring.boot.cache.redis.RedisMessageListener",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }],
+  "queriedMethods":[{"name":"onMessage","parameterTypes":["org.springframework.data.redis.connection.Message","byte[]"] }]
+},
+{
+  "name":"com.cobnet.spring.boot.configuration.CacheConfiguration",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "queriedMethods":[
+    {"name":"cacheManager","parameterTypes":[] }, 
+    {"name":"errorHandler","parameterTypes":[] }, 
+    {"name":"getRedisConfiguration","parameterTypes":[] }
+  ]
+},
+{
+  "name":"com.cobnet.spring.boot.configuration.CacheConfiguration$$EnhancerBySpringCGLIB$$c3539c2d",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "fields":[{"name":"CGLIB$FACTORY_DATA"}],
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"CGLIB$SET_STATIC_CALLBACKS","parameterTypes":["org.springframework.cglib.proxy.Callback[]"] }
+  ]
+},
+{
+  "name":"com.cobnet.spring.boot.configuration.CacheConfiguration$RedisConfiguration",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[
+    {"name":"connectionFactoryBean","parameterTypes":[] }, 
+    {"name":"getCluster","parameterTypes":[] }, 
+    {"name":"getMessage","parameterTypes":[] }, 
+    {"name":"getPool","parameterTypes":[] }, 
+    {"name":"getSentinel","parameterTypes":[] }, 
+    {"name":"hashOperationsBean","parameterTypes":["org.springframework.data.redis.core.RedisTemplate"] }, 
+    {"name":"listOperationsBean","parameterTypes":["org.springframework.data.redis.core.RedisTemplate"] }, 
+    {"name":"messageListenerAdapterBean","parameterTypes":["org.springframework.data.redis.core.RedisTemplate","org.springframework.data.redis.listener.RedisMessageListenerContainer","com.cobnet.spring.boot.cache.redis.RedisMessageListener"] }, 
+    {"name":"redisCacheConfigurationBean","parameterTypes":[] }, 
+    {"name":"redisCacheManagerBean","parameterTypes":["org.springframework.data.redis.core.RedisTemplate"] }, 
+    {"name":"redisTemplateBean","parameterTypes":["org.springframework.data.redis.connection.RedisConnectionFactory"] }, 
+    {"name":"setCluster","parameterTypes":["com.cobnet.spring.boot.configuration.CacheConfiguration$RedisConfiguration$ClusterConfiguration"] }, 
+    {"name":"setDatabase","parameterTypes":["int"] }, 
+    {"name":"setHost","parameterTypes":["java.lang.String"] }, 
+    {"name":"setMessage","parameterTypes":["com.cobnet.spring.boot.configuration.CacheConfiguration$RedisConfiguration$MessageConfiguration"] }, 
+    {"name":"setMode","parameterTypes":["com.cobnet.spring.boot.cache.redis.RedisMode"] }, 
+    {"name":"setNamespace","parameterTypes":["java.lang.String"] }, 
+    {"name":"setOperationsBean","parameterTypes":["org.springframework.data.redis.core.RedisTemplate"] }, 
+    {"name":"setPassword","parameterTypes":["java.lang.String"] }, 
+    {"name":"setPipeliningBuffered","parameterTypes":["int"] }, 
+    {"name":"setPool","parameterTypes":["com.cobnet.spring.boot.configuration.CacheConfiguration$RedisConfiguration$PoolConfiguration"] }, 
+    {"name":"setPort","parameterTypes":["java.lang.String"] }, 
+    {"name":"setSentinel","parameterTypes":["com.cobnet.spring.boot.configuration.CacheConfiguration$RedisConfiguration$SentinelConfiguration"] }, 
+    {"name":"setTimeout","parameterTypes":["java.time.Duration"] }, 
+    {"name":"transactionManager","parameterTypes":["javax.sql.DataSource"] }, 
+    {"name":"valueOperationsBean","parameterTypes":["org.springframework.data.redis.core.RedisTemplate"] }, 
+    {"name":"zSetOperationsBean","parameterTypes":["org.springframework.data.redis.core.RedisTemplate"] }
+  ],
+  "queriedMethods":[
+    {"name":"getDatabase","parameterTypes":[] }, 
+    {"name":"getHost","parameterTypes":[] }, 
+    {"name":"getMode","parameterTypes":[] }, 
+    {"name":"getNamespace","parameterTypes":[] }, 
+    {"name":"getPassword","parameterTypes":[] }, 
+    {"name":"getPipeliningBuffered","parameterTypes":[] }, 
+    {"name":"getPort","parameterTypes":[] }, 
+    {"name":"getTimeout","parameterTypes":[] }, 
+    {"name":"getUsername","parameterTypes":[] }, 
+    {"name":"setUsername","parameterTypes":["java.lang.String"] }
+  ]
+},
+{
+  "name":"com.cobnet.spring.boot.configuration.CacheConfiguration$RedisConfiguration$$EnhancerBySpringCGLIB$$fa37112a",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "fields":[{"name":"CGLIB$FACTORY_DATA"}],
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"CGLIB$SET_STATIC_CALLBACKS","parameterTypes":["org.springframework.cglib.proxy.Callback[]"] }
+  ],
+  "queriedMethods":[
+    {"name":"connectionFactoryBean","parameterTypes":[] }, 
+    {"name":"hashOperationsBean","parameterTypes":["org.springframework.data.redis.core.RedisTemplate"] }, 
+    {"name":"listOperationsBean","parameterTypes":["org.springframework.data.redis.core.RedisTemplate"] }, 
+    {"name":"messageListenerAdapterBean","parameterTypes":["org.springframework.data.redis.core.RedisTemplate","org.springframework.data.redis.listener.RedisMessageListenerContainer","com.cobnet.spring.boot.cache.redis.RedisMessageListener"] }, 
+    {"name":"redisCacheConfigurationBean","parameterTypes":[] }, 
+    {"name":"redisCacheManagerBean","parameterTypes":["org.springframework.data.redis.core.RedisTemplate"] }, 
+    {"name":"redisTemplateBean","parameterTypes":["org.springframework.data.redis.connection.RedisConnectionFactory"] }, 
+    {"name":"setOperationsBean","parameterTypes":["org.springframework.data.redis.core.RedisTemplate"] }, 
+    {"name":"transactionManager","parameterTypes":["javax.sql.DataSource"] }, 
+    {"name":"valueOperationsBean","parameterTypes":["org.springframework.data.redis.core.RedisTemplate"] }, 
+    {"name":"zSetOperationsBean","parameterTypes":["org.springframework.data.redis.core.RedisTemplate"] }
+  ]
+},
+{
+  "name":"com.cobnet.spring.boot.configuration.CacheConfiguration$RedisConfiguration$$EnhancerBySpringCGLIB$$fa37112a$$FastClassBySpringCGLIB$$ebabebc9",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"com.cobnet.spring.boot.configuration.CacheConfiguration$RedisConfiguration$$FastClassBySpringCGLIB$$f79edd9e",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"com.cobnet.spring.boot.configuration.CacheConfiguration$RedisConfiguration$ClusterConfiguration",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"getNodes","parameterTypes":[] }, 
+    {"name":"setMaxRedirects","parameterTypes":["int"] }, 
+    {"name":"setNodes","parameterTypes":["java.util.List"] }
+  ]
+},
+{
+  "name":"com.cobnet.spring.boot.configuration.CacheConfiguration$RedisConfiguration$MessageConfiguration",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"getTopics","parameterTypes":[] }, 
+    {"name":"setTopics","parameterTypes":["java.util.List"] }
+  ]
+},
+{
+  "name":"com.cobnet.spring.boot.configuration.CacheConfiguration$RedisConfiguration$PoolConfiguration",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"setMaxActive","parameterTypes":["int"] }, 
+    {"name":"setMaxIdle","parameterTypes":["int"] }, 
+    {"name":"setMaxWait","parameterTypes":["java.time.Duration"] }, 
+    {"name":"setMinIdle","parameterTypes":["int"] }
+  ]
+},
+{
+  "name":"com.cobnet.spring.boot.configuration.CacheConfiguration$RedisConfiguration$SentinelConfiguration",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"getNodes","parameterTypes":[] }, 
+    {"name":"setMaster","parameterTypes":["java.lang.String"] }, 
+    {"name":"setNodes","parameterTypes":["java.util.List"] }, 
+    {"name":"setPassword","parameterTypes":["java.lang.String"] }
+  ]
+},
+{
+  "name":"com.cobnet.spring.boot.configuration.DatasourceConfiguration",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[
+    {"name":"dataSourceBean","parameterTypes":[] }, 
+    {"name":"setDriverClassName","parameterTypes":["java.lang.String"] }, 
+    {"name":"setPassword","parameterTypes":["java.lang.String"] }, 
+    {"name":"setUrl","parameterTypes":["java.lang.String"] }, 
+    {"name":"setUsername","parameterTypes":["java.lang.String"] }
+  ],
+  "queriedMethods":[
+    {"name":"getDriverClassName","parameterTypes":[] }, 
+    {"name":"getPassword","parameterTypes":[] }, 
+    {"name":"getUrl","parameterTypes":[] }, 
+    {"name":"getUsername","parameterTypes":[] }
+  ]
+},
+{
+  "name":"com.cobnet.spring.boot.configuration.DatasourceConfiguration$$EnhancerBySpringCGLIB$$be819470",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "fields":[{"name":"CGLIB$FACTORY_DATA"}],
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"CGLIB$SET_STATIC_CALLBACKS","parameterTypes":["org.springframework.cglib.proxy.Callback[]"] }
+  ],
+  "queriedMethods":[{"name":"dataSourceBean","parameterTypes":[] }]
+},
+{
+  "name":"com.cobnet.spring.boot.configuration.DatasourceConfiguration$$EnhancerBySpringCGLIB$$be819470$$FastClassBySpringCGLIB$$bf170a45",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"com.cobnet.spring.boot.configuration.DatasourceConfiguration$$FastClassBySpringCGLIB$$c043fe24",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
 },
 {
   "name":"com.cobnet.spring.boot.configuration.ProjectConfiguration",
@@ -259,6 +478,16 @@
 },
 {
   "name":"com.cobnet.spring.boot.configuration.ProjectConfiguration$$EnhancerBySpringCGLIB$$69b4f7c7",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"CGLIB$SET_STATIC_CALLBACKS","parameterTypes":["org.springframework.cglib.proxy.Callback[]"] }
+  ]
+},
+{
+  "name":"com.cobnet.spring.boot.configuration.ProjectConfiguration$$EnhancerBySpringCGLIB$$b82662d6",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
@@ -339,16 +568,6 @@
     {"name":"setTimeout","parameterTypes":["java.time.Duration"] }, 
     {"name":"valueOperations","parameterTypes":["org.springframework.data.redis.core.RedisTemplate"] }, 
     {"name":"zSetOperations","parameterTypes":["org.springframework.data.redis.core.RedisTemplate"] }
-  ],
-  "queriedMethods":[
-    {"name":"getDatabase","parameterTypes":[] }, 
-    {"name":"getHost","parameterTypes":[] }, 
-    {"name":"getNamespace","parameterTypes":[] }, 
-    {"name":"getPassword","parameterTypes":[] }, 
-    {"name":"getPort","parameterTypes":[] }, 
-    {"name":"getTimeout","parameterTypes":[] }, 
-    {"name":"getUsername","parameterTypes":[] }, 
-    {"name":"setUsername","parameterTypes":["java.lang.String"] }
   ]
 },
 {
@@ -356,19 +575,9 @@
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "fields":[{"name":"CGLIB$FACTORY_DATA"}],
   "methods":[
     {"name":"<init>","parameterTypes":[] }, 
     {"name":"CGLIB$SET_STATIC_CALLBACKS","parameterTypes":["org.springframework.cglib.proxy.Callback[]"] }
-  ],
-  "queriedMethods":[
-    {"name":"connectionFactory","parameterTypes":[] }, 
-    {"name":"hashOperations","parameterTypes":["org.springframework.data.redis.core.RedisTemplate"] }, 
-    {"name":"listOperations","parameterTypes":["org.springframework.data.redis.core.RedisTemplate"] }, 
-    {"name":"redisTemplate","parameterTypes":["org.springframework.data.redis.connection.RedisConnectionFactory"] }, 
-    {"name":"setOperations","parameterTypes":["org.springframework.data.redis.core.RedisTemplate"] }, 
-    {"name":"valueOperations","parameterTypes":["org.springframework.data.redis.core.RedisTemplate"] }, 
-    {"name":"zSetOperations","parameterTypes":["org.springframework.data.redis.core.RedisTemplate"] }
   ]
 },
 {
@@ -393,6 +602,112 @@
   ]
 },
 {
+  "name":"com.cobnet.spring.boot.configuration.SecurityConfiguration",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[
+    {"name":"authenticationManagerBean","parameterTypes":[] }, 
+    {"name":"compositeSessionAuthenticationStrategyBean","parameterTypes":[] }, 
+    {"name":"getOauth2","parameterTypes":[] }, 
+    {"name":"httpAuthenticationFailureHandlerBean","parameterTypes":[] }, 
+    {"name":"httpAuthenticationSuccessHandlerBean","parameterTypes":[] }, 
+    {"name":"sessionRegistryBean","parameterTypes":[] }, 
+    {"name":"setAuthenticationUrl","parameterTypes":["java.lang.String"] }, 
+    {"name":"setLoginFailureUrl","parameterTypes":["java.lang.String"] }, 
+    {"name":"setLoginPageUrl","parameterTypes":["java.lang.String"] }, 
+    {"name":"setLoginSuccessUrl","parameterTypes":["java.lang.String"] }, 
+    {"name":"setOauth2","parameterTypes":["com.cobnet.spring.boot.configuration.SecurityConfiguration$OAuth2Configuration"] }, 
+    {"name":"setPasswordParameter","parameterTypes":["java.lang.String"] }, 
+    {"name":"setPermissionDefaultPower","parameterTypes":["byte"] }, 
+    {"name":"setUserDefaultRole","parameterTypes":["java.lang.String"] }, 
+    {"name":"setUsernameParameter","parameterTypes":["java.lang.String"] }
+  ]
+},
+{
+  "name":"com.cobnet.spring.boot.configuration.SecurityConfiguration$$EnhancerBySpringCGLIB$$bb0801b5",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "fields":[{"name":"CGLIB$FACTORY_DATA"}],
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"CGLIB$SET_STATIC_CALLBACKS","parameterTypes":["org.springframework.cglib.proxy.Callback[]"] }
+  ]
+},
+{
+  "name":"com.cobnet.spring.boot.configuration.SecurityConfiguration$$EnhancerBySpringCGLIB$$bb0801b5$$FastClassBySpringCGLIB$$57eb79ac",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"com.cobnet.spring.boot.configuration.SecurityConfiguration$$FastClassBySpringCGLIB$$31b727c9",
+  "methods":[{"name":"<init>","parameterTypes":["java.lang.Class"] }]
+},
+{
+  "name":"com.cobnet.spring.boot.configuration.SecurityConfiguration$OAuth2Configuration",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"setAuthenticationUrl","parameterTypes":["java.lang.String"] }, 
+    {"name":"setLoginFailureUrl","parameterTypes":["java.lang.String"] }, 
+    {"name":"setRedirectUrl","parameterTypes":["java.lang.String"] }
+  ]
+},
+{
+  "name":"com.cobnet.spring.boot.configuration.SecurityConfiguration$UserAuthenticationProvider",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }],
+  "queriedMethods":[
+    {"name":"authenticate","parameterTypes":["org.springframework.security.core.Authentication"] }, 
+    {"name":"supports","parameterTypes":["java.lang.Class"] }
+  ]
+},
+{
+  "name":"com.cobnet.spring.boot.configuration.SessionConfiguration",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[
+    {"name":"setNamespace","parameterTypes":["java.lang.String"] }, 
+    {"name":"setStoreType","parameterTypes":["java.lang.String"] }
+  ],
+  "queriedMethods":[
+    {"name":"getNamespace","parameterTypes":[] }, 
+    {"name":"getStoreType","parameterTypes":[] }
+  ]
+},
+{
+  "name":"com.cobnet.spring.boot.configuration.SessionConfiguration$$EnhancerBySpringCGLIB$$e6153bd9",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "fields":[{"name":"CGLIB$FACTORY_DATA"}],
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"CGLIB$SET_STATIC_CALLBACKS","parameterTypes":["org.springframework.cglib.proxy.Callback[]"] }
+  ]
+},
+{
+  "name":"com.cobnet.spring.boot.controller.BasicController",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"com.cobnet.spring.boot.controller.UserInfoController",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
   "name":"com.cobnet.spring.boot.core.ProjectBeanHolder$AutowireLoader",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
@@ -401,18 +716,35 @@
   "methods":[
     {"name":"<init>","parameterTypes":[] }, 
     {"name":"setApplicationEventPublisher","parameterTypes":["org.springframework.context.ApplicationEventPublisher"] }, 
+    {"name":"setAuthenticationManager","parameterTypes":["org.springframework.security.authentication.AuthenticationManager"] }, 
+    {"name":"setCacheConfiguration","parameterTypes":["com.cobnet.spring.boot.configuration.CacheConfiguration"] }, 
+    {"name":"setClientRegistrationRepository","parameterTypes":["org.springframework.security.oauth2.client.registration.ClientRegistrationRepository"] }, 
     {"name":"setConfigurableApplicationContext","parameterTypes":["org.springframework.context.ConfigurableApplicationContext"] }, 
+    {"name":"setDatasourceConfiguration","parameterTypes":["com.cobnet.spring.boot.configuration.DatasourceConfiguration"] }, 
+    {"name":"setHashMapper","parameterTypes":["org.springframework.data.redis.hash.Jackson2HashMapper"] }, 
+    {"name":"setMessageListenerAdapter","parameterTypes":["org.springframework.data.redis.listener.adapter.MessageListenerAdapter"] }, 
     {"name":"setObjectMapper","parameterTypes":["com.fasterxml.jackson.databind.ObjectMapper"] }, 
+    {"name":"setPlatformTransactionManager","parameterTypes":["org.springframework.transaction.PlatformTransactionManager"] }, 
     {"name":"setProjectConfiguration","parameterTypes":["com.cobnet.spring.boot.configuration.ProjectConfiguration"] }, 
+    {"name":"setRedirectStrategy","parameterTypes":["org.springframework.security.web.RedirectStrategy"] }, 
+    {"name":"setRedisCacheManager","parameterTypes":["org.springframework.data.redis.cache.RedisCacheManager"] }, 
+    {"name":"setRedisConfiguration","parameterTypes":["com.cobnet.spring.boot.configuration.CacheConfiguration$RedisConfiguration"] }, 
     {"name":"setRedisConfiguration","parameterTypes":["com.cobnet.spring.boot.configuration.RedisConfiguration"] }, 
     {"name":"setRedisHashOperations","parameterTypes":["org.springframework.data.redis.core.HashOperations"] }, 
+    {"name":"setRedisIndexedSessionRepository","parameterTypes":["org.springframework.session.data.redis.RedisIndexedSessionRepository"] }, 
     {"name":"setRedisListOperations","parameterTypes":["org.springframework.data.redis.core.ListOperations"] }, 
+    {"name":"setRedisMessageListenerContainer","parameterTypes":["org.springframework.data.redis.listener.RedisMessageListenerContainer"] }, 
     {"name":"setRedisSetOperations","parameterTypes":["org.springframework.data.redis.core.SetOperations"] }, 
     {"name":"setRedisTemplate","parameterTypes":["org.springframework.data.redis.core.RedisTemplate"] }, 
     {"name":"setRedisValueOperations","parameterTypes":["org.springframework.data.redis.core.ValueOperations"] }, 
     {"name":"setRedisZSetOperations","parameterTypes":["org.springframework.data.redis.core.ZSetOperations"] }, 
     {"name":"setScriptEngineManager","parameterTypes":["com.cobnet.spring.boot.core.ScriptEngineManager"] }, 
-    {"name":"setTaskProvider","parameterTypes":["com.cobnet.spring.boot.core.TaskProvider"] }
+    {"name":"setSecurityConfiguration","parameterTypes":["com.cobnet.spring.boot.configuration.SecurityConfiguration"] }, 
+    {"name":"setSessionConfiguration","parameterTypes":["com.cobnet.spring.boot.configuration.SessionConfiguration"] }, 
+    {"name":"setSessionRegistry","parameterTypes":["org.springframework.security.core.session.SessionRegistry"] }, 
+    {"name":"setTaskProvider","parameterTypes":["com.cobnet.spring.boot.core.TaskProvider"] }, 
+    {"name":"setUserInfoController","parameterTypes":["com.cobnet.spring.boot.controller.UserInfoController"] }, 
+    {"name":"setUserRoleRepository","parameterTypes":["com.cobnet.interfaces.spring.repository.UserRoleRepository"] }
   ]
 },
 {
@@ -422,7 +754,9 @@
   "queryAllDeclaredConstructors":true,
   "methods":[
     {"name":"<init>","parameterTypes":[] }, 
+    {"name":"hashMapperBean","parameterTypes":["com.fasterxml.jackson.databind.ObjectMapper"] }, 
     {"name":"objectMapperBean","parameterTypes":[] }, 
+    {"name":"redirectStrategyBean","parameterTypes":[] }, 
     {"name":"scriptEngineManagerBean","parameterTypes":[] }, 
     {"name":"taskProviderBean","parameterTypes":["com.cobnet.spring.boot.configuration.ProjectConfiguration"] }
   ]
@@ -465,6 +799,13 @@
   "methods":[{"name":"shutdown","parameterTypes":[] }]
 },
 {
+  "name":"com.cobnet.spring.boot.entity.UserRole",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
   "name":"com.fasterxml.jackson.annotation.JacksonAnnotation",
   "queryAllDeclaredMethods":true
 },
@@ -473,6 +814,10 @@
 },
 {
   "name":"com.fasterxml.jackson.annotation.JsonAutoDetect$Visibility"
+},
+{
+  "name":"com.fasterxml.jackson.annotation.JsonIgnore",
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"com.fasterxml.jackson.annotation.JsonInclude$Include"
@@ -3262,6 +3607,8 @@
   "queriedMethods":[
     {"name":"getAnnotatedInterfaces","parameterTypes":[] }, 
     {"name":"getAnnotatedSuperclass","parameterTypes":[] }, 
+    {"name":"getDeclaredMethod","parameterTypes":["java.lang.String","java.lang.Class[]"] }, 
+    {"name":"getMethod","parameterTypes":["java.lang.String","java.lang.Class[]"] }, 
     {"name":"getNestHost","parameterTypes":[] }, 
     {"name":"getNestMembers","parameterTypes":[] }, 
     {"name":"getPermittedSubclasses","parameterTypes":[] }, 
@@ -4317,6 +4664,10 @@
 },
 {
   "name":"javax.persistence.SynchronizationType"
+},
+{
+  "name":"javax.persistence.Transient",
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"javax.persistence.TypedQuery"
@@ -5384,6 +5735,30 @@
   "name":"org.hibernate.engine.spi.FilterDefinition"
 },
 {
+  "name":"org.hibernate.engine.spi.Managed",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "name":"org.hibernate.engine.spi.ManagedEntity",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "name":"org.hibernate.engine.spi.PersistentAttributeInterceptable",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
+  "name":"org.hibernate.engine.spi.SelfDirtinessTracker",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true
+},
+{
   "name":"org.hibernate.engine.spi.SessionFactoryImplementor"
 },
 {
@@ -5850,7 +6225,16 @@
 {
   "name":"org.springframework.beans.factory.config.AbstractFactoryBean",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[
+    {"name":"afterPropertiesSet","parameterTypes":[] }, 
+    {"name":"destroy","parameterTypes":[] }, 
+    {"name":"getObject","parameterTypes":[] }, 
+    {"name":"isSingleton","parameterTypes":[] }, 
+    {"name":"setBeanClassLoader","parameterTypes":["java.lang.ClassLoader"] }, 
+    {"name":"setBeanFactory","parameterTypes":["org.springframework.beans.factory.BeanFactory"] }, 
+    {"name":"setSingleton","parameterTypes":["boolean"] }
+  ]
 },
 {
   "name":"org.springframework.beans.factory.config.AutowireCapableBeanFactory"
@@ -5926,7 +6310,10 @@
   "name":"org.springframework.boot.SpringApplication",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
-  "methods":[{"name":"setAllowCircularReferences","parameterTypes":["boolean"] }]
+  "methods":[
+    {"name":"setAllowBeanDefinitionOverriding","parameterTypes":["boolean"] }, 
+    {"name":"setAllowCircularReferences","parameterTypes":["boolean"] }
+  ]
 },
 {
   "name":"org.springframework.boot.SpringBootConfiguration",
@@ -6378,10 +6765,14 @@
   "queryAllDeclaredConstructors":true,
   "methods":[
     {"name":"<init>","parameterTypes":[] }, 
+    {"name":"getCluster","parameterTypes":[] }, 
+    {"name":"getSentinel","parameterTypes":[] }, 
+    {"name":"setCluster","parameterTypes":["org.springframework.boot.autoconfigure.data.redis.RedisProperties$Cluster"] }, 
     {"name":"setDatabase","parameterTypes":["int"] }, 
     {"name":"setHost","parameterTypes":["java.lang.String"] }, 
     {"name":"setPassword","parameterTypes":["java.lang.String"] }, 
     {"name":"setPort","parameterTypes":["int"] }, 
+    {"name":"setSentinel","parameterTypes":["org.springframework.boot.autoconfigure.data.redis.RedisProperties$Sentinel"] }, 
     {"name":"setTimeout","parameterTypes":["java.time.Duration"] }
   ]
 },
@@ -6389,7 +6780,16 @@
   "name":"org.springframework.boot.autoconfigure.data.redis.RedisProperties$ClientType"
 },
 {
-  "name":"org.springframework.boot.autoconfigure.data.redis.RedisProperties$Cluster"
+  "name":"org.springframework.boot.autoconfigure.data.redis.RedisProperties$Cluster",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"getNodes","parameterTypes":[] }, 
+    {"name":"setMaxRedirects","parameterTypes":["java.lang.Integer"] }, 
+    {"name":"setNodes","parameterTypes":["java.util.List"] }
+  ]
 },
 {
   "name":"org.springframework.boot.autoconfigure.data.redis.RedisProperties$Jedis"
@@ -6401,7 +6801,17 @@
   "name":"org.springframework.boot.autoconfigure.data.redis.RedisProperties$Pool"
 },
 {
-  "name":"org.springframework.boot.autoconfigure.data.redis.RedisProperties$Sentinel"
+  "name":"org.springframework.boot.autoconfigure.data.redis.RedisProperties$Sentinel",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queryAllDeclaredConstructors":true,
+  "methods":[
+    {"name":"<init>","parameterTypes":[] }, 
+    {"name":"getNodes","parameterTypes":[] }, 
+    {"name":"setMaster","parameterTypes":["java.lang.String"] }, 
+    {"name":"setNodes","parameterTypes":["java.util.List"] }, 
+    {"name":"setPassword","parameterTypes":["java.lang.String"] }
+  ]
 },
 {
   "name":"org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration",
@@ -6441,6 +6851,18 @@
   ]
 },
 {
+  "name":"org.springframework.boot.autoconfigure.data.web.SpringDataWebAutoConfiguration$$Lambda$1388/0x00000008015ebad0",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[{"name":"customize","parameterTypes":["org.springframework.data.web.SortHandlerMethodArgumentResolver"] }]
+},
+{
+  "name":"org.springframework.boot.autoconfigure.data.web.SpringDataWebAutoConfiguration$$Lambda$1390/0x00000008015ee8e8",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[{"name":"customize","parameterTypes":["org.springframework.data.web.PageableHandlerMethodArgumentResolver"] }]
+},
+{
   "name":"org.springframework.boot.autoconfigure.data.web.SpringDataWebAutoConfiguration$$Lambda$1430/0x00000008016930b0",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true
@@ -6473,14 +6895,12 @@
 {
   "name":"org.springframework.boot.autoconfigure.data.web.SpringDataWebAutoConfiguration$$Lambda$988/0x000000080139db08",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[{"name":"customize","parameterTypes":["org.springframework.data.web.SortHandlerMethodArgumentResolver"] }]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.boot.autoconfigure.data.web.SpringDataWebAutoConfiguration$$Lambda$990/0x000000080139eca0",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[{"name":"customize","parameterTypes":["org.springframework.data.web.PageableHandlerMethodArgumentResolver"] }]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.boot.autoconfigure.data.web.SpringDataWebAutoConfiguration$$Lambda$991/0x0000000801394cb8",
@@ -6892,13 +7312,18 @@
 {
   "name":"org.springframework.boot.autoconfigure.jdbc.metadata.DataSourcePoolMetadataProvidersConfiguration$HikariPoolDataSourceMetadataProviderConfiguration$$Lambda$811/0x00000008011472a8",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[{"name":"getDataSourcePoolMetadata","parameterTypes":["javax.sql.DataSource"] }]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.boot.autoconfigure.jdbc.metadata.DataSourcePoolMetadataProvidersConfiguration$HikariPoolDataSourceMetadataProviderConfiguration$$Lambda$815/0x0000000801114d60",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true
+},
+{
+  "name":"org.springframework.boot.autoconfigure.jdbc.metadata.DataSourcePoolMetadataProvidersConfiguration$HikariPoolDataSourceMetadataProviderConfiguration$$Lambda$871/0x0000000801164668",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[{"name":"getDataSourcePoolMetadata","parameterTypes":["javax.sql.DataSource"] }]
 },
 {
   "name":"org.springframework.boot.autoconfigure.jdbc.metadata.DataSourcePoolMetadataProvidersConfiguration$HikariPoolDataSourceMetadataProviderConfiguration$$Lambda$891/0x00000008011b3108",
@@ -7275,13 +7700,18 @@
 {
   "name":"org.springframework.boot.autoconfigure.session.SessionAutoConfiguration$ServletSessionConfiguration$RememberMeServicesConfiguration$$Lambda$694/0x0000000801043848",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[{"name":"customize","parameterTypes":["org.springframework.session.web.http.DefaultCookieSerializer"] }]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.boot.autoconfigure.session.SessionAutoConfiguration$ServletSessionConfiguration$RememberMeServicesConfiguration$$Lambda$695/0x00000008010428e8",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true
+},
+{
+  "name":"org.springframework.boot.autoconfigure.session.SessionAutoConfiguration$ServletSessionConfiguration$RememberMeServicesConfiguration$$Lambda$760/0x0000000801063008",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[{"name":"customize","parameterTypes":["org.springframework.session.web.http.DefaultCookieSerializer"] }]
 },
 {
   "name":"org.springframework.boot.autoconfigure.session.SessionAutoConfiguration$ServletSessionConfiguration$RememberMeServicesConfiguration$$Lambda$769/0x00000008010ae6a0",
@@ -8456,6 +8886,12 @@
   "queryAllPublicMethods":true
 },
 {
+  "name":"org.springframework.boot.validation.beanvalidation.MethodValidationExcludeFilter$$Lambda$1373/0x00000008015dc7a0",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[{"name":"isExcluded","parameterTypes":["java.lang.Class"] }]
+},
+{
   "name":"org.springframework.boot.validation.beanvalidation.MethodValidationExcludeFilter$$Lambda$1411/0x000000080167c400",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true
@@ -8473,8 +8909,7 @@
 {
   "name":"org.springframework.boot.validation.beanvalidation.MethodValidationExcludeFilter$$Lambda$935/0x000000080137ebb8",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[{"name":"isExcluded","parameterTypes":["java.lang.Class"] }]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.boot.validation.beanvalidation.MethodValidationExcludeFilter$$Lambda$938/0x0000000801377188",
@@ -8862,7 +9297,8 @@
 {
   "name":"org.springframework.cache.annotation.AnnotationCacheOperationSource",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[{"name":"isCandidateClass","parameterTypes":["java.lang.Class"] }]
 },
 {
   "name":"org.springframework.cache.annotation.AnnotationCacheOperationSource$CacheOperationProvider"
@@ -8885,9 +9321,7 @@
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queriedMethods":[
-    {"name":"cacheManager","parameterTypes":[] }, 
     {"name":"cacheResolver","parameterTypes":[] }, 
-    {"name":"errorHandler","parameterTypes":[] }, 
     {"name":"keyGenerator","parameterTypes":[] }
   ]
 },
@@ -8915,22 +9349,42 @@
 {
   "name":"org.springframework.cache.interceptor.AbstractCacheInvoker",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[
+    {"name":"getErrorHandler","parameterTypes":[] }, 
+    {"name":"setErrorHandler","parameterTypes":["org.springframework.cache.interceptor.CacheErrorHandler"] }
+  ]
 },
 {
   "name":"org.springframework.cache.interceptor.AbstractFallbackCacheOperationSource",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[{"name":"getCacheOperations","parameterTypes":["java.lang.reflect.Method","java.lang.Class"] }]
 },
 {
   "name":"org.springframework.cache.interceptor.BeanFactoryCacheOperationSourceAdvisor",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[{"name":"getPointcut","parameterTypes":[] }]
 },
 {
   "name":"org.springframework.cache.interceptor.CacheAspectSupport",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[
+    {"name":"afterPropertiesSet","parameterTypes":[] }, 
+    {"name":"afterSingletonsInstantiated","parameterTypes":[] }, 
+    {"name":"configure","parameterTypes":["java.util.function.Supplier","java.util.function.Supplier","java.util.function.Supplier","java.util.function.Supplier"] }, 
+    {"name":"getCacheOperationSource","parameterTypes":[] }, 
+    {"name":"getCacheResolver","parameterTypes":[] }, 
+    {"name":"getKeyGenerator","parameterTypes":[] }, 
+    {"name":"setBeanFactory","parameterTypes":["org.springframework.beans.factory.BeanFactory"] }, 
+    {"name":"setCacheManager","parameterTypes":["org.springframework.cache.CacheManager"] }, 
+    {"name":"setCacheOperationSource","parameterTypes":["org.springframework.cache.interceptor.CacheOperationSource"] }, 
+    {"name":"setCacheOperationSources","parameterTypes":["org.springframework.cache.interceptor.CacheOperationSource[]"] }, 
+    {"name":"setCacheResolver","parameterTypes":["org.springframework.cache.interceptor.CacheResolver"] }, 
+    {"name":"setKeyGenerator","parameterTypes":["org.springframework.cache.interceptor.KeyGenerator"] }
+  ]
 },
 {
   "name":"org.springframework.cache.interceptor.CacheErrorHandler"
@@ -8938,7 +9392,8 @@
 {
   "name":"org.springframework.cache.interceptor.CacheInterceptor",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[{"name":"invoke","parameterTypes":["org.aopalliance.intercept.MethodInvocation"] }]
 },
 {
   "name":"org.springframework.cache.interceptor.CacheOperationSource",
@@ -8957,12 +9412,22 @@
 {
   "name":"org.springframework.cache.support.AbstractCacheManager",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[
+    {"name":"afterPropertiesSet","parameterTypes":[] }, 
+    {"name":"getCache","parameterTypes":["java.lang.String"] }, 
+    {"name":"getCacheNames","parameterTypes":[] }, 
+    {"name":"initializeCaches","parameterTypes":[] }
+  ]
 },
 {
   "name":"org.springframework.cache.transaction.AbstractTransactionSupportingCacheManager",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[
+    {"name":"isTransactionAware","parameterTypes":[] }, 
+    {"name":"setTransactionAware","parameterTypes":["boolean"] }
+  ]
 },
 {
   "name":"org.springframework.cglib.core.MethodWrapper$MethodWrapperKey",
@@ -9184,13 +9649,18 @@
 {
   "name":"org.springframework.cloud.client.loadbalancer.AsyncLoadBalancerAutoConfiguration$AsyncRestTemplateCustomizerConfig$$Lambda$1248/0x00000008015574c0",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[{"name":"afterSingletonsInstantiated","parameterTypes":[] }]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.cloud.client.loadbalancer.AsyncLoadBalancerAutoConfiguration$AsyncRestTemplateCustomizerConfig$$Lambda$1250/0x00000008015717d0",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true
+},
+{
+  "name":"org.springframework.cloud.client.loadbalancer.AsyncLoadBalancerAutoConfiguration$AsyncRestTemplateCustomizerConfig$$Lambda$1488/0x000000080167d5e8",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[{"name":"afterSingletonsInstantiated","parameterTypes":[] }]
 },
 {
   "name":"org.springframework.cloud.client.loadbalancer.AsyncLoadBalancerAutoConfiguration$AsyncRestTemplateCustomizerConfig$$Lambda$1537/0x000000080173a170",
@@ -9221,13 +9691,18 @@
 {
   "name":"org.springframework.cloud.client.loadbalancer.AsyncLoadBalancerAutoConfiguration$LoadBalancerInterceptorConfig$$Lambda$1247/0x0000000801556e48",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[{"name":"customize","parameterTypes":["org.springframework.web.client.AsyncRestTemplate"] }]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.cloud.client.loadbalancer.AsyncLoadBalancerAutoConfiguration$LoadBalancerInterceptorConfig$$Lambda$1249/0x0000000801571158",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true
+},
+{
+  "name":"org.springframework.cloud.client.loadbalancer.AsyncLoadBalancerAutoConfiguration$LoadBalancerInterceptorConfig$$Lambda$1487/0x000000080167cf70",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[{"name":"customize","parameterTypes":["org.springframework.web.client.AsyncRestTemplate"] }]
 },
 {
   "name":"org.springframework.cloud.client.loadbalancer.AsyncLoadBalancerAutoConfiguration$LoadBalancerInterceptorConfig$$Lambda$1536/0x0000000801739af8",
@@ -9276,13 +9751,18 @@
 {
   "name":"org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$$Lambda$1250/0x0000000801557d10",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[{"name":"afterSingletonsInstantiated","parameterTypes":[] }]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$$Lambda$1252/0x0000000801572020",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true
+},
+{
+  "name":"org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$$Lambda$1490/0x000000080167de38",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[{"name":"afterSingletonsInstantiated","parameterTypes":[] }]
 },
 {
   "name":"org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$$Lambda$1539/0x000000080173a9c0",
@@ -9313,13 +9793,18 @@
 {
   "name":"org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$LoadBalancerInterceptorConfig$$Lambda$1249/0x0000000801557ae8",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[{"name":"customize","parameterTypes":["org.springframework.web.client.RestTemplate"] }]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$LoadBalancerInterceptorConfig$$Lambda$1251/0x0000000801571df8",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true
+},
+{
+  "name":"org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$LoadBalancerInterceptorConfig$$Lambda$1489/0x000000080167dc10",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[{"name":"customize","parameterTypes":["org.springframework.web.client.RestTemplate"] }]
 },
 {
   "name":"org.springframework.cloud.client.loadbalancer.LoadBalancerAutoConfiguration$LoadBalancerInterceptorConfig$$Lambda$1538/0x000000080173a798",
@@ -9365,13 +9850,18 @@
 {
   "name":"org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration$$Lambda$534/0x0000000800ff2740",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[{"name":"getDefaultMappings","parameterTypes":[] }]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration$$Lambda$535/0x0000000800ff1398",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true
+},
+{
+  "name":"org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration$$Lambda$600/0x0000000801004da0",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[{"name":"getDefaultMappings","parameterTypes":[] }]
 },
 {
   "name":"org.springframework.cloud.client.loadbalancer.LoadBalancerDefaultMappingsProviderAutoConfiguration$$Lambda$609/0x0000000801058a10",
@@ -10642,37 +11132,12 @@
 {
   "name":"org.springframework.data.jdbc.core.JdbcAggregateTemplate",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[
-    {"name":"count","parameterTypes":["java.lang.Class"] }, 
-    {"name":"delete","parameterTypes":["java.lang.Object","java.lang.Class"] }, 
-    {"name":"deleteAll","parameterTypes":["java.lang.Class"] }, 
-    {"name":"deleteById","parameterTypes":["java.lang.Object","java.lang.Class"] }, 
-    {"name":"existsById","parameterTypes":["java.lang.Object","java.lang.Class"] }, 
-    {"name":"findAll","parameterTypes":["java.lang.Class"] }, 
-    {"name":"findAll","parameterTypes":["java.lang.Class","org.springframework.data.domain.Pageable"] }, 
-    {"name":"findAll","parameterTypes":["java.lang.Class","org.springframework.data.domain.Sort"] }, 
-    {"name":"findAllById","parameterTypes":["java.lang.Iterable","java.lang.Class"] }, 
-    {"name":"findById","parameterTypes":["java.lang.Object","java.lang.Class"] }, 
-    {"name":"insert","parameterTypes":["java.lang.Object"] }, 
-    {"name":"save","parameterTypes":["java.lang.Object"] }, 
-    {"name":"update","parameterTypes":["java.lang.Object"] }
-  ]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.data.jdbc.core.convert.BasicJdbcConverter",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[
-    {"name":"getColumnType","parameterTypes":["org.springframework.data.relational.core.mapping.RelationalPersistentProperty"] }, 
-    {"name":"getSqlType","parameterTypes":["org.springframework.data.relational.core.mapping.RelationalPersistentProperty"] }, 
-    {"name":"mapRow","parameterTypes":["org.springframework.data.relational.core.mapping.PersistentPropertyPathExtension","java.sql.ResultSet","org.springframework.data.jdbc.core.convert.Identifier","java.lang.Object"] }, 
-    {"name":"mapRow","parameterTypes":["org.springframework.data.relational.core.mapping.RelationalPersistentEntity","java.sql.ResultSet","java.lang.Object"] }, 
-    {"name":"readValue","parameterTypes":["java.lang.Object","org.springframework.data.util.TypeInformation"] }, 
-    {"name":"setApplicationContext","parameterTypes":["org.springframework.context.ApplicationContext"] }, 
-    {"name":"writeJdbcValue","parameterTypes":["java.lang.Object","java.lang.Class","int"] }, 
-    {"name":"writeValue","parameterTypes":["java.lang.Object","org.springframework.data.util.TypeInformation"] }
-  ]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.data.jdbc.core.convert.DataAccessStrategy",
@@ -10682,27 +11147,7 @@
 {
   "name":"org.springframework.data.jdbc.core.convert.DefaultDataAccessStrategy",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[
-    {"name":"acquireLockAll","parameterTypes":["org.springframework.data.relational.core.sql.LockMode","java.lang.Class"] }, 
-    {"name":"acquireLockById","parameterTypes":["java.lang.Object","org.springframework.data.relational.core.sql.LockMode","java.lang.Class"] }, 
-    {"name":"count","parameterTypes":["java.lang.Class"] }, 
-    {"name":"delete","parameterTypes":["java.lang.Object","java.lang.Class"] }, 
-    {"name":"delete","parameterTypes":["java.lang.Object","org.springframework.data.mapping.PersistentPropertyPath"] }, 
-    {"name":"deleteAll","parameterTypes":["java.lang.Class"] }, 
-    {"name":"deleteAll","parameterTypes":["org.springframework.data.mapping.PersistentPropertyPath"] }, 
-    {"name":"deleteWithVersion","parameterTypes":["java.lang.Object","java.lang.Class","java.lang.Number"] }, 
-    {"name":"existsById","parameterTypes":["java.lang.Object","java.lang.Class"] }, 
-    {"name":"findAll","parameterTypes":["java.lang.Class"] }, 
-    {"name":"findAll","parameterTypes":["java.lang.Class","org.springframework.data.domain.Pageable"] }, 
-    {"name":"findAll","parameterTypes":["java.lang.Class","org.springframework.data.domain.Sort"] }, 
-    {"name":"findAllById","parameterTypes":["java.lang.Iterable","java.lang.Class"] }, 
-    {"name":"findAllByPath","parameterTypes":["org.springframework.data.jdbc.core.convert.Identifier","org.springframework.data.mapping.PersistentPropertyPath"] }, 
-    {"name":"findById","parameterTypes":["java.lang.Object","java.lang.Class"] }, 
-    {"name":"insert","parameterTypes":["java.lang.Object","java.lang.Class","org.springframework.data.jdbc.core.convert.Identifier"] }, 
-    {"name":"update","parameterTypes":["java.lang.Object","java.lang.Class"] }, 
-    {"name":"updateWithVersion","parameterTypes":["java.lang.Object","java.lang.Class","java.lang.Number"] }
-  ]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.data.jdbc.core.convert.EntityRowMapper"
@@ -10737,8 +11182,7 @@
 {
   "name":"org.springframework.data.jdbc.core.dialect.JdbcMySqlDialect",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[{"name":"getConverters","parameterTypes":[] }]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.data.jdbc.core.mapping.JdbcMappingContext",
@@ -10756,8 +11200,7 @@
     {"name":"jdbcCustomConversions","parameterTypes":[] }, 
     {"name":"jdbcDialect","parameterTypes":["org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations"] }, 
     {"name":"jdbcMappingContext","parameterTypes":["java.util.Optional","org.springframework.data.jdbc.core.convert.JdbcCustomConversions"] }
-  ],
-  "queriedMethods":[{"name":"setApplicationContext","parameterTypes":["org.springframework.context.ApplicationContext"] }]
+  ]
 },
 {
   "name":"org.springframework.data.jdbc.repository.config.DialectResolver$DefaultDialectProvider",
@@ -10800,7 +11243,11 @@
 },
 {
   "name":"org.springframework.data.jpa.mapping.JpaMetamodelMappingContext",
-  "queryAllDeclaredMethods":true
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[
+    {"name":"findPersistentPropertyPaths","parameterTypes":["java.lang.Class","java.util.function.Predicate"] }, 
+    {"name":"hasPersistentEntityFor","parameterTypes":["java.lang.Class"] }
+  ]
 },
 {
   "name":"org.springframework.data.jpa.mapping.JpaPersistentEntityImpl"
@@ -10853,7 +11300,11 @@
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":[] }]
+  "methods":[{"name":"<init>","parameterTypes":[] }],
+  "queriedMethods":[
+    {"name":"getObjectType","parameterTypes":[] }, 
+    {"name":"setApplicationContext","parameterTypes":["org.springframework.context.ApplicationContext"] }
+  ]
 },
 {
   "name":"org.springframework.data.jpa.repository.config.JpaRepositoriesRegistrar",
@@ -10918,7 +11369,10 @@
 {
   "name":"org.springframework.data.jpa.repository.support.SimpleJpaRepository",
   "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true,
+  "queryAllDeclaredConstructors":true,
   "methods":[
+    {"name":"<init>","parameterTypes":["org.springframework.data.jpa.repository.support.JpaEntityInformation","javax.persistence.EntityManager"] }, 
     {"name":"findOne","parameterTypes":["org.springframework.data.domain.Example"] }, 
     {"name":"save","parameterTypes":["java.lang.Object"] }
   ]
@@ -11095,7 +11549,9 @@
   "name":"org.springframework.data.redis.cache.RedisCache"
 },
 {
-  "name":"org.springframework.data.redis.cache.RedisCacheConfiguration"
+  "name":"org.springframework.data.redis.cache.RedisCacheConfiguration",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.data.redis.cache.RedisCacheManager",
@@ -11913,7 +12369,18 @@
   "name":"org.springframework.data.redis.core.types.Expiration"
 },
 {
-  "name":"org.springframework.data.redis.hash.HashMapper"
+  "name":"org.springframework.data.redis.hash.HashMapper",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true
+},
+{
+  "name":"org.springframework.data.redis.hash.Jackson2HashMapper",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[
+    {"name":"fromHash","parameterTypes":["java.util.Map"] }, 
+    {"name":"toHash","parameterTypes":["java.lang.Object"] }
+  ]
 },
 {
   "name":"org.springframework.data.redis.listener.ChannelTopic"
@@ -11947,6 +12414,15 @@
   "name":"org.springframework.data.redis.listener.Topic"
 },
 {
+  "name":"org.springframework.data.redis.listener.adapter.MessageListenerAdapter",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[
+    {"name":"afterPropertiesSet","parameterTypes":[] }, 
+    {"name":"onMessage","parameterTypes":["org.springframework.data.redis.connection.Message","byte[]"] }
+  ]
+},
+{
   "name":"org.springframework.data.redis.repository.configuration.EnableRedisRepositories",
   "queryAllDeclaredMethods":true,
   "methods":[
@@ -11971,6 +12447,15 @@
   ]
 },
 {
+  "name":"org.springframework.data.redis.repository.configuration.RedisRepositoriesRegistrar",
+  "queryAllDeclaredConstructors":true,
+  "methods":[{"name":"<init>","parameterTypes":[] }]
+},
+{
+  "name":"org.springframework.data.redis.repository.configuration.RedisRepositoryConfigurationExtension",
+  "queryAllDeclaredMethods":true
+},
+{
   "name":"org.springframework.data.redis.repository.support.RedisRepositoryFactoryBean"
 },
 {
@@ -11991,15 +12476,7 @@
 {
   "name":"org.springframework.data.relational.core.conversion.BasicRelationalConverter",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[
-    {"name":"createInstance","parameterTypes":["org.springframework.data.mapping.PersistentEntity","java.util.function.Function"] }, 
-    {"name":"getConversionService","parameterTypes":[] }, 
-    {"name":"getConversions","parameterTypes":[] }, 
-    {"name":"getEntityInstantiators","parameterTypes":[] }, 
-    {"name":"getMappingContext","parameterTypes":[] }, 
-    {"name":"getPropertyAccessor","parameterTypes":["org.springframework.data.mapping.PersistentEntity","java.lang.Object"] }
-  ]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.data.relational.core.conversion.MutableAggregateChange"
@@ -12012,8 +12489,7 @@
 {
   "name":"org.springframework.data.relational.core.dialect.AbstractDialect",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[{"name":"getSelectContext","parameterTypes":[] }]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.data.relational.core.dialect.ArrayColumns"
@@ -12038,12 +12514,7 @@
 {
   "name":"org.springframework.data.relational.core.dialect.MySqlDialect",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[
-    {"name":"getIdentifierProcessing","parameterTypes":[] }, 
-    {"name":"limit","parameterTypes":[] }, 
-    {"name":"lock","parameterTypes":[] }
-  ]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.data.relational.core.mapping.NamingStrategy"
@@ -12054,12 +12525,7 @@
 {
   "name":"org.springframework.data.relational.core.mapping.RelationalMappingContext",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[
-    {"name":"getNamingStrategy","parameterTypes":[] }, 
-    {"name":"isForceQuote","parameterTypes":[] }, 
-    {"name":"setForceQuote","parameterTypes":["boolean"] }
-  ]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.data.relational.core.mapping.RelationalPersistentEntity"
@@ -12126,11 +12592,19 @@
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":["java.util.Properties"] }]
+  "methods":[{"name":"<init>","parameterTypes":["java.util.Properties"] }],
+  "queriedMethods":[
+    {"name":"getQuery","parameterTypes":["java.lang.String"] }, 
+    {"name":"hasQuery","parameterTypes":["java.lang.String"] }
+  ]
 },
 {
   "name":"org.springframework.data.repository.core.support.RepositoryComposition$RepositoryFragments",
-  "queryAllDeclaredMethods":true
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[
+    {"name":"empty","parameterTypes":[] }, 
+    {"name":"iterator","parameterTypes":[] }
+  ]
 },
 {
   "name":"org.springframework.data.repository.core.support.RepositoryFactoryBeanSupport",
@@ -12164,7 +12638,13 @@
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queryAllDeclaredConstructors":true,
-  "methods":[{"name":"<init>","parameterTypes":["java.util.List"] }]
+  "methods":[{"name":"<init>","parameterTypes":["java.util.List"] }],
+  "queriedMethods":[
+    {"name":"afterPropertiesSet","parameterTypes":[] }, 
+    {"name":"getObject","parameterTypes":[] }, 
+    {"name":"getObjectType","parameterTypes":[] }, 
+    {"name":"setBeanFactory","parameterTypes":["org.springframework.beans.factory.BeanFactory"] }
+  ]
 },
 {
   "name":"org.springframework.data.repository.core.support.RepositoryInvocationMulticaster"
@@ -12712,7 +13192,13 @@
   "name":"org.springframework.jdbc.core.namedparam.SqlParameterSource"
 },
 {
-  "name":"org.springframework.jdbc.datasource.DataSourceTransactionManager"
+  "name":"org.springframework.jdbc.datasource.DataSourceTransactionManager",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[
+    {"name":"afterPropertiesSet","parameterTypes":[] }, 
+    {"name":"getResourceFactory","parameterTypes":[] }
+  ]
 },
 {
   "name":"org.springframework.jdbc.datasource.DelegatingDataSource"
@@ -12856,12 +13342,7 @@
 {
   "name":"org.springframework.orm.jpa.JpaTransactionManager",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[
-    {"name":"afterPropertiesSet","parameterTypes":[] }, 
-    {"name":"getResourceFactory","parameterTypes":[] }, 
-    {"name":"setBeanFactory","parameterTypes":["org.springframework.beans.factory.BeanFactory"] }
-  ]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.orm.jpa.JpaTransactionManager$JpaTransactionObject"
@@ -13268,12 +13749,7 @@
 {
   "name":"org.springframework.security.config.annotation.SecurityConfigurerAdapter",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[
-    {"name":"addObjectPostProcessor","parameterTypes":["org.springframework.security.config.annotation.ObjectPostProcessor"] }, 
-    {"name":"and","parameterTypes":[] }, 
-    {"name":"setBuilder","parameterTypes":["org.springframework.security.config.annotation.SecurityBuilder"] }
-  ]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.security.config.annotation.authentication.ProviderManagerBuilder",
@@ -13409,15 +13885,7 @@
 {
   "name":"org.springframework.security.config.annotation.web.builders.HttpSecurity",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[
-    {"name":"addFilter","parameterTypes":["javax.servlet.Filter"] }, 
-    {"name":"addFilterAfter","parameterTypes":["javax.servlet.Filter","java.lang.Class"] }, 
-    {"name":"addFilterBefore","parameterTypes":["javax.servlet.Filter","java.lang.Class"] }, 
-    {"name":"authenticationProvider","parameterTypes":["org.springframework.security.authentication.AuthenticationProvider"] }, 
-    {"name":"setSharedObject","parameterTypes":["java.lang.Class","java.lang.Object"] }, 
-    {"name":"userDetailsService","parameterTypes":["org.springframework.security.core.userdetails.UserDetailsService"] }
-  ]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.security.config.annotation.web.builders.WebSecurity",
@@ -13537,16 +14005,13 @@
 {
   "name":"org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter$AuthenticationManagerDelegator",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[{"name":"authenticate","parameterTypes":["org.springframework.security.core.Authentication"] }]
 },
 {
   "name":"org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[
-    {"name":"disable","parameterTypes":[] }, 
-    {"name":"withObjectPostProcessor","parameterTypes":["org.springframework.security.config.annotation.ObjectPostProcessor"] }
-  ]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer$ExpressionInterceptUrlRegistry"
@@ -13554,11 +14019,7 @@
 {
   "name":"org.springframework.security.config.annotation.web.configurers.oauth2.client.OAuth2ClientConfigurer",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[
-    {"name":"configure","parameterTypes":["org.springframework.security.config.annotation.SecurityBuilder"] }, 
-    {"name":"init","parameterTypes":["org.springframework.security.config.annotation.SecurityBuilder"] }
-  ]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity"
@@ -13607,7 +14068,16 @@
 {
   "name":"org.springframework.security.core.session.SessionRegistryImpl",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[
+    {"name":"getAllPrincipals","parameterTypes":[] }, 
+    {"name":"getAllSessions","parameterTypes":["java.lang.Object","boolean"] }, 
+    {"name":"getSessionInformation","parameterTypes":["java.lang.String"] }, 
+    {"name":"onApplicationEvent","parameterTypes":["org.springframework.context.ApplicationEvent"] }, 
+    {"name":"refreshLastRequest","parameterTypes":["java.lang.String"] }, 
+    {"name":"registerNewSession","parameterTypes":["java.lang.String","java.lang.Object"] }, 
+    {"name":"removeSessionInformation","parameterTypes":["java.lang.String"] }
+  ]
 },
 {
   "name":"org.springframework.security.core.userdetails.UserDetails",
@@ -13665,11 +14135,7 @@
 {
   "name":"org.springframework.security.oauth2.client.authentication.OAuth2AuthorizationCodeAuthenticationProvider",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[
-    {"name":"authenticate","parameterTypes":["org.springframework.security.core.Authentication"] }, 
-    {"name":"supports","parameterTypes":["java.lang.Class"] }
-  ]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationProvider",
@@ -13829,13 +14295,15 @@
   "queryAllPublicMethods":true
 },
 {
-  "name":"org.springframework.security.web.DefaultSecurityFilterChain",
+  "name":"org.springframework.security.web.DefaultRedirectStrategy",
   "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
-  "queriedMethods":[
-    {"name":"getFilters","parameterTypes":[] }, 
-    {"name":"matches","parameterTypes":["javax.servlet.http.HttpServletRequest"] }
-  ]
+  "queriedMethods":[{"name":"sendRedirect","parameterTypes":["javax.servlet.http.HttpServletRequest","javax.servlet.http.HttpServletResponse","java.lang.String"] }]
+},
+{
+  "name":"org.springframework.security.web.DefaultSecurityFilterChain",
+  "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.security.web.FilterChainProxy",
@@ -13859,7 +14327,9 @@
   "name":"org.springframework.security.web.PortResolver"
 },
 {
-  "name":"org.springframework.security.web.RedirectStrategy"
+  "name":"org.springframework.security.web.RedirectStrategy",
+  "queryAllDeclaredMethods":true,
+  "queryAllPublicMethods":true
 },
 {
   "name":"org.springframework.security.web.SecurityFilterChain",
@@ -13951,6 +14421,11 @@
 {
   "name":"org.springframework.security.web.authentication.DelegatingAuthenticationEntryPoint",
   "allDeclaredFields":true,
+  "queryAllDeclaredMethods":true
+},
+{
+  "name":"org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint",
+  "allDeclaredFields":true,
   "queryAllDeclaredMethods":true,
   "queriedMethods":[
     {"name":"afterPropertiesSet","parameterTypes":[] }, 
@@ -13958,17 +14433,13 @@
   ]
 },
 {
-  "name":"org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint",
-  "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true
-},
-{
   "name":"org.springframework.security.web.authentication.RememberMeServices"
 },
 {
   "name":"org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[{"name":"attemptAuthentication","parameterTypes":["javax.servlet.http.HttpServletRequest","javax.servlet.http.HttpServletResponse"] }]
 },
 {
   "name":"org.springframework.security.web.authentication.logout.LogoutFilter",
@@ -14014,12 +14485,17 @@
 {
   "name":"org.springframework.security.web.authentication.session.ConcurrentSessionControlAuthenticationStrategy",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[
+    {"name":"onAuthentication","parameterTypes":["org.springframework.security.core.Authentication","javax.servlet.http.HttpServletRequest","javax.servlet.http.HttpServletResponse"] }, 
+    {"name":"setMessageSource","parameterTypes":["org.springframework.context.MessageSource"] }
+  ]
 },
 {
   "name":"org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[{"name":"onAuthentication","parameterTypes":["org.springframework.security.core.Authentication","javax.servlet.http.HttpServletRequest","javax.servlet.http.HttpServletResponse"] }]
 },
 {
   "name":"org.springframework.security.web.authentication.session.SessionAuthenticationException"
@@ -14032,8 +14508,7 @@
 {
   "name":"org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[{"name":"doFilter","parameterTypes":["javax.servlet.ServletRequest","javax.servlet.ServletResponse","javax.servlet.FilterChain"] }]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer"
@@ -14104,7 +14579,11 @@
 {
   "name":"org.springframework.security.web.session.ConcurrentSessionFilter",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true
+  "queryAllDeclaredMethods":true,
+  "queriedMethods":[
+    {"name":"afterPropertiesSet","parameterTypes":[] }, 
+    {"name":"doFilter","parameterTypes":["javax.servlet.ServletRequest","javax.servlet.ServletResponse","javax.servlet.FilterChain"] }
+  ]
 },
 {
   "name":"org.springframework.security.web.session.InvalidSessionStrategy",
@@ -14196,8 +14675,7 @@
 {
   "name":"org.springframework.session.data.redis.config.ConfigureNotifyKeyspaceEventsAction",
   "allDeclaredFields":true,
-  "queryAllDeclaredMethods":true,
-  "queriedMethods":[{"name":"configure","parameterTypes":["org.springframework.data.redis.connection.RedisConnection"] }]
+  "queryAllDeclaredMethods":true
 },
 {
   "name":"org.springframework.session.data.redis.config.ConfigureRedisAction",

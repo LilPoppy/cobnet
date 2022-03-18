@@ -1,10 +1,7 @@
 package com.cobnet.spring.boot.core;
 
 import com.cobnet.interfaces.spring.repository.UserRoleRepository;
-import com.cobnet.spring.boot.configuration.CacheConfiguration;
-import com.cobnet.spring.boot.configuration.DatasourceConfiguration;
-import com.cobnet.spring.boot.configuration.ProjectConfiguration;
-import com.cobnet.spring.boot.configuration.SecurityConfiguration;
+import com.cobnet.spring.boot.configuration.*;
 import com.cobnet.spring.boot.controller.UserInfoController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -36,9 +33,9 @@ public class ProjectBeanHolder {
 
     private static CacheConfiguration CACHE_CONFIGURATION;
 
-    private static CacheConfiguration.RedisConfiguration REDIS_CONFIGURATION;
+    private static RedisConfiguration REDIS_CONFIGURATION;
 
-    private static CacheConfiguration.SessionConfiguration SESSION_CONFIGURATION;
+    private static SessionConfiguration SESSION_CONFIGURATION;
 
     private static SecurityConfiguration SECURITY_CONFIGURATION;
 
@@ -78,7 +75,7 @@ public class ProjectBeanHolder {
 
     private static SessionRegistry SESSION_REGISTRY;
 
-    private static AuthenticationManager AUTHENTICATION_MANAGER;
+    //private static AuthenticationManager AUTHENTICATION_MANAGER;
 
     private static UserRoleRepository USER_ROLE_REPOSITORY;
 
@@ -106,12 +103,12 @@ public class ProjectBeanHolder {
         return  ProjectBeanHolder.CACHE_CONFIGURATION;
     }
 
-    public static CacheConfiguration.RedisConfiguration getRedisConfiguration() {
+    public static RedisConfiguration getRedisConfiguration() {
 
         return ProjectBeanHolder.REDIS_CONFIGURATION;
     }
 
-    public static CacheConfiguration.SessionConfiguration getSessionConfiguration() {
+    public static SessionConfiguration getSessionConfiguration() {
 
         return ProjectBeanHolder.SESSION_CONFIGURATION;
     }
@@ -211,10 +208,10 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.SESSION_REGISTRY;
     }
 
-    public static AuthenticationManager getAuthenticationManager() {
-
-        return ProjectBeanHolder.AUTHENTICATION_MANAGER;
-    }
+//    public static AuthenticationManager getAuthenticationManager() {
+//
+//        return ProjectBeanHolder.AUTHENTICATION_MANAGER;
+//    }
 
     public static UserRoleRepository getUserRoleRepository() {
 
@@ -232,7 +229,7 @@ public class ProjectBeanHolder {
     }
 
     @Component
-    final static class AutowireLoader {
+    public static class AutowireLoader {
 
         @Autowired
         public void setConfigurableApplicationContext(ConfigurableApplicationContext context) {
@@ -259,13 +256,13 @@ public class ProjectBeanHolder {
         }
 
         @Autowired
-        public void setRedisConfiguration(CacheConfiguration.RedisConfiguration config) {
+        public void setRedisConfiguration(RedisConfiguration config) {
 
             ProjectBeanHolder.REDIS_CONFIGURATION = config;
         }
 
         @Autowired
-        public void setSessionConfiguration(CacheConfiguration.SessionConfiguration config) {
+        public void setSessionConfiguration(SessionConfiguration config) {
 
             ProjectBeanHolder.SESSION_CONFIGURATION = config;
         }
@@ -366,6 +363,8 @@ public class ProjectBeanHolder {
             ProjectBeanHolder.PLATFORM_TRANSACTION_MANAGER = manager;
         }
 
+
+        @Deprecated //Until fix @EnableRedisHttpSession
         @Autowired
         public void setRedisIndexedSessionRepository(RedisIndexedSessionRepository repository) {
 
@@ -384,11 +383,11 @@ public class ProjectBeanHolder {
             ProjectBeanHolder.SESSION_REGISTRY = registry;
         }
 
-        @Autowired
-        public void setAuthenticationManager(AuthenticationManager manager) {
-
-            ProjectBeanHolder.AUTHENTICATION_MANAGER = manager;
-        }
+//        @Autowired
+//        public void setAuthenticationManager(AuthenticationManager manager) {
+//
+//            ProjectBeanHolder.AUTHENTICATION_MANAGER = manager;
+//        }
 
         @Autowired
         public void setUserRoleRepository(UserRoleRepository repository) {

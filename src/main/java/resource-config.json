@@ -8,6 +8,9 @@
       "pattern":"\\QMETA-INF/native/libnetty_transport_native_kqueue_x86_64.jnilib\\E"
     }, 
     {
+      "pattern":"\\QMETA-INF/services/com.fasterxml.jackson.databind.Module\\E"
+    }, 
+    {
       "pattern":"\\QMETA-INF/services/com.oracle.truffle.api.TruffleLanguage$Provider\\E"
     }, 
     {
@@ -77,6 +80,42 @@
       "pattern":"\\Qcom/cobnet/interfaces/TreeNode.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/interfaces/connection/Packet.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/spring/repository/JpaExtensionRepository.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/spring/repository/UserRoleRepository.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/spring/repository/\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/cache/redis/RedisMessageListener.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/CacheConfiguration$RedisConfiguration$ClusterConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/CacheConfiguration$RedisConfiguration$MessageConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/CacheConfiguration$RedisConfiguration$PoolConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/CacheConfiguration$RedisConfiguration$SentinelConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/CacheConfiguration$RedisConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/CacheConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/DatasourceConfiguration.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/spring/boot/configuration/ProjectConfiguration$InformationConfiguration.class\\E"
     }, 
     {
@@ -92,6 +131,27 @@
       "pattern":"\\Qcom/cobnet/spring/boot/configuration/RedisConfiguration.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/SecurityConfiguration$OAuth2Configuration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/SecurityConfiguration$UserAuthenticationProvider.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/SecurityConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/SessionConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/controller/BasicController.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/controller/UserInfoController.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/spring/boot/core/ProjectBeanHolder$AutowireLoader.class\\E"
     }, 
     {
@@ -102,6 +162,12 @@
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/core/ScriptEngineManager.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/dto/MappedPacket.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/entity/UserRole.class\\E"
     }, 
     {
       "pattern":"\\Qcom/google/common/reflect/TypeCapture.class\\E"
@@ -396,6 +462,18 @@
     }, 
     {
       "pattern":"\\Qorg/graalvm/nativeimage/hosted/Feature.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/hibernate/engine/spi/Managed.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/hibernate/engine/spi/ManagedEntity.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/hibernate/engine/spi/PersistentAttributeInterceptable.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/hibernate/engine/spi/SelfDirtinessTracker.class\\E"
     }, 
     {
       "pattern":"\\Qorg/hibernate/hibernate-configuration-3.0.dtd\\E"
@@ -1172,6 +1250,9 @@
       "pattern":"\\Qorg/springframework/cache/annotation/ProxyCachingConfiguration.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/cache/interceptor/CacheErrorHandler.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/cloud/autoconfigure/ConfigurationPropertiesRebinderAutoConfiguration.class\\E"
     }, 
     {
@@ -1472,10 +1553,22 @@
       "pattern":"\\Qorg/springframework/data/jpa/util/JpaMetamodelCacheCleanup.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/data/keyvalue/repository/config/QueryCreatorType.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/data/redis/connection/MessageListener.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/data/redis/core/RedisCallback.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/data/redis/core/convert/ReferenceResolverImpl.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/data/redis/repository/configuration/EnableRedisRepositories.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/data/redis/repository/configuration/RedisRepositoriesRegistrar.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/data/repository/CrudRepository.class\\E"

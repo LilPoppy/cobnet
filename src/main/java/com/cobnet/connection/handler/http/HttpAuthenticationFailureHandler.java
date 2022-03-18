@@ -1,4 +1,4 @@
-package com.cobnet.connection.handler.spring;
+package com.cobnet.connection.handler.http;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;

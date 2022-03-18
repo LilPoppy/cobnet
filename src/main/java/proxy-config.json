@@ -1,5 +1,8 @@
 [
   {
+    "interfaces":["com.cobnet.interfaces.spring.repository.UserRoleRepository","org.springframework.data.repository.Repository","org.springframework.transaction.interceptor.TransactionalProxy","org.springframework.aop.framework.Advised","org.springframework.core.DecoratingProxy"]}
+  ,
+  {
     "interfaces":["com.netflix.discovery.EurekaClientConfig","org.springframework.core.Ordered"]}
   ,
   {

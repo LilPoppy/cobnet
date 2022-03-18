@@ -35,8 +35,6 @@ jobs:
         with:
           redis-version: 'latest'
           redis-port: 6379
-          auto-start: false
-      - run: redis-server --daemonize yes
       - run: redis-cli -h 127.0.0.1 -p 6379 ping
       - name: Setup MySQL
         uses: shogo82148/actions-setup-mysql@v1
@@ -96,7 +94,7 @@ jobs:
         run: mvn -DskipTests -B clean package -Pdocker
       - run: docker images
       - run: docker image prune -f
-      - run: docker rm -f cobnet-db cobnet
+      - run: docker rm -f CoBNet-db CoBNet
   linux-build-native:
     runs-on: self-hosted
     steps:

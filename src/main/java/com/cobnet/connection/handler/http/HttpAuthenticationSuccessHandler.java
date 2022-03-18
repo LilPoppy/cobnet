@@ -1,19 +1,15 @@
-package com.cobnet.connection.handler.spring;
+package com.cobnet.connection.handler.http;
 
 import com.cobnet.spring.boot.configuration.SecurityConfiguration;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 
-import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 public class HttpAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 

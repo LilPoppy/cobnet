@@ -22,11 +22,18 @@ public class DatasourceConfiguration {
 
     private String password;
 
-    @Bean
-    public DataSource dataSourceBean() {
-
-        return DataSourceBuilder.create().driverClassName(this.getDriverClassName()).url(this.getUrl()).username(this.getUsername()).password(this.getPassword()).build();
-    }
+    /**
+     * TODO Unsupported in native run
+     * org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'dataSourceScriptDatabaseInitializer':
+     * Unsatisfied dependency expressed through method 'dataSourceScriptDatabaseInitializer' parameter 0;
+     * nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceBean':
+     * Unexpected exception during bean creation; nested exception is java.lang.IllegalStateException: No supported DataSource type found
+     */
+//    @Bean
+//    public DataSource dataSourceBean() {
+//
+//        return DataSourceBuilder.create().driverClassName(this.getDriverClassName()).url(this.getUrl()).username(this.getUsername()).password(this.getPassword()).build();
+//    }
 
     public String getDriverClassName() {
         return driverClassName;
