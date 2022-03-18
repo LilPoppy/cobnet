@@ -58,7 +58,7 @@ jobs:
         uses: stCarolas/setup-maven@v4.2
         with:
           maven-version: 3.8.2
-    - name: Setup Redis
+      - name: Setup Redis
         uses: shogo82148/actions-setup-redis@v1
         with:
           redis-version: '6.x'
@@ -71,7 +71,7 @@ jobs:
       - run: java --version
       - run: mvn --version
       - name: Build with Maven
-        run: mvn -DskipTests -B clean package
+        run: mvn clean package
   linux-build-docker:
     runs-on: self-hosted
     steps:
