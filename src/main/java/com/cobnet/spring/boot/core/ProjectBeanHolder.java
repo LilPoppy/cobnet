@@ -1,8 +1,11 @@
 package com.cobnet.spring.boot.core;
 
+import com.cobnet.interfaces.spring.repository.UserRoleRepository;
 import com.cobnet.spring.boot.configuration.CacheConfiguration;
 import com.cobnet.spring.boot.configuration.DatasourceConfiguration;
 import com.cobnet.spring.boot.configuration.ProjectConfiguration;
+import com.cobnet.spring.boot.configuration.SecurityConfiguration;
+import com.cobnet.spring.boot.controller.UserInfoController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,12 @@ import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.hash.Jackson2HashMapper;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
+import org.springframework.session.data.redis.RedisIndexedSessionRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
 
@@ -30,6 +39,8 @@ public class ProjectBeanHolder {
     private static CacheConfiguration.RedisConfiguration REDIS_CONFIGURATION;
 
     private static CacheConfiguration.SessionConfiguration SESSION_CONFIGURATION;
+
+    private static SecurityConfiguration SECURITY_CONFIGURATION;
 
     private static ApplicationEventPublisher APPLICATION_EVENT_PUBLISHER;
 
@@ -61,6 +72,20 @@ public class ProjectBeanHolder {
 
     private static PlatformTransactionManager PLATFORM_TRANSACTION_MANAGER;
 
+    private static RedisIndexedSessionRepository REDIS_INDEXED_SESSION_REPOSITORY;
+
+    private static ClientRegistrationRepository CLIENT_REGISTRATION_REPOSITORY;
+
+    private static SessionRegistry SESSION_REGISTRY;
+
+    private static AuthenticationManager AUTHENTICATION_MANAGER;
+
+    private static UserRoleRepository USER_ROLE_REPOSITORY;
+
+    private static RedirectStrategy REDIRECT_STRATEGY;
+
+    private static UserInfoController USER_INFO_CONTROLLER;
+
     public static ConfigurableApplicationContext getSpringContext() {
 
         return ProjectBeanHolder.SPRING_CONTEXT;
@@ -89,6 +114,11 @@ public class ProjectBeanHolder {
     public static CacheConfiguration.SessionConfiguration getSessionConfiguration() {
 
         return ProjectBeanHolder.SESSION_CONFIGURATION;
+    }
+
+    public static SecurityConfiguration getSecurityConfiguration() {
+
+        return ProjectBeanHolder.SECURITY_CONFIGURATION;
     }
 
     public static ApplicationEventPublisher getApplicationEventPublisher() {
@@ -166,6 +196,41 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.PLATFORM_TRANSACTION_MANAGER;
     }
 
+    public static RedisIndexedSessionRepository getRedisIndexedSessionRepository() {
+
+        return ProjectBeanHolder.REDIS_INDEXED_SESSION_REPOSITORY;
+    }
+
+    public static ClientRegistrationRepository getClientRegistrationRepository() {
+
+        return ProjectBeanHolder.CLIENT_REGISTRATION_REPOSITORY;
+    }
+
+    public static SessionRegistry getSessionRegistry() {
+
+        return ProjectBeanHolder.SESSION_REGISTRY;
+    }
+
+    public static AuthenticationManager getAuthenticationManager() {
+
+        return ProjectBeanHolder.AUTHENTICATION_MANAGER;
+    }
+
+    public static UserRoleRepository getUserRoleRepository() {
+
+        return ProjectBeanHolder.USER_ROLE_REPOSITORY;
+    }
+
+    public static RedirectStrategy getRedirectStrategy() {
+
+        return ProjectBeanHolder.REDIRECT_STRATEGY;
+    }
+
+    public static UserInfoController getUserInfoController() {
+
+        return ProjectBeanHolder.USER_INFO_CONTROLLER;
+    }
+
     @Component
     final static class AutowireLoader {
 
@@ -203,6 +268,12 @@ public class ProjectBeanHolder {
         public void setSessionConfiguration(CacheConfiguration.SessionConfiguration config) {
 
             ProjectBeanHolder.SESSION_CONFIGURATION = config;
+        }
+
+        @Autowired
+        public void setSecurityConfiguration(SecurityConfiguration config) {
+
+            ProjectBeanHolder.SECURITY_CONFIGURATION = config;
         }
 
         @Autowired
@@ -289,9 +360,52 @@ public class ProjectBeanHolder {
             ProjectBeanHolder.REDIS_Z_SET_OPERATIONS = operations;
         }
 
+        @Autowired
         public void setPlatformTransactionManager(PlatformTransactionManager manager) {
 
             ProjectBeanHolder.PLATFORM_TRANSACTION_MANAGER = manager;
+        }
+
+        @Autowired
+        public void setRedisIndexedSessionRepository(RedisIndexedSessionRepository repository) {
+
+            ProjectBeanHolder.REDIS_INDEXED_SESSION_REPOSITORY = repository;
+        }
+
+        @Autowired
+        public void setClientRegistrationRepository(ClientRegistrationRepository repository) {
+
+            ProjectBeanHolder.CLIENT_REGISTRATION_REPOSITORY = repository;
+        }
+
+        @Autowired
+        public void setSessionRegistry(SessionRegistry registry) {
+
+            ProjectBeanHolder.SESSION_REGISTRY = registry;
+        }
+
+        @Autowired
+        public void setAuthenticationManager(AuthenticationManager manager) {
+
+            ProjectBeanHolder.AUTHENTICATION_MANAGER = manager;
+        }
+
+        @Autowired
+        public void setUserRoleRepository(UserRoleRepository repository) {
+
+            ProjectBeanHolder.USER_ROLE_REPOSITORY = repository;
+        }
+
+        @Autowired
+        public void setRedirectStrategy(RedirectStrategy strategy) {
+
+            ProjectBeanHolder.REDIRECT_STRATEGY = strategy;
+        }
+
+        @Autowired
+        public void setUserInfoController(UserInfoController controller) {
+
+            ProjectBeanHolder.USER_INFO_CONTROLLER = controller;
         }
     }
 
@@ -323,6 +437,12 @@ public class ProjectBeanHolder {
         public TaskProvider taskProviderBean(@Autowired ProjectConfiguration config) {
 
             return new TaskProvider(config.getTaskProvider());
+        }
+
+        @Bean
+        public RedirectStrategy redirectStrategyBean() {
+
+            return new DefaultRedirectStrategy();
         }
     }
 }

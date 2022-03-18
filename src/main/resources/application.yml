@@ -73,7 +73,16 @@ spring:
    security:
       permission-default-power: 3
       user-default-role: "user"
+      authentication-url: "/login"
+      login-page-url: "/login"
+      login-success-url: "/index"
+      login-failure-url: "/login?error"
+      username-parameter: "username"
+      password-parameter: "password"
       oauth2:
+         authentication-url: "/login/oauth2/authorization"
+         redirect-url: "/login/oauth2/code"
+         login-failure-url: "/login?oauth2Failure"
          client:
             registration:
                google:
@@ -81,7 +90,7 @@ spring:
                   clientSecret: "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"
                   client-authentication-method: basic
                   authorization-grant-type: authorization_code
-                  redirect-uri-template: "{baseUrl}/login/oauth2/code/{registrationId}"
+                  redirect-uri-template: "{baseUrl}${spring.security.oauth2.redirect-uri}/{registrationId}"
                   scope: openid, profile, email, address, phone
                   client-name: Google Login
                resource:

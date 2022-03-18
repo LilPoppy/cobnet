@@ -77,6 +77,7 @@ class SpringApplicationTests {
 		System.out.println(ProjectBeanHolder.getHashMapper().fromHash(ProjectBeanHolder.getRedisHashOperations().entries(key)));
 
 		ProjectBeanHolder.getRedisTemplate().expire(key, 5, TimeUnit.SECONDS);
+
 	}
 
 	static class Person {
