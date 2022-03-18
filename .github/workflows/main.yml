@@ -30,6 +30,12 @@ jobs:
         uses: stCarolas/setup-maven@v4.2
         with:
           maven-version: 3.8.2
+      - name: Setup MySQL
+        uses: shogo82148/actions-setup-mysql@v1
+        with:
+          mysql version: '8.0'
+          user: root
+          password: 123456
       - run: java --version
       - run: native-image --version
       - run: mvn --version
