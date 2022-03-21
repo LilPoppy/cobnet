@@ -113,7 +113,7 @@ jobs:
         uses: shogo82148/actions-setup-redis@v1
         with:
           redis-version: 'latest'
-      - run: sudo apt install libncurses5
+      - run: sudo apt install libncurses5 -y
       - name: Setup MySQL
         uses: shogo82148/actions-setup-mysql@v1
         with:
