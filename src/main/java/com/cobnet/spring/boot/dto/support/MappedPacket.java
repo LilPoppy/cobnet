@@ -1,4 +1,4 @@
-package com.cobnet.spring.boot.dto;
+package com.cobnet.spring.boot.dto.support;
 
 import com.cobnet.interfaces.connection.Packet;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;

@@ -11,7 +11,7 @@ import javax.sql.DataSource;
 //TODO add mybatis supports
 @Configuration
 @ConfigurationProperties("spring.datasource")
-@EnableJpaRepositories(value = "com.cobnet.interfaces.spring.repository")
+@EnableJpaRepositories(value = "com.cobnet.interfaces.spring.repository", repositoryBaseClass = com.cobnet.spring.boot.service.JpaExtensionRepository.class)
 public class DatasourceConfiguration {
 
     private String driverClassName;

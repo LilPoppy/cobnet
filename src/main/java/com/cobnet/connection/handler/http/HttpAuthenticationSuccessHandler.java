@@ -18,7 +18,6 @@ public class HttpAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
         HttpSession session = request.getSession();
 
-
         System.out.println("success login " + authentication);
 
         System.out.println(ProjectBeanHolder.getSessionRegistry().getAllSessions(authentication.getPrincipal(), true));

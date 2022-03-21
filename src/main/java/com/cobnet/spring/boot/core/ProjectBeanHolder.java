@@ -1,8 +1,11 @@
 package com.cobnet.spring.boot.core;
 
+import com.cobnet.interfaces.spring.repository.ExternalUserRepository;
+import com.cobnet.interfaces.spring.repository.UserRepository;
 import com.cobnet.interfaces.spring.repository.UserRoleRepository;
 import com.cobnet.spring.boot.configuration.*;
 import com.cobnet.spring.boot.controller.UserInfoController;
+import com.cobnet.spring.boot.entity.ExternalUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +19,7 @@ import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.session.SessionRegistry;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
@@ -75,9 +79,15 @@ public class ProjectBeanHolder {
 
     private static SessionRegistry SESSION_REGISTRY;
 
+    private static PasswordEncoder PASSWORD_ENCODER;
+
     //private static AuthenticationManager AUTHENTICATION_MANAGER;
 
+    private static UserRepository USER_REPOSITORY;
+
     private static UserRoleRepository USER_ROLE_REPOSITORY;
+
+    private static ExternalUserRepository EXTERNAL_USER_REPOSITORY;
 
     private static RedirectStrategy REDIRECT_STRATEGY;
 
@@ -208,10 +218,25 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.SESSION_REGISTRY;
     }
 
+    public static PasswordEncoder getPasswordEncoder() {
+
+        return ProjectBeanHolder.PASSWORD_ENCODER;
+    }
+
 //    public static AuthenticationManager getAuthenticationManager() {
 //
 //        return ProjectBeanHolder.AUTHENTICATION_MANAGER;
 //    }
+
+    public static UserRepository getUserRepository() {
+
+        return ProjectBeanHolder.USER_REPOSITORY;
+    }
+
+    public static ExternalUserRepository getExternalUserRepository() {
+
+        return ProjectBeanHolder.EXTERNAL_USER_REPOSITORY;
+    }
 
     public static UserRoleRepository getUserRoleRepository() {
 
@@ -383,11 +408,29 @@ public class ProjectBeanHolder {
             ProjectBeanHolder.SESSION_REGISTRY = registry;
         }
 
+        @Autowired
+        public void setPasswordEncoder(PasswordEncoder encoder) {
+
+            ProjectBeanHolder.PASSWORD_ENCODER = encoder;
+        }
+
 //        @Autowired
 //        public void setAuthenticationManager(AuthenticationManager manager) {
 //
 //            ProjectBeanHolder.AUTHENTICATION_MANAGER = manager;
 //        }
+
+        @Autowired
+        public void setUserRepository(UserRepository repository) {
+
+            ProjectBeanHolder.USER_REPOSITORY = repository;
+        }
+
+        @Autowired
+        public void setExternalUserRepository(ExternalUserRepository repository) {
+
+            ProjectBeanHolder.EXTERNAL_USER_REPOSITORY = repository;
+        }
 
         @Autowired
         public void setUserRoleRepository(UserRoleRepository repository) {

@@ -3,8 +3,10 @@ package com.cobnet.interfaces.spring.repository;
 import com.cobnet.spring.boot.entity.UserRole;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface UserRoleRepository extends JpaExtensionRepository<UserRole, String> {
+import java.util.Optional;
 
-    UserRole findByRoleEqualsIgnoreCase(String role);
+@Repository
+public interface UserRoleRepository extends JPABaseRepository<UserRole, String> {
+
+    Optional<UserRole> findByRoleEqualsIgnoreCase(String role);
 }

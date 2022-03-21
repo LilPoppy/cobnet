@@ -23,12 +23,8 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.sql.DataSource;
-import java.sql.SQLException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
@@ -36,7 +32,7 @@ import java.util.Objects;
 @Configuration
 @ConfigurationProperties("spring.redis")
 @EnableRedisRepositories
-@EnableTransactionManagement
+//@EnableTransactionManagement
 public class RedisConfiguration {
 
     private MessageConfiguration message;
@@ -158,12 +154,6 @@ public class RedisConfiguration {
                 .cacheDefaults(redisCacheConfigurationBean())
                 .transactionAware()
                 .build();
-    }
-
-    @Bean
-    public PlatformTransactionManager transactionManager(DataSource dataSource) throws SQLException {
-
-        return new DataSourceTransactionManager(dataSource);
     }
 
     @Bean

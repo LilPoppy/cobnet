@@ -1,37 +1,38 @@
 package com.cobnet.spring.boot.configuration;
 
+import com.cobnet.EntryPoint;
 import com.cobnet.connection.handler.http.HttpAuthenticationFailureHandler;
 import com.cobnet.connection.handler.http.HttpAuthenticationSuccessHandler;
+import com.cobnet.security.UserAuthenticationProvider;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.UserRole;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.session.*;
-import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 @EnableWebSecurity(debug = false)
 @Configuration
 @ConfigurationProperties("spring.security")
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    private final static Logger LOG = LoggerFactory.getLogger(SecurityConfiguration.class);
 
     public final static String PREVIOUS_URL = "PREVIOUS_URL";
 
@@ -56,6 +57,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private String passwordParameter;
 
     private OAuth2Configuration oauth2;
+
+    @Bean
+    public PasswordEncoder passwordEncoderBean() {
+
+        return new BCryptPasswordEncoder();
+    }
 
     @Bean
     public SessionRegistry sessionRegistryBean() {
@@ -84,6 +91,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //        return super.authenticationManagerBean();
 //    }
 
+
     @Override
     protected void configure(HttpSecurity security) throws Exception {
 
@@ -94,6 +102,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .formLogin().loginPage(this.getLoginPageUrl()).loginProcessingUrl(this.getAuthenticationUrl()).successForwardUrl("/authenticated").failureUrl(this.getLoginFailureUrl())
                 .usernameParameter(this.getUsernameParameter()).passwordParameter(this.getPasswordParameter())
                 .successHandler(httpAuthenticationSuccessHandlerBean()).failureHandler(httpAuthenticationFailureHandlerBean()).and()
+
                 //oauth2
                 .oauth2Login().loginPage(this.getLoginPageUrl()).failureUrl(this.getOauth2().getLoginFailureUrl())
                 .successHandler(this.httpAuthenticationSuccessHandlerBean()).failureHandler(this.httpAuthenticationFailureHandlerBean())
@@ -117,15 +126,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public CompositeSessionAuthenticationStrategy compositeSessionAuthenticationStrategyBean() {
+    public AuthenticationProvider authenticationProviderBean() {
 
-        List<SessionAuthenticationStrategy> strategies = new ArrayList<>();
-
-        strategies.add(new ConcurrentSessionControlAuthenticationStrategy(sessionRegistryBean()));
-        strategies.add(new ChangeSessionIdAuthenticationStrategy());
-        strategies.add(new RegisterSessionAuthenticationStrategy(sessionRegistryBean()));
-
-        return new CompositeSessionAuthenticationStrategy(strategies);
+        return new UserAuthenticationProvider();
     }
 
     public String[] getPermittedMatchers() {
@@ -143,7 +146,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public UserRole getUserDefaultAuthority() {
 
-        return ProjectBeanHolder.getUserRoleRepository().findByRoleEqualsIgnoreCase(userDefaultRole);
+        Optional<UserRole> role =ProjectBeanHolder.getUserRoleRepository().findByRoleEqualsIgnoreCase(userDefaultRole);
+
+        return role.orElse(null);
     }
 
     public void setUserDefaultRole(String userDefaultRole) {
@@ -214,32 +219,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void setPasswordParameter(String passwordParameter) {
         this.passwordParameter = passwordParameter;
     }
-
-    @Component
-    final static class UserAuthenticationProvider implements AuthenticationProvider {
-
-        //@Autowired
-        //private UserDetailsService userDetailsService;
-
-//		@Autowired
-//		private PasswordEncoder encoder;
-
-        @Override
-        public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-
-            if(authentication instanceof UsernamePasswordAuthenticationToken) {
-            }
-
-            return new UsernamePasswordAuthenticationToken(authentication.getPrincipal(), authentication.getCredentials(), authentication.getAuthorities());
-        }
-
-        @Override
-        public boolean supports(Class<?> authentication) {
-
-            return Arrays.stream(new Class<?>[]{ UsernamePasswordAuthenticationToken.class}).anyMatch(clazz -> clazz.isAssignableFrom(authentication));
-        }
-    }
-
 
     public static class OAuth2Configuration {
 

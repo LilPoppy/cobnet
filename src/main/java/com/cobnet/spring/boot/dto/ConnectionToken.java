@@ -1,5 +1,7 @@
 package com.cobnet.spring.boot.dto;
 
+import com.cobnet.spring.boot.dto.support.MappedPacket;
+
 import java.util.Date;
 
 public class ConnectionToken extends MappedPacket {

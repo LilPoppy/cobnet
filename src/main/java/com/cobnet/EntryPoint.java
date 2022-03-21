@@ -1,8 +1,14 @@
 package com.cobnet;
 
+import com.cobnet.interfaces.security.Permission;
+import com.cobnet.security.RoleRule;
+import com.cobnet.security.permission.UserPermission;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
+import com.cobnet.spring.boot.entity.User;
+import com.cobnet.spring.boot.entity.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
@@ -81,6 +87,10 @@ public class EntryPoint {
 		SpringApplication.run(EntryPoint.class, args);
 
 		LOG.info(EntryPoint.getLogo());
+
+		User user = new User("admin", "123456", new UserRole("admin", RoleRule.ADMIN, new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")));
+
+		ProjectBeanHolder.getUserRepository().save(user);
 
 		if(Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("agent"))) {
 
