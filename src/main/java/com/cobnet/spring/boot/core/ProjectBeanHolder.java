@@ -16,15 +16,24 @@ import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.hash.Jackson2HashMapper;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.session.data.redis.RedisIndexedSessionRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.web.context.request.RequestAttributes;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class ProjectBeanHolder {
 
@@ -76,11 +85,13 @@ public class ProjectBeanHolder {
 
     private static ClientRegistrationRepository CLIENT_REGISTRATION_REPOSITORY;
 
+    private static OAuth2AuthorizedClientService OAUTH2_AUTHORIZED_CLIENT_SERVICE;
+
     private static SessionRegistry SESSION_REGISTRY;
 
     private static PasswordEncoder PASSWORD_ENCODER;
 
-    //private static AuthenticationManager AUTHENTICATION_MANAGER;
+    private static AuthenticationManager AUTHENTICATION_MANAGER;
 
     private static UserRepository USER_REPOSITORY;
 
@@ -93,6 +104,28 @@ public class ProjectBeanHolder {
     private static UserInfoController USER_INFO_CONTROLLER;
 
     private static OidcUserService OIDC_USER_SERVICE;
+
+    private static AccessDeniedHandler ACCESS_DENIED_HANDLER;
+
+    public static HttpServletRequest getCurrentHttpRequest() {
+
+        if (RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes attributes) {
+
+            return attributes.getRequest();
+        }
+
+        return null;
+    }
+
+    public static HttpServletResponse getCurrentHttpResponse() {
+
+        if (RequestContextHolder.getRequestAttributes() instanceof ServletRequestAttributes attributes) {
+
+            return attributes.getResponse();
+        }
+
+        return null;
+    }
 
     public static ConfigurableApplicationContext getSpringContext() {
 
@@ -214,6 +247,11 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.CLIENT_REGISTRATION_REPOSITORY;
     }
 
+    public static OAuth2AuthorizedClientService getOauth2AuthorizedClientService() {
+
+        return ProjectBeanHolder.OAUTH2_AUTHORIZED_CLIENT_SERVICE;
+    }
+
     public static SessionRegistry getSessionRegistry() {
 
         return ProjectBeanHolder.SESSION_REGISTRY;
@@ -224,10 +262,10 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.PASSWORD_ENCODER;
     }
 
-//    public static AuthenticationManager getAuthenticationManager() {
-//
-//        return ProjectBeanHolder.AUTHENTICATION_MANAGER;
-//    }
+    public static AuthenticationManager getAuthenticationManager() {
+
+        return ProjectBeanHolder.AUTHENTICATION_MANAGER;
+    }
 
     public static UserRepository getUserRepository() {
 
@@ -259,7 +297,12 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.OIDC_USER_SERVICE;
     }
 
-    @Component
+    public static AccessDeniedHandler getAccessDeniedHandler() {
+
+        return ProjectBeanHolder.ACCESS_DENIED_HANDLER;
+    }
+
+    @Component("autowireLoader")
     public static class AutowireLoader {
 
         @Autowired
@@ -409,6 +452,12 @@ public class ProjectBeanHolder {
         }
 
         @Autowired
+        public void setOAuth2AuthorizedClientService(OAuth2AuthorizedClientService service) {
+
+            ProjectBeanHolder.OAUTH2_AUTHORIZED_CLIENT_SERVICE = service;
+        }
+
+        @Autowired
         public void setSessionRegistry(SessionRegistry registry) {
 
             ProjectBeanHolder.SESSION_REGISTRY = registry;
@@ -420,11 +469,11 @@ public class ProjectBeanHolder {
             ProjectBeanHolder.PASSWORD_ENCODER = encoder;
         }
 
-//        @Autowired
-//        public void setAuthenticationManager(AuthenticationManager manager) {
-//
-//            ProjectBeanHolder.AUTHENTICATION_MANAGER = manager;
-//        }
+        @Autowired
+        public void setAuthenticationManager(AuthenticationManager manager) {
+
+            ProjectBeanHolder.AUTHENTICATION_MANAGER = manager;
+        }
 
         @Autowired
         public void setUserRepository(UserRepository repository) {
@@ -460,6 +509,12 @@ public class ProjectBeanHolder {
         public void setOidcUserService(OidcUserService service) {
 
             ProjectBeanHolder.OIDC_USER_SERVICE = service;
+        }
+
+        @Autowired
+        public void setAccessDeniedHandler(AccessDeniedHandler handler) {
+
+            ProjectBeanHolder.ACCESS_DENIED_HANDLER = handler;
         }
     }
 

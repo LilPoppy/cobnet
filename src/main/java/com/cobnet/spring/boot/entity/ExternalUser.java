@@ -7,6 +7,7 @@ import com.cobnet.security.RoleRule;
 import com.cobnet.security.permission.OwnedPermissionCollection;
 import com.cobnet.spring.boot.entity.support.JsonMapConverter;
 import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
+import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,6 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
+@Data
 public class ExternalUser extends EntityBase implements OidcUser, Serializable, Account, Permissible {
 
 	private static final long serialVersionUID = 73179483542138315L;

@@ -94,7 +94,7 @@ jobs:
         run: mvn -DskipTests -B clean package -Pdocker
       - run: docker images
       - run: docker image prune -f
-      - run: docker rm -f cobnet-db cobnet
+      - run: docker rm -f cobnet-redis cobnet-db cobnet
   linux-build-native:
     runs-on: self-hosted
     steps:

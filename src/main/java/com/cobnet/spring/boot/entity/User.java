@@ -10,6 +10,7 @@ import com.cobnet.security.permission.OwnedRoleCollection;
 import com.cobnet.security.permission.UserPermission;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
+import lombok.Data;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.slf4j.Logger;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Entity
+@Data
 public class User extends EntityBase implements Permissible, Account, UserDetails {
 
     private static final Logger LOG = LoggerFactory.getLogger(User.class);
@@ -56,7 +58,7 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy="user")
-    private Set<ExternalUser> externalUsers = new HashSet<>();
+    private Set<ExternalUser> externalUsers = new HashSet<ExternalUser>();
 
     private transient OwnedRoleCollection roleCollection;
 
@@ -190,6 +192,16 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
     public Collection<? extends Permission> getPermissions() {
 
         return Stream.of(roles.stream().map(UserRole::getPermissions).flatMap(Collection::stream).collect(Collectors.toList()), permissions).flatMap(Collection::stream).collect(Collectors.toUnmodifiableList());
+    }
+
+    public boolean hasRole(String... roles) {
+
+        return Arrays.stream(roles).allMatch(this::isRole);
+    }
+
+    public boolean isRole(String name) {
+
+        return this.roles.stream().anyMatch(role -> role.getName().equalsIgnoreCase(name));
     }
 
     @Override

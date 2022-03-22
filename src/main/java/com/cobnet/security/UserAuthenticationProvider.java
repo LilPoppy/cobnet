@@ -18,8 +18,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.util.Assert;
+import org.springframework.web.context.request.RequestContextHolder;
 
+import java.util.Objects;
 import java.util.stream.Stream;
 
 public class UserAuthenticationProvider implements AuthenticationProvider {
@@ -57,11 +60,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 
                 if(!loginEvent.isCancelled()) {
 
-                    boolean match = details.getPassword().equals(authentication.getCredentials().toString());
-                    boolean isEncodedSourceMatchTarget = encoder.matches(authentication.getCredentials().toString(), details.getPassword());
-                    boolean isEncodedTargetMatchSource = encoder.matches(details.getPassword(), authentication.getCredentials().toString());
-
-                    if(match || isEncodedSourceMatchTarget || isEncodedTargetMatchSource) {
+                    if(details.getPassword().equals(authentication.getCredentials().toString()) || encoder.matches(authentication.getCredentials().toString(), details.getPassword()) || encoder.matches(details.getPassword(), authentication.getCredentials().toString())) {
 
                         if (account instanceof User user && !user.isPasswordEncoded()) {
 
@@ -80,7 +79,8 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
                             }
                         }
 
-                        return new UserAuthenticationToken(account, details.getPassword());
+
+                        return new AccountAuthenticationToken(account, ((UserDetails) account).getPassword());
                     }
 
                     throw new BadCredentialsException("Wrong password");

@@ -7,7 +7,6 @@ import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.ExternalUser;
 import com.cobnet.spring.boot.entity.User;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -15,7 +14,10 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationToken;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.client.web.*;
+import org.springframework.security.oauth2.client.web.AuthenticatedPrincipalOAuth2AuthorizedClientRepository;
+import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
+import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizationRequestRepository;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
@@ -49,28 +51,24 @@ public class OAuth2LoginAccountAuthenticationFilter extends AbstractAuthenticati
 
     private AuthorizationRequestRepository<OAuth2AuthorizationRequest> authorizationRequestRepository = new HttpSessionOAuth2AuthorizationRequestRepository();
 
-    private Converter<OAuth2LoginAuthenticationToken, UserAuthenticationToken> authenticationResultConverter = this::createAuthenticationResult;
+    private Converter<OAuth2LoginAuthenticationToken, AccountAuthenticationToken> authenticationResultConverter = this::createAuthenticationResult;
 
-    public OAuth2LoginAccountAuthenticationFilter(ClientRegistrationRepository clientRegistrationRepository,
-                                                  OAuth2AuthorizedClientService authorizedClientService, AuthenticationManager manager) {
-        this(clientRegistrationRepository, authorizedClientService, manager, DEFAULT_FILTER_PROCESSES_URI);
+    public OAuth2LoginAccountAuthenticationFilter(ClientRegistrationRepository clientRegistrationRepository, OAuth2AuthorizedClientService authorizedClientService) {
+        this(clientRegistrationRepository, authorizedClientService, DEFAULT_FILTER_PROCESSES_URI);
     }
 
-    public OAuth2LoginAccountAuthenticationFilter(ClientRegistrationRepository clientRegistrationRepository,
-                                                  OAuth2AuthorizedClientService authorizedClientService, AuthenticationManager manager, String filterProcessesUrl) {
-        this(clientRegistrationRepository,
-                new AuthenticatedPrincipalOAuth2AuthorizedClientRepository(authorizedClientService), manager,
-                filterProcessesUrl);
+    public OAuth2LoginAccountAuthenticationFilter(ClientRegistrationRepository clientRegistrationRepository, OAuth2AuthorizedClientService authorizedClientService, String filterProcessesUrl) {
+        this(clientRegistrationRepository, new AuthenticatedPrincipalOAuth2AuthorizedClientRepository(authorizedClientService), filterProcessesUrl);
     }
 
-    public OAuth2LoginAccountAuthenticationFilter(ClientRegistrationRepository clientRegistrationRepository,
-                                                  OAuth2AuthorizedClientRepository authorizedClientRepository, AuthenticationManager manager, String filterProcessesUrl) {
+
+
+    public OAuth2LoginAccountAuthenticationFilter(ClientRegistrationRepository clientRegistrationRepository, OAuth2AuthorizedClientRepository authorizedClientRepository, String filterProcessesUrl) {
         super(filterProcessesUrl);
         Assert.notNull(clientRegistrationRepository, "clientRegistrationRepository cannot be null");
         Assert.notNull(authorizedClientRepository, "authorizedClientRepository cannot be null");
         this.clientRegistrationRepository = clientRegistrationRepository;
         this.authorizedClientRepository = authorizedClientRepository;
-        this.setAuthenticationManager(manager);
     }
 
 
@@ -117,7 +115,7 @@ public class OAuth2LoginAccountAuthenticationFilter extends AbstractAuthenticati
 
         OAuth2LoginAuthenticationToken result = (OAuth2LoginAuthenticationToken) this.getAuthenticationManager().authenticate(authenticationRequest);
 
-        UserAuthenticationToken token = this.authenticationResultConverter.convert(result);
+        AccountAuthenticationToken token = this.authenticationResultConverter.convert(result);
         Assert.notNull(token, "authentication result cannot be null");
         token.setDetails(details);
 
@@ -128,7 +126,7 @@ public class OAuth2LoginAccountAuthenticationFilter extends AbstractAuthenticati
         return token;
     }
 
-    private UserAuthenticationToken createAuthenticationResult(OAuth2LoginAuthenticationToken authenticationResult) {
+    private AccountAuthenticationToken createAuthenticationResult(OAuth2LoginAuthenticationToken authenticationResult) {
 
         if(authenticationResult.getPrincipal() instanceof Account account) {
 
@@ -142,19 +140,18 @@ public class OAuth2LoginAccountAuthenticationFilter extends AbstractAuthenticati
 
                 if (user != null) {
 
-                    if (!user.getExternalUsers().stream().anyMatch(child -> child.getUsername().equals(external.getUsername()))) {
+                    if (user.getExternalUsers().stream().noneMatch(child -> child.getUsername().equals(external.getUsername()))) {
 
                         user.getOwnedExternalUserCollection().add(external);
 
                         ProjectBeanHolder.getUserRepository().save(user);
                     }
 
-                    return new UserAuthenticationToken(user);
-
+                    return new AccountAuthenticationToken(user, user.getPassword());
                 }
             }
 
-            return new UserAuthenticationToken(account);
+            return new AccountAuthenticationToken(account);
         }
 
         throw new AuthenticationCreateException("Unsupported principal type: " + authenticationResult.getPrincipal().getClass().getName());

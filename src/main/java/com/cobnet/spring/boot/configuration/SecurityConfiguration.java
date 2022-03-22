@@ -1,5 +1,6 @@
 package com.cobnet.spring.boot.configuration;
 
+import com.cobnet.connection.handler.http.HttpAccessDeniedHandler;
 import com.cobnet.connection.handler.http.HttpAuthenticationFailureHandler;
 import com.cobnet.connection.handler.http.HttpAuthenticationSuccessHandler;
 import com.cobnet.security.OAuth2LoginAccountAuthenticationFilter;
@@ -8,10 +9,10 @@ import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,13 +23,15 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.session.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -62,12 +65,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private String passwordParameter;
 
     private OAuth2Configuration oauth2;
-
-    @Autowired
-    public ClientRegistrationRepository clientRegistrationRepository;
-
-    @Autowired
-    public OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
 
     @Bean
     public PasswordEncoder passwordEncoderBean() {
@@ -114,19 +111,65 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .usernameParameter(this.getUsernameParameter()).passwordParameter(this.getPasswordParameter())
                 .successHandler(httpAuthenticationSuccessHandlerBean()).failureHandler(httpAuthenticationFailureHandlerBean()).and()
                 .userDetailsService(ProjectBeanHolder.getUserRepository())
+                .authenticationProvider(authenticationProviderBean())
                 //oauth2
                 .oauth2Login().loginPage(this.getLoginPageUrl()).failureUrl(this.getOauth2().getLoginFailureUrl())
                 .successHandler(this.httpAuthenticationSuccessHandlerBean()).failureHandler(this.httpAuthenticationFailureHandlerBean())
                 .authorizationEndpoint().baseUri(this.getOauth2().getAuthenticationUrl()).and()
                 .userInfoEndpoint().oidcUserService(ProjectBeanHolder.getExternalUserRepository()).and().and()
-                //.authenticationProvider(oauth2UserAuthenticationProviderBean())
                 //session
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).maximumSessions(1).sessionRegistry(sessionRegistryBean());
+                .sessionManagement().sessionAuthenticationStrategy(compositeSessionAuthenticationStrategyBean()).sessionCreationPolicy(getSessionCreationPolicy()).maximumSessions(1).sessionRegistry(sessionRegistryBean());
 
                 //filter
-                security.addFilterBefore(new OAuth2LoginAccountAuthenticationFilter(this.clientRegistrationRepository, this.oAuth2AuthorizedClientService, authenticationManagerBean()), OAuth2LoginAuthenticationFilter.class);
+                security.addFilterBefore(oAuth2LoginAccountAuthenticationFilterBean(), OAuth2LoginAuthenticationFilter.class);
 
+    }
 
+    protected SessionCreationPolicy getSessionCreationPolicy() {
+
+        return SessionCreationPolicy.IF_REQUIRED;
+    }
+
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+    @Bean
+    @DependsOn("autowireLoader")
+    public OAuth2LoginAccountAuthenticationFilter oAuth2LoginAccountAuthenticationFilterBean() {
+
+        OAuth2LoginAccountAuthenticationFilter filter = new OAuth2LoginAccountAuthenticationFilter(ProjectBeanHolder.getClientRegistrationRepository(), ProjectBeanHolder.getOauth2AuthorizedClientService());
+        filter.setAuthenticationManager(ProjectBeanHolder.getAuthenticationManager());
+        filter.setAuthenticationSuccessHandler(httpAuthenticationSuccessHandlerBean());
+        filter.setAuthenticationFailureHandler(httpAuthenticationFailureHandlerBean());
+        filter.setApplicationEventPublisher(ProjectBeanHolder.getApplicationEventPublisher());
+        SessionCreationPolicy policy = getSessionCreationPolicy();
+        filter.setAllowSessionCreation(policy != SessionCreationPolicy.NEVER && policy != SessionCreationPolicy.STATELESS);
+        filter.setFilterProcessesUrl(this.getOauth2().getRedirectUrl() + "/*");
+        filter.setSessionAuthenticationStrategy(compositeSessionAuthenticationStrategyBean());
+        //TODO filter.setRememberMeServices();
+
+        return filter;
+    }
+
+    @Bean
+    public CompositeSessionAuthenticationStrategy compositeSessionAuthenticationStrategyBean() {
+
+        List<SessionAuthenticationStrategy> strategies = new ArrayList<>();
+
+        strategies.add(new ConcurrentSessionControlAuthenticationStrategy(sessionRegistryBean()));
+        strategies.add(new ChangeSessionIdAuthenticationStrategy());
+        strategies.add(new RegisterSessionAuthenticationStrategy(sessionRegistryBean()));
+
+        return new CompositeSessionAuthenticationStrategy(strategies);
+    }
+
+    @Bean
+    public AccessDeniedHandler httpAccessDeniedHandlerBean() {
+
+        return new HttpAccessDeniedHandler();
     }
 
     @Bean
