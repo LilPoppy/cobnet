@@ -1,13 +1,14 @@
 package com.cobnet.spring.boot.configuration;
 
-import com.cobnet.EntryPoint;
 import com.cobnet.connection.handler.http.HttpAuthenticationFailureHandler;
 import com.cobnet.connection.handler.http.HttpAuthenticationSuccessHandler;
+import com.cobnet.security.OAuth2LoginAccountAuthenticationFilter;
 import com.cobnet.security.UserAuthenticationProvider;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,9 @@ import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -38,7 +42,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public final static String CONNECTION_TOKEN = "CONNECTION_TOKEN";
 
-    final static String[] PERMITTED_MATCHERS = { "/register", "/checkRegistry", "/authenticate" };
+    final static String[] PERMITTED_MATCHERS = { "/register", "/checkRegistry", "/authenticate", "/login/oauth2/redirect/binding" };
 
     private byte permissionDefaultPower;
 
@@ -57,6 +61,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private String passwordParameter;
 
     private OAuth2Configuration oauth2;
+
+    @Autowired
+    public ClientRegistrationRepository clientRegistrationRepository;
+
+    @Autowired
+    public OAuth2AuthorizedClientService oAuth2AuthorizedClientService;
 
     @Bean
     public PasswordEncoder passwordEncoderBean() {
@@ -99,18 +109,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 //authorize config
                 .authorizeRequests().antMatchers(this.getPermittedMatchers()).permitAll().anyRequest().authenticated().and()
                 //form login
-                .formLogin().loginPage(this.getLoginPageUrl()).loginProcessingUrl(this.getAuthenticationUrl()).successForwardUrl("/authenticated").failureUrl(this.getLoginFailureUrl())
+                .formLogin().loginPage(this.getLoginPageUrl()).loginProcessingUrl(this.getAuthenticationUrl()).failureUrl(this.getLoginFailureUrl())
                 .usernameParameter(this.getUsernameParameter()).passwordParameter(this.getPasswordParameter())
                 .successHandler(httpAuthenticationSuccessHandlerBean()).failureHandler(httpAuthenticationFailureHandlerBean()).and()
-
+                .userDetailsService(ProjectBeanHolder.getUserRepository())
                 //oauth2
                 .oauth2Login().loginPage(this.getLoginPageUrl()).failureUrl(this.getOauth2().getLoginFailureUrl())
                 .successHandler(this.httpAuthenticationSuccessHandlerBean()).failureHandler(this.httpAuthenticationFailureHandlerBean())
                 .authorizationEndpoint().baseUri(this.getOauth2().getAuthenticationUrl()).and()
-                //user
-                .userInfoEndpoint().and().and()
-                //login
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).maximumSessions(1).sessionRegistry(sessionRegistryBean());
+                .userInfoEndpoint().oidcUserService(ProjectBeanHolder.getExternalUserRepository()).and().and()
+                //.authenticationProvider(oauth2UserAuthenticationProviderBean())
+                //session
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).maximumSessions(1).sessionRegistry(sessionRegistryBean()).and().and()
+                //filter
+                .addFilterBefore(new OAuth2LoginAccountAuthenticationFilter(null, null), OAuth2LoginAuthenticationFilter.class);
+
+
     }
 
     @Bean
@@ -132,6 +146,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     public String[] getPermittedMatchers() {
+
         return Stream.concat(Arrays.stream(PERMITTED_MATCHERS),
                 Arrays.stream(new String[]{this.getLoginPageUrl(), this.getLoginFailureUrl(), this.getAuthenticationUrl(), this.getOauth2().getLoginFailureUrl(), this.getOauth2().getAuthenticationUrl() + "/*", this.getOauth2().getRedirectUrl() + "/*"})).toArray(String[]::new);
     }

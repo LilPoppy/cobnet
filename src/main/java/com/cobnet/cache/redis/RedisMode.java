@@ -1,4 +1,4 @@
-package com.cobnet.spring.boot.cache.redis;
+package com.cobnet.cache.redis;
 
 public enum RedisMode {
 

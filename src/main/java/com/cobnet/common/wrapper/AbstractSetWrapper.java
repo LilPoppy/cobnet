@@ -1,4 +1,4 @@
-package com.cobnet.common.collection;
+package com.cobnet.common.wrapper;
 
 import java.util.AbstractSet;
 import java.util.Iterator;

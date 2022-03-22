@@ -5,7 +5,6 @@ import com.cobnet.interfaces.spring.repository.UserRepository;
 import com.cobnet.interfaces.spring.repository.UserRoleRepository;
 import com.cobnet.spring.boot.configuration.*;
 import com.cobnet.spring.boot.controller.UserInfoController;
-import com.cobnet.spring.boot.entity.ExternalUser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +16,9 @@ import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.hash.Jackson2HashMapper;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
@@ -92,6 +91,8 @@ public class ProjectBeanHolder {
     private static RedirectStrategy REDIRECT_STRATEGY;
 
     private static UserInfoController USER_INFO_CONTROLLER;
+
+    private static OidcUserService OIDC_USER_SERVICE;
 
     public static ConfigurableApplicationContext getSpringContext() {
 
@@ -251,6 +252,11 @@ public class ProjectBeanHolder {
     public static UserInfoController getUserInfoController() {
 
         return ProjectBeanHolder.USER_INFO_CONTROLLER;
+    }
+
+    public static OidcUserService getOidcUserService() {
+
+        return ProjectBeanHolder.OIDC_USER_SERVICE;
     }
 
     @Component
@@ -449,6 +455,12 @@ public class ProjectBeanHolder {
 
             ProjectBeanHolder.USER_INFO_CONTROLLER = controller;
         }
+
+        @Autowired
+        public void setOidcUserService(OidcUserService service) {
+
+            ProjectBeanHolder.OIDC_USER_SERVICE = service;
+        }
     }
 
     @Component
@@ -485,6 +497,12 @@ public class ProjectBeanHolder {
         public RedirectStrategy redirectStrategyBean() {
 
             return new DefaultRedirectStrategy();
+        }
+
+        @Bean
+        public OidcUserService oidcUserServiceBean() {
+
+            return new OidcUserService();
         }
     }
 }

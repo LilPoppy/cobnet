@@ -54,7 +54,7 @@ public class ExternalUser extends EntityBase implements OidcUser, Serializable, 
 
     public ExternalUser() {}
     
-    public ExternalUser(@NonNull String identity, @NonNull String provider, @NonNull String idToken, @NonNull String accessToken , List<Permission> permissions, Map<String, Object> attributes) {
+    public ExternalUser(@NonNull String identity, @NonNull String provider, @NonNull String idToken, @NonNull String accessToken , Set<? extends Permission> permissions, Map<String, Object> attributes) {
     	
     	this.identity = provider + ":" + identity;
     	this.idToken = idToken;

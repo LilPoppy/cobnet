@@ -1,6 +1,6 @@
 package com.cobnet.security;
 
-import com.cobnet.common.collection.AbstractSetWrapper;
+import com.cobnet.common.wrapper.AbstractSetWrapper;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.ExternalUser;
 import com.cobnet.spring.boot.entity.User;

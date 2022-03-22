@@ -90,7 +90,7 @@ public class EntryPoint {
 
 		User user = new User("admin", "123456", new UserRole("admin", RoleRule.ADMIN, new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")));
 
-		ProjectBeanHolder.getUserRepository().save(user);
+		//ProjectBeanHolder.getUserRepository().save(user);
 
 		if(Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("agent"))) {
 

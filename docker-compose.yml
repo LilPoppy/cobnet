@@ -10,6 +10,7 @@ services:
          - spring-cloud-network
       depends_on:
              - db
+             - redis
       environment:
          SPRING_DATASOURCE_URL: jdbc:mysql://db:${DB_EXPOSE}/testdb?autoReconnect=${DB_AUTO_RECONNECT}&useSSL=${DB_USE_SSL}
    db:
@@ -25,6 +26,14 @@ services:
          MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
       ports:
          - ${DB_EXPOSE}:${DB_EXPOSE}
+      networks:
+         - spring-cloud-network
+   redis:
+      image: ${REDIS_IMAGE_NAME}
+      container_name: ${CONTAINER_NAME}-redis
+      restart: always
+      ports:
+         - ${REDIS_EXPOSE}:${REDIS_EXPOSE}
       networks:
          - spring-cloud-network
 networks:

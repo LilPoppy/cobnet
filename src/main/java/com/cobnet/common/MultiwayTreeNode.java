@@ -12,7 +12,7 @@ import java.util.Stack;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import com.cobnet.common.collection.AbstractListWrapper;
+import com.cobnet.common.wrapper.AbstractListWrapper;
 import com.cobnet.interfaces.TreeNode;
 
 public class MultiwayTreeNode<T> extends AbstractListWrapper<MultiwayTreeNode<T>> implements TreeNode<T> {

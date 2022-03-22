@@ -3,6 +3,7 @@ package com.cobnet.connection.handler.http;
 import com.cobnet.spring.boot.configuration.SecurityConfiguration;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 import javax.servlet.ServletException;
@@ -17,6 +18,13 @@ public class HttpAuthenticationSuccessHandler implements AuthenticationSuccessHa
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
 
         HttpSession session = request.getSession();
+
+//        if(authentication instanceof OAuth2AuthenticationToken) {
+//
+//            ProjectBeanHolder.getRedirectStrategy().sendRedirect(request, response, "/login/oauth2/redirect/binding");
+//
+//            return;
+//        }
 
         System.out.println("success login " + authentication);
 

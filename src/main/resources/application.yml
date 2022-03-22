@@ -76,13 +76,13 @@ spring:
       authentication-url: "/login"
       login-page-url: "/login"
       login-success-url: "/index"
-      login-failure-url: "/login?error"
+      login-failure-url: "/login?error=true"
       username-parameter: "username"
       password-parameter: "password"
       oauth2:
          authentication-url: "/login/oauth2/authorization"
          redirect-url: "/login/oauth2/code"
-         login-failure-url: "/login?oauth2Failure"
+         login-failure-url: "/login?oauth2Failure=true"
          client:
             registration:
                google:

@@ -34,6 +34,8 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
     @Column(nullable = false)
     private String password;
 
+    private boolean passwordEncoded;
+
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "user_roles", joinColumns = { @JoinColumn(name = "user", referencedColumnName = "username") },
@@ -124,11 +126,20 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
     public void setPassword(String password) {
 
         this.password = password;
+        this.passwordEncoded = false;
     }
 
     @Override
     public String getIdentity() {
         return this.getUsername();
+    }
+
+    public void setPasswordEncoded(boolean passwordEncoded) {
+        this.passwordEncoded = passwordEncoded;
+    }
+
+    public boolean isPasswordEncoded() {
+        return passwordEncoded;
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.cobnet.security.permission;
 
 import com.cobnet.common.MultiwayTreeNode;
 import com.cobnet.common.MultiwayTreeNodeChild;
-import com.cobnet.common.collection.AbstractSetWrapper;
+import com.cobnet.common.wrapper.AbstractSetWrapper;
 import com.cobnet.interfaces.security.Permissible;
 import com.cobnet.interfaces.security.Permission;
 

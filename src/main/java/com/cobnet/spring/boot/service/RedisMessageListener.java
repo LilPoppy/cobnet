@@ -1,4 +1,4 @@
-package com.cobnet.spring.boot.cache.redis;
+package com.cobnet.spring.boot.service;
 
 import com.cobnet.EntryPoint;
 import org.slf4j.Logger;

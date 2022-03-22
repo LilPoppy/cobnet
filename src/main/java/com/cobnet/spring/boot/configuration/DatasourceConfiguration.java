@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import javax.sql.DataSource;
 
-//TODO add mybatis supports
+//TODO add mybatis supports; read write separation
 @Configuration
 @ConfigurationProperties("spring.datasource")
 @EnableJpaRepositories(value = "com.cobnet.interfaces.spring.repository", repositoryBaseClass = com.cobnet.spring.boot.service.JpaExtensionRepository.class)

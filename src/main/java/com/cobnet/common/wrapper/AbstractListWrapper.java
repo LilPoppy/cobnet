@@ -1,4 +1,4 @@
-package com.cobnet.common.collection;
+package com.cobnet.common.wrapper;
 
 import java.util.AbstractList;
 import java.util.List;

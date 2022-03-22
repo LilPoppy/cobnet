@@ -1,7 +1,7 @@
 package com.cobnet.spring.boot.configuration;
 
-import com.cobnet.spring.boot.cache.redis.RedisMessageListener;
-import com.cobnet.spring.boot.cache.redis.RedisMode;
+import com.cobnet.spring.boot.service.RedisMessageListener;
+import com.cobnet.cache.redis.RedisMode;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,7 +23,6 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.time.Duration;
 import java.util.List;

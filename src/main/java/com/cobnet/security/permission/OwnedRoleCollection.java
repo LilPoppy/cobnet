@@ -1,6 +1,6 @@
 package com.cobnet.security.permission;
 
-import com.cobnet.common.collection.AbstractSetWrapper;
+import com.cobnet.common.wrapper.AbstractSetWrapper;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.UserRole;
 

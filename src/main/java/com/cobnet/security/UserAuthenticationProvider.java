@@ -1,5 +1,8 @@
 package com.cobnet.security;
 
+import com.cobnet.event.account.AccountLoginEvent;
+import com.cobnet.event.account.AccountPasswordEncodingEvent;
+import com.cobnet.exception.AuthenticationCancelledException;
 import com.cobnet.interfaces.security.Account;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.User;
@@ -17,7 +20,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.Assert;
 
-import java.util.Arrays;
+import java.util.stream.Stream;
 
 public class UserAuthenticationProvider implements AuthenticationProvider {
 
@@ -32,65 +35,69 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
-        Object principal = authentication.getPrincipal();
+        if(!authentication.isAuthenticated()) {
+            Object principal = authentication.getPrincipal();
 
-        String username = null;
+            String username = null;
 
-        if(principal instanceof String) {
+            if(principal instanceof String) {
 
-            username = (String) principal;
-        }
-
-        Assert.notNull(username, "Username cannot be null.");
-
-        UserDetails details = userDetailsService.loadUserByUsername(username);
-
-        if(details instanceof Account account) {
-
-            boolean match = details.getPassword().equals(authentication.getCredentials().toString());
-            boolean isEncodedSourceMatchTarget = encoder.matches(authentication.getCredentials().toString(), details.getPassword());
-            boolean isEncodedTargetMatchSource = encoder.matches(details.getPassword(), authentication.getCredentials().toString());
-
-            if(match || isEncodedSourceMatchTarget || isEncodedTargetMatchSource) {
-
-                if (!isEncodedSourceMatchTarget && (match || isEncodedTargetMatchSource) && isRaw(details.getPassword())) {
-
-                    if(account instanceof User user) {
-
-                        LOG.debug("Encoding password for user: " + user.getUsername());
-
-                        user.setPassword(encoder.encode(user.getPassword()));
-
-                        ProjectBeanHolder.getUserRepository().save(user);
-                    }
-                }
-
-                return new UserAuthenticationToken(account, authentication.getCredentials());
+                username = (String) principal;
             }
 
-            throw new BadCredentialsException("Wrong password");
+            Assert.notNull(username, "Username cannot be null.");
+
+            UserDetails details = userDetailsService.loadUserByUsername(username);
+
+            if(details instanceof Account account) {
+
+                AccountLoginEvent loginEvent = new AccountLoginEvent(account);
+
+                ProjectBeanHolder.getApplicationEventPublisher().publishEvent(loginEvent);
+
+                if(!loginEvent.isCancelled()) {
+
+                    boolean match = details.getPassword().equals(authentication.getCredentials().toString());
+                    boolean isEncodedSourceMatchTarget = encoder.matches(authentication.getCredentials().toString(), details.getPassword());
+                    boolean isEncodedTargetMatchSource = encoder.matches(details.getPassword(), authentication.getCredentials().toString());
+
+                    if(match || isEncodedSourceMatchTarget || isEncodedTargetMatchSource) {
+
+                        if (account instanceof User user && !user.isPasswordEncoded()) {
+
+                            AccountPasswordEncodingEvent encodingEvent = new AccountPasswordEncodingEvent(account, user.getPassword(), encoder);
+
+                            ProjectBeanHolder.getApplicationEventPublisher().publishEvent(encodingEvent);
+
+                            if (!encodingEvent.isCancelled()) {
+
+                                LOG.debug("Encoding password for user: " + user.getUsername());
+
+                                user.setPassword(encoder.encode(encodingEvent.getPassword()));
+                                user.setPasswordEncoded(true);
+
+                                ProjectBeanHolder.getUserRepository().save(user);
+                            }
+                        }
+
+                        return new UserAuthenticationToken(account, details.getPassword());
+                    }
+
+                    throw new BadCredentialsException("Wrong password");
+                }
+
+                throw new AuthenticationCancelledException("Authentication cancelled.");
+            }
+
+            throw new UsernameNotFoundException("User " + username + " is not exist!");
         }
 
-        throw new UsernameNotFoundException("User " + username + " is not exist!");
-    }
-
-    private boolean isRaw(String password) {
-
-        try {
-
-            encoder.upgradeEncoding(password);
-
-        } catch (IllegalArgumentException ex) {
-
-            return true;
-        }
-
-        return false;
+        return authentication;
     }
 
     @Override
     public boolean supports(Class<?> authentication) {
 
-        return Arrays.stream(new Class<?>[]{ UsernamePasswordAuthenticationToken.class}).anyMatch(clazz -> clazz.isAssignableFrom(authentication));
+        return Stream.of(UsernamePasswordAuthenticationToken.class).anyMatch(clazz -> clazz.isAssignableFrom(authentication));
     }
 }
