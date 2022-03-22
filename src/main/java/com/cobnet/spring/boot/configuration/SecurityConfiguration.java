@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -120,9 +121,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .userInfoEndpoint().oidcUserService(ProjectBeanHolder.getExternalUserRepository()).and().and()
                 //.authenticationProvider(oauth2UserAuthenticationProviderBean())
                 //session
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).maximumSessions(1).sessionRegistry(sessionRegistryBean()).and().and()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED).maximumSessions(1).sessionRegistry(sessionRegistryBean());
+
                 //filter
-                .addFilterBefore(new OAuth2LoginAccountAuthenticationFilter(null, null), OAuth2LoginAuthenticationFilter.class);
+                security.addFilterBefore(new OAuth2LoginAccountAuthenticationFilter(this.clientRegistrationRepository, this.oAuth2AuthorizedClientService, authenticationManagerBean()), OAuth2LoginAuthenticationFilter.class);
 
 
     }

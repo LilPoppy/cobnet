@@ -7,6 +7,7 @@ import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.ExternalUser;
 import com.cobnet.spring.boot.entity.User;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -51,24 +52,25 @@ public class OAuth2LoginAccountAuthenticationFilter extends AbstractAuthenticati
     private Converter<OAuth2LoginAuthenticationToken, UserAuthenticationToken> authenticationResultConverter = this::createAuthenticationResult;
 
     public OAuth2LoginAccountAuthenticationFilter(ClientRegistrationRepository clientRegistrationRepository,
-                                                  OAuth2AuthorizedClientService authorizedClientService) {
-        this(clientRegistrationRepository, authorizedClientService, DEFAULT_FILTER_PROCESSES_URI);
+                                                  OAuth2AuthorizedClientService authorizedClientService, AuthenticationManager manager) {
+        this(clientRegistrationRepository, authorizedClientService, manager, DEFAULT_FILTER_PROCESSES_URI);
     }
 
     public OAuth2LoginAccountAuthenticationFilter(ClientRegistrationRepository clientRegistrationRepository,
-                                                  OAuth2AuthorizedClientService authorizedClientService, String filterProcessesUrl) {
+                                                  OAuth2AuthorizedClientService authorizedClientService, AuthenticationManager manager, String filterProcessesUrl) {
         this(clientRegistrationRepository,
-                new AuthenticatedPrincipalOAuth2AuthorizedClientRepository(authorizedClientService),
+                new AuthenticatedPrincipalOAuth2AuthorizedClientRepository(authorizedClientService), manager,
                 filterProcessesUrl);
     }
 
     public OAuth2LoginAccountAuthenticationFilter(ClientRegistrationRepository clientRegistrationRepository,
-                                                  OAuth2AuthorizedClientRepository authorizedClientRepository, String filterProcessesUrl) {
+                                                  OAuth2AuthorizedClientRepository authorizedClientRepository, AuthenticationManager manager, String filterProcessesUrl) {
         super(filterProcessesUrl);
         Assert.notNull(clientRegistrationRepository, "clientRegistrationRepository cannot be null");
         Assert.notNull(authorizedClientRepository, "authorizedClientRepository cannot be null");
         this.clientRegistrationRepository = clientRegistrationRepository;
         this.authorizedClientRepository = authorizedClientRepository;
+        this.setAuthenticationManager(manager);
     }
 
 
