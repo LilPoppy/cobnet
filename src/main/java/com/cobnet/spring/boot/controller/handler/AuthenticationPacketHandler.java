@@ -10,28 +10,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 
 @Controller
-public class AuthenticationPacketHandler<T extends NettyServer<?>> implements EventListener<T> {
+public class AuthenticationPacketHandler implements EventListener {
 
 	private static Logger LOG = LoggerFactory.getLogger(AuthenticationPacketHandler.class);
 	
 	public final static String AUTHENTICATION_TOKEN_KEY = "token";
 
-	private final T server;
-
-	public AuthenticationPacketHandler(T server) {
-		this.server = server;
-	}
-
 	@EventHandler(InboundOperation.AUTHENTICATION)
 	@Override
-	public void onEvent(NettyChannel channel, InboundPacket packet) {
+	public boolean onEvent(NettyChannel channel, InboundPacket packet) {
+
 		System.out.println("on authen");
+
+		return true;
 	}
 
-	@Override
-	public T getServer() {
-
-		return this.server;
-	}
 
 }

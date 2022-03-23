@@ -47,7 +47,7 @@ public class AccessSecuredAspect {
 
         Account account = Account.getAccount();
 
-        if(joinPoint.getTarget() instanceof EventListener<?> listener) {
+        if(joinPoint.getTarget() instanceof EventListener listener) {
 
             if(joinPoint.getArgs()[0] instanceof AuthenticatableChannel channel) {
 
@@ -70,7 +70,7 @@ public class AccessSecuredAspect {
                 } else {
 
                     accessDenied();
-                    return null;
+                    return false;
                 }
             }
 
@@ -83,14 +83,14 @@ public class AccessSecuredAspect {
                 } else {
 
                     accessDenied();
-                    return null;
+                    return false;
                 }
             }
 
         } else if(roles.length > 0 || permissions.length > 0) {
 
             accessDenied();
-            return null;
+            return false;
         }
 
         return joinPoint.proceed();

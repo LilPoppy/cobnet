@@ -1,7 +1,6 @@
 package com.cobnet.interfaces.connection.annotation;
 
-
-
+import com.cobnet.connection.NettyServer;
 import com.cobnet.spring.boot.controller.handler.InboundOperation;
 
 import java.lang.annotation.ElementType;
@@ -15,4 +14,5 @@ public @interface EventHandler {
 
     public InboundOperation[] value() default { InboundOperation.UNKNOWN };
 
+    public Class<? extends NettyServer<?>>[] allowed() default {};
 }
