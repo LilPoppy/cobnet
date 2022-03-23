@@ -9,8 +9,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AccessSecured {
 
-    String user() default "";
-
     String[] roles() default {};
 
     String[] permissions() default {};

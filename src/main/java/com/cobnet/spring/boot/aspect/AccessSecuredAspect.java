@@ -1,5 +1,8 @@
 package com.cobnet.spring.boot.aspect;
 
+import com.cobnet.connection.NettyChannel;
+import com.cobnet.interfaces.connection.AuthenticatableChannel;
+import com.cobnet.interfaces.connection.EventListener;
 import com.cobnet.interfaces.security.Account;
 import com.cobnet.interfaces.security.Permissible;
 import com.cobnet.interfaces.security.annotation.AccessSecured;
@@ -9,8 +12,12 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.MethodParameter;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Component;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -23,18 +30,34 @@ import java.util.Arrays;
 @Component
 public class AccessSecuredAspect {
 
+    private static Logger LOG = LoggerFactory.getLogger(AccessSecuredAspect.class);
+
     @Around("@annotation(com.cobnet.interfaces.security.annotation.AccessSecured)")
     public Object processMethodsAnnotatedWithAccessSecuredAnnotation(ProceedingJoinPoint joinPoint) throws Throwable {
 
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+
         Method method = signature.getMethod();
 
         AccessSecured annotation = method.getAnnotation(AccessSecured.class);
 
         String[] roles = annotation.roles();
+
         String[] permissions = annotation.permissions();
 
         Account account = Account.getAccount();
+
+        if(joinPoint.getTarget() instanceof EventListener<?> listener) {
+
+            if(joinPoint.getArgs()[0] instanceof AuthenticatableChannel channel) {
+
+                account = channel.getAccount();
+
+            } else {
+
+                throw new MethodArgumentTypeMismatchException(joinPoint.getArgs()[0], AuthenticatableChannel.class, "AuthenticatableChannel", new MethodParameter(method, 0), new AccessDeniedException("An exception occurred when getting access denied response."));
+            }
+        }
 
         if(account instanceof Permissible permissible) {
 
@@ -63,12 +86,12 @@ public class AccessSecuredAspect {
                     return null;
                 }
             }
-        } else if(roles.length > 0 && permissions.length > 0) {
+
+        } else if(roles.length > 0 || permissions.length > 0) {
 
             accessDenied();
             return null;
         }
-
 
         return joinPoint.proceed();
     }
@@ -76,22 +99,20 @@ public class AccessSecuredAspect {
     private void accessDenied() {
 
         HttpServletRequest request = ProjectBeanHolder.getCurrentHttpRequest();
-
         HttpServletResponse response =  ProjectBeanHolder.getCurrentHttpResponse();
 
         if(request != null && response != null) {
 
             try {
-                ProjectBeanHolder.getAccessDeniedHandler().handle(request, response, new AccessDeniedException("An exception occurred when getting access denied response."));
+
+                ProjectBeanHolder.getHttpAccessDeniedHandler().handle(request, response, new AccessDeniedException("An exception occurred when getting access denied response."));
+
             } catch (IOException | ServletException e) {
                 e.printStackTrace();
             }
         } else {
 
-            //TODO netty type user
+            //TODO handle netty no permission here
         }
-
-
-
     }
 }

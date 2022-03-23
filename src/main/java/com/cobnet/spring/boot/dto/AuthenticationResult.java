@@ -1,8 +1,8 @@
 package com.cobnet.spring.boot.dto;
 
-import com.cobnet.spring.boot.dto.support.MappedPacket;
+import com.cobnet.spring.boot.dto.support.HttpMapTransmission;
 
-public class AuthenticationResult extends MappedPacket {
+public class AuthenticationResult extends HttpMapTransmission {
 
     private final boolean authenticated;
 

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
+//TODO cache
 @Repository
 public interface UserRoleRepository extends JPABaseRepository<UserRole, String> {
 

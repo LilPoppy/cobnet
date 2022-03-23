@@ -1,4 +1,4 @@
-package com.cobnet.spring.boot.controller.utils;
+package com.cobnet.spring.boot.controller.support;
 
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import org.springframework.core.ResolvableType;
@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import java.util.HashMap;
 import java.util.Map;
 
-public class AuthorizationHelper {
+public class OAuth2RegistryRepositoryHelper {
 
     public static Map<String, String> getRegistrationUrls() {
 

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+//TODO cache
 @Repository
 public interface UserRepository extends JPABaseRepository<User, String>, UserDetailsService {
 

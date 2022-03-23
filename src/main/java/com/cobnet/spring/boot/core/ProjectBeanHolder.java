@@ -5,6 +5,9 @@ import com.cobnet.interfaces.spring.repository.UserRepository;
 import com.cobnet.interfaces.spring.repository.UserRoleRepository;
 import com.cobnet.spring.boot.configuration.*;
 import com.cobnet.spring.boot.controller.UserInfoController;
+import com.cobnet.spring.boot.controller.handler.http.HttpAccessDeniedHandler;
+import com.cobnet.spring.boot.controller.handler.http.HttpAuthenticationFailureHandler;
+import com.cobnet.spring.boot.controller.handler.http.HttpAuthenticationSuccessHandler;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,7 +108,13 @@ public class ProjectBeanHolder {
 
     private static OidcUserService OIDC_USER_SERVICE;
 
-    private static AccessDeniedHandler ACCESS_DENIED_HANDLER;
+    private static HttpAuthenticationSuccessHandler HTTP_AUTHENTICATION_SUCCESS_HANDLER;
+
+    private static HttpAuthenticationFailureHandler HTTP_AUTHENTICATION_FAILURE_HANDLER;
+
+    private static HttpAccessDeniedHandler HTTP_ACCESS_DENIED_HANDLER;
+
+
 
     public static HttpServletRequest getCurrentHttpRequest() {
 
@@ -297,9 +306,19 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.OIDC_USER_SERVICE;
     }
 
-    public static AccessDeniedHandler getAccessDeniedHandler() {
+    public static HttpAuthenticationSuccessHandler getHttpAuthenticationSuccessHandler() {
 
-        return ProjectBeanHolder.ACCESS_DENIED_HANDLER;
+        return ProjectBeanHolder.HTTP_AUTHENTICATION_SUCCESS_HANDLER;
+    }
+
+    public static HttpAuthenticationFailureHandler getHttpAuthenticationFailureHandler() {
+
+        return ProjectBeanHolder.HTTP_AUTHENTICATION_FAILURE_HANDLER;
+    }
+
+    public static HttpAccessDeniedHandler getHttpAccessDeniedHandler() {
+
+        return ProjectBeanHolder.HTTP_ACCESS_DENIED_HANDLER;
     }
 
     @Component("autowireLoader")
@@ -512,9 +531,21 @@ public class ProjectBeanHolder {
         }
 
         @Autowired
-        public void setAccessDeniedHandler(AccessDeniedHandler handler) {
+        public void setHttpAuthenticationSuccessHandler(HttpAuthenticationSuccessHandler handler) {
 
-            ProjectBeanHolder.ACCESS_DENIED_HANDLER = handler;
+            ProjectBeanHolder.HTTP_AUTHENTICATION_SUCCESS_HANDLER = handler;
+        }
+
+        @Autowired
+        public void setHttpAuthenticationFailureHandler(HttpAuthenticationFailureHandler handler) {
+
+            ProjectBeanHolder.HTTP_AUTHENTICATION_FAILURE_HANDLER = handler;
+        }
+
+        @Autowired
+        public void setHttpAccessDeniedHandler(HttpAccessDeniedHandler handler) {
+
+            ProjectBeanHolder.HTTP_ACCESS_DENIED_HANDLER = handler;
         }
     }
 

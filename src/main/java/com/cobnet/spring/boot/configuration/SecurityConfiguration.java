@@ -1,8 +1,5 @@
 package com.cobnet.spring.boot.configuration;
 
-import com.cobnet.connection.handler.http.HttpAccessDeniedHandler;
-import com.cobnet.connection.handler.http.HttpAuthenticationFailureHandler;
-import com.cobnet.connection.handler.http.HttpAuthenticationSuccessHandler;
 import com.cobnet.security.OAuth2LoginAccountAuthenticationFilter;
 import com.cobnet.security.UserAuthenticationProvider;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
@@ -109,12 +106,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 //form login
                 .formLogin().loginPage(this.getLoginPageUrl()).loginProcessingUrl(this.getAuthenticationUrl()).failureUrl(this.getLoginFailureUrl())
                 .usernameParameter(this.getUsernameParameter()).passwordParameter(this.getPasswordParameter())
-                .successHandler(httpAuthenticationSuccessHandlerBean()).failureHandler(httpAuthenticationFailureHandlerBean()).and()
+                .successHandler(ProjectBeanHolder.getHttpAuthenticationSuccessHandler()).failureHandler(ProjectBeanHolder.getHttpAuthenticationFailureHandler()).and()
                 .userDetailsService(ProjectBeanHolder.getUserRepository())
                 .authenticationProvider(authenticationProviderBean())
                 //oauth2
                 .oauth2Login().loginPage(this.getLoginPageUrl()).failureUrl(this.getOauth2().getLoginFailureUrl())
-                .successHandler(this.httpAuthenticationSuccessHandlerBean()).failureHandler(this.httpAuthenticationFailureHandlerBean())
+                .successHandler(ProjectBeanHolder.getHttpAuthenticationSuccessHandler()).failureHandler(ProjectBeanHolder.getHttpAuthenticationFailureHandler())
                 .authorizationEndpoint().baseUri(this.getOauth2().getAuthenticationUrl()).and()
                 .userInfoEndpoint().oidcUserService(ProjectBeanHolder.getExternalUserRepository()).and().and()
                 //session
@@ -142,8 +139,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         OAuth2LoginAccountAuthenticationFilter filter = new OAuth2LoginAccountAuthenticationFilter(ProjectBeanHolder.getClientRegistrationRepository(), ProjectBeanHolder.getOauth2AuthorizedClientService());
         filter.setAuthenticationManager(ProjectBeanHolder.getAuthenticationManager());
-        filter.setAuthenticationSuccessHandler(httpAuthenticationSuccessHandlerBean());
-        filter.setAuthenticationFailureHandler(httpAuthenticationFailureHandlerBean());
+        filter.setAuthenticationSuccessHandler(ProjectBeanHolder.getHttpAuthenticationSuccessHandler());
+        filter.setAuthenticationFailureHandler(ProjectBeanHolder.getHttpAuthenticationFailureHandler());
         filter.setApplicationEventPublisher(ProjectBeanHolder.getApplicationEventPublisher());
         SessionCreationPolicy policy = getSessionCreationPolicy();
         filter.setAllowSessionCreation(policy != SessionCreationPolicy.NEVER && policy != SessionCreationPolicy.STATELESS);
@@ -164,24 +161,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         strategies.add(new RegisterSessionAuthenticationStrategy(sessionRegistryBean()));
 
         return new CompositeSessionAuthenticationStrategy(strategies);
-    }
-
-    @Bean
-    public AccessDeniedHandler httpAccessDeniedHandlerBean() {
-
-        return new HttpAccessDeniedHandler();
-    }
-
-    @Bean
-    public AuthenticationSuccessHandler httpAuthenticationSuccessHandlerBean() {
-
-        return new HttpAuthenticationSuccessHandler();
-    }
-
-    @Bean
-    public AuthenticationFailureHandler httpAuthenticationFailureHandlerBean() {
-
-        return new HttpAuthenticationFailureHandler();
     }
 
     @Bean

@@ -1,23 +1,31 @@
 package com.cobnet;
 
-import com.cobnet.interfaces.security.Permission;
+import com.cobnet.common.KeyValuePair;
+import com.cobnet.connection.NettyChannel;
+import com.cobnet.connection.NettyServer;
+import com.cobnet.connection.handler.ChannelInitializeHandler;
+import com.cobnet.connection.handler.ServerInitializeHandler;
+import com.cobnet.interfaces.connection.ChannelProvider;
 import com.cobnet.security.RoleRule;
 import com.cobnet.security.permission.UserPermission;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.User;
 import com.cobnet.spring.boot.entity.UserRole;
+import io.netty.channel.ChannelOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import java.io.IOException;
 import java.util.Arrays;
 
 @EnableEurekaClient
 @SpringBootApplication(proxyBeanMethods = false)
+@EnableAspectJAutoProxy(proxyTargetClass = false)
 public class EntryPoint {
 
 	private final static Logger LOG = LoggerFactory.getLogger(EntryPoint.class);
@@ -88,6 +96,8 @@ public class EntryPoint {
 
 		LOG.info(EntryPoint.getLogo());
 
+
+
 		User user = new User("admin", "123456", new UserRole("admin", RoleRule.ADMIN, new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")));
 
 		ProjectBeanHolder.getUserRepository().save(user);
@@ -96,6 +106,30 @@ public class EntryPoint {
 
 			System.exit(0);
 		}
+	}
+
+	@Bean
+	public NettyServer<NettyChannel> nettyServer() {
+
+		NettyServer<NettyChannel>  server = new NettyServer<>("tester") {
+
+			@Override
+			protected NettyServer<NettyChannel>.Builder builder(NettyServer<NettyChannel>.Builder builder) {
+
+				return builder.setChildOptions(new KeyValuePair<>(ChannelOption.TCP_NODELAY, true), new KeyValuePair<>(ChannelOption.SO_KEEPALIVE, true)).
+						setHandler(new ServerInitializeHandler<NettyServer<NettyChannel>, NettyChannel>(this)).
+						setChildHandler(new ChannelInitializeHandler<NettyServer<NettyChannel>, NettyChannel>(this) {
+
+					@Override
+					protected ChannelProvider<NettyServer<NettyChannel>, NettyChannel> getProvider() {
+						return NettyChannel::new;
+					}
+				});
+			}
+
+		}.bind(8091);
+
+		return server;
 	}
 
 	public static String getLogo() {

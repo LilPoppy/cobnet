@@ -1,10 +1,10 @@
 package com.cobnet.spring.boot.dto;
 
-import com.cobnet.spring.boot.dto.support.MappedPacket;
+import com.cobnet.spring.boot.dto.support.HttpMapTransmission;
 
 import java.util.Date;
 
-public class ConnectionToken extends MappedPacket {
+public class ConnectionToken extends HttpMapTransmission {
 
     private final Date initialTime;
 

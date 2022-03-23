@@ -1,9 +1,12 @@
 package com.cobnet.spring.boot.controller;
 
+import com.cobnet.interfaces.connection.annotation.EventHandler;
+import com.cobnet.interfaces.security.annotation.AccessSecured;
 import com.cobnet.spring.boot.configuration.SecurityConfiguration;
+import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.AuthenticationResult;
 import com.cobnet.spring.boot.dto.ConnectionToken;
-import com.cobnet.spring.boot.dto.support.MappedPacket;
+import com.cobnet.spring.boot.dto.support.HttpMapTransmission;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,11 +22,15 @@ import java.util.UUID;
 @RestController
 public class UserInfoController {
 
+    @EventHandler
+    public void test() {
+
+    }
 
     @GetMapping("/connectionToken")
     public Map<String, Object> connectionToken(HttpServletRequest request) throws IOException {
 
-        MappedPacket result = null;
+        HttpMapTransmission result = null;
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -52,6 +59,6 @@ public class UserInfoController {
 
         assert result != null;
 
-        return result.getRaw();
+        return result.getData();
     }
 }
