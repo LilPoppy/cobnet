@@ -5,11 +5,9 @@ import com.cobnet.interfaces.connection.InputTransmission;
 import com.cobnet.spring.boot.controller.handler.InboundOperation;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.util.Arrays;
 import java.util.Map;
 
 public class InboundPacket extends Packet implements InputTransmission<byte[]> {

@@ -1,13 +1,12 @@
 package com.cobnet.connection.websocket.handler;
 
-import com.cobnet.connection.support.handler.ChannelInitializerHandler;
+import com.cobnet.connection.support.handler.ChannelInitializeHandler;
 import com.cobnet.connection.websocket.WebSocketChannel;
 import com.cobnet.connection.websocket.WebSocketChannelProvider;
 import com.cobnet.connection.websocket.WebSocketServer;
 import com.cobnet.interfaces.connection.ChannelProvider;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import io.netty.channel.ChannelPipeline;
-import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
@@ -25,9 +24,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.security.*;
 
-public class WebSocketChannelInitializerHandler extends ChannelInitializerHandler<WebSocketServer, WebSocketChannel> {
+public class WebSocketChannelInitializeHandler extends ChannelInitializeHandler<WebSocketServer, WebSocketChannel> {
 
-    public WebSocketChannelInitializerHandler(WebSocketServer server) {
+    public WebSocketChannelInitializeHandler(WebSocketServer server) {
 
         super(server);
     }
@@ -42,7 +41,7 @@ public class WebSocketChannelInitializerHandler extends ChannelInitializerHandle
         pipe.addLast(new HttpObjectAggregator(65535));
         pipe.addLast(new WebSocketInboundUrlResolvingHandler(this.getServer()));
         pipe.addLast(new WebSocketServerProtocolHandler("/" + this.getServer().getName()));
-        pipe.addLast(new WebSocketFrameInboundHandler());
+        pipe.addLast(new WebSocketInboundFrameHandler());
     }
 
     @Override

@@ -3,7 +3,7 @@ package com.cobnet.connection.support;
 import com.cobnet.common.Endian;
 import com.cobnet.common.KeyValuePair;
 import com.cobnet.connection.support.handler.ChannelActivityHandler;
-import com.cobnet.connection.support.handler.ChannelInitializerHandler;
+import com.cobnet.connection.support.handler.ChannelInitializeHandler;
 import com.cobnet.connection.support.handler.ChannelPacketInboundHandler;
 import com.cobnet.interfaces.connection.ServerInitializer;
 import com.cobnet.interfaces.connection.TransmissionDecoder;
@@ -16,6 +16,7 @@ import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.AttributeKey;
+import io.netty.util.concurrent.DefaultThreadFactory;
 import io.netty.util.concurrent.GlobalEventExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -183,13 +184,13 @@ public abstract class NettyServer<T extends NettyChannel> extends DefaultChannel
 
         private Class<? extends ServerChannel> serverChannel = NioServerSocketChannel.class;
 
-        private EventLoopGroup group = new NioEventLoopGroup();
+        private EventLoopGroup group = new NioEventLoopGroup(0, new DefaultThreadFactory("netty-boss", true));
 
-        private EventLoopGroup childGroup = new NioEventLoopGroup();
+        private EventLoopGroup childGroup = new NioEventLoopGroup(0, new DefaultThreadFactory("netty-worker", true));
 
         private ServerInitializer<? extends NettyServer<T>> handler;
 
-        private ChannelInitializerHandler<? extends NettyServer<T>, T> childHandler;
+        private ChannelInitializeHandler<? extends NettyServer<T>, T> childHandler;
 
         private Map.Entry<ChannelOption<?>, ?>[] options = new KeyValuePair[]{};
 
@@ -259,7 +260,7 @@ public abstract class NettyServer<T extends NettyChannel> extends DefaultChannel
             return this;
         }
 
-        public Builder setChildHandler(ChannelInitializerHandler<? extends NettyServer<T>, T> childHandler) {
+        public Builder setChildHandler(ChannelInitializeHandler<? extends NettyServer<T>, T> childHandler) {
 
             this.childHandler = childHandler;
 
@@ -356,7 +357,7 @@ public abstract class NettyServer<T extends NettyChannel> extends DefaultChannel
             return handler;
         }
 
-        public ChannelInitializerHandler<? extends NettyServer<T>, T> getChildHandler() {
+        public ChannelInitializeHandler<? extends NettyServer<T>, T> getChildHandler() {
 
             return childHandler;
         }

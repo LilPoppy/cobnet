@@ -5,17 +5,12 @@ import com.cobnet.connection.support.NettyChannel;
 import com.cobnet.connection.websocket.WebSocketChannel;
 import com.cobnet.spring.boot.controller.handler.InboundOperation;
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
-import java.nio.CharBuffer;
-import java.util.Arrays;
-
-public class WebSocketFrameInboundHandler extends ChannelInboundHandlerAdapter {
+public class WebSocketInboundFrameHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {

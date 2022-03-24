@@ -15,11 +15,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 
 @ChannelHandler.Sharable
-public abstract class ChannelInitializerHandler<T extends NettyServer<E>, E extends NettyChannel> extends ChannelInitializer<NioSocketChannel> {
+public abstract class ChannelInitializeHandler<T extends NettyServer<E>, E extends NettyChannel> extends ChannelInitializer<NioSocketChannel> {
 
     private final T server;
 
-    public ChannelInitializerHandler(T server) {
+    public ChannelInitializeHandler(T server) {
 
         this.server = server;
     }
