@@ -32,7 +32,6 @@ public class InboundPacket extends Packet implements InputTransmission<byte[]> {
 
 		super(buf.array(), server);
 
-		System.out.println(buf.readableBytes() + ":" + Arrays.toString(buf.array()));
 		this.byteBuf = buf;
 
 		if(buf.readableBytes() >= 4) {
