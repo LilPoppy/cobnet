@@ -1,8 +1,5 @@
-package com.cobnet.connection;
+package com.cobnet.connection.support;
 
-import java.nio.charset.Charset;
-
-import com.cobnet.common.Endian;
 import com.cobnet.interfaces.connection.Transmission;
 import com.google.common.io.BaseEncoding;
 

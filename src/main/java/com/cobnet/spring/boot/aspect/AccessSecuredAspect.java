@@ -1,6 +1,5 @@
 package com.cobnet.spring.boot.aspect;
 
-import com.cobnet.connection.NettyChannel;
 import com.cobnet.interfaces.connection.AuthenticatableChannel;
 import com.cobnet.interfaces.connection.EventListener;
 import com.cobnet.interfaces.security.Account;

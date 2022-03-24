@@ -1,13 +1,15 @@
-package com.cobnet.connection.handler;
+package com.cobnet.connection.support.handler;
 
-import com.cobnet.connection.InboundPacket;
-import com.cobnet.connection.NettyChannel;
+import com.cobnet.connection.support.InboundPacket;
+import com.cobnet.connection.support.NettyChannel;
 import com.cobnet.interfaces.connection.EventListener;
 import com.cobnet.spring.boot.controller.handler.InboundOperation;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 
-public class ChannelInboundPacketHandler extends ChannelInboundHandler<InboundPacket> {
+@ChannelHandler.Sharable
+public class ChannelPacketInboundHandler extends ChannelTransmitInboundHandler<InboundPacket> {
 
     @Override
     public void channelRead0(ChannelHandlerContext ctx, InboundPacket input) {
@@ -34,9 +36,9 @@ public class ChannelInboundPacketHandler extends ChannelInboundHandler<InboundPa
             }
         }  else if(input.getOperation() != InboundOperation.UNKNOWN) {
 
-            LOG.warn(String.format("Unhandle packet: %s(%d)| %s |", input.getOperation().name(), input.getOpcode(), input.toString()));
+            LOG.warn(String.format("Unhandled packet: %s(%d)| %s |", input.getOperation().name(), input.getOpcode(), input.toString()));
 
-            //TODO unhandle operation action
+            //TODO unhandled operation action
         }
     }
 }

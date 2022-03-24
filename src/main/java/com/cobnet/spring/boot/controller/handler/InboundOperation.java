@@ -6,7 +6,8 @@ public enum InboundOperation {
 
 	UNKNOWN(0),
 	AUTHENTICATION(1),
-	RECONNECT(5);
+	RECONNECT(5),
+	WEBSOCKET_MESSAGE(10);
 	
 	private final long opcode;
 	

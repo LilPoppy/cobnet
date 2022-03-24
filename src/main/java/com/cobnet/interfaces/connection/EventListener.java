@@ -1,7 +1,7 @@
 package com.cobnet.interfaces.connection;
 
-import com.cobnet.connection.InboundPacket;
-import com.cobnet.connection.NettyChannel;
+import com.cobnet.connection.support.InboundPacket;
+import com.cobnet.connection.support.NettyChannel;
 
 public interface EventListener {
 

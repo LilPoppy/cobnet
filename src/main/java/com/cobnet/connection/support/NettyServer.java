@@ -1,8 +1,14 @@
-package com.cobnet.connection;
+package com.cobnet.connection.support;
 
 import com.cobnet.common.Endian;
 import com.cobnet.common.KeyValuePair;
-import com.cobnet.connection.handler.ChannelInitializeHandler;
+import com.cobnet.connection.support.handler.ChannelActivityHandler;
+import com.cobnet.connection.support.handler.ChannelInitializerHandler;
+import com.cobnet.connection.support.handler.ChannelPacketInboundHandler;
+import com.cobnet.interfaces.connection.ServerInitializer;
+import com.cobnet.interfaces.connection.TransmissionDecoder;
+import com.cobnet.interfaces.connection.TransmissionEncoder;
+import com.cobnet.interfaces.connection.TransmissionInboundHandler;
 import io.netty.channel.*;
 import io.netty.channel.group.ChannelGroupFuture;
 import io.netty.channel.group.ChannelMatcher;
@@ -19,6 +25,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 
 //TODO channel的集合；
 public abstract class NettyServer<T extends NettyChannel> extends DefaultChannelGroup {
@@ -37,7 +44,15 @@ public abstract class NettyServer<T extends NettyChannel> extends DefaultChannel
 
     private Charset charset;
 
-    protected abstract Builder builder(Builder builder);
+    private Supplier<TransmissionEncoder<T, ?>> encoder;
+
+    private Supplier<TransmissionDecoder<T, ?>> decoder;
+
+    private TransmissionInboundHandler<?> inboundHandler;
+
+    private ChannelActivityHandler<? extends NettyServer<T>, T> activityHandler;
+
+    protected abstract Builder build(Builder builder);
 
     protected NettyServer(String name) {
 
@@ -54,18 +69,42 @@ public abstract class NettyServer<T extends NettyChannel> extends DefaultChannel
     }
 
     public Endian getEndian() {
+
         return endian;
     }
 
     public Charset getCharset() {
+
         return charset;
     }
 
+    public Supplier<TransmissionEncoder<T, ?>> getEncoder() {
+
+        return encoder;
+    }
+
+    public Supplier<TransmissionDecoder<T, ?>> getDecoder() {
+
+        return decoder;
+    }
+
+    public TransmissionInboundHandler<?> getInboundHandler() {
+
+        return inboundHandler;
+    }
+
+    public ChannelActivityHandler<? extends NettyServer<T>, T> getActivityHandler() {
+
+        return activityHandler == null ? new NettyServerChannelActivityHandler<>(this) : activityHandler;
+    }
+
     public void setEndian(Endian endian) {
+
         this.endian = endian;
     }
 
     public void setCharset(Charset charset) {
+
         this.charset = charset;
     }
 
@@ -92,6 +131,10 @@ public abstract class NettyServer<T extends NettyChannel> extends DefaultChannel
     protected void bind(Builder builder) {
 
         ChannelAcceptor acceptor = new ChannelAcceptor(this, builder);
+        this.encoder = builder.encoder;
+        this.decoder = builder.decoder;
+        this.inboundHandler = builder.inboundHandler;
+        this.activityHandler = builder.activityHandler;
         Thread thread = new Thread(acceptor);
         thread.setName(this.getName());
         thread.start();
@@ -99,14 +142,14 @@ public abstract class NettyServer<T extends NettyChannel> extends DefaultChannel
 
     public NettyServer<T> bind(int port) {
 
-        this.bind(builder(new Builder().setInetPort(port)));
+        this.bind(build(new Builder().setInetPort(port)));
 
         return this;
     }
 
     public NettyServer<T> bind(String host, int port) {
 
-        this.bind(builder(new Builder().setInetHost(host).setInetPort(port)));
+        this.bind(build(new Builder().setInetHost(host).setInetPort(port)));
 
         return this;
     }
@@ -144,9 +187,9 @@ public abstract class NettyServer<T extends NettyChannel> extends DefaultChannel
 
         private EventLoopGroup childGroup = new NioEventLoopGroup();
 
-        private ChannelHandler handler;
+        private ServerInitializer<? extends NettyServer<T>> handler;
 
-        private ChannelInitializeHandler<? extends NettyServer<T>, T> childHandler;
+        private ChannelInitializerHandler<? extends NettyServer<T>, T> childHandler;
 
         private Map.Entry<ChannelOption<?>, ?>[] options = new KeyValuePair[]{};
 
@@ -155,6 +198,14 @@ public abstract class NettyServer<T extends NettyChannel> extends DefaultChannel
         private Map.Entry<AttributeKey<?>, ?>[] attributes = new KeyValuePair[]{};
 
         private Map.Entry<AttributeKey<?>, ?>[] childAttributes = new KeyValuePair[]{};;
+
+        private Supplier<TransmissionEncoder<T, ?>> encoder;
+
+        private Supplier<TransmissionDecoder<T, ?>> decoder;
+
+        private TransmissionInboundHandler<?> inboundHandler = new ChannelPacketInboundHandler();
+
+        private ChannelActivityHandler<? extends NettyServer<T>, T> activityHandler = null;
 
         Builder() {}
 
@@ -201,14 +252,14 @@ public abstract class NettyServer<T extends NettyChannel> extends DefaultChannel
             return this;
         }
 
-        public <E extends ChannelHandler, ServerInitilizer> Builder setHandler(E handler) {
+        public <E extends ServerInitializer<? extends NettyServer<T>>> Builder setHandler(E handler) {
 
             this.handler = handler;
 
             return this;
         }
 
-        public Builder setChildHandler(ChannelInitializeHandler<? extends NettyServer<T>, T> childHandler) {
+        public Builder setChildHandler(ChannelInitializerHandler<? extends NettyServer<T>, T> childHandler) {
 
             this.childHandler = childHandler;
 
@@ -247,48 +298,120 @@ public abstract class NettyServer<T extends NettyChannel> extends DefaultChannel
             return this;
         }
 
+        public Builder setEncoder(Supplier<TransmissionEncoder<T, ?>> encoder) {
+
+            this.encoder = encoder;
+
+            return this;
+        }
+
+        public Builder setDecoder(Supplier<TransmissionDecoder<T, ?>> decoder) {
+
+            this.decoder = decoder;
+
+            return this;
+        }
+
+        public Builder setInboundHandler(TransmissionInboundHandler<?> inboundHandler) {
+
+            this.inboundHandler = inboundHandler;
+
+            return this;
+        }
+
+        public Builder setActivityHandler(ChannelActivityHandler<? extends NettyServer<T>, T> activityHandler) {
+
+            this.activityHandler = activityHandler;
+
+            return this;
+        }
+
         public String getInetHost() {
+
             return inetHost;
         }
 
         public int getInetPort() {
+
             return inetPort;
         }
 
         public Class<? extends ServerChannel> getServerChannel() {
+
             return serverChannel;
         }
 
         public EventLoopGroup getGroup() {
+
             return group;
         }
 
         public EventLoopGroup getChildGroup() {
+
             return childGroup;
         }
 
-        public ChannelHandler getHandler() {
+        public ServerInitializer<? extends NettyServer<T>> getHandler() {
+
             return handler;
         }
 
-        public ChannelInitializeHandler<? extends NettyServer<T>, T> getChildHandler() {
+        public ChannelInitializerHandler<? extends NettyServer<T>, T> getChildHandler() {
+
             return childHandler;
         }
 
         public Map.Entry<ChannelOption<?>, ?>[] getOptions() {
+
             return options;
         }
 
         public Map.Entry<ChannelOption<?>, ?>[] getChildOptions() {
+
             return childOptions;
         }
 
         public Map.Entry<AttributeKey<?>, ?>[] getAttributes() {
+
             return attributes;
         }
 
         public Map.Entry<AttributeKey<?>, ?>[] getChildAttributes() {
+
             return childAttributes;
         }
+
+        public Supplier<TransmissionEncoder<T, ?>> getEncoder() {
+
+            return encoder;
+        }
+
+        public Supplier<TransmissionDecoder<T, ?>> getDecoder() {
+
+            return decoder;
+        }
+
+        public TransmissionInboundHandler<?> getInboundHandler() {
+
+            return inboundHandler;
+        }
+
+        public ChannelActivityHandler<? extends NettyServer<T>, T> getActivityHandler() {
+
+            return activityHandler;
+        }
+    }
+
+    private static class NettyServerChannelActivityHandler<T extends NettyChannel> extends ChannelActivityHandler<NettyServer<T>, T> {
+
+        public NettyServerChannelActivityHandler(NettyServer<T> server) {
+            super(server);
+        }
+
+        @Override
+        protected void channelActive(T channel) {}
+
+        @Override
+        protected void channelInactive(T channel) {}
     }
 }

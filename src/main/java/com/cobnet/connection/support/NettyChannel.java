@@ -1,6 +1,5 @@
-package com.cobnet.connection;
+package com.cobnet.connection.support;
 
-import com.cobnet.interfaces.connection.InputTransmission;
 import com.cobnet.interfaces.connection.Transmission;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.channel.*;

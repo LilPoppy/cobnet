@@ -1,4 +1,4 @@
-package com.cobnet.connection;
+package com.cobnet.connection.support;
 
 import com.cobnet.common.Endian;
 import com.cobnet.interfaces.connection.InputTransmission;
@@ -9,7 +9,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
-import java.nio.charset.Charset;
 import java.util.Map;
 
 public class InboundPacket extends Packet implements InputTransmission<byte[]> {

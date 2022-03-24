@@ -1,4 +1,4 @@
-package com.cobnet.connection;
+package com.cobnet.connection.support;
 
 import com.cobnet.common.Endian;
 import com.cobnet.interfaces.connection.Encodable;

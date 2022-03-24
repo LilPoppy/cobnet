@@ -47,9 +47,13 @@ public class HttpAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
         HttpSession session = request.getSession();
 
-        System.out.println("success login " + authentication);
+        System.out.println("successful logged in：" + authentication);
 
-        System.out.println(ProjectBeanHolder.getSessionRegistry().getAllSessions(authentication.getPrincipal(), true).stream().map(registry -> registry.getSessionId()).toList());
+        if(authentication.getPrincipal() instanceof User user) {
+
+
+            System.out.println("binding accounts：" + String.join(",", user.getExternalUsers().stream().map(ExternalUser::getUsername).toList()));
+        }
 
         if(session != null) {
 

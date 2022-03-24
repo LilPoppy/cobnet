@@ -1,6 +1,6 @@
 package com.cobnet.interfaces.connection.annotation;
 
-import com.cobnet.connection.NettyServer;
+import com.cobnet.connection.support.NettyServer;
 import com.cobnet.spring.boot.controller.handler.InboundOperation;
 
 import java.lang.annotation.ElementType;

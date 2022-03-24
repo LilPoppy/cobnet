@@ -1,17 +1,11 @@
 package com.cobnet;
 
-import com.cobnet.common.KeyValuePair;
-import com.cobnet.connection.NettyChannel;
-import com.cobnet.connection.NettyServer;
-import com.cobnet.connection.handler.ChannelInitializeHandler;
-import com.cobnet.connection.handler.ServerInitializeHandler;
-import com.cobnet.interfaces.connection.ChannelProvider;
+import com.cobnet.connection.websocket.WebSocketServer;
 import com.cobnet.security.RoleRule;
 import com.cobnet.security.permission.UserPermission;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.User;
 import com.cobnet.spring.boot.entity.UserRole;
-import io.netty.channel.ChannelOption;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -109,27 +103,9 @@ public class EntryPoint {
 	}
 
 	@Bean
-	public NettyServer<NettyChannel> nettyServer() {
+	public WebSocketServer webSocketServer() {
 
-		NettyServer<NettyChannel>  server = new NettyServer<>("tester") {
-
-			@Override
-			protected NettyServer<NettyChannel>.Builder builder(NettyServer<NettyChannel>.Builder builder) {
-
-				return builder.setChildOptions(new KeyValuePair<>(ChannelOption.TCP_NODELAY, true), new KeyValuePair<>(ChannelOption.SO_KEEPALIVE, true)).
-						setHandler(new ServerInitializeHandler<NettyServer<NettyChannel>, NettyChannel>(this)).
-						setChildHandler(new ChannelInitializeHandler<NettyServer<NettyChannel>, NettyChannel>(this) {
-
-					@Override
-					protected ChannelProvider<NettyServer<NettyChannel>, NettyChannel> getProvider() {
-						return NettyChannel::new;
-					}
-				});
-			}
-
-		}.bind(8091);
-
-		return server;
+		return (WebSocketServer) new WebSocketServer("web-socket").bind(8090);
 	}
 
 	public static String getLogo() {

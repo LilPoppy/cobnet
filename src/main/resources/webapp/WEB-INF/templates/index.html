@@ -2,79 +2,109 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Netty-Websocket</title>
-    <script type="text/javascript">
-
-        var socket;
-
-        if(!window.WebSocket){
-            window.WebSocket = window.MozWebSocket;
-        }
-
-        if(window.WebSocket){
-
-            socket = new WebSocket("wss://localhost:8090/web-socket");
-
-            socket.onmessage = function(event){
-                var ta = document.getElementById('responseText');
-                ta.value += event.data+"\r\n";
-            };
-            socket.onopen = function(event){
-                var ta = document.getElementById('responseText');
-                ta.value = "Netty-WebSocket服务器。。。。。。连接  \r\n";
-            };
-            socket.onclose = function(event){
-                var ta = document.getElementById('responseText');
-                ta.value = "Netty-WebSocket服务器。。。。。。关闭 \r\n";
-            };
-        }else {
-            alert("您的浏览器不支持WebSocket协议！");
-        }
-        
-        function sendText(message) {
-        
-            if(!window.WebSocket){ return; }
-            
-            if(socket.readyState == WebSocket.OPEN) {
-            
-                socket.send(message);
-                
-            } else {
-            
-                alert("WebSocket 连接没有建立成功！" + socket.readyState);
-            }
-        }
-        
-        function sendData(data) {
-        
-        	if(!window.WebSocket) { return; }
-
-        	if(socket.readyState == WebSocket.OPEN) {
-        		socket.send(data);
-        		
-        	} else {
-        	
-        		alert("WebSocket 连接没有建立成功！" + socket.readyState);
-        	}
-        }
- 
-    </script>
+    <title>Websocket</title>
 </head>
-
 <body>
 <form onSubmit="return false;">
-    <label>ID</label><input type="text" name="token" value="${token}" /> <br />
-    
-    <label>TEXT</label><input type="text" name="message" value="这里输入消息" />
-    <input type="button" value="发送ws消息"
-                  onClick="sendText(this.form.uid.value+':'+this.form.message.value)" />
+    <h4>Input</h4>
+    <input type="text" placeholder="Message" name="message" value="" />
+    <input type="button" value="send" onClick= "send(this.form.message.value)" />
     <br/>
-    <label>DATA</label><input type="number" size=4 name="header" value="" /><input type="text" name="data" value="" />
-    <input type="button" value="发送ws数据"
-    			  onClick="sendData(new TextEncoder().encode(this.form.data.value))" /> 
+    <input type="text" placeholder="Data" id="dataBox" style="text-transform: uppercase" name="data" value=""/>
+    <input type="button" value="send" onClick= "send(parseHexString(this.form.data.value))" />
     <hr color="black" />
-    <h3>服务端返回的应答消息</h3>
+    <h3>Output</h3>
     <textarea id="responseText" style="width: 1024px;height: 300px;"></textarea>
 </form>
 </body>
+<script type="text/javascript">
+
+    setInputFilter(document.getElementById('dataBox'), function(value) {
+
+        return /^[0-9a-f\s]*$/i.test(value) && /^(?!.*([\s])\1+).+$/.test(value) && value.split(/\s/).every(function(period) {
+
+            return period.length <= 8;
+        });
+    });
+
+    var socket;
+
+    if(!window.WebSocket){
+        window.WebSocket = window.MozWebSocket;
+    }
+
+    if(window.WebSocket){
+
+        socket = new WebSocket("wss://localhost:8090/web-socket");
+        socket.binaryType = "arraybuffer"
+        socket.onmessage = function(event) {
+            var ta = document.getElementById('responseText');
+            ta.value += event.data+"\r\n";
+        };
+
+        socket.onopen = function(event) {
+
+            var ta = document.getElementById('responseText');
+            ta.value = "Successfully connected to server.\r\n";
+        };
+
+        socket.onclose = function(event) {
+
+            var ta = document.getElementById('responseText');
+            ta.value = "Server is disconnected.\r\n";
+        };
+    }else {
+        alert("Your browser is not supported websocket！");
+    }
+
+    function parseArrayBuffer(str) {
+
+        let result = [];
+
+        let periods = str.split(" ");
+
+        for(let i = 0; i < periods.length; i++) {
+
+            result.push(parseInt(periods[i], 16));
+        }
+
+        return new Int32Array(new ArrayBuffer(result.length));
+    }
+
+
+    function send(message) {
+
+        if(!window.WebSocket){ return; }
+
+        if(socket.readyState === WebSocket.OPEN) {
+
+            socket.send(message);
+
+        } else {
+
+            alert("Connection failure." + socket.readyState);
+        }
+    }
+
+
+    function setInputFilter(textbox, inputFilter) {
+
+        ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop"].forEach(function(event) {
+
+            textbox.addEventListener(event, function() {
+
+                if (inputFilter(this.value)) {
+                    this.oldValue = this.value;
+                    this.oldSelectionStart = this.selectionStart;
+                    this.oldSelectionEnd = this.selectionEnd;
+                } else if (this.hasOwnProperty("oldValue")) {
+                    this.value = this.oldValue;
+                    this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+                } else {
+                    this.value = "";
+                }
+            });
+        });
+    }
+</script>
 </html>

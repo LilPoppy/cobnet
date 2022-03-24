@@ -1,6 +1,7 @@
-package com.cobnet.connection.handler;
+package com.cobnet.connection.support.handler;
 
-import com.cobnet.connection.NettyServer;
+import com.cobnet.connection.support.NettyServer;
+import io.netty.channel.ChannelHandler;
 import io.netty.handler.ipfilter.IpFilterRule;
 import io.netty.handler.ipfilter.IpFilterRuleType;
 import org.apache.logging.log4j.LogManager;
@@ -8,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.net.InetSocketAddress;
 
+@ChannelHandler.Sharable
 public class IpFilterRuleHandler<T extends NettyServer<?>> implements IpFilterRule {
 
 	protected static Logger log = LogManager.getLogger(IpFilterRuleHandler.class);

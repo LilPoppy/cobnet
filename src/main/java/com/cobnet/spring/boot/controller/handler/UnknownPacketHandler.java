@@ -1,12 +1,9 @@
 package com.cobnet.spring.boot.controller.handler;
 
-import com.cobnet.connection.InboundPacket;
-import com.cobnet.connection.NettyChannel;
-import com.cobnet.connection.NettyServer;
-import com.cobnet.connection.web.WebSocketServer;
+import com.cobnet.connection.support.InboundPacket;
+import com.cobnet.connection.support.NettyChannel;
 import com.cobnet.interfaces.connection.EventListener;
 import com.cobnet.interfaces.connection.annotation.EventHandler;
-import com.cobnet.interfaces.security.annotation.AccessSecured;
 import org.springframework.stereotype.Controller;
 
 @Controller
