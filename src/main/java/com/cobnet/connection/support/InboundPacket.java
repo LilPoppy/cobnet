@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 
+import java.util.Arrays;
 import java.util.Map;
 
 public class InboundPacket extends Packet implements InputTransmission<byte[]> {
@@ -26,22 +27,20 @@ public class InboundPacket extends Packet implements InputTransmission<byte[]> {
 
 		this(Unpooled.copiedBuffer(data), server);
 	}
-	
-	
+
 	public InboundPacket(ByteBuf buf, NettyServer<?> server) {
 
 		super(buf.array(), server);
 
-		this.byteBuf = buf.copy();
+		System.out.println(buf.readableBytes() + ":" + Arrays.toString(buf.array()));
+		this.byteBuf = buf;
 
 		if(buf.readableBytes() >= 4) {
 
 			this.decodeHeader();
 		}
-
 	}
 
-    
     public InboundOperation getOperation() {
 
     	return InboundOperation.getByCode(opcode);
@@ -62,30 +61,13 @@ public class InboundPacket extends Packet implements InputTransmission<byte[]> {
     	this.opcode = decodeUInt();
     }
     
-    public byte[] decode(long length) {
-    	
-    	
-    	ByteBuf buf = null;
-    	
-    	if(length > Integer.MAX_VALUE) {
-    		
-    		buf = Unpooled.buffer();
+    public byte[] decode(int length) {
 
-    	} else {
-    		
-    		buf = Unpooled.buffer((int)length);
-    	}
-    	
-    	long left = length;
-		
-    	for(int i = 0; i < Math.ceil(length / (double)Integer.MAX_VALUE); i++) {
-    		
-    		buf.writeBytes(byteBuf.readBytes(left > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int)left));
-    		
-    		left -= left > Integer.MAX_VALUE ? Integer.MAX_VALUE : left;
-    	}
-    	
-    	return buf.array();
+		byte[] bs = new byte[length];
+
+		this.byteBuf.readBytes(bs);
+
+    	return bs;
     }
     
     public byte decodeByte() {
@@ -135,7 +117,7 @@ public class InboundPacket extends Packet implements InputTransmission<byte[]> {
 
     		return byteBuf.readUnsignedInt();
     	}
-    	
+
     	return byteBuf.readUnsignedIntLE();
     }
     
@@ -173,24 +155,14 @@ public class InboundPacket extends Packet implements InputTransmission<byte[]> {
 
     	long size = this.decodeUInt();
 
-    	return new String(this.decode(size), this.getServer().getCharset());
+		byte[] bs = this.decode((int)size);
+
+    	return new String(bs, this.getServer().getCharset());
     }
     
-    public String decodeText() {
-
-    	long size = this.decodeLong();
-
-    	return new String(this.decode(size), this.getServer().getCharset());
-    }
-    
-	public Map<?,?> decodeMap() throws JsonMappingException, JsonProcessingException {
+	public Map<?,?> decodeMap() throws JsonProcessingException {
 
     	return ProjectBeanHolder.getObjectMapper().readValue(decodeString(), Map.class);
-    }
-    
-	public Map<?,?> decodeBigMap() throws JsonMappingException, JsonProcessingException {
-
-    	return ProjectBeanHolder.getObjectMapper().readValue(decodeText(), Map.class);
     }
 
     @Override

@@ -23,11 +23,9 @@ public class WebSocketInboundUrlResolvingHandler extends ChannelInboundHandlerAd
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 
-        System.out.println("@@@@0");
         super.channelRead(ctx, msg);
-        System.out.println("@@@@1");
+
         if (msg instanceof FullHttpRequest request) {
-            System.out.println("@@@@2");
 
             String uri = request.uri();
 

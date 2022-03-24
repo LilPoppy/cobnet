@@ -11,7 +11,7 @@
     <input type="button" value="send" onClick= "send(this.form.message.value)" />
     <br/>
     <input type="text" placeholder="Data" id="dataBox" style="text-transform: uppercase" name="data" value=""/>
-    <input type="button" value="send" onClick= "send(parseHexString(this.form.data.value))" />
+    <input type="button" value="send" onClick= "send(parseArrayBuffer(this.form.data.value))" />
     <hr color="black" />
     <h3>Output</h3>
     <textarea id="responseText" style="width: 1024px;height: 300px;"></textarea>
@@ -59,16 +59,10 @@
 
     function parseArrayBuffer(str) {
 
-        let result = [];
+        return new Uint8Array(str.split(" ").map(function (h) {
 
-        let periods = str.split(" ");
-
-        for(let i = 0; i < periods.length; i++) {
-
-            result.push(parseInt(periods[i], 16));
-        }
-
-        return new Int32Array(new ArrayBuffer(result.length));
+            return parseInt(h, 16);
+        })).buffer;
     }
 
 

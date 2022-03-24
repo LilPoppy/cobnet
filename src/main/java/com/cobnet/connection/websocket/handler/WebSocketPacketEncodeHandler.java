@@ -10,7 +10,6 @@ public class WebSocketPacketEncodeHandler extends ChannelPacketEncoder<WebSocket
     @Override
     public byte[] encode(WebSocketChannel channel, OutboundPacket msg) {
 
-        System.out.println("a");
         return msg.getData();
     }
 }

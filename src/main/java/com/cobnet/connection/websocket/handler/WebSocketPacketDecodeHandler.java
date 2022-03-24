@@ -10,7 +10,7 @@ public class WebSocketPacketDecodeHandler extends ChannelPacketDecoder<WebSocket
 
     @Override
     public InboundPacket decode(WebSocketChannel channel, ByteBuf in) {
-        System.out.println(new InboundPacket(Unpooled.copiedBuffer(in.readBytes(in.readableBytes())), channel.getServer()));
+
         return new InboundPacket(Unpooled.copiedBuffer(in.readBytes(in.readableBytes())), channel.getServer());
     }
 }

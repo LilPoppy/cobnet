@@ -6,41 +6,49 @@ import com.cobnet.connection.websocket.WebSocketChannel;
 import com.cobnet.spring.boot.controller.handler.InboundOperation;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.websocketx.BinaryWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 
 import java.nio.CharBuffer;
+import java.util.Arrays;
 
 public class WebSocketFrameInboundHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
 
-        System.out.println("@@@@3");
         if(ctx.channel().attr(NettyChannel.CHANNEL_KEY).get() instanceof WebSocketChannel channel) {
 
             if(msg instanceof BinaryWebSocketFrame binary) {
-                System.out.println("binary");
+
                 super.channelRead(ctx, binary.content());
                 return;
             }
 
             if(msg instanceof TextWebSocketFrame text) {
 
+                ByteBuf buf = ctx.alloc().buffer(4);
 
+                byte[] bs = text.text().getBytes(channel.getServer().getCharset());
 
-                ByteBuf buf = ByteBufUtil.encodeString(ctx.alloc(), CharBuffer.wrap(text.text()), channel.getServer().getCharset());
-                System.out.println(buf);
-                if(channel.getServer().getEndian() == Endian.BIG) {
+                int opcode = (int)(InboundOperation.WEBSOCKET_MESSAGE.code() & 0xFFFFFFFFL);
+                int length = (int)(bs.length & 0xFFFFFFFFL);
 
-                    buf.setLong(0, InboundOperation.WEBSOCKET_MESSAGE.code());
+                if(channel.getServer().getEndian() == Endian.LITTLE) {
+
+                    buf.writeIntLE(opcode);
+                    buf.writeIntLE(length);
 
                 } else {
 
-                    buf.setLong(0, InboundOperation.WEBSOCKET_MESSAGE.code());
+                    buf.writeInt(opcode);
+                    buf.writeInt(length);
                 }
+
+                buf.writeBytes(bs);
 
                 super.channelRead(ctx, buf);
             }

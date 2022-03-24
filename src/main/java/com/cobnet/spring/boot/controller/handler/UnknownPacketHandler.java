@@ -13,7 +13,7 @@ public class UnknownPacketHandler implements EventListener {
     @Override
     public boolean onEvent(NettyChannel channel, InboundPacket packet) {
 
-        System.out.println("on event");
+        System.out.println("Unknown packet");
 
         return false;
     }
