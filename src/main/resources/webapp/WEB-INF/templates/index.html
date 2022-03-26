@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en-US">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>Websocket</title>
@@ -7,14 +7,16 @@
 <body>
 <form onSubmit="return false;">
     <h4>Input</h4>
-    <input type="text" placeholder="Message" name="message" value="" />
+    <label>
+        <input type="text" placeholder="Message" name="message" value="" />
+    </label>
     <input type="button" value="send" onClick= "send(this.form.message.value)" />
     <br/>
-    <input type="text" placeholder="Data" id="dataBox" style="text-transform: uppercase" name="data" value=""/>
+    <label for="dataBox"></label><input type="text" placeholder="Data" id="dataBox" style="text-transform: uppercase" name="data" value=""/>
     <input type="button" value="send" onClick= "send(parseArrayBuffer(this.form.data.value))" />
     <hr color="black" />
     <h3>Output</h3>
-    <textarea id="responseText" style="width: 1024px;height: 300px;"></textarea>
+    <label for="responseText"></label><textarea id="responseText" style="width: 1024px;height: 300px;"></textarea>
 </form>
 </body>
 <script type="text/javascript">

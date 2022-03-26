@@ -19,7 +19,7 @@ public class WebscocketMessageHandler implements EventListener {
     public boolean onEvent(NettyChannel channel, InboundPacket packet) {
 
         //TODO I don't know
-        String massage = packet.decodeString();
+        String massage = packet.decodeText();
 
         LOG.info(String.format("%s: %s", channel.remoteAddress(), massage));
 

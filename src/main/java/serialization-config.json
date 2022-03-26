@@ -1,5 +1,53 @@
 [
   {
+    "name":"com.cobnet.spring.boot.controller.UserInfoController$$EnhancerBySpringCGLIB$$73924074",
+    "customTargetConstructorClass":"java.lang.Object"
+  },
+  {
+    "name":"com.cobnet.spring.boot.controller.UserInfoController$$EnhancerBySpringCGLIB$$a46974d",
+    "customTargetConstructorClass":"java.lang.Object"
+  },
+  {
+    "name":"com.cobnet.spring.boot.controller.UserInfoController$$EnhancerBySpringCGLIB$$ce22a2e4",
+    "customTargetConstructorClass":"java.lang.Object"
+  },
+  {
+    "name":"com.cobnet.spring.boot.controller.handler.AuthenticationPacketHandler$$EnhancerBySpringCGLIB$$517f21b9",
+    "customTargetConstructorClass":"java.lang.Object"
+  },
+  {
+    "name":"com.cobnet.spring.boot.controller.handler.AuthenticationPacketHandler$$EnhancerBySpringCGLIB$$ac0f8429",
+    "customTargetConstructorClass":"java.lang.Object"
+  },
+  {
+    "name":"com.cobnet.spring.boot.controller.handler.AuthenticationPacketHandler$$EnhancerBySpringCGLIB$$e8337892",
+    "customTargetConstructorClass":"java.lang.Object"
+  },
+  {
+    "name":"com.cobnet.spring.boot.controller.handler.UnknownPacketHandler$$EnhancerBySpringCGLIB$$13ab0229",
+    "customTargetConstructorClass":"java.lang.Object"
+  },
+  {
+    "name":"com.cobnet.spring.boot.controller.handler.UnknownPacketHandler$$EnhancerBySpringCGLIB$$6e3b6499",
+    "customTargetConstructorClass":"java.lang.Object"
+  },
+  {
+    "name":"com.cobnet.spring.boot.controller.handler.UnknownPacketHandler$$EnhancerBySpringCGLIB$$aa5f5902",
+    "customTargetConstructorClass":"java.lang.Object"
+  },
+  {
+    "name":"com.cobnet.spring.boot.controller.handler.WebscocketMessageHandler$$EnhancerBySpringCGLIB$$74519bb0",
+    "customTargetConstructorClass":"java.lang.Object"
+  },
+  {
+    "name":"com.cobnet.spring.boot.controller.handler.WebscocketMessageHandler$$EnhancerBySpringCGLIB$$b05f289",
+    "customTargetConstructorClass":"java.lang.Object"
+  },
+  {
+    "name":"com.cobnet.spring.boot.controller.handler.WebscocketMessageHandler$$EnhancerBySpringCGLIB$$cee1fe20",
+    "customTargetConstructorClass":"java.lang.Object"
+  },
+  {
     "name":"com.storechain.spring.boot.controller.TestRestController$$EnhancerBySpringCGLIB$$691caf03",
     "customTargetConstructorClass":"java.lang.Object"
   },

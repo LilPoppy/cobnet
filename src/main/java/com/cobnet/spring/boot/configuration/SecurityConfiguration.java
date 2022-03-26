@@ -21,9 +21,6 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
-import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.session.*;
 
 import java.util.ArrayList;
@@ -43,7 +40,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public final static String CONNECTION_TOKEN = "CONNECTION_TOKEN";
 
-    final static String[] PERMITTED_MATCHERS = { "/register", "/checkRegistry", "/authenticate", "/login/oauth2/redirect/binding" };
+    final static String[] PERMITTED_MATCHERS = { "/register", "/checkRegistry", "/authenticate", "/login/oauth2/redirect/binding", "/oauth2/registration-urls", "/sms/reply" };
 
     private byte permissionDefaultPower;
 
@@ -96,30 +93,28 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //        return super.authenticationManagerBean();
 //    }
 
-
     @Override
     protected void configure(HttpSecurity security) throws Exception {
 
+        System.out.println(Arrays.toString(this.getPermittedMatchers()));
         security.csrf().disable()
                 //authorize config
                 .authorizeRequests().antMatchers(this.getPermittedMatchers()).permitAll().anyRequest().authenticated().and()
                 //form login
-                .formLogin().loginPage(this.getLoginPageUrl()).loginProcessingUrl(this.getAuthenticationUrl()).failureUrl(this.getLoginFailureUrl())
+                .formLogin().loginPage(this.getLoginPageUrl()).loginProcessingUrl(this.getAuthenticationUrl())
                 .usernameParameter(this.getUsernameParameter()).passwordParameter(this.getPasswordParameter())
                 .successHandler(ProjectBeanHolder.getHttpAuthenticationSuccessHandler()).failureHandler(ProjectBeanHolder.getHttpAuthenticationFailureHandler()).and()
                 .userDetailsService(ProjectBeanHolder.getUserRepository())
                 .authenticationProvider(authenticationProviderBean())
                 //oauth2
-                .oauth2Login().loginPage(this.getLoginPageUrl()).failureUrl(this.getOauth2().getLoginFailureUrl())
+                .oauth2Login().loginPage(this.getLoginPageUrl())
                 .successHandler(ProjectBeanHolder.getHttpAuthenticationSuccessHandler()).failureHandler(ProjectBeanHolder.getHttpAuthenticationFailureHandler())
                 .authorizationEndpoint().baseUri(this.getOauth2().getAuthenticationUrl()).and()
                 .userInfoEndpoint().oidcUserService(ProjectBeanHolder.getExternalUserRepository()).and().and()
                 //session
                 .sessionManagement().sessionAuthenticationStrategy(compositeSessionAuthenticationStrategyBean()).sessionCreationPolicy(getSessionCreationPolicy()).maximumSessions(1).sessionRegistry(sessionRegistryBean());
-
                 //filter
                 security.addFilterBefore(oAuth2LoginAccountAuthenticationFilterBean(), OAuth2LoginAuthenticationFilter.class);
-
     }
 
     protected SessionCreationPolicy getSessionCreationPolicy() {
@@ -171,8 +166,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public String[] getPermittedMatchers() {
 
-        return Stream.concat(Arrays.stream(PERMITTED_MATCHERS),
-                Arrays.stream(new String[]{this.getLoginPageUrl(), this.getLoginFailureUrl(), this.getAuthenticationUrl(), this.getOauth2().getLoginFailureUrl(), this.getOauth2().getAuthenticationUrl() + "/*", this.getOauth2().getRedirectUrl() + "/*"})).toArray(String[]::new);
+        return Stream.concat(Arrays.stream(PERMITTED_MATCHERS), Stream.of(this.getLoginPageUrl(), this.getLoginFailureUrl(), this.getAuthenticationUrl(), this.getOauth2().getLoginFailureUrl(), this.getOauth2().getAuthenticationUrl() + "/*", this.getOauth2().getRedirectUrl() + "/*")).distinct().filter(url -> url != null && url.length() > 0).toArray(String[]::new);
     }
 
     public byte getPermissionDefaultPower() {
@@ -291,5 +285,4 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             this.loginFailureUrl = loginFailureUrl;
         }
     }
-
 }

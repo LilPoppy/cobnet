@@ -26,7 +26,7 @@ public abstract class ChannelActivityHandler<T extends NettyServer<E>, E extends
 
         NettyChannel channel = ctx.channel().attr(NettyChannel.CHANNEL_KEY).get();
 
-        LOG.info(String.format("%s has connected to server of %s.", channel instanceof AuthenticatableChannel authenticated ? authenticated.getAccount().getUsername() : channel.remoteAddress(), this.getServer().getName()));
+        LOG.info(String.format("%s has connected to server of %s.", channel instanceof AuthenticatableChannel authenticated && authenticated.getAccount() != null ? authenticated.getAccount().getUsername() : channel.remoteAddress(), this.getServer().getName()));
 
         try {
 
@@ -44,7 +44,7 @@ public abstract class ChannelActivityHandler<T extends NettyServer<E>, E extends
 
         NettyChannel channel = ctx.channel().attr(NettyChannel.CHANNEL_KEY).get();
 
-        LOG.info(String.format("%s has disconnected from server of %s.", channel instanceof AuthenticatableChannel authenticated ? authenticated.getAccount().getUsername() : channel.remoteAddress(), this.getServer().getName()));
+        LOG.info(String.format("%s has disconnected from server of %s.", channel instanceof AuthenticatableChannel authenticated && authenticated.getAccount() != null ? authenticated.getAccount().getUsername() : channel.remoteAddress(), this.getServer().getName()));
 
         try {
 

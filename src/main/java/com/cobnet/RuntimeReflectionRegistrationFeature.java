@@ -1,6 +1,7 @@
 package com.cobnet;
 
 import com.cobnet.interfaces.connection.EventListener;
+import com.cobnet.interfaces.connection.annotation.EventHandler;
 import com.cobnet.interfaces.security.annotation.AccessSecured;
 import com.oracle.svm.core.annotate.AutomaticFeature;
 import com.oracle.svm.hosted.FeatureImpl;
@@ -21,7 +22,7 @@ public class RuntimeReflectionRegistrationFeature implements Feature {
 		
 	    try {
 			RuntimeReflection.register(AccessSecured.class);
-			RuntimeReflection.register(EventListener.class);
+			RuntimeReflection.register(EventHandler.class);
 //			RuntimeReflection.register(AbstractHandlerMethodMapping.class);
 //			RuntimeReflection.register(AbstractHandlerMethodMapping.class.getConstructors());
 //			RuntimeReflection.register(AbstractHandlerMethodMapping.class.getDeclaredClasses());

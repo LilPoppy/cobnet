@@ -3,22 +3,19 @@ package com.cobnet.spring.boot.dto;
 import com.cobnet.spring.boot.dto.support.HttpMapTransmission;
 
 import java.util.Date;
+import java.util.UUID;
 
 public class ConnectionToken extends HttpMapTransmission {
+
+    public static final String ATTRIBUTE_KEY = "CONNECTION_TOKEN";
 
     private final Date initialTime;
 
     private String token;
 
-    private String address;
-
-    private int port;
-
-    public ConnectionToken(Date initialTime, String token, String address, int port) {
+    public ConnectionToken(Date initialTime, String token) {
         this.initialTime = initialTime;
         this.token = token;
-        this.address = address;
-        this.port = port;
     }
 
     public Date getInitialTime() {
@@ -34,15 +31,8 @@ public class ConnectionToken extends HttpMapTransmission {
         this.token = token;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
+    public static ConnectionToken generate() {
 
-    public String getAddress() {
-        return address;
-    }
-
-    public int getPort() {
-        return port;
+        return new ConnectionToken(new Date(System.currentTimeMillis()), UUID.randomUUID().toString());
     }
 }

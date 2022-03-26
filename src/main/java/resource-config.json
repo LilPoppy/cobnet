@@ -68,10 +68,58 @@
       "pattern":"\\Qcom/cobnet/common/utils/AbstractListWrapper.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/common/wrapper/AbstractListWrapper.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/common/wrapper/AbstractSetWrapper.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/connection/support/NettyChannel.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/connection/support/NettyServer.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/connection/support/Packet.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/connection/support/handler/ChannelActivityHandler.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/connection/support/handler/ChannelInitializeHandler.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/connection/support/handler/ChannelPacketDecoder.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/connection/support/handler/ChannelPacketEncoder.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/connection/support/handler/ChannelPacketInboundHandler.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/connection/support/handler/ChannelTransmitDecoder.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/connection/support/handler/ChannelTransmitEncoder.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/connection/support/handler/ChannelTransmitInboundHandler.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/connection/support/handler/ServerInitializerHandler.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/event/ArgsApplicationEvent.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/event/account/AccountEvent.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/event/polyglot/PolyglotEvent.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/exception/NettyServerRuntimeException.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/interfaces/PolyglotContextGroup.class\\E"
@@ -80,16 +128,73 @@
       "pattern":"\\Qcom/cobnet/interfaces/TreeNode.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/interfaces/connection/ChannelProvider.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/connection/EventListener.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/connection/InputTransmission.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/interfaces/connection/Packet.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/interfaces/connection/ServerInitializer.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/connection/Transmission.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/connection/TransmissionDecoder.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/connection/TransmissionEncoder.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/connection/TransmissionInboundHandler.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/connection/annotation/EventHandler.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/event/Cancellable.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/security/Account.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/security/Permissible.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/security/Permission.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/security/annotation/AccessSecured.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/spring/repository/ExternalUserRepository.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/spring/repository/JPABaseRepository.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/interfaces/spring/repository/JpaExtensionRepository.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/spring/repository/UserRepository.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/interfaces/spring/repository/UserRoleRepository.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/interfaces/spring/repository/\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/aspect/AccessSecuredAspect.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/aspect/EventHandlerAspect.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/cache/redis/RedisMessageListener.class\\E"
@@ -125,7 +230,16 @@
       "pattern":"\\Qcom/cobnet/spring/boot/configuration/ProjectConfiguration.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/RedisConfiguration$ClusterConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/RedisConfiguration$MessageConfiguration.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/spring/boot/configuration/RedisConfiguration$PoolConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/RedisConfiguration$SentinelConfiguration.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/configuration/RedisConfiguration.class\\E"
@@ -152,6 +266,24 @@
       "pattern":"\\Qcom/cobnet/spring/boot/controller/UserInfoController.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/spring/boot/controller/handler/AuthenticationPacketHandler.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/controller/handler/UnknownPacketHandler.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/controller/handler/WebscocketMessageHandler.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/controller/handler/http/HttpAccessDeniedHandler.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/controller/handler/http/HttpAuthenticationFailureHandler.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/controller/handler/http/HttpAuthenticationSuccessHandler.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/spring/boot/core/ProjectBeanHolder$AutowireLoader.class\\E"
     }, 
     {
@@ -167,7 +299,34 @@
       "pattern":"\\Qcom/cobnet/spring/boot/dto/MappedPacket.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/spring/boot/dto/support/HttpMapTransmission.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/entity/EntityBase.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/entity/ExternalUser.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/entity/User.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/spring/boot/entity/UserRole.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/entity/support/JsonMapConverter.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/entity/support/JsonPermissionSetConverter.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/entity/support/JsonSetConverter.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/service/RedisMessageListener.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/fasterxml/jackson/core/type/TypeReference.class\\E"
     }, 
     {
       "pattern":"\\Qcom/google/common/reflect/TypeCapture.class\\E"
@@ -404,6 +563,9 @@
       "pattern":"\\Qio/netty/channel/ChannelOutboundHandler.class\\E"
     }, 
     {
+      "pattern":"\\Qio/netty/channel/ChannelOutboundHandlerAdapter.class\\E"
+    }, 
+    {
       "pattern":"\\Qio/netty/channel/ChannelOutboundInvoker.class\\E"
     }, 
     {
@@ -417,6 +579,9 @@
     }, 
     {
       "pattern":"\\Qio/netty/handler/codec/ByteToMessageDecoder.class\\E"
+    }, 
+    {
+      "pattern":"\\Qio/netty/handler/codec/MessageToByteEncoder.class\\E"
     }, 
     {
       "pattern":"\\Qio/netty/handler/ipfilter/IpFilterRule.class\\E"
@@ -1701,6 +1866,9 @@
     }, 
     {
       "pattern":"\\Qorg/springframework/security/core/Authentication.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/security/core/AuthenticationException.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/security/core/CredentialsContainer.class\\E"

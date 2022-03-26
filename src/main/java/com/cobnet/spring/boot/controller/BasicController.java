@@ -15,12 +15,18 @@ public class BasicController {
 
         model.addAttribute("urls", OAuth2RegistryRepositoryHelper.getRegistrationUrls());
 
-        return "login";
+        return "login.html";
     }
 
     @GetMapping("/index")
     public String index(HttpServletRequest request) {
 
-        return "index";
+        return "index.html";
+    }
+
+    @GetMapping("/index.js")
+    public String indexJS(HttpServletRequest request) {
+
+        return "index.js";
     }
 }

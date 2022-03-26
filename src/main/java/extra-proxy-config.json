@@ -60,4 +60,8 @@
   ,
   {
     "interfaces" :[ "org.springframework.context.ResourceLoaderAware", "org.springframework.context.ApplicationContextAware",  "org.springframework.web.context.ServletContextAware"]}
+  ,
+  {
+    "interfaces" :[ "org.springframework.beans.factory.BeanClassLoaderAware", "org.springframework.context.EmbeddedValueResolverAware",  "org.springframework.context.annotation.ImportAware", "org.springframework.context.ApplicationContextAware"]}
+
 ]

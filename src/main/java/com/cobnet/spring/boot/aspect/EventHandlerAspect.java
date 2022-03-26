@@ -33,7 +33,7 @@ public class EventHandlerAspect {
 
             if(joinPoint.getArgs()[0] instanceof NettyChannel channel && joinPoint.getArgs()[1] instanceof InboundPacket packet) {
 
-                if((annotation.allowed().length == 0 || Arrays.stream(annotation.allowed()).anyMatch(server -> channel.getServer().getClass().isAssignableFrom(server))) && Arrays.stream(annotation.value()).anyMatch(opertaion -> opertaion == packet.getOperation())) {
+                if((annotation.allowed().length == 0 || Arrays.stream(annotation.allowed()).anyMatch(server -> channel.getServer().getClass().isAssignableFrom(server))) && Arrays.stream(annotation.value()).anyMatch(operation -> operation.code() == packet.getOperation().code())) {
 
                     return joinPoint.proceed(joinPoint.getArgs());
                 }

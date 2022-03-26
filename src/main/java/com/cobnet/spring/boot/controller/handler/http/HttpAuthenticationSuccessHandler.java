@@ -2,12 +2,18 @@ package com.cobnet.spring.boot.controller.handler.http;
 
 import com.cobnet.security.AccountAuthenticationToken;
 import com.cobnet.spring.boot.configuration.SecurityConfiguration;
+import com.cobnet.spring.boot.core.HttpRequestUrlResolver;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
+import com.cobnet.spring.boot.dto.AuthenticationResult;
+import com.cobnet.spring.boot.dto.ConnectionToken;
 import com.cobnet.spring.boot.entity.ExternalUser;
 import com.cobnet.spring.boot.entity.User;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import org.springframework.session.FindByIndexNameSessionRepository;
 import org.springframework.stereotype.Controller;
 
 import javax.servlet.ServletException;
@@ -15,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 @Controller
 public class HttpAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
@@ -26,6 +33,7 @@ public class HttpAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
             token.setDetails(new WebAuthenticationDetails(request));
 
+            System.out.println(ProjectBeanHolder.getRedisIndexedSessionRepository().findByPrincipalName(token.getPrincipal().getUsername()));
             //test to bind user
             if(token.getPrincipal() instanceof ExternalUser account) {
 
@@ -45,31 +53,45 @@ public class HttpAuthenticationSuccessHandler implements AuthenticationSuccessHa
             }
         }
 
-        HttpSession session = request.getSession();
-
         System.out.println("successful logged in：" + authentication);
 
         if(authentication.getPrincipal() instanceof User user) {
 
-
             System.out.println("binding accounts：" + String.join(",", user.getExternalUsers().stream().map(ExternalUser::getUsername).toList()));
         }
 
+        HttpSession session = request.getSession();
+
+        ConnectionToken connectionToken = null;
+
         if(session != null) {
 
-            //TODO generate Netty connection token
+            connectionToken = (ConnectionToken) session.getAttribute(ConnectionToken.ATTRIBUTE_KEY);
 
-            String url = ProjectBeanHolder.getSecurityConfiguration().getLoginSuccessUrl();
+            if(connectionToken == null) {
 
-            if(url.equalsIgnoreCase("{PREVIOUS_URL}")) {
-
-                url = (String) session.getAttribute(SecurityConfiguration.PREVIOUS_URL);
+                connectionToken = ConnectionToken.generate();
             }
 
-            if(url != null) {
+            session.setAttribute(ConnectionToken.ATTRIBUTE_KEY, connectionToken);
+        }
 
-                ProjectBeanHolder.getRedirectStrategy().sendRedirect(request, response, url);
+        String url = HttpRequestUrlResolver.getSuccessRedirectUrl(request);
+
+        response.setStatus(HttpStatus.OK.value());
+        response.setContentType("application/json");
+
+        if(url == null) {
+
+            try (PrintWriter writer = response.getWriter()) {
+
+                writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new AuthenticationResult(true, connectionToken).getData()));
+                writer.flush();
             }
+
+        } else {
+
+            ProjectBeanHolder.getRedirectStrategy().sendRedirect(request, response, url);
         }
     }
 }

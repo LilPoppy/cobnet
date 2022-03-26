@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.io.IOException;
@@ -62,6 +63,21 @@ class SpringApplicationTests {
 //		System.out.println(String.format("installed guest languages: %s ", ScriptEngineManager.getAvailableLanguages()));
 //
 //		System.out.println(ScriptEngineManager.getContexts());
+	}
+
+	@Test
+	void message() {
+		//System.out.println(Messager.fetch(Messager.message("phone", "Hello").setMediaUrl("https://demo.twilio.com/owl.png").create().getSid()).fetch());
+	}
+
+	@Test
+	void mail() {
+//		SimpleMailMessage message = new SimpleMailMessage();
+//		message.setFrom("noreply@storechain.com");
+//		message.setTo("hotflow96@gmail.com");
+//		message.setSubject("test email service");
+//		message.setText("this is a test mail.");
+//		ProjectBeanHolder.getJavaMailSender().send(message);
 	}
 
 	@Test

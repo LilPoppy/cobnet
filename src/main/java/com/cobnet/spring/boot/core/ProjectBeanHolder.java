@@ -4,7 +4,6 @@ import com.cobnet.interfaces.spring.repository.ExternalUserRepository;
 import com.cobnet.interfaces.spring.repository.UserRepository;
 import com.cobnet.interfaces.spring.repository.UserRoleRepository;
 import com.cobnet.spring.boot.configuration.*;
-import com.cobnet.spring.boot.controller.UserInfoController;
 import com.cobnet.spring.boot.controller.handler.http.HttpAccessDeniedHandler;
 import com.cobnet.spring.boot.controller.handler.http.HttpAuthenticationFailureHandler;
 import com.cobnet.spring.boot.controller.handler.http.HttpAuthenticationSuccessHandler;
@@ -19,6 +18,9 @@ import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.hash.Jackson2HashMapper;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -27,11 +29,9 @@ import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.session.data.redis.RedisIndexedSessionRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -53,6 +53,8 @@ public class ProjectBeanHolder {
     private static SessionConfiguration SESSION_CONFIGURATION;
 
     private static SecurityConfiguration SECURITY_CONFIGURATION;
+
+    private static TwilioConfiguration TWILIO_CONFIGURATION;
 
     private static ApplicationEventPublisher APPLICATION_EVENT_PUBLISHER;
 
@@ -104,8 +106,6 @@ public class ProjectBeanHolder {
 
     private static RedirectStrategy REDIRECT_STRATEGY;
 
-    private static UserInfoController USER_INFO_CONTROLLER;
-
     private static OidcUserService OIDC_USER_SERVICE;
 
     private static HttpAuthenticationSuccessHandler HTTP_AUTHENTICATION_SUCCESS_HANDLER;
@@ -114,7 +114,9 @@ public class ProjectBeanHolder {
 
     private static HttpAccessDeniedHandler HTTP_ACCESS_DENIED_HANDLER;
 
+    private static Messager MESSAGER;
 
+    private static JavaMailSender JAVA_MAIL_SENDER;
 
     public static HttpServletRequest getCurrentHttpRequest() {
 
@@ -169,6 +171,11 @@ public class ProjectBeanHolder {
     public static SecurityConfiguration getSecurityConfiguration() {
 
         return ProjectBeanHolder.SECURITY_CONFIGURATION;
+    }
+
+    public static TwilioConfiguration getTwilioConfiguration() {
+
+        return ProjectBeanHolder.TWILIO_CONFIGURATION;
     }
 
     public static ApplicationEventPublisher getApplicationEventPublisher() {
@@ -296,11 +303,6 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.REDIRECT_STRATEGY;
     }
 
-    public static UserInfoController getUserInfoController() {
-
-        return ProjectBeanHolder.USER_INFO_CONTROLLER;
-    }
-
     public static OidcUserService getOidcUserService() {
 
         return ProjectBeanHolder.OIDC_USER_SERVICE;
@@ -319,6 +321,16 @@ public class ProjectBeanHolder {
     public static HttpAccessDeniedHandler getHttpAccessDeniedHandler() {
 
         return ProjectBeanHolder.HTTP_ACCESS_DENIED_HANDLER;
+    }
+
+    public static Messager getMessager() {
+
+        return ProjectBeanHolder.MESSAGER;
+    }
+
+    public static JavaMailSender getJavaMailSender() {
+
+        return ProjectBeanHolder.JAVA_MAIL_SENDER;
     }
 
     @Component("autowireLoader")
@@ -364,6 +376,12 @@ public class ProjectBeanHolder {
         public void setSecurityConfiguration(SecurityConfiguration config) {
 
             ProjectBeanHolder.SECURITY_CONFIGURATION = config;
+        }
+
+        @Autowired
+        public void setTwilioConfiguration(TwilioConfiguration config) {
+
+            ProjectBeanHolder.TWILIO_CONFIGURATION = config;
         }
 
         @Autowired
@@ -519,12 +537,6 @@ public class ProjectBeanHolder {
         }
 
         @Autowired
-        public void setUserInfoController(UserInfoController controller) {
-
-            ProjectBeanHolder.USER_INFO_CONTROLLER = controller;
-        }
-
-        @Autowired
         public void setOidcUserService(OidcUserService service) {
 
             ProjectBeanHolder.OIDC_USER_SERVICE = service;
@@ -546,6 +558,18 @@ public class ProjectBeanHolder {
         public void setHttpAccessDeniedHandler(HttpAccessDeniedHandler handler) {
 
             ProjectBeanHolder.HTTP_ACCESS_DENIED_HANDLER = handler;
+        }
+
+        @Autowired
+        public void setMessager(Messager messager) {
+
+            ProjectBeanHolder.MESSAGER = messager;
+        }
+
+        @Autowired
+        public void setJavaMailSender(JavaMailSender sender) {
+
+            ProjectBeanHolder.JAVA_MAIL_SENDER = sender;
         }
     }
 
@@ -590,5 +614,18 @@ public class ProjectBeanHolder {
 
             return new OidcUserService();
         }
+
+        @Bean
+        public Messager messagerBean() {
+
+            return new Messager();
+        }
+
+        @Bean
+        public JavaMailSender javaMailSenderBean() {
+
+            return new JavaMailSenderImpl();
+        }
+
     }
 }

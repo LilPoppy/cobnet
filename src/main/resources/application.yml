@@ -70,19 +70,32 @@ spring:
    session:
       store-type: redis
       namespace: spring
+   mail:
+      host: smtp.gmail.com
+      #465 SSL 587 TLS
+      port: 587
+      username: username
+      password: password
+      properties:
+         mail:
+            smtp:
+               auth: true
+               ssl:
+                  enable: true
    security:
       permission-default-power: 3
       user-default-role: "user"
       authentication-url: "/login"
       login-page-url: "/login"
-      login-success-url: "/index"
-      login-failure-url: "/login?error=true"
+# default will do restful way
+#      login-success-url: "/index"
+#      login-failure-url: "/login?error=true"
       username-parameter: "username"
       password-parameter: "password"
       oauth2:
          authentication-url: "/login/oauth2/authorization"
          redirect-url: "/login/oauth2/code"
-         login-failure-url: "/login?oauth2Failure=true"
+#         login-failure-url: "/login?oauth2Failure=true"
          client:
             registration:
                google:
@@ -115,7 +128,6 @@ server:
         http-only: false
         timeout: 1500
    ssl:
-      enable: true
       key-store: classpath:keystore/storechain.p12
       key-store-password: 123456
       key-store-type: PKCS12
@@ -128,6 +140,14 @@ eureka:
       fetchRegistry: false
       service-url:
          defaultZone: https://localhost:@tomcat-port@/eureka
+management:
+   server:
+      ssl:
+         enable: true
+twilio:
+   account-sid: ACaa871dd615aca9c8d798ec44aaeed2f5
+   authentication-token: 0c3eebb272e459e6bf06683757a8d9c8
+   numbers: 19108078297
 netty:
    enable: true
    servers:

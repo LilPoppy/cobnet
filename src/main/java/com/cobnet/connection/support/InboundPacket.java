@@ -148,7 +148,7 @@ public class InboundPacket extends Packet implements InputTransmission<byte[]> {
     	return byteBuf.readDoubleLE();
     }
     
-    public String decodeString() {
+    public String decodeText() {
 
     	long size = this.decodeUInt();
 
@@ -159,7 +159,7 @@ public class InboundPacket extends Packet implements InputTransmission<byte[]> {
     
 	public Map<?,?> decodeMap() throws JsonProcessingException {
 
-    	return ProjectBeanHolder.getObjectMapper().readValue(decodeString(), Map.class);
+    	return ProjectBeanHolder.getObjectMapper().readValue(decodeText(), Map.class);
     }
 
     @Override
