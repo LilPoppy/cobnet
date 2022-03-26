@@ -72,17 +72,19 @@ RUN gu install native-image && gu install python && native-image --version
 CMD java -version
 
 RUN source "$HOME/.sdkman/bin/sdkman-init.sh"; \
-	mvn clean package; \
+	mvn -DskipTests clean package; \
 	java -agentlib:native-image-agent=config-merge-dir=src/main/java/ -jar target/storechain-server.jar agent; \
 	mvn -DskipTests -B clean package -Pnative;
+
 
 MAINTAINER $AUTHORS
 
 EXPOSE $PORT
 EXPOSE $WEBSOCKET_PORT
 
-RUN cp ./target/$ARTIFACTID ./native-server
+RUN cp ./target/$ARTIFACTID ./server
 
-ENTRYPOINT [ "./native-server" ]
+
+ENTRYPOINT [ "./server" ]
 
 RUN ifconfig && echo "All done!"

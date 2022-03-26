@@ -616,9 +616,9 @@ public class ProjectBeanHolder {
         }
 
         @Bean
-        public Messager messagerBean() {
+        public Messager messagerBean(TwilioConfiguration config) {
 
-            return new Messager();
+            return new Messager(config);
         }
 
         @Bean

@@ -1,5 +1,6 @@
 package com.cobnet.spring.boot.core;
 
+import com.cobnet.spring.boot.configuration.TwilioConfiguration;
 import com.twilio.Twilio;
 import com.twilio.rest.api.v2010.account.Message;
 import com.twilio.rest.api.v2010.account.MessageCreator;
@@ -10,9 +11,9 @@ import java.util.Random;
 
 public class Messager {
 
-     Messager() {
+     Messager(TwilioConfiguration config) {
 
-        Twilio.init(ProjectBeanHolder.getTwilioConfiguration().getAccountSid(), ProjectBeanHolder.getTwilioConfiguration().getAuthenticationToken());
+        Twilio.init(config.getAccountSid(), config.getAuthenticationToken());
     }
 
     public static MessageCreator message(String number, String text) {

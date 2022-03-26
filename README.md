@@ -54,7 +54,7 @@ $ mvn clean package -Pdocker
 To start the app you can run as follows:
 
 ```
-$ docker start CoBNet
+$ docker start cobnet
 ```
 
 ### Executable with Native Build Tools

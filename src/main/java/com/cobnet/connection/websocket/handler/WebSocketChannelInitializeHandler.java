@@ -55,33 +55,33 @@ public class WebSocketChannelInitializeHandler extends ChannelInitializeHandler<
 
         Ssl ssl = tomcat.getSsl();
 
-        KeyStore store = KeyStore.getInstance(ssl.getKeyStoreType());
+        if(ssl != null) {
 
-        KeyManagerFactory factory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+            KeyStore store = KeyStore.getInstance(ssl.getKeyStoreType());
 
-        SSLContext context = SSLContext.getInstance(ssl.getProtocol());
+            KeyManagerFactory factory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
 
-        try {
+            SSLContext context = SSLContext.getInstance(ssl.getProtocol());
 
-            URL url = ResourceUtils.getURL(ssl.getKeyStore());
+            try {
 
-            try (InputStream stream = url.openStream()) {
-                store.load(stream, ssl.getKeyStorePassword().toCharArray());
+                URL url = ResourceUtils.getURL(ssl.getKeyStore());
+
+                try (InputStream stream = url.openStream()) {
+                    store.load(stream, ssl.getKeyStorePassword().toCharArray());
+                }
+
+            } catch (Exception ex) {
+                throw new WebServerException("Could not load key store '" + ssl.getKeyStore() + "'", ex);
             }
 
-        }
-        catch (Exception ex) {
-            throw new WebServerException("Could not load key store '" + ssl.getKeyStore() + "'", ex);
-        }
+            factory.init(store, ssl.getKeyStorePassword().toCharArray());
+            context.init(factory.getKeyManagers(), null, null);
 
-        factory.init(store, ssl.getKeyStorePassword().toCharArray());
-        context.init(factory.getKeyManagers(), null, null);
+            SSLEngine engine = context.createSSLEngine();
+            engine.setUseClientMode(false);
+            engine.setNeedClientAuth(false);
 
-        SSLEngine engine = context.createSSLEngine();
-        engine.setUseClientMode(false);
-        engine.setNeedClientAuth(false);
-
-        if(ssl != null) {
 
             channel.pipeline().addFirst("ssl", new WebSocketSslHandler(engine));
         }

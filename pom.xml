@@ -407,7 +407,9 @@
 										<DB_USER>${db-user}</DB_USER>
 										<DB_PASSWORD>${db-password}</DB_PASSWORD>
 										<REDIS_IMAGE_NAME>${docker-redis-image-name}</REDIS_IMAGE_NAME>
+										<REDIS_HOST>${redis-host}</REDIS_HOST>
 										<REDIS_EXPOSE>${redis-port}</REDIS_EXPOSE>
+										<REDIS_PASSWORD>${redis-password}</REDIS_PASSWORD>
 									</envVars>
 									<buildArgs>
 										<forceRm>true</forceRm>
