@@ -1,7 +1,54 @@
 [
   {
-    "name":"org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.EmptyHandler",
+    "name": "org.springframework.web.servlet.handler.AbstractHandlerMethodMapping",
+    "allDeclaredClasses" : true
+  },
+  {
+    "name": "org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping",
+    "allDeclaredClasses" : true,
+    "queryAllDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping",
+    "allDeclaredClasses" : true,
+    "queryAllDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "org.springframework.boot.autoconfigure.web.servlet.WelcomePageHandlerMapping",
+    "allDeclaredClasses" : true,
+    "queryAllDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping",
+    "allDeclaredClasses" : true,
+    "queryAllDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "org.springframework.web.servlet.mvc.method.RequestMappingInfoHandlerMapping.EmptyHandler",
     "methods":[{ "name":"<init>","parameterTypes":[] } , { "name": "handle", "parameterTypes": [] }],
     "queryAllDeclaredMethods": true
+  },
+  {
+    "name": "org.springframework.boot.autoconfigure.web.servlet.WelcomePageHandlerMapping.EmptyHandler",
+    "methods":[{ "name":"<init>","parameterTypes":[] } , { "name": "handle", "parameterTypes": [] }],
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "name": "org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping.EmptyHandler",
+    "methods":[{ "name":"<init>","parameterTypes":[] } , { "name": "handle", "parameterTypes": [] }],
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "name": "org.springframework.web.servlet.handler.AbstractHandlerMethodMapping.EmptyHandler",
+    "methods":[{ "name":"<init>","parameterTypes":[] } , { "name": "handle", "parameterTypes": [] }],
+    "queryAllDeclaredMethods": true
+  },
+  {
+    "name": "org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder",
+    "allDeclaredFields": true
   }
 ]

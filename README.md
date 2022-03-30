@@ -42,19 +42,19 @@ This project has been configured to let you generate either a lightweight contai
 If you're already familiar with Spring Boot container images support, this is the easiest way to get started with Spring Native.
 Docker should be installed and configured on your machine prior to creating the image, see [the Getting Started section of the reference guide](https://docs.spring.io/spring-native/docs/0.11.0/reference/htmlsingle/#getting-started-buildpacks).
 
-* [Docker](https://docs.docker.com/get-docker/) atlease 13GB memory in docker preferences. see [Out of memory error when building the native image](https://docs.spring.io/spring-native/docs/current/reference/htmlsingle/#_out_of_memory_error_when_building_the_native_image)
+* [Docker](https://docs.docker.com/get-docker/) atlease 10GB memory in docker preferences. see [Out of memory error when building the native image](https://docs.spring.io/spring-native/docs/current/reference/htmlsingle/#_out_of_memory_error_when_building_the_native_image)
 
 * [Docker-Compose](https://docs.docker.com/compose/install/) 18.06.0+ needs to be installed.
 
 To create the docker image and container by compose, run the following goal:
 
 ```
-$ mvn clean package -Pdocker
+$ mvn -DskipTests -Dredis-host=redis -Ddb-host=db clean package -Pdocker 
 ```
 To start the app you can run as follows:
 
 ```
-$ docker start cobnet
+$ docker start -a cobnet
 ```
 
 ### Executable with Native Build Tools
@@ -68,7 +68,7 @@ The GraalVM native-image compiler should be installed and configured on your mac
 To create the executable, run the following goal:
 
 ```
-$ mvn clean package
+$ mvn -DskipTests clean package
 ```
 
 ```
@@ -76,7 +76,7 @@ $ java -agentlib:native-image-agent=config-merge-dir=src/main/java/ -jar target/
 ```
 
 ```
-$ mvn clean package -Pnative
+$ mvn -DskipTests clean package -Pnative
 ```
 
 Then, you can run the app as follows:

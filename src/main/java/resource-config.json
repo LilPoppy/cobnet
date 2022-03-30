@@ -2,6 +2,9 @@
   "resources":{
   "includes":[
     {
+      "pattern":"\\QMETA-INF/mimetypes.default\\E"
+    }, 
+    {
       "pattern":"\\QMETA-INF/native/libnetty_resolver_dns_native_macos_x86_64.jnilib\\E"
     }, 
     {
@@ -11,37 +14,22 @@
       "pattern":"\\QMETA-INF/services/com.fasterxml.jackson.databind.Module\\E"
     }, 
     {
-      "pattern":"\\QMETA-INF/services/com.oracle.truffle.api.TruffleLanguage$Provider\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/com.oracle.truffle.api.TruffleRuntimeAccess\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/com.oracle.truffle.api.instrumentation.TruffleInstrument$Provider\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/com.oracle.truffle.js.runtime.Evaluator\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/java.nio.file.spi.FileSystemProvider\\E"
-    }, 
-    {
       "pattern":"\\QMETA-INF/services/java.sql.Driver\\E"
     }, 
     {
       "pattern":"\\QMETA-INF/services/javax.xml.stream.XMLEventFactory\\E"
     }, 
     {
+      "pattern":"\\QMETA-INF/services/javax.xml.stream.XMLInputFactory\\E"
+    }, 
+    {
+      "pattern":"\\QMETA-INF/services/javax.xml.stream.XMLOutputFactory\\E"
+    }, 
+    {
       "pattern":"\\QMETA-INF/services/org.apache.logging.log4j.spi.Provider\\E"
     }, 
     {
       "pattern":"\\QMETA-INF/services/org.apache.logging.log4j.util.PropertySource\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/org.graalvm.compiler.truffle.runtime.LoopNodeFactory\\E"
-    }, 
-    {
-      "pattern":"\\QMETA-INF/services/org.graalvm.polyglot.impl.AbstractPolyglotImpl\\E"
     }, 
     {
       "pattern":"\\QMETA-INF/spring-autoconfigure-metadata.properties\\E"
@@ -60,12 +48,6 @@
     }, 
     {
       "pattern":"\\Qcom/cobnet/common/MultiwayTreeNode.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/cobnet/common/collection/AbstractListWrapper.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/cobnet/common/utils/AbstractListWrapper.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/common/wrapper/AbstractListWrapper.class\\E"
@@ -128,6 +110,9 @@
       "pattern":"\\Qcom/cobnet/interfaces/TreeNode.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/interfaces/connection/AuthenticatableChannel.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/interfaces/connection/ChannelProvider.class\\E"
     }, 
     {
@@ -135,9 +120,6 @@
     }, 
     {
       "pattern":"\\Qcom/cobnet/interfaces/connection/InputTransmission.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/cobnet/interfaces/connection/Packet.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/interfaces/connection/ServerInitializer.class\\E"
@@ -179,9 +161,6 @@
       "pattern":"\\Qcom/cobnet/interfaces/spring/repository/JPABaseRepository.class\\E"
     }, 
     {
-      "pattern":"\\Qcom/cobnet/interfaces/spring/repository/JpaExtensionRepository.class\\E"
-    }, 
-    {
       "pattern":"\\Qcom/cobnet/interfaces/spring/repository/UserRepository.class\\E"
     }, 
     {
@@ -195,24 +174,6 @@
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/aspect/EventHandlerAspect.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/cobnet/spring/boot/cache/redis/RedisMessageListener.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/cobnet/spring/boot/configuration/CacheConfiguration$RedisConfiguration$ClusterConfiguration.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/cobnet/spring/boot/configuration/CacheConfiguration$RedisConfiguration$MessageConfiguration.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/cobnet/spring/boot/configuration/CacheConfiguration$RedisConfiguration$PoolConfiguration.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/cobnet/spring/boot/configuration/CacheConfiguration$RedisConfiguration$SentinelConfiguration.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/cobnet/spring/boot/configuration/CacheConfiguration$RedisConfiguration.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/configuration/CacheConfiguration.class\\E"
@@ -248,13 +209,13 @@
       "pattern":"\\Qcom/cobnet/spring/boot/configuration/SecurityConfiguration$OAuth2Configuration.class\\E"
     }, 
     {
-      "pattern":"\\Qcom/cobnet/spring/boot/configuration/SecurityConfiguration$UserAuthenticationProvider.class\\E"
-    }, 
-    {
       "pattern":"\\Qcom/cobnet/spring/boot/configuration/SecurityConfiguration.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/configuration/SessionConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/TwilioConfiguration.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/configuration/\\E"
@@ -263,10 +224,7 @@
       "pattern":"\\Qcom/cobnet/spring/boot/controller/BasicController.class\\E"
     }, 
     {
-      "pattern":"\\Qcom/cobnet/spring/boot/controller/UserInfoController.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/cobnet/spring/boot/controller/handler/AuthenticationPacketHandler.class\\E"
+      "pattern":"\\Qcom/cobnet/spring/boot/controller/handler/ChannelAuthenticationHandler.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/controller/handler/UnknownPacketHandler.class\\E"
@@ -284,6 +242,12 @@
       "pattern":"\\Qcom/cobnet/spring/boot/controller/handler/http/HttpAuthenticationSuccessHandler.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/spring/boot/controller/restful/AuthenticationController.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/controller/restful/TwilioController.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/spring/boot/core/ProjectBeanHolder$AutowireLoader.class\\E"
     }, 
     {
@@ -291,12 +255,6 @@
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/core/ScriptEngineManager$PolyglotContextCloseEventListener.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/cobnet/spring/boot/core/ScriptEngineManager.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/cobnet/spring/boot/dto/MappedPacket.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/dto/support/HttpMapTransmission.class\\E"
@@ -329,214 +287,7 @@
       "pattern":"\\Qcom/fasterxml/jackson/core/type/TypeReference.class\\E"
     }, 
     {
-      "pattern":"\\Qcom/google/common/reflect/TypeCapture.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/google/common/reflect/TypeToken.class\\E"
-    }, 
-    {
       "pattern":"\\Qcom/mysql/cj/TlsSettings.properties\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/oracle/truffle/llvm/nfi/SulongNFI.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/oracle/truffle/nfi/backend/libffi/LibFFILanguage.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/common/AbstractList.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/common/AbstractSet.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/common/Event.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/common/MultiwayTreeNode.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/connection/Packet.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/connection/handler/http/security/HttpAccessDeniedHandler.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/connection/handler/http/security/HttpInvalidSessionHandler.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/connection/handler/http/security/HttpLogoutHandler.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/connection/handler/http/security/HttpOAuth2AuthenticationFailureHandler.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/connection/handler/http/security/HttpOAuth2AuthenticationSuccessHandler.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/connection/handler/http/security/HttpSessionAuthenticationHandler.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/connection/netty/NettyNioSocketChannel.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/connection/netty/NettyServer.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/connection/netty/handler/ChannelInitializeHandler.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/connection/netty/handler/InboundHandler.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/interfaces/EventHandler.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/interfaces/TreeNode.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/interfaces/connection/AuthenticatableChannel.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/interfaces/connection/ConnectionListener.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/interfaces/connection/NettyChannelBuilder.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/interfaces/connection/NettyServerProvider.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/interfaces/connection/PacketBuilder.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/interfaces/security/Operator.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/interfaces/security/annotation/AccessSecured.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/interfaces/security/permission/Permissible.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/interfaces/security/permission/Permission.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/interfaces/spring/repository/ExtensionRepository.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/interfaces/spring/repository/ExternalUserAuthorityRepository.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/interfaces/spring/repository/ExternalUserRepository.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/interfaces/spring/repository/UserPermissionRepository.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/interfaces/spring/repository/UserRepository.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/interfaces/spring/repository/UserRoleRepository.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/interfaces/spring/repository/\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/interfaces/spring/service/RedisService.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/configuration/NettyConfiguration$ServerConfiguration.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/configuration/NettyConfiguration.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/configuration/PersistenceConfiguration$DataSourceConfiguration.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/configuration/PersistenceConfiguration$JpaConfiguration.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/configuration/PersistenceConfiguration.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/configuration/ProjectInformationConfiguration.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/configuration/RedisConfiguration$PoolConfiguration.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/configuration/RedisConfiguration.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/configuration/SecurityConfiguration$AccessSecureAspect.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/configuration/SecurityConfiguration$UserAuthenticationProvider.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/configuration/SecurityConfiguration$UserLoginAuthenticationFilter.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/configuration/SecurityConfiguration.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/configuration/SessionConfiguration.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/configuration/SystemConfiguration$TaskProviderConfiguration.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/configuration/SystemConfiguration.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/controller/TestController.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/controller/TestRestController.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/entity/EntityBase.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/entity/ExternalUser.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/entity/ExternalUserAuthority.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/entity/User.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/entity/UserPermission.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/entity/UserRole.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/entity/utils/JsonMapConverter.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/service/JsonRedisService.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/spring/boot/service/ManagedSessionRepository.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/utils/DatabaseManager$DatabaseManagerBean.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/utils/DatabaseManager.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/utils/SpringContext$SpringManagerBean.class\\E"
-    }, 
-    {
-      "pattern":"\\Qcom/storechain/utils/SpringContext.class\\E"
     }, 
     {
       "pattern":"\\Qio/netty/channel/Channel.class\\E"
@@ -596,15 +347,6 @@
       "pattern":"\\Qio/netty/util/AttributeMap.class\\E"
     }, 
     {
-      "pattern":"\\Qjar:file:/Library/Developer/repo/.workspace/StoreChain-Server/target/storechain-server.jar!/BOOT-INF/classes!/keystore/storechain.p12\\E"
-    }, 
-    {
-      "pattern":"\\Qjar:file:/Users/lilpoppy/Downloads/cobnet/target/cobnet.jar!/BOOT-INF/classes!/keystore/storechain.p12\\E"
-    }, 
-    {
-      "pattern":"\\Qkeystore/storechain.p12\\E"
-    }, 
-    {
       "pattern":"\\Qorg/apache/catalina/core/RestrictedFilters.properties\\E"
     }, 
     {
@@ -627,18 +369,6 @@
     }, 
     {
       "pattern":"\\Qorg/graalvm/nativeimage/hosted/Feature.class\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/hibernate/engine/spi/Managed.class\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/hibernate/engine/spi/ManagedEntity.class\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/hibernate/engine/spi/PersistentAttributeInterceptable.class\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/hibernate/engine/spi/SelfDirtinessTracker.class\\E"
     }, 
     {
       "pattern":"\\Qorg/hibernate/hibernate-configuration-3.0.dtd\\E"
@@ -696,9 +426,6 @@
     }, 
     {
       "pattern":"\\Qorg/springframework/beans/factory/config/BeanFactoryPostProcessor.class\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/springframework/beans/factory/config/BeanPostProcessor.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/AbstractDependsOnBeanFactoryPostProcessor.class\\E"
@@ -792,24 +519,6 @@
     }, 
     {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/data/AbstractRepositoryConfigurationSourceSupport.class\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/springframework/boot/autoconfigure/data/jdbc/JdbcRepositoriesAutoConfiguration$JdbcRepositoriesConfiguration.class\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/springframework/boot/autoconfigure/data/jdbc/JdbcRepositoriesAutoConfiguration$SpringBootJdbcConfiguration.class\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/springframework/boot/autoconfigure/data/jdbc/JdbcRepositoriesAutoConfiguration.class\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/springframework/boot/autoconfigure/data/jdbc/JdbcRepositoriesRegistrar.class\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/springframework/boot/autoconfigure/data/jpa/JpaRepositoriesAutoConfiguration$BootstrapExecutorCondition$DeferredBootstrapMode.class\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/springframework/boot/autoconfigure/data/jpa/JpaRepositoriesAutoConfiguration$BootstrapExecutorCondition$LazyBootstrapMode.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/data/jpa/JpaRepositoriesAutoConfiguration$BootstrapExecutorCondition.class\\E"
@@ -1032,6 +741,24 @@
     }, 
     {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/jmx/JmxAutoConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/mail/MailSenderAutoConfiguration$MailSenderCondition$HostProperty.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/mail/MailSenderAutoConfiguration$MailSenderCondition$JndiNameProperty.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/mail/MailSenderAutoConfiguration$MailSenderCondition.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/mail/MailSenderAutoConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/mail/MailSenderJndiConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/mail/MailSenderPropertiesConfiguration.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/mail/MailSenderValidatorAutoConfiguration.class\\E"
@@ -1691,9 +1418,6 @@
       "pattern":"\\Qorg/springframework/core/env/EnvironmentCapable.class\\E"
     }, 
     {
-      "pattern":"\\Qorg/springframework/data/jdbc/repository/config/AbstractJdbcConfiguration.class\\E"
-    }, 
-    {
       "pattern":"\\Qorg/springframework/data/jpa/repository/JpaRepository.class\\E"
     }, 
     {
@@ -1722,9 +1446,6 @@
     }, 
     {
       "pattern":"\\Qorg/springframework/data/redis/connection/MessageListener.class\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/springframework/data/redis/core/RedisCallback.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/data/redis/core/convert/ReferenceResolverImpl.class\\E"
@@ -1773,6 +1494,9 @@
     }, 
     {
       "pattern":"\\Qorg/springframework/data/web/config/SpringDataWebConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/mail/javamail/mime.types\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/scheduling/annotation/EnableScheduling.class\\E"
@@ -1916,19 +1640,7 @@
       "pattern":"\\Qorg/springframework/security/web/authentication/AuthenticationSuccessHandler.class\\E"
     }, 
     {
-      "pattern":"\\Qorg/springframework/security/web/authentication/logout/LogoutHandler.class\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/springframework/security/web/authentication/session/SessionAuthenticationStrategy.class\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/springframework/security/web/session/InvalidSessionStrategy.class\\E"
-    }, 
-    {
       "pattern":"\\Qorg/springframework/session/config/annotation/web/http/SpringHttpSessionConfiguration.class\\E"
-    }, 
-    {
-      "pattern":"\\Qorg/springframework/session/data/redis/config/annotation/web/http/EnableRedisHttpSession.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/session/data/redis/config/annotation/web/http/RedisHttpSessionConfiguration$EnableRedisKeyspaceNotificationsInitializer.class\\E"
@@ -1977,15 +1689,6 @@
     }, 
     {
       "pattern":"\\Qreactor/core/Disposable.class\\E"
-    }, 
-    {
-      "pattern":"\\Qsrc.js\\E"
-    }, 
-    {
-      "pattern":"\\Qtemplates/\\E"
-    }, 
-    {
-      "pattern":"\\Qtemplates/index.html\\E"
     }, 
     {
       "pattern":"\\Qwebapp/WEB-INF/templates/\\E"
@@ -2172,20 +1875,6 @@
     }, 
     {
       "name":"org.apache.tomcat.util.net.LocalStrings",
-      "locales":[
-        "", 
-        "und"
-      ]
-    }, 
-    {
-      "name":"org.apache.tomcat.util.net.jsse.LocalStrings",
-      "locales":[
-        "", 
-        "und"
-      ]
-    }, 
-    {
-      "name":"org.apache.tomcat.util.net.openssl.ciphers.LocalStrings",
       "locales":[
         "", 
         "und"

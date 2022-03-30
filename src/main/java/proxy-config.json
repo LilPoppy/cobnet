@@ -15,21 +15,6 @@
     "interfaces":["com.netflix.discovery.EurekaClientConfig","org.springframework.core.Ordered"]}
   ,
   {
-    "interfaces":["com.storechain.interfaces.spring.repository.ExternalUserAuthorityRepository","org.springframework.data.repository.Repository","org.springframework.transaction.interceptor.TransactionalProxy","org.springframework.aop.framework.Advised","org.springframework.core.DecoratingProxy"]}
-  ,
-  {
-    "interfaces":["com.storechain.interfaces.spring.repository.ExternalUserRepository","org.springframework.data.repository.Repository","org.springframework.transaction.interceptor.TransactionalProxy","org.springframework.aop.framework.Advised","org.springframework.core.DecoratingProxy"]}
-  ,
-  {
-    "interfaces":["com.storechain.interfaces.spring.repository.UserPermissionRepository","org.springframework.data.repository.Repository","org.springframework.transaction.interceptor.TransactionalProxy","org.springframework.aop.framework.Advised","org.springframework.core.DecoratingProxy"]}
-  ,
-  {
-    "interfaces":["com.storechain.interfaces.spring.repository.UserRepository","org.springframework.data.repository.Repository","org.springframework.transaction.interceptor.TransactionalProxy","org.springframework.aop.framework.Advised","org.springframework.core.DecoratingProxy"]}
-  ,
-  {
-    "interfaces":["com.storechain.interfaces.spring.repository.UserRoleRepository","org.springframework.data.repository.Repository","org.springframework.transaction.interceptor.TransactionalProxy","org.springframework.aop.framework.Advised","org.springframework.core.DecoratingProxy"]}
-  ,
-  {
     "interfaces":["io.lettuce.core.api.sync.RedisCommands","io.lettuce.core.cluster.api.sync.RedisClusterCommands"]}
   ,
   {
@@ -126,9 +111,6 @@
     "interfaces":["org.springframework.beans.factory.InitializingBean","org.springframework.context.ApplicationContextAware","org.springframework.context.ApplicationListener","org.springframework.data.keyvalue.core.KeyValueAdapter"]}
   ,
   {
-    "interfaces":["org.springframework.beans.factory.config.BeanPostProcessor","org.springframework.beans.factory.BeanFactoryAware","org.springframework.beans.factory.BeanClassLoaderAware"]}
-  ,
-  {
     "interfaces":["org.springframework.boot.autoconfigure.web.servlet.DispatcherServletPath","org.springframework.boot.web.servlet.ServletContextInitializer","org.springframework.core.Ordered"]}
   ,
   {
@@ -159,9 +141,6 @@
     "interfaces":["org.springframework.core.task.AsyncListenableTaskExecutor","org.springframework.scheduling.SchedulingTaskExecutor","org.springframework.beans.factory.BeanNameAware","org.springframework.beans.factory.InitializingBean","org.springframework.beans.factory.DisposableBean","java.util.concurrent.ThreadFactory","java.io.Serializable"]}
   ,
   {
-    "interfaces":["org.springframework.data.jdbc.core.convert.RelationResolver","org.springframework.aop.SpringProxy","org.springframework.aop.framework.Advised","org.springframework.core.DecoratingProxy"]}
-  ,
-  {
     "interfaces":["org.springframework.data.jpa.repository.support.CrudMethodMetadata","org.springframework.aop.SpringProxy","org.springframework.aop.framework.Advised","org.springframework.core.DecoratingProxy"]}
   ,
   {
@@ -169,9 +148,6 @@
   ,
   {
     "interfaces":["org.springframework.data.redis.core.RedisOperations","org.springframework.beans.factory.BeanClassLoaderAware","org.springframework.beans.factory.InitializingBean"]}
-  ,
-  {
-    "interfaces":["org.springframework.jdbc.datasource.ConnectionProxy"]}
   ,
   {
     "interfaces":["org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication","org.springframework.core.annotation.SynthesizedAnnotation"]}
@@ -199,5 +175,4 @@
   ,
   {
     "interfaces":["org.springframework.web.servlet.config.annotation.WebMvcConfigurer","org.springframework.web.context.ServletContextAware"]}
-  
 ]

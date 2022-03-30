@@ -40,8 +40,8 @@ jobs:
         uses: shogo82148/actions-setup-mysql@v1
         with:
           mysql-version: '8.0'
-          root-password: 123456
-      - run: mysql -uroot -p123456 -h127.0.0.1 -e 'CREATE DATABASE testdb'
+          root-password: hT9zS5cR8aY4vM3r
+      - run: mysql -uroot -phT9zS5cR8aY4vM3r -h127.0.0.1 -e 'CREATE DATABASE testdb'
       - run: java --version
       - run: native-image --version
       - run: mvn --version
@@ -68,8 +68,8 @@ jobs:
         uses: shogo82148/actions-setup-mysql@v1
         with:
           mysql-version: '8.0'
-          root-password: 123456
-      - run: mysql -uroot -p123456 -h127.0.0.1 -e 'CREATE DATABASE testdb'
+          root-password: hT9zS5cR8aY4vM3r
+      - run: mysql -uroot -phT9zS5cR8aY4vM3r -h127.0.0.1 -e 'CREATE DATABASE testdb'
       - run: java --version
       - run: mvn --version
       - name: Build with Maven
@@ -91,7 +91,7 @@ jobs:
       - run: docker-compose --version
       - run: mvn --version
       - name: Build with Maven
-        run: mvn -DskipTests -B clean package -Pdocker
+        run: mvn -DskipTests -B -Dredis-host=redis -Ddb-host=db clean package -Pdocker
       - run: docker images
       - run: docker image prune -f
       - run: docker rm -f cobnet-redis cobnet-db cobnet
@@ -118,8 +118,8 @@ jobs:
         uses: shogo82148/actions-setup-mysql@v1
         with:
           mysql-version: '8.0'
-          root-password: 123456
-      - run: mysql -uroot -p123456 -h127.0.0.1 -e 'CREATE DATABASE testdb'
+          root-password: hT9zS5cR8aY4vM3r
+      - run: mysql -uroot -phT9zS5cR8aY4vM3r -h127.0.0.1 -e 'CREATE DATABASE testdb'
       - run: java --version
       - run: native-image --version
       - run: mvn --version

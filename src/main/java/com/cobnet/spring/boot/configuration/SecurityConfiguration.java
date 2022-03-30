@@ -2,6 +2,7 @@ package com.cobnet.spring.boot.configuration;
 
 import com.cobnet.security.OAuth2LoginAccountAuthenticationFilter;
 import com.cobnet.security.UserAuthenticationProvider;
+import com.cobnet.security.UserDetailCheckFilter;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.UserRole;
 import org.slf4j.Logger;
@@ -21,6 +22,7 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.session.*;
 
 import java.util.ArrayList;
@@ -96,7 +98,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity security) throws Exception {
 
-        System.out.println(Arrays.toString(this.getPermittedMatchers()));
         security.csrf().disable()
                 //authorize config
                 .authorizeRequests().antMatchers(this.getPermittedMatchers()).permitAll().anyRequest().authenticated().and()
@@ -114,7 +115,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 //session
                 .sessionManagement().sessionAuthenticationStrategy(compositeSessionAuthenticationStrategyBean()).sessionCreationPolicy(getSessionCreationPolicy()).maximumSessions(1).sessionRegistry(sessionRegistryBean());
                 //filter
-                security.addFilterBefore(oAuth2LoginAccountAuthenticationFilterBean(), OAuth2LoginAuthenticationFilter.class);
+                security.addFilterBefore(userDetailCheckFilterBean(), UsernamePasswordAuthenticationFilter.class)
+                        .addFilterBefore(oAuth2LoginAccountAuthenticationFilterBean(), OAuth2LoginAuthenticationFilter.class);
     }
 
     protected SessionCreationPolicy getSessionCreationPolicy() {
@@ -126,6 +128,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Bean
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    @Bean
+    public UserDetailCheckFilter userDetailCheckFilterBean() {
+
+        return new UserDetailCheckFilter(this.getAuthenticationUrl());
     }
 
     @Bean
@@ -179,7 +187,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public UserRole getUserDefaultAuthority() {
 
-        Optional<UserRole> role =ProjectBeanHolder.getUserRoleRepository().findByRoleEqualsIgnoreCase(userDefaultRole);
+        Optional<UserRole> role = ProjectBeanHolder.getUserRoleRepository().findByRoleEqualsIgnoreCase(userDefaultRole);
 
         return role.orElse(null);
     }

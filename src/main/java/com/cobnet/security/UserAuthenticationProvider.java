@@ -9,8 +9,10 @@ import com.cobnet.spring.boot.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -43,7 +45,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 
             String username = null;
 
-            if(principal instanceof String) {
+            if (principal instanceof String) {
 
                 username = (String) principal;
             }
@@ -52,15 +54,15 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 
             UserDetails details = userDetailsService.loadUserByUsername(username);
 
-            if(details instanceof Account account) {
+            if (details instanceof Account account) {
 
                 AccountLoginEvent loginEvent = new AccountLoginEvent(account);
 
                 ProjectBeanHolder.getApplicationEventPublisher().publishEvent(loginEvent);
 
-                if(!loginEvent.isCancelled()) {
+                if (!loginEvent.isCancelled()) {
 
-                    if(details.getPassword().equals(authentication.getCredentials().toString()) || encoder.matches(authentication.getCredentials().toString(), details.getPassword()) || encoder.matches(details.getPassword(), authentication.getCredentials().toString())) {
+                    if (details.getPassword().equals(authentication.getCredentials().toString()) || encoder.matches(authentication.getCredentials().toString(), details.getPassword()) || encoder.matches(details.getPassword(), authentication.getCredentials().toString())) {
 
                         if (account instanceof User user && !user.isPasswordEncoded()) {
 
@@ -91,7 +93,6 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
 
             throw new UsernameNotFoundException("User " + username + " is not exist!");
         }
-
         return authentication;
     }
 

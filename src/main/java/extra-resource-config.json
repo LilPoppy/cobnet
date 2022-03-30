@@ -1,0 +1,10 @@
+{
+  "resources": {
+    "includes": [
+      {
+        "pattern": "org/springframework/mail/javamail/mime.types"
+      }
+    ]
+  }
+}
+

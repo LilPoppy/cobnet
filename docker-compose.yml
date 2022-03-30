@@ -12,7 +12,7 @@ services:
              - db
              - redis
       environment:
-         SPRING_DATASOURCE_URL: jdbc:mysql://db:${DB_EXPOSE}/testdb?autoReconnect=${DB_AUTO_RECONNECT}&useSSL=${DB_USE_SSL}
+         SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST}:${DB_EXPOSE}/testdb?autoReconnect=${DB_AUTO_RECONNECT}&useSSL=${DB_USE_SSL}
          REDIS_HOST: ${REDIS_HOST}
          REDIS_PORT: 6379
          REDIS_PASSWORD: ${REDIS_PASSWORD}

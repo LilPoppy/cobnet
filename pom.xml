@@ -19,13 +19,14 @@
 		<db-database>testdb</db-database>
 		<db-auto-reconnect>true</db-auto-reconnect>
 		<db-use-ssl>false</db-use-ssl>
+		<db-host>localhost</db-host>
 		<db-port>3306</db-port>
 		<db-user>root</db-user>
-		<db-password>123456</db-password>
-		<db-root-password>123456</db-root-password>
+		<db-password>hT9zS5cR8aY4vM3r</db-password>
+		<db-root-password>rT6xQ7dI7tI9bZ5u</db-root-password>
 		<redis-host>localhost</redis-host>
 		<redis-port>6379</redis-port>
-		<redis-password></redis-password>
+		<redis-password>fX9lU9gB1zA6aF3q</redis-password>
 		<tomcat-port>8089</tomcat-port>
 		<websocket-port>8090</websocket-port>
 		<repackage.classifier/>
@@ -402,6 +403,7 @@
 										<DB_IMAGE_NAME>${docker-db-image-name}</DB_IMAGE_NAME>
 										<DB_AUTO_RECONNECT>${db-auto-reconnect}</DB_AUTO_RECONNECT>
 										<DB_USE_SSL>${db-use-ssl}</DB_USE_SSL>
+										<DB_HOST>${db-host}</DB_HOST>
 										<DB_EXPOSE>${db-port}</DB_EXPOSE>
 										<DB_DATABASE>${db-database}</DB_DATABASE>
 										<DB_USER>${db-user}</DB_USER>
@@ -473,8 +475,9 @@
 								<buildArgs>--features=com.cobnet.RuntimeReflectionRegistrationFeature</buildArgs>
 								<buildArgs>-H:ConfigurationFileDirectories==${basedir}/src/main/java/</buildArgs>
 								<buildArgs>-H:ReflectionConfigurationFiles=${basedir}/src/main/java/extra-reflect-config.json</buildArgs>
+								<buildArgs>-H:ResourceConfigurationFiles=${basedir}/src/main/java/extra-resource-config.json</buildArgs>
 								<buildArgs>-H:DynamicProxyConfigurationFiles=${basedir}/src/main/java/extra-proxy-config.json</buildArgs>
-								<buildArgs>-H:IncludeResources=".*.xml|.*.conf|.*.yml" </buildArgs>
+								<buildArgs>-H:IncludeResources=".*.xml|.*.conf|.*.yml"</buildArgs>
 								<buildArgs>-H:TraceClassInitialization=true</buildArgs>
 								<buildArgs>-Dtruffle.TruffleRuntime=com.oracle.svm.truffle.api.SubstrateTruffleRuntime</buildArgs>
 								<buildArgs>-H:-TruffleCheckBlockListMethods</buildArgs>

@@ -62,6 +62,142 @@
     "interfaces" :[ "org.springframework.context.ResourceLoaderAware", "org.springframework.context.ApplicationContextAware",  "org.springframework.web.context.ServletContextAware"]}
   ,
   {
-    "interfaces" :[ "org.springframework.beans.factory.BeanClassLoaderAware", "org.springframework.context.EmbeddedValueResolverAware",  "org.springframework.context.annotation.ImportAware", "org.springframework.context.ApplicationContextAware"]}
-
+    "interfaces" :[ "org.springframework.beans.factory.BeanClassLoaderAware", "org.springframework.context.EmbeddedValueResolverAware",  "org.springframework.context.annotation.ImportAware", "org.springframework.context.ApplicationContextAware"]},
+  {
+    "interfaces" :[ "java.io.Serializable", "org.springframework.transaction.interceptor.TransactionAttributeSource",  "org.springframework.context.EmbeddedValueResolverAware" ]}
+  ,
+  {
+    "interfaces" :[ "org.springframework.session.FindByIndexNameSessionRepository", "org.springframework.data.redis.connection.MessageListener"]}
+  ,
+  {
+    "interfaces" :[ "org.springframework.data.redis.core.RedisOperations", "org.springframework.beans.factory.BeanClassLoaderAware",  "org.springframework.beans.factory.InitializingBean"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.beans.factory.InitializingBean", "org.springframework.beans.factory.DisposableBean", "org.springframework.beans.factory.BeanNameAware", "org.springframework.context.SmartLifecycle"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.beans.factory.InitializingBean", "org.springframework.data.redis.connection.MessageListener"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.transaction.support.ResourceTransactionManager",  "org.springframework.beans.factory.BeanFactoryAware", "org.springframework.beans.factory.InitializingBean", "org.springframework.transaction.PlatformTransactionManager", "java.io.Serializable"]}
+  ,
+  {
+    "interfaces" :[ "org.springframework.security.core.session.SessionRegistry",  "org.springframework.context.ApplicationListener"] }
+  ,
+  {
+    "interfaces" :[ "java.util.Map",  "java.lang.Cloneable",  "java.io.Serializable"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.beans.factory.FactoryBean", "org.springframework.beans.factory.BeanFactoryAware", "org.springframework.beans.factory.InitializingBean"]}
+  ,
+  {
+    "interfaces" :[ "org.hibernate.Session", "org.springframework.orm.jpa.EntityManagerProxy", "java.io.Serializable"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.context.ApplicationContextAware", "org.springframework.beans.factory.FactoryBean", "org.springframework.beans.factory.BeanClassLoaderAware", "org.springframework.beans.factory.BeanFactoryAware", "org.springframework.beans.factory.InitializingBean", "org.springframework.beans.factory.DisposableBean"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.data.mapping.context.MappingContext",  "org.springframework.context.ApplicationEventPublisherAware", "org.springframework.context.ApplicationContextAware", "org.springframework.beans.factory.InitializingBean"]}
+  ,
+  {
+    "interfaces" :[ "org.springframework.beans.factory.BeanFactoryAware", "org.springframework.beans.factory.InitializingBean", "org.springframework.data.repository.core.support.RepositoryFactoryInformation", "org.springframework.beans.factory.FactoryBean", "org.springframework.beans.factory.BeanClassLoaderAware", "org.springframework.context.ApplicationEventPublisherAware"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.context.ApplicationEventPublisherAware", "org.springframework.context.MessageSourceAware", "javax.servlet.Filter", "org.springframework.beans.factory.BeanNameAware", "org.springframework.context.EnvironmentAware", "org.springframework.core.env.EnvironmentCapable", "org.springframework.web.context.ServletContextAware", "org.springframework.beans.factory.InitializingBean", "org.springframework.beans.factory.DisposableBean"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.boot.web.servlet.filter.OrderedFilter", "javax.servlet.Filter", "org.springframework.beans.factory.BeanNameAware", "org.springframework.context.EnvironmentAware", "org.springframework.core.env.EnvironmentCapable", "org.springframework.web.context.ServletContextAware", "org.springframework.beans.factory.InitializingBean", "org.springframework.beans.factory.DisposableBean"] }
+  ,
+  {
+    "interfaces" :[ "com.cobnet.interfaces.connection.EventListener", "org.springframework.aop.SpringProxy", "org.springframework.aop.framework.Advised", "org.springframework.core.DecoratingProxy"]}
+  ,
+  {
+    "interfaces" :[ "org.springframework.data.redis.core.convert.RedisConverter", "org.springframework.beans.factory.InitializingBean"]}
+  ,
+  {
+    "interfaces" :[ "org.springframework.beans.factory.InitializingBean", "org.springframework.context.ApplicationContextAware", "org.springframework.context.ApplicationListener", "org.springframework.data.keyvalue.core.KeyValueAdapter"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.data.keyvalue.core.KeyValueOperations", "org.springframework.context.ApplicationEventPublisherAware"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.security.authentication.AuthenticationEventPublisher", "org.springframework.context.ApplicationEventPublisherAware"]}
+  ,
+  {
+    "interfaces" :[ "org.springframework.security.config.annotation.SecurityBuilder", "org.springframework.context.ApplicationContextAware", "org.springframework.web.context.ServletContextAware"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.security.config.annotation.authentication.ProviderManagerBuilder", "org.springframework.security.config.annotation.SecurityBuilder"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.context.annotation.ImportAware", "org.springframework.beans.factory.BeanClassLoaderAware"]}
+  ,
+  {
+    "interfaces" :[ "org.springframework.security.authentication.AuthenticationManager", "org.springframework.context.MessageSourceAware", "org.springframework.beans.factory.InitializingBean"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.context.MessageSourceAware", "org.springframework.security.web.authentication.session.SessionAuthenticationStrategy"]}
+  ,
+  {
+    "interfaces" :[ "org.springframework.security.authentication.AuthenticationProvider", "org.springframework.context.MessageSourceAware"]}
+  ,
+  {
+    "interfaces" :[ "javax.servlet.Filter", "org.springframework.beans.factory.BeanNameAware", "org.springframework.context.EnvironmentAware", "org.springframework.core.env.EnvironmentCapable", "org.springframework.web.context.ServletContextAware", "org.springframework.beans.factory.InitializingBean", "org.springframework.beans.factory.DisposableBean"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.security.web.AuthenticationEntryPoint", "org.springframework.beans.factory.InitializingBean"]}
+  ,
+  {
+    "interfaces" :[ "org.springframework.security.authentication.AuthenticationProvider", "org.springframework.beans.factory.InitializingBean", "org.springframework.context.MessageSourceAware"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.context.MessageSourceAware", "javax.servlet.Filter", "org.springframework.beans.factory.BeanNameAware", "org.springframework.context.EnvironmentAware", "org.springframework.core.env.EnvironmentCapable", "org.springframework.web.context.ServletContextAware", "org.springframework.beans.factory.InitializingBean", "org.springframework.beans.factory.DisposableBean"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.security.web.authentication.logout.LogoutHandler", "org.springframework.context.ApplicationEventPublisherAware"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.security.access.AccessDecisionManager", "org.springframework.beans.factory.InitializingBean", "org.springframework.context.MessageSourceAware"]}
+  ,
+  {
+    "interfaces" :[ "javax.servlet.Filter", "org.springframework.beans.factory.InitializingBean", "org.springframework.context.ApplicationEventPublisherAware", "org.springframework.context.MessageSourceAware"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.security.web.access.WebInvocationPrivilegeEvaluator", "org.springframework.web.context.ServletContextAware"] }
+  ,
+  {
+    "interfaces" :[ "io.netty.channel.group.ChannelGroup", "java.util.Set", "java.util.Collection"]}
+  ,
+  {
+    "interfaces" :[ "org.springframework.web.servlet.ViewResolver", "org.springframework.core.Ordered", "org.springframework.web.context.ServletContextAware", "org.springframework.context.ApplicationContextAware"]}
+  ,
+  {
+    "interfaces" :[ "org.springframework.boot.autoconfigure.web.servlet.error.ErrorViewResolver", "org.springframework.core.Ordered"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.boot.web.servlet.error.ErrorAttributes", "org.springframework.web.servlet.HandlerExceptionResolver", "org.springframework.core.Ordered"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.format.FormatterRegistry", "org.springframework.context.EmbeddedValueResolverAware", "org.springframework.core.convert.support.ConfigurableConversionService"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilderCustomizer", "org.springframework.core.Ordered"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.beans.factory.BeanFactoryAware", "org.springframework.beans.factory.InitializingBean", "java.io.Serializable", "com.fasterxml.jackson.core.Versioned"] }
+  ,
+  {
+    "interfaces" :[ "com.fasterxml.jackson.core.Versioned", "java.io.Serializable"] }
+  ,
+  {
+    "interfaces" :[ "java.io.Serializable", "com.fasterxml.jackson.core.Versioned"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.core.task.AsyncListenableTaskExecutor", "org.springframework.scheduling.SchedulingTaskExecutor", "org.springframework.beans.factory.BeanNameAware", "org.springframework.beans.factory.InitializingBean", "org.springframework.beans.factory.DisposableBean", "java.util.concurrent.ThreadFactory", "java.io.Serializable"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.beans.factory.BeanFactoryAware", "org.springframework.beans.factory.InitializingBean", "org.springframework.web.servlet.HandlerAdapter", "org.springframework.core.Ordered", "org.springframework.web.context.ServletContextAware", "org.springframework.context.ApplicationContextAware"] }
+  ,
+  {
+    "interfaces" :[ "org.springframework.context.ApplicationListener", "org.springframework.context.ApplicationContextAware"] }
 ]
