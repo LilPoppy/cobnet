@@ -352,7 +352,7 @@
 											<VERSION>${project.version}</VERSION>
 											<AUTHORS>${docker-maintainer}</AUTHORS>
 											<AUTHORS_EMAIL>lilpoppy96@gmail.com</AUTHORS_EMAIL>
-											<SOURCE_REPO>https://github.com/Storebeans/${project.name}}</SOURCE_REPO>
+											<SOURCE_REPO>https://github.com/StorebeansDev/${project.name}}</SOURCE_REPO>
 											<GRAALVM_VERSION>${graalvm.version}</GRAALVM_VERSION>
 											<JAVA_VERSION>java${java.version}</JAVA_VERSION>
 											<WORK_DIR>/${project.artifactId}</WORK_DIR>
