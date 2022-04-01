@@ -22,11 +22,11 @@
 		<db-host>localhost</db-host>
 		<db-port>3306</db-port>
 		<db-user>root</db-user>
-		<db-password></db-password>
-		<db-root-password></db-root-password>
+		<db-password>hT9zS5cR8aY4vM3r</db-password>
+		<db-root-password>FW/hT9zS5cR8aY4vM3r</db-root-password>
 		<redis-host>localhost</redis-host>
 		<redis-port>6379</redis-port>
-		<redis-password></redis-password>
+		<redis-password>uoX/6maYbDl51mAtleuqHA==</redis-password>
 		<tomcat-port>8089</tomcat-port>
 		<websocket-port>8090</websocket-port>
 		<repackage.classifier/>
@@ -352,7 +352,7 @@
 											<VERSION>${project.version}</VERSION>
 											<AUTHORS>${docker-maintainer}</AUTHORS>
 											<AUTHORS_EMAIL>lilpoppy96@gmail.com</AUTHORS_EMAIL>
-											<SOURCE_REPO>https://github.com/SpamanDev/${project.name}}</SOURCE_REPO>
+											<SOURCE_REPO>https://github.com/Storebeans/${project.name}}</SOURCE_REPO>
 											<GRAALVM_VERSION>${graalvm.version}</GRAALVM_VERSION>
 											<JAVA_VERSION>java${java.version}</JAVA_VERSION>
 											<WORK_DIR>/${project.artifactId}</WORK_DIR>
