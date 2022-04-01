@@ -22,11 +22,11 @@
 		<db-host>localhost</db-host>
 		<db-port>3306</db-port>
 		<db-user>root</db-user>
-		<db-password>hT9zS5cR8aY4vM3r</db-password>
-		<db-root-password>rT6xQ7dI7tI9bZ5u</db-root-password>
+		<db-password></db-password>
+		<db-root-password></db-root-password>
 		<redis-host>localhost</redis-host>
 		<redis-port>6379</redis-port>
-		<redis-password>fX9lU9gB1zA6aF3q</redis-password>
+		<redis-password></redis-password>
 		<tomcat-port>8089</tomcat-port>
 		<websocket-port>8090</websocket-port>
 		<repackage.classifier/>
@@ -40,6 +40,8 @@
 		<docker-container-name>${project.artifactId}</docker-container-name>
 		<docker-db-image-name>${project.artifactId}-db</docker-db-image-name>
 		<docker-redis-image-name>${project.artifactId}-redis</docker-redis-image-name>
+		<docker-target>jvm</docker-target>
+		<skipTests>true</skipTests>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -249,6 +251,37 @@
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
+			<plugin>
+				<artifactId>exec-maven-plugin</artifactId>
+				<groupId>org.codehaus.mojo</groupId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<id>password-initializer</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>exec</goal>
+						</goals>
+						<configuration>
+							<executable>sh</executable>
+							<workingDirectory>${project.basedir}</workingDirectory>
+							<arguments>
+								<argument>${project.basedir}/random-password.sh</argument>
+								<argument>${db-password}</argument>
+								<argument>${db-root-password}</argument>
+								<argument>${redis-password}</argument>
+							</arguments>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<skipTests>${skipTests}</skipTests>
+				</configuration>
+			</plugin>
 <!--			<plugin>-->
 <!--				<groupId>org.hibernate.orm.tooling</groupId>-->
 <!--				<artifactId>hibernate-enhance-maven-plugin</artifactId>-->
@@ -271,7 +304,6 @@
 <!--			</plugin>-->
 		</plugins>
 	</build>
-
 	<repositories>
 		<repository>
 			<id>spring-releases</id>
@@ -304,13 +336,6 @@
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-surefire-plugin</artifactId>
-						<configuration>
-							<skipTests>true</skipTests>
-						</configuration>
-					</plugin>
-					<plugin>
 						<groupId>io.fabric8</groupId>
 						<artifactId>docker-maven-plugin</artifactId>
 						<version>${dockerfile-maven.version}</version>
@@ -322,6 +347,7 @@
 									<build>
 										<dockerFile>${project.basedir}/Dockerfile</dockerFile>
 										<args>
+											<TARGET_BUILD>${docker-target}</TARGET_BUILD>
 											<ARTIFACTID>${project.artifactId}</ARTIFACTID>
 											<VERSION>${project.version}</VERSION>
 											<AUTHORS>${docker-maintainer}</AUTHORS>
@@ -329,7 +355,7 @@
 											<SOURCE_REPO>https://github.com/SpamanDev/${project.name}}</SOURCE_REPO>
 											<GRAALVM_VERSION>${graalvm.version}</GRAALVM_VERSION>
 											<JAVA_VERSION>java${java.version}</JAVA_VERSION>
-											<WORK_DIR>/build</WORK_DIR>
+											<WORK_DIR>/${project.artifactId}</WORK_DIR>
 											<!-- https://yum.oracle.com/repo/OracleLinux/OL8/baseos/latest/x86_64/index.html -->
 											<RPM_REPO>oraclelinux-release-el8</RPM_REPO>
 											<!-- https://yum.oracle.com/repo/OracleLinux/OL8/codeready/builder/x86_64/index_src.html -->
@@ -338,6 +364,17 @@
 											<TARGETPLATFORM>linux/amd64</TARGETPLATFORM>
 											<PORT>${tomcat-port}</PORT>
 											<WEBSOCKET_PORT>${websocket-port}</WEBSOCKET_PORT>
+											<DB_DATABASE>${db-database}</DB_DATABASE>
+											<DB_AUTO_RECONNECT>${db-auto-reconnect}</DB_AUTO_RECONNECT>
+											<DB_USE_SSL>${db-use-ssl}</DB_USE_SSL>
+											<DB_HOST>${db-host}</DB_HOST>
+											<DB_PORT>${db-port}</DB_PORT>
+											<DB_USER>${db-user}</DB_USER>
+											<DB_PASSWORD>${db-password}</DB_PASSWORD>
+											<DB_ROOT_PASSWORD>${db-root-password}</DB_ROOT_PASSWORD>
+											<REDIS_HOST>${redis-host}</REDIS_HOST>
+											<REDIS_PORT>${redis-port}</REDIS_PORT>
+											<REDIS_PASSWORD>${redis-password}</REDIS_PASSWORD>
 										</args>
 									</build>
 								</image>
@@ -484,6 +521,7 @@
 								<buildArgs>-H:-TruffleCheckBlackListedMethods</buildArgs>
 								<buildArgs>-H:+ReportExceptionStackTraces</buildArgs>
 								<buildArgs>-H:+ReportUnsupportedElementsAtRuntime</buildArgs>
+								<buildArgs>-H:-InlineBeforeAnalysis</buildArgs>
 								<buildArgs>--language:js</buildArgs>
 								<!-- The argument to add python below is incompatible in Mac platform-->
 <!--								<buildArgs>&#45;&#45;language:python</buildArgs>-->

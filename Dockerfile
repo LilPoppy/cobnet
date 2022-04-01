@@ -2,6 +2,7 @@
 # https://container-registry.oracle.com
 FROM container-registry.oracle.com/os/oraclelinux:8-slim
 
+ARG TARGET_BUILD
 ARG ARTIFACTID
 ARG VERSION
 ARG AUTHORS
@@ -14,6 +15,18 @@ ARG GRAALVM_PKG=https://github.com/graalvm/graalvm-ce-builds/releases/download/v
 
 ARG PORT
 ARG WEBSOCKET_PORT
+
+ARG DB_DATABASE
+ARG DB_AUTO_RECONNECT
+ARG DB_USE_SSL
+ARG DB_HOST
+ARG DB_PORT
+ARG DB_USER
+ARG DB_PASSWORD
+ARG DB_ROOT_PASSWORD
+ARG REDIS_HOST
+ARG REDIS_PORT
+ARG REDIS_PASSWORD
 
 LABEL \
     com.storechain.server.image.title=${ARTIFACTID} \
@@ -28,12 +41,15 @@ ARG INSTALLATIONS
 
 RUN microdnf update -y $RPM_REPO \
     && microdnf --enablerepo $RPM_CODEREADY_BUILDER install $INSTALLATIONS \
-    vi which xz-devel zlib-devel findutils glibc-static libstdc++ libstdc++-devel libstdc++-static zlib-static \
+    vi which xz-devel zlib-devel findutils glibc-static libstdc++ libstdc++-devel libstdc++-static zlib-static maven \
     && microdnf clean all \
     && fc-cache -f -v
-    
+
+ ARG WORK_DIR
+
 ENV LANG=en_US.UTF-8 \
-    JAVA_HOME=/opt/graalvm-ce-${JAVA_VERSION}-${GRAALVM_VERSION}
+    JAVA_HOME=/opt/graalvm-ce-${JAVA_VERSION}-${GRAALVM_VERSION} \
+    TARGET="./start.sh ${TARGET_BUILD} ${ARTIFACTID}"
 
 ADD gu-wrapper.sh /usr/local/bin/gu
 
@@ -53,38 +69,43 @@ RUN set -eux \
     alternatives --install "/usr/bin/$base" "$base" "$bin" 20000; \
     done \
     && chmod +x /usr/local/bin/gu
-    
-ARG WORK_DIR
+
+RUN gu install native-image && gu install python && native-image --version
 
 ADD . $WORK_DIR
 
 WORKDIR $WORK_DIR
 
 RUN \
-    curl -s "https://get.sdkman.io" | bash; \
-    source "$HOME/.sdkman/bin/sdkman-init.sh"; \
-    sdk install maven;
-    
-RUN source "$HOME/.sdkman/bin/sdkman-init.sh" && mvn --version
+    mvn versions:set-property -Dproperty=docker-target -DnewVersion=${TARGET_BUILD} -DgenerateBackupPoms=false; \
+    mvn versions:set-property -Dproperty=db-database -DnewVersion=${DB_DATABASE} -DgenerateBackupPoms=false; \
+    mvn versions:set-property -Dproperty=db-auto-reconnect -DnewVersion=${DB_AUTO_RECONNECT} -DgenerateBackupPoms=false; \
+    mvn versions:set-property -Dproperty=db-use-ssl -DnewVersion=${DB_USE_SSL} -DgenerateBackupPoms=false; \
+    mvn versions:set-property -Dproperty=db-host -DnewVersion=${DB_HOST} -DgenerateBackupPoms=false; \
+    mvn versions:set-property -Dproperty=db-port -DnewVersion=${DB_PORT} -DgenerateBackupPoms=false; \
+    mvn versions:set-property -Dproperty=db-user -DnewVersion=${DB_USER} -DgenerateBackupPoms=false; \
+    mvn versions:set-property -Dproperty=db-password -DnewVersion=${DB_PASSWORD} -DgenerateBackupPoms=false; \
+    mvn versions:set-property -Dproperty=db-root-password -DnewVersion=${DB_ROOT_PASSWORD} -DgenerateBackupPoms=false; \
+    mvn versions:set-property -Dproperty=redis-host -DnewVersion=${REDIS_HOST} -DgenerateBackupPoms=false; \
+    mvn versions:set-property -Dproperty=redis-port -DnewVersion=${REDIS_PORT} -DgenerateBackupPoms=false; \
+    mvn versions:set-property -Dproperty=redis-password -DnewVersion=${REDIS_PASSWORD} -DgenerateBackupPoms=false; \
+    if [ "${TARGET_BUILD}" == "native" ]; then \
+    mvn -DskipTests -B clean package -Pnative; fi \
+    && if [ "${TARGET_BUILD}" == "jvm" ]; then \
+    mvn -DskipTests clean package; fi
 
-RUN gu install native-image && gu install python && native-image --version
-    
-CMD java -version
+RUN ls -1 | grep -E -iwv 'target|start.sh' | xargs rm -f -r \
+    && chmod +x ./start.sh
 
-RUN source "$HOME/.sdkman/bin/sdkman-init.sh"; \
-	mvn -DskipTests clean package; \
-	java -agentlib:native-image-agent=config-merge-dir=src/main/java/ -jar target/storechain-server.jar agent; \
-	mvn -DskipTests -B clean package -Pnative;
-
-
-MAINTAINER $AUTHORS
+RUN ls && pwd
 
 EXPOSE $PORT
 EXPOSE $WEBSOCKET_PORT
 
-RUN cp ./target/$ARTIFACTID ./server
+MAINTAINER $AUTHORS
 
+CMD java -version
 
-ENTRYPOINT [ "./server" ]
+ENTRYPOINT [ "/bin/bash", "-c", "${TARGET}" ]
 
-RUN ifconfig && echo "All done!"
+RUN echo "All done!"

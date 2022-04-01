@@ -25,18 +25,59 @@ This project is developed in GraalVM environment, so please configure the corres
 This project can be easily build with maven, run the following goal:
 
 ```
-$ mvn clean package
+mvn clean package
 ```
 
 Then run the followings to start the server:
 
 ```
-$ java -jar target/CoBNet.jar
+sh ./start.sh
 ```
+or 
 
+```
+java -jar target/cobnet.jar
+```
 ## Spring Native
 
 This project has been configured to let you generate either a lightweight container or a native executable.
+
+### Configuration
+
+Default source is already configured good to be build native or container. But if you have other modified we can use agent and some tool to help for configuration needs, to use these options the following needs to be setup:
+
+* [MySQL](https://www.mysql.com) 
+
+* [Redis](https://redis.io)
+
+#### Native image agent
+
+Native images are built ahead of runtime and their build relies on a static analysis of which code will be reachable.
+
+First build a jvm mirror
+
+```
+mvn clean package
+```
+
+Then run with the agent
+
+```
+java -agentlib:native-image-agent=config-merge-dir=src/main/java/ -jar target/cobnet.jar agent
+```
+
+##### Auto proxy script
+
+A script which written in [Python3](https://www.python.org/downloads/) to help you append Graal Native needed proxy into extra-proxy-config.json.
+
+From project root directory run:
+```
+cd script
+```
+Then run the script:
+```
+python3 ProxyHelper.py
+```
 
 ### Lightweight Container with Cloud Native Buildpacks
 If you're already familiar with Spring Boot container images support, this is the easiest way to get started with Spring Native.
@@ -46,15 +87,24 @@ Docker should be installed and configured on your machine prior to creating the 
 
 * [Docker-Compose](https://docs.docker.com/compose/install/) 18.06.0+ needs to be installed.
 
-To create the docker image and container by compose, run the following goal:
+####To create the docker image and container by compose, there is two options.
+
+#####JVM:
 
 ```
-$ mvn -DskipTests -Dredis-host=redis -Ddb-host=db clean package -Pdocker 
+mvn -Dredis-host=redis -Ddb-host=db clean package -Pdocker -Ddocker-target=jvm
 ```
+
+#####Native:
+
+```
+mvn -Dredis-host=redis -Ddb-host=db clean package -Pdocker -Ddocker-target=native
+```
+
 To start the app you can run as follows:
 
 ```
-$ docker start -a cobnet
+docker start -a cobnet
 ```
 
 ### Executable with Native Build Tools
@@ -68,22 +118,20 @@ The GraalVM native-image compiler should be installed and configured on your mac
 To create the executable, run the following goal:
 
 ```
-$ mvn -DskipTests clean package
-```
-
-```
-$ java -agentlib:native-image-agent=config-merge-dir=src/main/java/ -jar target/CoBNet.jar agent
-```
-
-```
-$ mvn -DskipTests clean package -Pnative
+mvn clean package -Pnative
 ```
 
 Then, you can run the app as follows:
 
 ```
-$ target/CoBNet
+sh ./start.sh
 ```
+or 
+
+```
+target/cobnet
+```
+
 ### Reference Documentation
 For further reference, please consider the following sections:
 * [Spring Redis](https://docs.spring.io/spring-data/data-redis/docs/current/reference/html/#reference)

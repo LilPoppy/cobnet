@@ -9,12 +9,12 @@ services:
       networks:
          - spring-cloud-network
       depends_on:
-             - db
-             - redis
+         - db
+         - redis
       environment:
          SPRING_DATASOURCE_URL: jdbc:mysql://${DB_HOST}:${DB_EXPOSE}/testdb?autoReconnect=${DB_AUTO_RECONNECT}&useSSL=${DB_USE_SSL}
          REDIS_HOST: ${REDIS_HOST}
-         REDIS_PORT: 6379
+         REDIS_PORT: ${REDIS_EXPOSE}
          REDIS_PASSWORD: ${REDIS_PASSWORD}
    db:
       image: ${DB_IMAGE_NAME}
@@ -24,8 +24,8 @@ services:
       environment:
          MYSQL_DATABASE: '${DB_DATABASE}'
          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-         # MYSQL_USER: '${DB_USER}'
-         # MYSQL_PASSWORD: '${DB_PASSWORD}'
+#         MYSQL_USER: '${DB_USER}'
+#         MYSQL_PASSWORD: '${DB_PASSWORD}'
          MYSQL_ROOT_PASSWORD: '${DB_PASSWORD}'
       ports:
          - ${DB_EXPOSE}:${DB_EXPOSE}
@@ -37,7 +37,7 @@ services:
       restart: always
       ports:
          - ${REDIS_EXPOSE}:${REDIS_EXPOSE}
-      command: redis-server --save 20 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
+      command: redis-server --save 60 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
       networks:
          - spring-cloud-network
 networks:

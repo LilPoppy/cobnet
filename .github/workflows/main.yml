@@ -46,7 +46,7 @@ jobs:
       - run: native-image --version
       - run: mvn --version
       - name: Build with Maven
-        run: mvn clean package -Pnative
+        run: mvn -DskipTests=false -Ddb-password=hT9zS5cR8aY4vM3r clean package -Pnative
   linux-build-jvm:
     runs-on: ubuntu-latest
     steps:
@@ -73,7 +73,7 @@ jobs:
       - run: java --version
       - run: mvn --version
       - name: Build with Maven
-        run: mvn clean package
+        run: mvn -DskipTests=false -Ddb-password=hT9zS5cR8aY4vM3r clean package
   linux-build-docker:
     runs-on: self-hosted
     steps:
@@ -91,7 +91,7 @@ jobs:
       - run: docker-compose --version
       - run: mvn --version
       - name: Build with Maven
-        run: mvn -DskipTests -B -Dredis-host=redis -Ddb-host=db clean package -Pdocker
+        run: mvn -B -Dredis-host=redis -Ddb-host=db clean package -Pdocker
       - run: docker images
       - run: docker image prune -f
       - run: docker rm -f cobnet-redis cobnet-db cobnet
@@ -124,6 +124,6 @@ jobs:
       - run: native-image --version
       - run: mvn --version
       - name: Build with Maven
-        run: mvn clean package -Pnative test
+        run: mvn -DskipTests=false -Ddb-password=hT9zS5cR8aY4vM3r clean package -Pnative test
 
       
