@@ -9,6 +9,7 @@ import com.cobnet.spring.boot.dto.ConnectionToken;
 import com.cobnet.spring.boot.entity.ExternalUser;
 import com.cobnet.spring.boot.entity.User;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -78,16 +79,11 @@ public class HttpAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
         String url = HttpRequestUrlResolver.getSuccessRedirectUrl(request);
 
-        response.setStatus(HttpStatus.OK.value());
-        response.setContentType("application/json");
+
 
         if(url == null) {
 
-            try (PrintWriter writer = response.getWriter()) {
-
-                writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new AuthenticationResult(true, connectionToken).getData()));
-                writer.flush();
-            }
+            ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(new AuthenticationResult(true, connectionToken));
 
         } else {
 
