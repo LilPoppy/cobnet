@@ -41,6 +41,7 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
 
         if(!authentication.isAuthenticated()) {
+
             Object principal = authentication.getPrincipal();
 
             String username = null;
@@ -59,6 +60,14 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
                 AccountLoginEvent loginEvent = new AccountLoginEvent(account);
 
                 ProjectBeanHolder.getApplicationEventPublisher().publishEvent(loginEvent);
+
+                if(details.getUsername() == null && details.getPassword() == null) {
+
+                    ProjectBeanHolder.getCurrentHttpResponse().setStatus(HttpStatus.UNAUTHORIZED.value());
+
+                    throw new UsernameNotFoundException("User " + username + " is not exist!");
+
+                }
 
                 if (!loginEvent.isCancelled()) {
 
@@ -85,11 +94,15 @@ public class UserAuthenticationProvider implements AuthenticationProvider {
                         return new AccountAuthenticationToken(account, ((UserDetails) account).getPassword());
                     }
 
+                    ProjectBeanHolder.getCurrentHttpResponse().setStatus(HttpStatus.UNAUTHORIZED.value());
+
                     throw new BadCredentialsException("Wrong password");
                 }
 
                 throw new AuthenticationCancelledException("Authentication cancelled.");
             }
+
+            ProjectBeanHolder.getCurrentHttpResponse().setStatus(HttpStatus.UNAUTHORIZED.value());
 
             throw new UsernameNotFoundException("User " + username + " is not exist!");
         }

@@ -3,6 +3,7 @@ import io
 import subprocess
 import sys
 from pathlib import Path
+import json
 
 def file_insert_line(path, line, text):
     data = file_read(path)
