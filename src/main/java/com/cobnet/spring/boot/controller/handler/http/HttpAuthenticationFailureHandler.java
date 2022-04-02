@@ -28,7 +28,7 @@ public class HttpAuthenticationFailureHandler implements AuthenticationFailureHa
 
         if(url == null) {
 
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new AuthenticationResult(false, null));
+            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ProjectBeanHolder.getObjectMapper().writeValueAsString(new AuthenticationResult(false, null)));
 
         } else {
 
