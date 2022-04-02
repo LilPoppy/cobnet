@@ -20,7 +20,7 @@ public interface UserRepository extends JPABaseRepository<User, String>, UserDet
     @Transactional
     default UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        return findByUsernameEqualsIgnoreCase(username).orElse(null);
+        return findByUsernameEqualsIgnoreCase(username).orElse(new User());
     }
 
 }
