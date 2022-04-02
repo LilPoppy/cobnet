@@ -83,7 +83,7 @@ public class HttpAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
         if(url == null) {
 
-            ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(new AuthenticationResult(true, connectionToken));
+            ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(ProjectBeanHolder.getObjectMapper().writeValueAsString(new AuthenticationResult(true, connectionToken).getData()));
 
         } else {
 
