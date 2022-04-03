@@ -94,7 +94,7 @@ RUN \
     && if [ "${TARGET_BUILD}" == "jvm" ]; then \
     mvn -DskipTests clean package; fi
 
-RUN ls -1 | grep -E -iwv 'target|start.sh' | xargs rm -f -r \
+RUN ls -1 | grep -E -iwv 'target|start.sh|docker-compose.yml' | xargs rm -f -r \
     && chmod +x ./start.sh
 
 RUN ls && pwd
@@ -105,7 +105,7 @@ EXPOSE $WEBSOCKET_PORT
 MAINTAINER $AUTHORS
 
 CMD java -version
-
+# TODO CMD run target
 ENTRYPOINT [ "/bin/bash", "-c", "${TARGET}" ]
 
 RUN echo "All done!"

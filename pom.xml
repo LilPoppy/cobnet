@@ -41,6 +41,7 @@
 		<docker-db-image-name>${project.artifactId}-db</docker-db-image-name>
 		<docker-redis-image-name>${project.artifactId}-redis</docker-redis-image-name>
 		<docker-target>jvm</docker-target>
+		<docker-compose-skips>true</docker-compose-skips>
 		<skipTests>true</skipTests>
 	</properties>
 	<dependencies>
@@ -302,6 +303,59 @@
 <!--					</execution>-->
 <!--				</executions>-->
 <!--			</plugin>-->
+			<plugin>
+				<groupId>com.dkanejs.maven.plugins</groupId>
+				<artifactId>docker-compose-maven-plugin</artifactId>
+				<configuration>
+					<envVars>
+						<IMAGE_NAME>${docker-image-name}</IMAGE_NAME>
+						<CONTAINER_NAME>${docker-container-name}</CONTAINER_NAME>
+						<EXPOSE>${tomcat-port}</EXPOSE>
+						<WEBSOCKET_EXPOSE>${websocket-port}</WEBSOCKET_EXPOSE>
+						<DB_IMAGE_NAME>${docker-db-image-name}</DB_IMAGE_NAME>
+						<DB_AUTO_RECONNECT>${db-auto-reconnect}</DB_AUTO_RECONNECT>
+						<DB_USE_SSL>${db-use-ssl}</DB_USE_SSL>
+						<DB_HOST>${db-host}</DB_HOST>
+						<DB_EXPOSE>${db-port}</DB_EXPOSE>
+						<DB_DATABASE>${db-database}</DB_DATABASE>
+						<DB_USER>${db-user}</DB_USER>
+						<DB_PASSWORD>${db-password}</DB_PASSWORD>
+						<REDIS_IMAGE_NAME>${docker-redis-image-name}</REDIS_IMAGE_NAME>
+						<REDIS_HOST>${redis-host}</REDIS_HOST>
+						<REDIS_EXPOSE>${redis-port}</REDIS_EXPOSE>
+						<REDIS_PASSWORD>${redis-password}</REDIS_PASSWORD>
+					</envVars>
+				</configuration>
+				<executions>
+					<execution>
+						<id>up</id>
+						<phase>install</phase>
+						<goals>
+							<goal>up</goal>
+						</goals>
+						<configuration>
+							<composeFile>${project.basedir}/docker-compose.yml</composeFile>
+							<skip>${docker-compose-skips}</skip>
+							<detachedMode>true</detachedMode>
+							<buildArgs>
+								<forceRm>true</forceRm>
+							</buildArgs>
+						</configuration>
+					</execution>
+					<execution>
+						<id>down</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>down</goal>
+						</goals>
+						<configuration>
+							<composeFile>${project.basedir}/docker-compose.yml</composeFile>
+							<skip>${docker-compose-skips}</skip>
+							<removeVolumes>true</removeVolumes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 	<repositories>
@@ -333,6 +387,9 @@
 	<profiles>
 		<profile>
 			<id>docker</id>
+			<properties>
+				<docker-compose-skips>false</docker-compose-skips>
+			</properties>
 			<build>
 				<plugins>
 					<plugin>
@@ -416,44 +473,6 @@
 								<goals>
 									<goal>build</goal>
 								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>com.dkanejs.maven.plugins</groupId>
-						<artifactId>docker-compose-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>up</id>
-								<phase>package</phase>
-								<goals>
-									<goal>up</goal>
-								</goals>
-								<configuration>
-									<composeFile>${project.basedir}/docker-compose.yml</composeFile>
-									<detachedMode>true</detachedMode>
-									<envVars>
-										<IMAGE_NAME>${docker-image-name}</IMAGE_NAME>
-										<CONTAINER_NAME>${docker-container-name}</CONTAINER_NAME>
-										<EXPOSE>${tomcat-port}</EXPOSE>
-										<WEBSOCKET_EXPOSE>${websocket-port}</WEBSOCKET_EXPOSE>
-										<DB_IMAGE_NAME>${docker-db-image-name}</DB_IMAGE_NAME>
-										<DB_AUTO_RECONNECT>${db-auto-reconnect}</DB_AUTO_RECONNECT>
-										<DB_USE_SSL>${db-use-ssl}</DB_USE_SSL>
-										<DB_HOST>${db-host}</DB_HOST>
-										<DB_EXPOSE>${db-port}</DB_EXPOSE>
-										<DB_DATABASE>${db-database}</DB_DATABASE>
-										<DB_USER>${db-user}</DB_USER>
-										<DB_PASSWORD>${db-password}</DB_PASSWORD>
-										<REDIS_IMAGE_NAME>${docker-redis-image-name}</REDIS_IMAGE_NAME>
-										<REDIS_HOST>${redis-host}</REDIS_HOST>
-										<REDIS_EXPOSE>${redis-port}</REDIS_EXPOSE>
-										<REDIS_PASSWORD>${redis-password}</REDIS_PASSWORD>
-									</envVars>
-									<buildArgs>
-										<forceRm>true</forceRm>
-									</buildArgs>
-								</configuration>
 							</execution>
 						</executions>
 					</plugin>

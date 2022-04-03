@@ -89,16 +89,19 @@ Docker should be installed and configured on your machine prior to creating the 
 
 ####To create the docker image and container by compose, there is two options.
 
+
 #####JVM:
 
+
 ```
-mvn -Dredis-host=redis -Ddb-host=db clean package -Pdocker -Ddocker-target=jvm
+mvn -Dredis-host=redis -Ddb-host=db clean install -Pdocker -Ddocker-target=jvm
 ```
 
 #####Native:
 
+
 ```
-mvn -Dredis-host=redis -Ddb-host=db clean package -Pdocker -Ddocker-target=native
+mvn -Dredis-host=redis -Ddb-host=db clean install -Pdocker -Ddocker-target=native
 ```
 
 To start the app you can run as follows:
