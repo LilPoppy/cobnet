@@ -5,6 +5,7 @@ import com.cobnet.spring.boot.core.HttpRequestUrlResolver;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.AuthenticationResult;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
@@ -26,9 +27,16 @@ public class HttpAuthenticationFailureHandler implements AuthenticationFailureHa
 
         String url = HttpRequestUrlResolver.getFailureRedirectUrl(request);
 
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+
         if(url == null) {
 
-            ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ProjectBeanHolder.getObjectMapper().writeValueAsString(new AuthenticationResult(false, null)));
+            try (PrintWriter writer = response.getWriter()){
+
+                writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new AuthenticationResult(false, null)));
+                writer.flush();
+            }
 
         } else {
 
