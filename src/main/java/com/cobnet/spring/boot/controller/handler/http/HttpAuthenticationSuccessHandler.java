@@ -8,6 +8,7 @@ import com.cobnet.spring.boot.dto.AuthenticationResult;
 import com.cobnet.spring.boot.dto.ConnectionToken;
 import com.cobnet.spring.boot.entity.ExternalUser;
 import com.cobnet.spring.boot.entity.User;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

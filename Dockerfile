@@ -105,7 +105,7 @@ EXPOSE $WEBSOCKET_PORT
 MAINTAINER $AUTHORS
 
 CMD java -version
-
+# TODO CMD run target
 ENTRYPOINT [ "/bin/bash", "-c", "${TARGET}" ]
 
 RUN echo "All done!"
