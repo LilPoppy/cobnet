@@ -41,6 +41,7 @@
 		<docker-db-image-name>${project.artifactId}-db</docker-db-image-name>
 		<docker-redis-image-name>${project.artifactId}-redis</docker-redis-image-name>
 		<docker-target>jvm</docker-target>
+		<docker-compose-skips>true</docker-compose-skips>
 		<skipTests>true</skipTests>
 	</properties>
 	<dependencies>
@@ -282,26 +283,79 @@
 					<skipTests>${skipTests}</skipTests>
 				</configuration>
 			</plugin>
-<!--			<plugin>-->
-<!--				<groupId>org.hibernate.orm.tooling</groupId>-->
-<!--				<artifactId>hibernate-enhance-maven-plugin</artifactId>-->
-<!--				<version>${hibernate.version}</version>-->
-<!--				<executions>-->
-<!--					<execution>-->
-<!--						<id>enhance</id>-->
-<!--						<goals>-->
-<!--							<goal>enhance</goal>-->
-<!--						</goals>-->
-<!--						<configuration>-->
-<!--							<failOnError>true</failOnError>-->
-<!--							<enableLazyInitialization>true</enableLazyInitialization>-->
-<!--							<enableDirtyTracking>true</enableDirtyTracking>-->
-<!--							<enableAssociationManagement>true</enableAssociationManagement>-->
-<!--							<enableExtendedEnhancement>false</enableExtendedEnhancement>-->
-<!--						</configuration>-->
-<!--					</execution>-->
-<!--				</executions>-->
-<!--			</plugin>-->
+			<!--			<plugin>-->
+			<!--				<groupId>org.hibernate.orm.tooling</groupId>-->
+			<!--				<artifactId>hibernate-enhance-maven-plugin</artifactId>-->
+			<!--				<version>${hibernate.version}</version>-->
+			<!--				<executions>-->
+			<!--					<execution>-->
+			<!--						<id>enhance</id>-->
+			<!--						<goals>-->
+			<!--							<goal>enhance</goal>-->
+			<!--						</goals>-->
+			<!--						<configuration>-->
+			<!--							<failOnError>true</failOnError>-->
+			<!--							<enableLazyInitialization>true</enableLazyInitialization>-->
+			<!--							<enableDirtyTracking>true</enableDirtyTracking>-->
+			<!--							<enableAssociationManagement>true</enableAssociationManagement>-->
+			<!--							<enableExtendedEnhancement>false</enableExtendedEnhancement>-->
+			<!--						</configuration>-->
+			<!--					</execution>-->
+			<!--				</executions>-->
+			<!--			</plugin>-->
+			<plugin>
+				<groupId>com.dkanejs.maven.plugins</groupId>
+				<artifactId>docker-compose-maven-plugin</artifactId>
+				<configuration>
+					<envVars>
+						<IMAGE_NAME>${docker-image-name}</IMAGE_NAME>
+						<CONTAINER_NAME>${docker-container-name}</CONTAINER_NAME>
+						<EXPOSE>${tomcat-port}</EXPOSE>
+						<WEBSOCKET_EXPOSE>${websocket-port}</WEBSOCKET_EXPOSE>
+						<DB_IMAGE_NAME>${docker-db-image-name}</DB_IMAGE_NAME>
+						<DB_AUTO_RECONNECT>${db-auto-reconnect}</DB_AUTO_RECONNECT>
+						<DB_USE_SSL>${db-use-ssl}</DB_USE_SSL>
+						<DB_HOST>${db-host}</DB_HOST>
+						<DB_EXPOSE>${db-port}</DB_EXPOSE>
+						<DB_DATABASE>${db-database}</DB_DATABASE>
+						<DB_USER>${db-user}</DB_USER>
+						<DB_PASSWORD>${db-password}</DB_PASSWORD>
+						<REDIS_IMAGE_NAME>${docker-redis-image-name}</REDIS_IMAGE_NAME>
+						<REDIS_HOST>${redis-host}</REDIS_HOST>
+						<REDIS_EXPOSE>${redis-port}</REDIS_EXPOSE>
+						<REDIS_PASSWORD>${redis-password}</REDIS_PASSWORD>
+					</envVars>
+				</configuration>
+				<executions>
+					<execution>
+						<id>up</id>
+						<phase>install</phase>
+						<goals>
+							<goal>up</goal>
+						</goals>
+						<configuration>
+							<composeFile>${project.basedir}/docker-compose.yml</composeFile>
+							<skip>${docker-compose-skips}</skip>
+							<detachedMode>true</detachedMode>
+							<buildArgs>
+								<forceRm>true</forceRm>
+							</buildArgs>
+						</configuration>
+					</execution>
+					<execution>
+						<id>down</id>
+						<phase>initialize</phase>
+						<goals>
+							<goal>down</goal>
+						</goals>
+						<configuration>
+							<composeFile>${project.basedir}/docker-compose.yml</composeFile>
+							<skip>${docker-compose-skips}</skip>
+							<removeVolumes>true</removeVolumes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 	<repositories>
@@ -333,6 +387,9 @@
 	<profiles>
 		<profile>
 			<id>docker</id>
+			<properties>
+				<docker-compose-skips>false</docker-compose-skips>
+			</properties>
 			<build>
 				<plugins>
 					<plugin>
@@ -419,44 +476,6 @@
 							</execution>
 						</executions>
 					</plugin>
-					<plugin>
-						<groupId>com.dkanejs.maven.plugins</groupId>
-						<artifactId>docker-compose-maven-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>up</id>
-								<phase>package</phase>
-								<goals>
-									<goal>up</goal>
-								</goals>
-								<configuration>
-									<composeFile>${project.basedir}/docker-compose.yml</composeFile>
-									<detachedMode>true</detachedMode>
-									<envVars>
-										<IMAGE_NAME>${docker-image-name}</IMAGE_NAME>
-										<CONTAINER_NAME>${docker-container-name}</CONTAINER_NAME>
-										<EXPOSE>${tomcat-port}</EXPOSE>
-										<WEBSOCKET_EXPOSE>${websocket-port}</WEBSOCKET_EXPOSE>
-										<DB_IMAGE_NAME>${docker-db-image-name}</DB_IMAGE_NAME>
-										<DB_AUTO_RECONNECT>${db-auto-reconnect}</DB_AUTO_RECONNECT>
-										<DB_USE_SSL>${db-use-ssl}</DB_USE_SSL>
-										<DB_HOST>${db-host}</DB_HOST>
-										<DB_EXPOSE>${db-port}</DB_EXPOSE>
-										<DB_DATABASE>${db-database}</DB_DATABASE>
-										<DB_USER>${db-user}</DB_USER>
-										<DB_PASSWORD>${db-password}</DB_PASSWORD>
-										<REDIS_IMAGE_NAME>${docker-redis-image-name}</REDIS_IMAGE_NAME>
-										<REDIS_HOST>${redis-host}</REDIS_HOST>
-										<REDIS_EXPOSE>${redis-port}</REDIS_EXPOSE>
-										<REDIS_PASSWORD>${redis-password}</REDIS_PASSWORD>
-									</envVars>
-									<buildArgs>
-										<forceRm>true</forceRm>
-									</buildArgs>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
 				</plugins>
 			</build>
 		</profile>
@@ -501,7 +520,7 @@
 						<extensions>true</extensions>
 						<configuration>
 							<buildArgs>
-<!--								<buildArgs>-DskipTests</buildArgs>-->
+								<!--								<buildArgs>-DskipTests</buildArgs>-->
 								<buildArgs>-H:TraceClassInitialization=true</buildArgs>
 								<!--<buildArgs>- -no-server</buildArgs>-->
 								<buildArgs>--no-fallback</buildArgs>
@@ -524,39 +543,39 @@
 								<buildArgs>-H:-InlineBeforeAnalysis</buildArgs>
 								<buildArgs>--language:js</buildArgs>
 								<!-- The argument to add python below is incompatible in Mac platform-->
-<!--								<buildArgs>&#45;&#45;language:python</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;language:python</buildArgs>-->
 								<!--suppress UnresolvedMavenProperty -->
 								<buildArgs>-Dpython.StdLibHome=${env.JAVA_HOME}/languages/python/lib-python/3</buildArgs>
 								<!--suppress UnresolvedMavenProperty -->
 								<buildArgs>-Dpython.CoreHome=${env.JAVA_HOME}/languages/python/lib-graalpython</buildArgs>
-<!--								<buildArgs>&#45;&#45;initialize-at-run-time=com.cobnet.utils.TaskProvider</buildArgs>-->
-<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.apache.tomcat.jni.OS</buildArgs>-->
-<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.apache.tomcat.jni.SSL</buildArgs>-->
-<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.python.modules.posix.PosixModule</buildArgs>-->
-<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.apache.tomcat.util.net.openssl.OpenSSLEngine</buildArgs>-->
-<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.python.modules.Setup</buildArgs>-->
-<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.core.io.VfsUtils</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-time=com.cobnet.utils.TaskProvider</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.apache.tomcat.jni.OS</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.apache.tomcat.jni.SSL</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.python.modules.posix.PosixModule</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.apache.tomcat.util.net.openssl.OpenSSLEngine</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.python.modules.Setup</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.core.io.VfsUtils</buildArgs>-->
 
-<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.data.web.XmlBeamHttpMessageConverter</buildArgs>-->
-<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.data.web.ProjectingJackson2HttpMessageConverter</buildArgs>-->
-<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.boot.autoconfigure.neo4j.Neo4jAutoConfiguration</buildArgs>-->
-<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.boot.logging.log4j2.Log4J2LoggingSystem</buildArgs>-->
-<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.boot.liquibase.LiquibaseChangelogMissingFailureAnalyzer</buildArgs>-->
-<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.web.multipart.commons.CommonsFileUploadSupport</buildArgs>-->
-<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.http.converter.json.Jackson2ObjectMapperBuilder$XmlObjectMapperInitializer</buildArgs>-->
-<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.boot.r2dbc.EmbeddedDatabaseConnection</buildArgs>-->
-<!--								<buildArgs>&#45;&#45;initialize-at-run-time=io.netty.handler.ssl.ConscryptAlpnSslEngine</buildArgs>-->
-<!--								<buildArgs>&#45;&#45;initialize-at-run-time=io.netty.util.internal.logging.Log4JLogger</buildArgs>-->
-<!--								<buildArgs>&#45;&#45;initialize-at-run-time=reactor.core.publisher.Traces$SharedSecretsCallSiteSupplierFactory$TracingException</buildArgs>-->
-<!--								<buildArgs>&#45;&#45;initialize-at-run-time=com.zaxxer.hikari.metrics.micrometer.MicrometerMetricsTracker</buildArgs>-->
-<!--								<buildArgs>&#45;&#45;initialize-at-run-time=com.zaxxer.hikari.metrics.dropwizard.CodaHaleMetricsTracker</buildArgs>-->
-<!--								<buildArgs>&#45;&#45;initialize-at-run-time=com.netflix.discovery.shared.transport.jersey.JerseyEurekaHttpClientFactory</buildArgs>-->
-<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.hibernate.secure.internal.StandardJaccServiceImpl</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.data.web.XmlBeamHttpMessageConverter</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.data.web.ProjectingJackson2HttpMessageConverter</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.boot.autoconfigure.neo4j.Neo4jAutoConfiguration</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.boot.logging.log4j2.Log4J2LoggingSystem</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.boot.liquibase.LiquibaseChangelogMissingFailureAnalyzer</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.web.multipart.commons.CommonsFileUploadSupport</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.http.converter.json.Jackson2ObjectMapperBuilder$XmlObjectMapperInitializer</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.springframework.boot.r2dbc.EmbeddedDatabaseConnection</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-time=io.netty.handler.ssl.ConscryptAlpnSslEngine</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-time=io.netty.util.internal.logging.Log4JLogger</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-time=reactor.core.publisher.Traces$SharedSecretsCallSiteSupplierFactory$TracingException</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-time=com.zaxxer.hikari.metrics.micrometer.MicrometerMetricsTracker</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-time=com.zaxxer.hikari.metrics.dropwizard.CodaHaleMetricsTracker</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-time=com.netflix.discovery.shared.transport.jersey.JerseyEurekaHttpClientFactory</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-time=org.hibernate.secure.internal.StandardJaccServiceImpl</buildArgs>-->
 								<!-- Incompatible at initialize at build time for graalvm version 22.0.0.2 -->
 								<buildArgs>--initialize-at-run-time=io.netty.handler.ssl.util.ThreadLocalInsecureRandom,io.netty.channel.unix,io.netty.channel.epoll,io.netty.channel.kqueue</buildArgs>
 								<buildArgs>--initialize-at-run-time=io.netty.handler.ssl.JdkNpnApplicationProtocolNegotiator</buildArgs>
 								<buildArgs>--initialize-at-run-time=io.netty.handler.ssl.JettyNpnSslEngine</buildArgs>
-<!--								<buildArgs>&#45;&#45;initialize-at-run-time=com.cobnet.EntryPoint</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-time=com.cobnet.EntryPoint</buildArgs>-->
 							</buildArgs>
 
 						</configuration>

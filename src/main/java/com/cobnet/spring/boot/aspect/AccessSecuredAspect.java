@@ -44,7 +44,7 @@ public class AccessSecuredAspect {
 
         String[] permissions = annotation.permissions();
 
-        Account account = Account.getAccount();
+        Account account = Account.getCurrentAccount();
 
         if(joinPoint.getTarget() instanceof EventListener listener) {
 

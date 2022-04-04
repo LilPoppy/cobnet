@@ -19,7 +19,7 @@ This is a spring-native polyglot server that can be quickly deployed.
 
 ### JVM
 
-This project is developed in GraalVM environment, so please configure the corresponding environment when you want to run this project as SVM, see 
+This project is developed in GraalVM environment, so please configure the corresponding environment when you want to run this project as SVM, see
 [Get Started with GraalVM](https://www.graalvm.org/22.0/docs/getting-started/).
 
 This project can be easily build with maven, run the following goal:
@@ -33,7 +33,7 @@ Then run the followings to start the server:
 ```
 sh ./start.sh
 ```
-or 
+or
 
 ```
 java -jar target/cobnet.jar
@@ -46,7 +46,7 @@ This project has been configured to let you generate either a lightweight contai
 
 Default source is already configured good to be build native or container. But if you have other modified we can use agent and some tool to help for configuration needs, to use these options the following needs to be setup:
 
-* [MySQL](https://www.mysql.com) 
+* [MySQL](https://www.mysql.com)
 
 * [Redis](https://redis.io)
 
@@ -89,16 +89,19 @@ Docker should be installed and configured on your machine prior to creating the 
 
 ####To create the docker image and container by compose, there is two options.
 
+
 #####JVM:
 
+
 ```
-mvn -Dredis-host=redis -Ddb-host=db clean package -Pdocker -Ddocker-target=jvm
+mvn -Dredis-host=redis -Ddb-host=db clean install -Pdocker -Ddocker-target=jvm
 ```
 
 #####Native:
 
+
 ```
-mvn -Dredis-host=redis -Ddb-host=db clean package -Pdocker -Ddocker-target=native
+mvn -Dredis-host=redis -Ddb-host=db clean install -Pdocker -Ddocker-target=native
 ```
 
 To start the app you can run as follows:
@@ -126,7 +129,7 @@ Then, you can run the app as follows:
 ```
 sh ./start.sh
 ```
-or 
+or
 
 ```
 target/cobnet

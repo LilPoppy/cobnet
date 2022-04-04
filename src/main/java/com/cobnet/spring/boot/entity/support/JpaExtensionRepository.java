@@ -1,4 +1,4 @@
-package com.cobnet.spring.boot.service;
+package com.cobnet.spring.boot.entity.support;
 
 import com.cobnet.interfaces.spring.repository.JPABaseRepository;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;

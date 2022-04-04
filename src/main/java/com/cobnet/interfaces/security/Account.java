@@ -1,10 +1,7 @@
 package com.cobnet.interfaces.security;
 
-import com.cobnet.security.AccountAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 
@@ -14,13 +11,8 @@ public interface Account {
 
     public Collection<? extends GrantedAuthority> getAuthorities();
 
-    public static Account getAccount() {
+    public static Account getCurrentAccount() {
 
-        if(SecurityContextHolder.getContext().getAuthentication() instanceof AccountAuthenticationToken token) {
-
-            return token.getAccount();
-        }
-
-        return null;
+        return ProjectBeanHolder.getCurrentAccount();
     }
 }

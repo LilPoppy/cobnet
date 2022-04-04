@@ -1,17 +1,14 @@
 package com.cobnet.spring.boot.configuration;
 
+import com.cobnet.spring.boot.entity.support.JpaExtensionRepository;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-
-import javax.sql.DataSource;
 
 //TODO add mybatis supports; read write separation
 @Configuration
 @ConfigurationProperties("spring.datasource")
-@EnableJpaRepositories(value = "com.cobnet.interfaces.spring.repository", repositoryBaseClass = com.cobnet.spring.boot.service.JpaExtensionRepository.class)
+@EnableJpaRepositories(value = "com.cobnet.interfaces.spring.repository", repositoryBaseClass = JpaExtensionRepository.class)
 public class DatasourceConfiguration {
 
     private String driverClassName;

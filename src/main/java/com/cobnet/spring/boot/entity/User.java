@@ -243,4 +243,75 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
         return this.getOwnedExternalUserCollection().remove(user);
     }
+
+    public static class Builder {
+
+        private String username;
+
+        private String password;
+
+        private List<UserRole> roles;
+
+        private boolean expired;
+
+        private boolean locked;
+
+        private boolean vaildPassword;
+
+        private boolean enabled;
+
+        public Builder setUsername(String username) {
+
+            this.username = username;
+
+            return this;
+        }
+
+        public Builder setPassword(String password) {
+
+            this.password = password;
+
+            return this;
+        }
+
+        public Builder setRoles(UserRole... roles) {
+
+            this.roles = Arrays.stream(roles).toList();
+
+            return this;
+        }
+
+        public Builder setExpired(boolean expired) {
+
+            this.expired = expired;
+
+            return this;
+        }
+
+        public Builder setLocked(boolean locked) {
+
+            this.locked = locked;
+
+            return this;
+        }
+
+        public Builder setVaildPassword(boolean vaildPassword) {
+
+            this.vaildPassword = vaildPassword;
+
+            return this;
+        }
+
+        public Builder setEnabled(boolean enabled) {
+
+            this.enabled = enabled;
+
+            return this;
+        }
+
+        public User build() {
+
+            return new User(this.username, this.password, this.roles, this.expired, this.locked, this.vaildPassword, this.enabled);
+        }
+    }
 }

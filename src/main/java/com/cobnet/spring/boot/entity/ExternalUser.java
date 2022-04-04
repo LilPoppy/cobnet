@@ -243,4 +243,66 @@ public class ExternalUser extends EntityBase implements OidcUser, Serializable, 
 		
 		return this.getOwnedPermissionCollection().remove(permission);
 	}
+
+	public static class Builder {
+
+		private String identity;
+
+		private String provider;
+
+		private String idToken;
+
+		private String accessToken;
+
+		private Set<? extends Permission> permissions;
+
+		private Map<String, Object> attributes;
+
+		public Builder setIdentity(String identity) {
+
+			this.identity = identity;
+
+			return this;
+		}
+
+		public Builder setProvider(String provider) {
+
+			this.provider = provider;
+
+			return this;
+		}
+
+		public Builder setIdToken(String idToken) {
+
+			this.idToken = idToken;
+
+			return this;
+		}
+
+		public Builder setAccessToken(String accessToken) {
+
+			this.accessToken = accessToken;
+
+			return this;
+		}
+
+		public <T extends Permission> Builder setPermissions(T... permissions) {
+
+			this.permissions = Arrays.stream(permissions).collect(Collectors.toSet());
+
+			return this;
+		}
+
+		public Builder setAttributes(Map<String, Object> attributes) {
+
+			this.attributes = attributes;
+
+			return this;
+		}
+
+		public ExternalUser build() {
+
+			return new ExternalUser(this.identity, this.provider, this.idToken, this.accessToken, this.permissions, this.attributes);
+		}
+	}
 }

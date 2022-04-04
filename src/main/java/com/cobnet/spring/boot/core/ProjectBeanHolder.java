@@ -1,5 +1,6 @@
 package com.cobnet.spring.boot.core;
 
+import com.cobnet.interfaces.security.Account;
 import com.cobnet.interfaces.spring.repository.ExternalUserRepository;
 import com.cobnet.interfaces.spring.repository.UserRepository;
 import com.cobnet.interfaces.spring.repository.UserRoleRepository;
@@ -22,6 +23,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -117,6 +119,16 @@ public class ProjectBeanHolder {
     private static Messager MESSAGER;
 
     private static JavaMailSender JAVA_MAIL_SENDER;
+
+    public static Account getCurrentAccount() {
+
+        if(SecurityContextHolder.getContext().getAuthentication() instanceof Account account) {
+
+            return account;
+        }
+
+        return null;
+    }
 
     public static HttpServletRequest getCurrentHttpRequest() {
 
