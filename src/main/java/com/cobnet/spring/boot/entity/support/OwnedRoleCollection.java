@@ -1,9 +1,11 @@
-package com.cobnet.security.permission;
+package com.cobnet.spring.boot.entity.support;
 
 import com.cobnet.common.wrapper.AbstractSetWrapper;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
+import com.cobnet.spring.boot.entity.ExternalUser;
 import com.cobnet.spring.boot.entity.UserRole;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
@@ -42,6 +44,19 @@ public class OwnedRoleCollection extends AbstractSetWrapper<UserRole> {
 		
 		return super.add(role);
     }
+
+	@Override
+	public boolean addAll(Collection<? extends UserRole> c) {
+
+		boolean result = false;
+
+		for(UserRole role : c) {
+
+			result = this.add(role);
+		}
+
+		return result;
+	}
 	
 	public Optional<UserRole> getByName(String name) {
 		

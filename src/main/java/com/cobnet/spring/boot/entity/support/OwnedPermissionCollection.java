@@ -1,4 +1,4 @@
-package com.cobnet.security.permission;
+package com.cobnet.spring.boot.entity.support;
 
 import com.cobnet.common.MultiwayTreeNode;
 import com.cobnet.common.MultiwayTreeNodeChild;
