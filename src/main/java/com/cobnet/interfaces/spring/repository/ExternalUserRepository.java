@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Repository
-@Cacheable("ExternalUsers")
+@Cacheable(value = "ExternalUsers", unless="#result == null")
 public interface ExternalUserRepository extends JPABaseRepository<ExternalUser, String>, OAuth2UserService<OidcUserRequest, OidcUser> {
 
     @Override

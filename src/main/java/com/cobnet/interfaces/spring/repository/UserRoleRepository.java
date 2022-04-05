@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-@Cacheable("UserRoles")
+@Cacheable(value = "UserRoles", unless="#result == null")
 public interface UserRoleRepository extends JPABaseRepository<UserRole, String> {
 
     Optional<UserRole> findByRoleEqualsIgnoreCase(String role);

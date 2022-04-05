@@ -19,7 +19,6 @@ import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.hash.Jackson2HashMapper;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -119,6 +118,8 @@ public class ProjectBeanHolder {
     private static Messager MESSAGER;
 
     private static JavaMailSender JAVA_MAIL_SENDER;
+
+    private static QRCodeProvider QR_CODE_PROVIDER;
 
     public static Account getCurrentAccount() {
 
@@ -343,6 +344,11 @@ public class ProjectBeanHolder {
     public static JavaMailSender getJavaMailSender() {
 
         return ProjectBeanHolder.JAVA_MAIL_SENDER;
+    }
+
+    public static QRCodeProvider getQRCodeProvider() {
+
+        return ProjectBeanHolder.QR_CODE_PROVIDER;
     }
 
     @Component("autowireLoader")
@@ -583,6 +589,12 @@ public class ProjectBeanHolder {
 
             ProjectBeanHolder.JAVA_MAIL_SENDER = sender;
         }
+
+        @Autowired
+        public void setQRCodeProvider(QRCodeProvider provider) {
+
+            ProjectBeanHolder.QR_CODE_PROVIDER = provider;
+        }
     }
 
     @Component
@@ -637,6 +649,12 @@ public class ProjectBeanHolder {
         public JavaMailSender javaMailSenderBean() {
 
             return new JavaMailSenderImpl();
+        }
+
+        @Bean
+        public  QRCodeProvider qrCodeProvider() {
+
+            return new QRCodeProvider();
         }
 
     }

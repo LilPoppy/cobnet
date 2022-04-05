@@ -3,18 +3,26 @@ package com.cobnet.test;
 import com.cobnet.polyglot.PolyglotContext;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.core.ScriptEngineManager;
+import com.google.zxing.ChecksumException;
+import com.google.zxing.FormatException;
+import com.google.zxing.NotFoundException;
+import com.google.zxing.WriterException;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
+import org.springframework.data.util.Pair;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.awt.*;
 import java.io.IOException;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 @RunWith(SpringRunner.class)
@@ -78,6 +86,13 @@ class SpringApplicationTests {
 //		message.setSubject("test email service");
 //		message.setText("this is a test mail.");
 //		ProjectBeanHolder.getJavaMailSender().send(message);
+	}
+
+	@Test
+	void qrcode() throws ChecksumException, NotFoundException, IOException, FormatException, ExecutionException, InterruptedException, WriterException {
+
+		System.out.println(ProjectBeanHolder.getQRCodeProvider().writeA( System.getProperty("user.dir") + "/qr.png","test", new URL("https://cdn3.iconfinder.com/data/icons/webina-seo-development-and-marketing/128/seo_web_3-08-256.png"), 1200, 1200, Pair.of(Color.WHITE, Color.BLACK)).get());
+		System.out.println(ProjectBeanHolder.getQRCodeProvider().decode(System.getProperty("user.dir") + "/qr.png"));
 	}
 
 	@Test
