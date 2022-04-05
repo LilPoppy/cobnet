@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Entity
-@Data
 public class User extends EntityBase implements Permissible, Account, UserDetails {
 
     private static final Logger LOG = LoggerFactory.getLogger(User.class);
@@ -242,6 +241,11 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
     public boolean removeExternalUser(ExternalUser user) {
 
         return this.getOwnedExternalUserCollection().remove(user);
+    }
+
+    public PersistentLogins getRemeberMeInfo() {
+
+        return ProjectBeanHolder.getPersistentLoginsRepository().findByUsernameEqualsIgnoreCase(this.getUsername());
     }
 
     public static class Builder {

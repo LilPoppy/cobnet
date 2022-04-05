@@ -22,7 +22,11 @@ import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.authentication.session.*;
 
 import java.util.ArrayList;
@@ -60,6 +64,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private String passwordParameter;
 
+    private String rememberMeParameter;
+
     private OAuth2Configuration oauth2;
 
     @Bean
@@ -95,6 +101,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //        return super.authenticationManagerBean();
 //    }
 
+    @Bean
+    public RememberMeServices rememberMeServicesBean() throws Exception {
+
+        return new PersistentTokenBasedRememberMeServices("remember-me-service", ProjectBeanHolder.getUserRepository(), persistentTokenRepositoryBean());
+    }
+
     @Override
     protected void configure(HttpSecurity security) throws Exception {
 
@@ -107,6 +119,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .successHandler(ProjectBeanHolder.getHttpAuthenticationSuccessHandler()).failureHandler(ProjectBeanHolder.getHttpAuthenticationFailureHandler()).and()
                 .userDetailsService(ProjectBeanHolder.getUserRepository())
                 .authenticationProvider(authenticationProviderBean())
+                .rememberMe().rememberMeParameter(this.getRememberMeParameter()).rememberMeServices(rememberMeServicesBean()).and()
                 //oauth2
                 .oauth2Login().loginPage(this.getLoginPageUrl())
                 .successHandler(ProjectBeanHolder.getHttpAuthenticationSuccessHandler()).failureHandler(ProjectBeanHolder.getHttpAuthenticationFailureHandler())
@@ -137,8 +150,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
+    public PersistentTokenRepository persistentTokenRepositoryBean() {
+        
+        return ProjectBeanHolder.getPersistentLoginsRepository();
+    }
+
+    @Bean
     @DependsOn("autowireLoader")
-    public OAuth2LoginAccountAuthenticationFilter oAuth2LoginAccountAuthenticationFilterBean() {
+    public OAuth2LoginAccountAuthenticationFilter oAuth2LoginAccountAuthenticationFilterBean() throws Exception {
 
         OAuth2LoginAccountAuthenticationFilter filter = new OAuth2LoginAccountAuthenticationFilter(ProjectBeanHolder.getClientRegistrationRepository(), ProjectBeanHolder.getOauth2AuthorizedClientService());
         filter.setAuthenticationManager(ProjectBeanHolder.getAuthenticationManager());
@@ -149,7 +168,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         filter.setAllowSessionCreation(policy != SessionCreationPolicy.NEVER && policy != SessionCreationPolicy.STATELESS);
         filter.setFilterProcessesUrl(this.getOauth2().getRedirectUrl() + "/*");
         filter.setSessionAuthenticationStrategy(compositeSessionAuthenticationStrategyBean());
-        //TODO filter.setRememberMeServices();
+        filter.setRememberMeServices(rememberMeServicesBean());
 
         return filter;
     }
@@ -241,6 +260,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return passwordParameter;
     }
 
+    public String getRememberMeParameter() {
+        return rememberMeParameter;
+    }
+
     public void setLoginPageUrl(String loginPageUrl) {
         this.loginPageUrl = loginPageUrl;
     }
@@ -259,6 +282,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public void setPasswordParameter(String passwordParameter) {
         this.passwordParameter = passwordParameter;
+    }
+
+    public void setRememberMeParameter(String rememberMeParameter) {
+        this.rememberMeParameter = rememberMeParameter;
     }
 
     public static class OAuth2Configuration {

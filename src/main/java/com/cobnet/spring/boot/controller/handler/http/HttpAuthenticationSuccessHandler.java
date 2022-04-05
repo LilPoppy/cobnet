@@ -7,6 +7,7 @@ import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.AuthenticationResult;
 import com.cobnet.spring.boot.dto.ConnectionToken;
 import com.cobnet.spring.boot.entity.ExternalUser;
+import com.cobnet.spring.boot.entity.PersistentLogins;
 import com.cobnet.spring.boot.entity.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
@@ -66,6 +67,13 @@ public class HttpAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
         ConnectionToken connectionToken = null;
 
+        PersistentLogins rememberMe = null;
+
+        if(authentication.getPrincipal() instanceof User user) {
+
+            rememberMe = user.getRemeberMeInfo();
+        }
+
         if(session != null) {
 
             connectionToken = (ConnectionToken) session.getAttribute(ConnectionToken.ATTRIBUTE_KEY);
@@ -85,9 +93,9 @@ public class HttpAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
         if(url == null) {
 
-            try (PrintWriter writer = response.getWriter()){
+            try (PrintWriter writer = response.getWriter()) {
 
-                writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new AuthenticationResult(true, connectionToken)));
+                writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new AuthenticationResult(true, connectionToken, rememberMe)));
                 writer.flush();
             }
 

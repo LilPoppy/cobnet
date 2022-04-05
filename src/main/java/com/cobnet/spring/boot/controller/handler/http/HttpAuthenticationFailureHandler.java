@@ -34,7 +34,7 @@ public class HttpAuthenticationFailureHandler implements AuthenticationFailureHa
 
             try (PrintWriter writer = response.getWriter()){
 
-                writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new AuthenticationResult(false, null)));
+                writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new AuthenticationResult()));
                 writer.flush();
             }
 

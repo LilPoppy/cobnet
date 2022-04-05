@@ -30,6 +30,10 @@
   				<label for="password" class="sr-only">Password</label>
   				<input type="password" id="password" name="password" class="form-control" placeholder="Password" required>
 			</p>
+			<tr>
+				<td>Remember Me:</td>
+				<td><input type="checkbox" name="remember-me" /></td>
+			</tr>
 			<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
 			<br />
 			<p th:each="url : ${urls}">

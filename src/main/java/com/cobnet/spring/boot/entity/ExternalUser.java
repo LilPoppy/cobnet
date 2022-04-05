@@ -22,7 +22,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
-@Data
 public class ExternalUser extends EntityBase implements OidcUser, Serializable, Account, Permissible {
 
 	private static final long serialVersionUID = 73179483542138315L;
@@ -199,7 +198,7 @@ public class ExternalUser extends EntityBase implements OidcUser, Serializable, 
 			return 0;
 		}
 		
-		return this.identity.hashCode() + this.idToken.hashCode() + this.accessToken.hashCode() + this.attributes.entrySet().stream().map(entry -> entry.hashCode()).collect(Collectors.summingInt(Integer::intValue)) + this.authorities.stream().map(authority -> authority.hashCode()).collect(Collectors.summingInt(Integer::intValue));
+		return this.identity.hashCode() + this.idToken.hashCode() + this.accessToken.hashCode() + this.attributes.entrySet().stream().map(Map.Entry::hashCode).mapToInt(Integer::intValue).sum() + this.authorities.stream().map(Object::hashCode).mapToInt(Integer::intValue).sum();
 	}
 	
 	@Override

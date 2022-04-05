@@ -2,6 +2,7 @@ package com.cobnet.spring.boot.core;
 
 import com.cobnet.interfaces.security.Account;
 import com.cobnet.interfaces.spring.repository.ExternalUserRepository;
+import com.cobnet.interfaces.spring.repository.PersistentLoginsRepository;
 import com.cobnet.interfaces.spring.repository.UserRepository;
 import com.cobnet.interfaces.spring.repository.UserRoleRepository;
 import com.cobnet.spring.boot.configuration.*;
@@ -38,6 +39,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 
 public class ProjectBeanHolder {
 
@@ -105,6 +107,8 @@ public class ProjectBeanHolder {
 
     private static ExternalUserRepository EXTERNAL_USER_REPOSITORY;
 
+    private static PersistentLoginsRepository PERSISTENT_LOGINS_REPOSITORY;
+
     private static RedirectStrategy REDIRECT_STRATEGY;
 
     private static OidcUserService OIDC_USER_SERVICE;
@@ -120,6 +124,8 @@ public class ProjectBeanHolder {
     private static JavaMailSender JAVA_MAIL_SENDER;
 
     private static QRCodeProvider QR_CODE_PROVIDER;
+
+    private static DataSource DATA_SOURCE;
 
     public static Account getCurrentAccount() {
 
@@ -311,6 +317,11 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.USER_ROLE_REPOSITORY;
     }
 
+    public static PersistentLoginsRepository getPersistentLoginsRepository() {
+
+        return ProjectBeanHolder.PERSISTENT_LOGINS_REPOSITORY;
+    }
+
     public static RedirectStrategy getRedirectStrategy() {
 
         return ProjectBeanHolder.REDIRECT_STRATEGY;
@@ -349,6 +360,11 @@ public class ProjectBeanHolder {
     public static QRCodeProvider getQRCodeProvider() {
 
         return ProjectBeanHolder.QR_CODE_PROVIDER;
+    }
+
+    public static DataSource getDataSource() {
+
+        return ProjectBeanHolder.DATA_SOURCE;
     }
 
     @Component("autowireLoader")
@@ -493,7 +509,7 @@ public class ProjectBeanHolder {
         }
 
 
-        @Deprecated //Until fix @EnableRedisHttpSession
+        @Deprecated(since = "Until fix @EnableRedisHttpSession")
         @Autowired
         public void setRedisIndexedSessionRepository(RedisIndexedSessionRepository repository) {
 
@@ -549,6 +565,12 @@ public class ProjectBeanHolder {
         }
 
         @Autowired
+        public void setPersistentLoginsRepository(PersistentLoginsRepository repository) {
+
+            ProjectBeanHolder.PERSISTENT_LOGINS_REPOSITORY = repository;
+        }
+
+        @Autowired
         public void setRedirectStrategy(RedirectStrategy strategy) {
 
             ProjectBeanHolder.REDIRECT_STRATEGY = strategy;
@@ -594,6 +616,12 @@ public class ProjectBeanHolder {
         public void setQRCodeProvider(QRCodeProvider provider) {
 
             ProjectBeanHolder.QR_CODE_PROVIDER = provider;
+        }
+
+        @Autowired
+        public void setDataSource(DataSource source) {
+
+            ProjectBeanHolder.DATA_SOURCE = source;
         }
     }
 

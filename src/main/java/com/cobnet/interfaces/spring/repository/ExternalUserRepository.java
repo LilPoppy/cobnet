@@ -1,91 +1,67 @@
 package com.cobnet.interfaces.spring.repository;
 
 import com.cobnet.security.permission.UserPermission;
-import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.ExternalUser;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Repository;
 
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Repository
-@Cacheable(value = "ExternalUsers", unless="#result == null")
+@Cacheable(value = "ExternalUsers", unless="#result == null", keyGenerator = "StringOidcUserRequestCacheKeyGenerator")
 public interface ExternalUserRepository extends JPABaseRepository<ExternalUser, String>, OAuth2UserService<OidcUserRequest, OidcUser> {
 
     @Override
     public default ExternalUser loadUser(OidcUserRequest request) throws OAuth2AuthenticationException {
 
-        OidcUser oidc = ProjectBeanHolder.getOidcUserService().loadUser(request);
-
         String username = "";
+
+        OidcIdToken token = request.getIdToken();
 
         String provider = request.getClientRegistration().getRegistrationId();
 
-        String email = oidc.getEmail();
+        Set<UserPermission> authorities = request.getAccessToken().getScopes().stream().map(scope -> new UserPermission("SCOPE_" + scope)).collect(Collectors.toSet());
 
-        Set<UserPermission> authorities = oidc.getAuthorities().stream().map(authority -> new UserPermission(authority.getAuthority())).collect(Collectors.toSet());
+        if(token.getEmailVerified() != null && token.getEmailVerified()) {
 
-        HashMap<String, Object> attributes = new HashMap<>(oidc.getAttributes());
-
-        if(email != null && email.length() > 0 && oidc.getEmailVerified()) {
-
-            username = email;
+            username = token.getEmail();
         }
 
-        String phone = oidc.getPhoneNumber();
+        if(token.getPhoneNumberVerified() != null && token.getPhoneNumberVerified()) {
 
-        if(phone != null && phone.length() > 0 && oidc.getPhoneNumberVerified()) {
-
-            username = phone;
+            username = token.getPhoneNumber();
         }
 
-        Optional<ExternalUser> optional =  this.findByProviderAndUsernameIgnoreCase(provider, username);
+        Map<String, Object> attributes = Stream.of(token.getClaims().entrySet()).flatMap(Collection::stream).collect(Collectors.toMap(Map.Entry<String, Object>::getKey, Map.Entry<String, Object>::getValue));
+
+        ExternalUser user = new ExternalUser(username, provider, request.getIdToken().getTokenValue(), request.getAccessToken().getTokenValue(), authorities, attributes);
+
+        Optional<ExternalUser> optional = this.findByProviderAndUsernameIgnoreCase(provider, username);
 
         if(optional.isPresent()) {
 
-            ExternalUser existed = optional.get();
-            existed.setIdToken(request.getIdToken().getTokenValue());
-            existed.setAccessToken(request.getAccessToken().getTokenValue());
+            if(!optional.get().equals(user)) {
 
-            Map<String, Object> map = existed.getAttributes();
-
-            for(String key : attributes.keySet()) {
-
-                Object existedValue = map.get(key);
-
-                Object value = attributes.get(key);
-
-                if(existedValue == null) {
-
-                    map.put(key, value);
-                    continue;
-                }
-
-                if(!existedValue.equals(value)) {
-
-                    map.put(key, value);
-                }
+                this.save(user);
             }
 
-            existed.getOwnedPermissionCollection().addAll(authorities);
+        } else {
 
-            return existed;
+            this.save(user);
         }
 
-        ExternalUser existed = new ExternalUser(username, provider, request.getIdToken().getTokenValue(), request.getAccessToken().getTokenValue(), authorities, attributes);
-
-        this.save(existed);
-
-        return existed;
+        return user;
     }
 
     public Optional<ExternalUser> findByIdTokenEquals(@Param("idToken") String idToken);

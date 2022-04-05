@@ -92,6 +92,7 @@ spring:
 #      login-failure-url: "/login?error=true"
       username-parameter: "username"
       password-parameter: "password"
+      remember-me-parameter: "remember-me"
       oauth2:
          authentication-url: "/login/oauth2/authorization"
          redirect-url: "/login/oauth2/code"

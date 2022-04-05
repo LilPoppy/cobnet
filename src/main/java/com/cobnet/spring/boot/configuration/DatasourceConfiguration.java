@@ -2,8 +2,12 @@ package com.cobnet.spring.boot.configuration;
 
 import com.cobnet.spring.boot.entity.support.JpaExtensionRepository;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.jdbc.DataSourceBuilder;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
+import javax.sql.DataSource;
 
 //TODO add mybatis supports; read write separation
 @Configuration
@@ -26,11 +30,11 @@ public class DatasourceConfiguration {
      * nested exception is org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'dataSourceBean':
      * Unexpected exception during bean creation; nested exception is java.lang.IllegalStateException: No supported DataSource type found
      */
-//    @Bean
-//    public DataSource dataSourceBean() {
-//
-//        return DataSourceBuilder.create().driverClassName(this.getDriverClassName()).url(this.getUrl()).username(this.getUsername()).password(this.getPassword()).build();
-//    }
+    @Bean
+    public DataSource dataSourceBean() {
+
+        return DataSourceBuilder.create().driverClassName(this.getDriverClassName()).url(this.getUrl()).username(this.getUsername()).password(this.getPassword()).build();
+    }
 
     public String getDriverClassName() {
         return driverClassName;

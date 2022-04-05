@@ -1,16 +1,11 @@
 package com.cobnet;
 
-import com.cobnet.common.KeyValuePair;
 import com.cobnet.connection.websocket.WebSocketServer;
 import com.cobnet.security.RoleRule;
 import com.cobnet.security.permission.UserPermission;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.User;
 import com.cobnet.spring.boot.entity.UserRole;
-import com.google.zxing.ChecksumException;
-import com.google.zxing.FormatException;
-import com.google.zxing.NotFoundException;
-import com.google.zxing.WriterException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -18,16 +13,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.data.util.Pair;
 
-import java.awt.*;
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.concurrent.ExecutionException;
 
 @EnableEurekaClient
 @SpringBootApplication(proxyBeanMethods = false)
