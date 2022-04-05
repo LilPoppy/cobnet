@@ -26,7 +26,7 @@ public class OwnedRoleCollection extends AbstractSetWrapper<UserRole> {
 	
 	@Override
     public boolean add(UserRole role) {
-		
+
 		if(ProjectBeanHolder.getUserRoleRepository() != null) {
 
 			Optional<UserRole> existed = ProjectBeanHolder.getUserRoleRepository().findByRoleEqualsIgnoreCase(role.getIdentity());

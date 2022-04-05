@@ -3,9 +3,10 @@ package com.cobnet.spring.boot.entity;
 import com.cobnet.spring.boot.entity.support.StoreStaffSign;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-public class StoreStaff extends EntityBase{
+public class StoreStaff extends EntityBase implements Serializable {
 
     @EmbeddedId
     private StoreStaffSign id;
@@ -50,5 +51,11 @@ public class StoreStaff extends EntityBase{
 
     public void setStore(Store store) {
         this.store = store;
+    }
+
+    @Override
+    public String toString() {
+        System.out.println("aaaa");
+        return String.format("%s(%s,%s)",this.getClass().getSimpleName(), this.user.getUsername(), this.getStore().getLocation());
     }
 }

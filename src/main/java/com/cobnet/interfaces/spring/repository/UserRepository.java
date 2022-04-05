@@ -15,6 +15,7 @@ import java.util.Optional;
 @Cacheable("Users")
 public interface UserRepository extends JPABaseRepository<User, String>, UserDetailsService {
 
+    @Transactional
     Optional<User> findByUsernameEqualsIgnoreCase(@Param("username") String username);
 
     @Override

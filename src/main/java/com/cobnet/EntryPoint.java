@@ -14,6 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 
@@ -84,6 +85,7 @@ public class EntryPoint {
 			                        ****
 			""";
 
+
 	public static void main(String[] args) {
 
 		SpringApplication.run(EntryPoint.class, args);
@@ -93,12 +95,15 @@ public class EntryPoint {
 		User user = new User("admin", "123456", new UserRole("admin", RoleRule.ADMIN, new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")));
 
 		ProjectBeanHolder.getUserRepository().save(user);
+
 		Store store = new Store("8714 Youree Dr Shreveport LA 71115", "QQ Foot Spa", "3476986710");
 
 		ProjectBeanHolder.getStoreRepository().save(store);
 
+		System.out.println(ProjectBeanHolder.getUserRepository().findByUsernameEqualsIgnoreCase("admin").get().getAssociated().size());
 
-		//store.addStoreStaff(user);
+		store.addStoreStaff(user);
+
 		if(Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("agent"))) {
 
 			System.exit(0);
@@ -154,7 +159,6 @@ public class EntryPoint {
 					if(format != null) {
 
 						StringBuilder builder = new StringBuilder(line).delete(posStart, posEnd).insert(posStart, format);
-
 
 						if(builder.length() > length) {
 

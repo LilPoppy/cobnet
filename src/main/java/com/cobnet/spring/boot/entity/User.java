@@ -3,12 +3,12 @@ package com.cobnet.spring.boot.entity;
 import com.cobnet.interfaces.security.Account;
 import com.cobnet.interfaces.security.Permissible;
 import com.cobnet.interfaces.security.Permission;
-import com.cobnet.security.OwnedExternalUserCollection;
 import com.cobnet.security.RoleRule;
-import com.cobnet.security.permission.OwnedPermissionCollection;
-import com.cobnet.security.permission.OwnedRoleCollection;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
+import com.cobnet.spring.boot.entity.support.OwnedExternalUserCollection;
+import com.cobnet.spring.boot.entity.support.OwnedPermissionCollection;
+import com.cobnet.spring.boot.entity.support.OwnedRoleCollection;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.slf4j.Logger;
@@ -57,6 +57,7 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
     @OneToMany(mappedBy="user")
     private Set<ExternalUser> externalUsers = new HashSet<ExternalUser>();
 
+    @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "user")
     private Set<StoreStaff> associated = new HashSet<>();
 

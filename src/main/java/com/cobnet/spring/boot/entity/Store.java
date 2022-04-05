@@ -1,19 +1,18 @@
 package com.cobnet.spring.boot.entity;
 
 import com.cobnet.interfaces.spring.entity.StoreForm;
-import com.cobnet.security.OwnedExternalUserCollection;
-import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.support.OwnedStoreStaffCollection;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Entity
-public class Store {
+public class Store implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
