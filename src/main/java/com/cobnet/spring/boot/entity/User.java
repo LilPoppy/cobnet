@@ -7,10 +7,8 @@ import com.cobnet.security.OwnedExternalUserCollection;
 import com.cobnet.security.RoleRule;
 import com.cobnet.security.permission.OwnedPermissionCollection;
 import com.cobnet.security.permission.OwnedRoleCollection;
-import com.cobnet.security.permission.UserPermission;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
-import lombok.Data;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.slf4j.Logger;
@@ -58,6 +56,9 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy="user")
     private Set<ExternalUser> externalUsers = new HashSet<ExternalUser>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<StoreStaff> associated = new HashSet<>();
 
     private transient OwnedRoleCollection roleCollection;
 
@@ -191,6 +192,16 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
     public Collection<? extends Permission> getPermissions() {
 
         return Stream.of(roles.stream().map(UserRole::getPermissions).flatMap(Collection::stream).collect(Collectors.toList()), permissions).flatMap(Collection::stream).collect(Collectors.toUnmodifiableList());
+    }
+
+    public Collection<StoreStaff> getAssociated() {
+
+        return associated.stream().collect(Collectors.toUnmodifiableList());
+    }
+
+    public Collection<Store> getStores() {
+
+        return associated.stream().map(staff -> staff.getStore()).collect(Collectors.toUnmodifiableList());
     }
 
     public boolean hasRole(String... roles) {

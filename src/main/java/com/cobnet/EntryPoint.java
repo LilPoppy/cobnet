@@ -4,6 +4,7 @@ import com.cobnet.connection.websocket.WebSocketServer;
 import com.cobnet.security.RoleRule;
 import com.cobnet.security.permission.UserPermission;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
+import com.cobnet.spring.boot.entity.Store;
 import com.cobnet.spring.boot.entity.User;
 import com.cobnet.spring.boot.entity.UserRole;
 import org.slf4j.Logger;
@@ -92,7 +93,12 @@ public class EntryPoint {
 		User user = new User("admin", "123456", new UserRole("admin", RoleRule.ADMIN, new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")));
 
 		ProjectBeanHolder.getUserRepository().save(user);
+		Store store = new Store("8714 Youree Dr Shreveport LA 71115", "QQ Foot Spa", "3476986710");
 
+		ProjectBeanHolder.getStoreRepository().save(store);
+
+
+		//store.addStoreStaff(user);
 		if(Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("agent"))) {
 
 			System.exit(0);

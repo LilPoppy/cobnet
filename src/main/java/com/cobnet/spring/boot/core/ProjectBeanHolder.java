@@ -1,10 +1,7 @@
 package com.cobnet.spring.boot.core;
 
 import com.cobnet.interfaces.security.Account;
-import com.cobnet.interfaces.spring.repository.ExternalUserRepository;
-import com.cobnet.interfaces.spring.repository.PersistentLoginsRepository;
-import com.cobnet.interfaces.spring.repository.UserRepository;
-import com.cobnet.interfaces.spring.repository.UserRoleRepository;
+import com.cobnet.interfaces.spring.repository.*;
 import com.cobnet.spring.boot.configuration.*;
 import com.cobnet.spring.boot.controller.handler.http.HttpAccessDeniedHandler;
 import com.cobnet.spring.boot.controller.handler.http.HttpAuthenticationFailureHandler;
@@ -108,6 +105,10 @@ public class ProjectBeanHolder {
     private static ExternalUserRepository EXTERNAL_USER_REPOSITORY;
 
     private static PersistentLoginsRepository PERSISTENT_LOGINS_REPOSITORY;
+
+    private static StoreRepository STORE_REPOSITORY;
+
+    private static StoreStaffRepository STORE_STAFF_REPOSITORY;
 
     private static RedirectStrategy REDIRECT_STRATEGY;
 
@@ -322,6 +323,16 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.PERSISTENT_LOGINS_REPOSITORY;
     }
 
+    public static StoreRepository getStoreRepository() {
+
+        return ProjectBeanHolder.STORE_REPOSITORY;
+    }
+
+    public static StoreStaffRepository getStoreStaffRepository() {
+
+        return ProjectBeanHolder.STORE_STAFF_REPOSITORY;
+    }
+
     public static RedirectStrategy getRedirectStrategy() {
 
         return ProjectBeanHolder.REDIRECT_STRATEGY;
@@ -520,6 +531,18 @@ public class ProjectBeanHolder {
         public void setClientRegistrationRepository(ClientRegistrationRepository repository) {
 
             ProjectBeanHolder.CLIENT_REGISTRATION_REPOSITORY = repository;
+        }
+
+        @Autowired
+        public void setStoreRepository(StoreRepository repository) {
+
+            ProjectBeanHolder.STORE_REPOSITORY = repository;
+        }
+
+        @Autowired
+        public void setStoreStaffRepository(StoreStaffRepository repository) {
+
+            ProjectBeanHolder.STORE_STAFF_REPOSITORY = repository;
         }
 
         @Autowired
