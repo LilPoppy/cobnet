@@ -1,10 +1,11 @@
-package com.cobnet.security;
+package com.cobnet.spring.boot.entity.support;
 
 import com.cobnet.common.wrapper.AbstractSetWrapper;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.ExternalUser;
 import com.cobnet.spring.boot.entity.User;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
@@ -63,6 +64,19 @@ public class OwnedExternalUserCollection extends AbstractSetWrapper<ExternalUser
 
 		return super.add(user);
     }
+
+	@Override
+	public boolean addAll(Collection<? extends ExternalUser> c) {
+
+		boolean result = false;
+
+		for(ExternalUser user : c) {
+
+			result = this.add(user);
+		}
+
+		return result;
+	}
 	
 	public Optional<ExternalUser> getByName(String name) {
 		

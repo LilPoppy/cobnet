@@ -3,7 +3,7 @@ package com.cobnet.spring.boot.entity;
 import com.cobnet.interfaces.security.Permissible;
 import com.cobnet.interfaces.security.Permission;
 import com.cobnet.security.RoleRule;
-import com.cobnet.security.permission.OwnedPermissionCollection;
+import com.cobnet.spring.boot.entity.support.OwnedPermissionCollection;
 import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
 import org.springframework.lang.NonNull;
 
