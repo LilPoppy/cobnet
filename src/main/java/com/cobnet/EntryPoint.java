@@ -89,7 +89,7 @@ public class EntryPoint {
 
 		LOG.info(EntryPoint.getLogo());
 
-		User user = new User("admin", "123456", new UserRole("admin", RoleRule.ADMIN, new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")));
+		User user = new User("admin", "123456", "Bob", "Smith", new UserRole("admin", RoleRule.ADMIN, new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")));
 
 		ProjectBeanHolder.getUserRepository().save(user);
 
