@@ -36,18 +36,6 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
     private boolean passwordEncoded;
 
-    private String firstName;
-
-    private String lastName;
-
-    private String phoneNumber;
-
-    private boolean phoneNumberVerified;
-
-    private String email;
-
-    private boolean emailVerified;
-
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "user_roles", joinColumns = { @JoinColumn(name = "user", referencedColumnName = "username") },
@@ -82,16 +70,10 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
     public User() {}
 
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, String phoneNumber, boolean phoneNumberVerified, String email, boolean emailVerified,  @NonNull List<UserRole> roles, boolean expired, boolean locked, boolean vaildPassword, boolean enabled) {
+    public User(@NonNull String username, @NonNull String password, @NonNull List<UserRole> roles, boolean expired, boolean locked, boolean vaildPassword, boolean enabled) {
 
         this.username = username;
         this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.phoneNumber = phoneNumber;
-        this.phoneNumberVerified = phoneNumberVerified;
-        this.email = email;
-        this.emailVerified = emailVerified;
         this.getOwnedRoleCollection().addAll(roles.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(EntityBase::getCreatedTime))), ArrayList::new)));
         this.expired = expired;
         this.locked = locked;
@@ -100,67 +82,19 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
     }
 
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, @NonNull List<UserRole> roles) {
+    public User(@NonNull String username, @NonNull String password, @NonNull List<UserRole> roles) {
 
-        this(username, password,firstName, lastName, null, false, null, false, roles, false, false, true, true);
+        this(username, password, roles, false, false, true, true);
     }
 
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, UserRole... roles) {
+    public User(@NonNull String username, @NonNull String password, UserRole... roles) {
 
-        this(username, password, firstName, lastName, Arrays.stream(roles).toList());
+        this(username, password, Arrays.stream(roles).toList());
     }
 
     @Override
     public String getUsername() {
         return this.username;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public boolean isPhoneNumberVerified() {
-        return phoneNumberVerified;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public boolean isEmailVerified() {
-        return emailVerified;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public void setPhoneNumberVerified(boolean phoneNumberVerified) {
-        this.phoneNumberVerified = phoneNumberVerified;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setEmailVerified(boolean emailVerified) {
-        this.emailVerified = emailVerified;
     }
 
     @Override
@@ -333,18 +267,6 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
         private String password;
 
-        private String firstName;
-
-        private String lastName;
-
-        private String phoneNumber;
-
-        private boolean phoneNumberVerified;
-
-        private String email;
-
-        private boolean emailVerified;
-
         private List<UserRole> roles;
 
         private boolean expired;
@@ -368,49 +290,6 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
             return this;
         }
-
-        public Builder setFirstName(String firstName) {
-
-            this.firstName = firstName;
-
-            return this;
-        }
-
-        public Builder setLastName(String lastName) {
-
-            this.lastName = lastName;
-
-            return this;
-        }
-
-        public Builder setPhoneNumber(String phoneNumber) {
-
-            this.phoneNumber = phoneNumber;
-
-            return this;
-        }
-
-        public Builder setPhoneNumberVerified(boolean phoneNumberVerified) {
-
-            this.phoneNumberVerified = phoneNumberVerified;
-
-            return this;
-        }
-
-        public Builder setEmail(String email) {
-
-            this.email = email;
-
-            return this;
-        }
-
-        public Builder setEmailVerified(boolean emailVerified) {
-
-            this.emailVerified = emailVerified;
-
-            return this;
-        }
-
 
         public Builder setRoles(UserRole... roles) {
 
@@ -449,7 +328,7 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
         public User build() {
 
-            return new User(this.username, this.password, this.firstName, this.lastName, this.phoneNumber, this.phoneNumberVerified, this.email, this.emailVerified, this.roles, this.expired, this.locked, this.vaildPassword, this.enabled);
+            return new User(this.username, this.password, this.roles, this.expired, this.locked, this.vaildPassword, this.enabled);
         }
     }
 }
