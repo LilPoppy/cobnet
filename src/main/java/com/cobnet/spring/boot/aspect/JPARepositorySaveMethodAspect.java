@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.interceptor.CacheOperation;
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
@@ -24,29 +25,37 @@ public class JPARepositorySaveMethodAspect {
 
     private static Logger LOG = LoggerFactory.getLogger(JPARepositorySaveMethodAspect.class);
 
-    @AfterThrowing(pointcut = "execution(* org.springframework.data.repository.CrudRepository+.save(..))))", throwing = "ex")
-    public Object handleException(JoinPoint joinPoint, EntityNotFoundException ex) throws InvocationTargetException, IllegalAccessException {
+    @Around("execution(* com.cobnet.interfaces.spring.repository.JPABaseRepository+.save(..))))")
+    public Object handleException(ProceedingJoinPoint joinPoint) throws Throwable {
 
-        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        try {
 
-        PersistenceUnitUtil util = ProjectBeanHolder.getEntityManager().getEntityManagerFactory().getPersistenceUnitUtil();
+            return joinPoint.proceed(joinPoint.getArgs());
 
-        Object key = ProjectBeanHolder.getRedisCacheKeyGenerator().generate(joinPoint.getTarget(), signature.getMethod(), joinPoint.getArgs());
+        } catch (JpaObjectRetrievalFailureException ex) {
 
-        for(Method method : joinPoint.getTarget().getClass().getMethods()) {
+            if(ex.getCause() instanceof EntityNotFoundException cause) {
 
-            Cacheable cacheable = method.getAnnotation(Cacheable.class);
+                String[] words = cause.getMessage().split(" ");
 
-            if(cacheable != null) {
+                String className = words[3];
+                String value = words[words.length - 1];
 
-                for(String name : cacheable.cacheNames()) {
+                String[] nodes = className.split("\\.");
 
-                    ProjectBeanHolder.getRedisCacheManager().getCache(name).evictIfPresent(key);
-                    ProjectBeanHolder.getRedisCacheManager().getCache(name).evictIfPresent(util.getIdentifier(util));
-                }
+                Objects.requireNonNull(ProjectBeanHolder.getRedisCacheManager().getCache(nodes[nodes.length - 1] + "s")).evictIfPresent(value);
+
+                LOG.warn("Do not manually delete tables from DB, or clear Redis before start again! Clearing related caching...");
+
+                return joinPoint.proceed(joinPoint.getArgs());
+
+            } else {
+
+                ex.printStackTrace();
             }
+
+            return null;
         }
 
-        return signature.getMethod().invoke(joinPoint.getTarget(), joinPoint.getArgs());
     }
 }
