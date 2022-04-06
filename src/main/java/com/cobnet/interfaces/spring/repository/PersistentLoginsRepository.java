@@ -38,10 +38,10 @@ public interface PersistentLoginsRepository extends JPABaseRepository<Persistent
         return null;
     }
 
-    @Cacheable(value = "PersistentLogins")
+    @Cacheable(value = "PersistentLogins", unless="#result == null")
     public PersistentLogins findBySeries(String series);
 
-    @Cacheable(value = "PersistentLogins")
+    @Cacheable(value = "PersistentLogins", unless="#result == null")
     public PersistentLogins findByUsernameEqualsIgnoreCase(String username);
 
     @CacheEvict(cacheNames = "PersistentLogins", key = "#username")
