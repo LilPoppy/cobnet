@@ -1,20 +1,27 @@
 package com.cobnet.spring.boot.entity.support;
 
 import com.cobnet.common.wrapper.AbstractSetWrapper;
+import com.cobnet.interfaces.cache.CacheKeyProvider;
+import com.cobnet.interfaces.cache.annotation.SimpleCacheEvict;
+import com.cobnet.interfaces.spring.entity.StoreMemberRelated;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.*;
+import org.springframework.cache.annotation.CacheEvict;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class OwnedStoreStaffCollection extends AbstractSetWrapper<StoreStaff> {
+public class OwnedStoreStaffCollection extends AbstractSetWrapper<StoreStaff> implements CacheKeyProvider<String> {
+
+    private final StoreMemberRelated owner;
 
     private final Set<StoreStaff> staffs;
 
-    public OwnedStoreStaffCollection(Set<StoreStaff> staffs) {
+    public OwnedStoreStaffCollection(StoreMemberRelated owner, Set<StoreStaff> staffs) {
 
+        this.owner = owner;
         this.staffs = staffs;
     }
 
@@ -23,6 +30,8 @@ public class OwnedStoreStaffCollection extends AbstractSetWrapper<StoreStaff> {
         return this.staffs;
     }
 
+    @CacheEvict(cacheNames = "StoreStaffs", key = "#staff.getIdentity()")
+    @SimpleCacheEvict(cacheNames = {"Stores", "Users"})
     @Override
     public boolean add(StoreStaff staff) {
 
@@ -42,6 +51,14 @@ public class OwnedStoreStaffCollection extends AbstractSetWrapper<StoreStaff> {
         }
 
         return super.add(staff);
+    }
+
+    @CacheEvict(cacheNames = "StoreStaffs", key = "#staff.getIdentity()")
+    @SimpleCacheEvict(cacheNames = {"Stores", "Users"})
+    @Override
+    public boolean remove(Object staff) {
+
+        return super.remove(staff);
     }
 
     public Optional<StoreStaff> getByUsernameAndStore(String username, Store store) {
@@ -67,5 +84,10 @@ public class OwnedStoreStaffCollection extends AbstractSetWrapper<StoreStaff> {
     public List<StoreStaff> getByStore(Store store) {
 
         return this.stream().filter(staff -> staff.getStore().getId() == store.getId()).collect(Collectors.toUnmodifiableList());
+    }
+
+    @Override
+    public String[] getKeys() {
+        return new String[] { this.owner.getIdentity() };
     }
 }

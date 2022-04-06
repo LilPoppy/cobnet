@@ -33,6 +33,11 @@ public class StoreStaff extends EntityBase implements Serializable {
         return id;
     }
 
+    public String getIdentity() {
+
+        return this.getId().toString();
+    }
+
     public User getUser() {
         return user;
     }

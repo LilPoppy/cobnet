@@ -1,6 +1,7 @@
 package com.cobnet.spring.boot.entity;
 
 import com.cobnet.interfaces.spring.entity.StoreForm;
+import com.cobnet.interfaces.spring.entity.StoreMemberRelated;
 import com.cobnet.spring.boot.entity.support.OwnedStoreStaffCollection;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Entity
-public class Store implements Serializable {
+public class Store implements Serializable, StoreMemberRelated {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -82,9 +83,14 @@ public class Store implements Serializable {
 
         if(this.storeStaffCollection == null) {
 
-            this.storeStaffCollection = new OwnedStoreStaffCollection(this.crew);
+            this.storeStaffCollection = new OwnedStoreStaffCollection(this, this.crew);
         }
 
         return this.storeStaffCollection;
+    }
+
+    @Override
+    public String getIdentity() {
+        return String.valueOf(this.getId());
     }
 }

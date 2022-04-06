@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface StoreStaffRepository extends JPABaseRepository<StoreStaff, StoreStaffSign> {
 
+    @Override
+    public StoreStaff save(StoreStaff entity);
 }

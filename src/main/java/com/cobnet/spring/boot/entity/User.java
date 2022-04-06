@@ -3,6 +3,7 @@ package com.cobnet.spring.boot.entity;
 import com.cobnet.interfaces.security.Account;
 import com.cobnet.interfaces.security.Permissible;
 import com.cobnet.interfaces.security.Permission;
+import com.cobnet.interfaces.spring.entity.StoreMemberRelated;
 import com.cobnet.security.RoleRule;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Entity
-public class User extends EntityBase implements Permissible, Account, UserDetails {
+public class User extends EntityBase implements Permissible, Account, UserDetails, StoreMemberRelated {
 
     private static final Logger LOG = LoggerFactory.getLogger(User.class);
 

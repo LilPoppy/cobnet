@@ -35,4 +35,9 @@ public class StoreStaffSign implements Serializable {
     public Store getId() {
         return id;
     }
+
+    public String toString() {
+
+        return this.user.getUsername() + ":" + this.id;
+    }
 }
