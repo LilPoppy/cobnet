@@ -9,6 +9,7 @@ import com.cobnet.spring.boot.configuration.*;
 import com.cobnet.spring.boot.controller.handler.http.HttpAccessDeniedHandler;
 import com.cobnet.spring.boot.controller.handler.http.HttpAuthenticationFailureHandler;
 import com.cobnet.spring.boot.controller.handler.http.HttpAuthenticationSuccessHandler;
+import com.cobnet.spring.boot.service.RedisCacheKeyGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -126,6 +127,8 @@ public class ProjectBeanHolder {
     private static QRCodeProvider QR_CODE_PROVIDER;
 
     private static DataSource DATA_SOURCE;
+
+    private static RedisCacheKeyGenerator REDIS_CACHE_KEY_GENERATOR;
 
     public static Account getCurrentAccount() {
 
@@ -365,6 +368,11 @@ public class ProjectBeanHolder {
     public static DataSource getDataSource() {
 
         return ProjectBeanHolder.DATA_SOURCE;
+    }
+
+    public static RedisCacheKeyGenerator getRedisCacheKeyGenerator() {
+
+        return ProjectBeanHolder.REDIS_CACHE_KEY_GENERATOR;
     }
 
     @Component("autowireLoader")
@@ -622,6 +630,12 @@ public class ProjectBeanHolder {
         public void setDataSource(DataSource source) {
 
             ProjectBeanHolder.DATA_SOURCE = source;
+        }
+
+        @Autowired
+        public void setRedisCacheKeyGenerator(RedisCacheKeyGenerator generator) {
+
+            ProjectBeanHolder.REDIS_CACHE_KEY_GENERATOR = generator;
         }
     }
 

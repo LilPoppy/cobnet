@@ -1,15 +1,17 @@
-package com.cobnet.spring.boot.entity.support;
+package com.cobnet.spring.boot.service;
 
 import com.cobnet.interfaces.spring.repository.ExternalUserRepository;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
-@Component("StringOidcUserRequestCacheKeyGenerator")
-public class StringOidcUserRequestCacheKeyGenerator implements KeyGenerator {
+@Service
+public class RedisCacheKeyGenerator implements KeyGenerator {
+
     @Override
     public Object generate(Object target, Method method, Object... params) {
 
@@ -33,6 +35,6 @@ public class StringOidcUserRequestCacheKeyGenerator implements KeyGenerator {
             }
         }
 
-        return params;
+        return String.join(":", Arrays.stream(params).map(Object::toString).toList());
     }
 }

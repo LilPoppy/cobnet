@@ -20,6 +20,7 @@ public class RememberMeInfo extends HttpMapTransmission {
     }
 
     public RememberMeInfo(PersistentLogins info) {
+
         this(info.getSeries(), info.getToken(), info.getLastUsed());
     }
 

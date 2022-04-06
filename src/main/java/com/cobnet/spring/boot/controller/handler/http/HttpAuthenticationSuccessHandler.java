@@ -6,6 +6,7 @@ import com.cobnet.spring.boot.core.HttpRequestUrlResolver;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.AuthenticationResult;
 import com.cobnet.spring.boot.dto.ConnectionToken;
+import com.cobnet.spring.boot.dto.RememberMeInfo;
 import com.cobnet.spring.boot.entity.ExternalUser;
 import com.cobnet.spring.boot.entity.PersistentLogins;
 import com.cobnet.spring.boot.entity.User;
@@ -67,11 +68,14 @@ public class HttpAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
         ConnectionToken connectionToken = null;
 
-        PersistentLogins rememberMe = null;
+        RememberMeInfo rememberMe = null;
 
         if(authentication.getPrincipal() instanceof User user) {
 
-            rememberMe = user.getRemeberMeInfo();
+            if(user.getRemeberMeInfo() != null) {
+
+                rememberMe = new RememberMeInfo(user.getRemeberMeInfo());
+            }
         }
 
         if(session != null) {
