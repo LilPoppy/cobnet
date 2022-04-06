@@ -38,11 +38,14 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 public class ProjectBeanHolder {
+
+    private static EntityManager ENTITY_MANAGER;
 
     private static ConfigurableApplicationContext SPRING_CONTEXT;
 
@@ -280,6 +283,11 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.REDIS_INDEXED_SESSION_REPOSITORY;
     }
 
+    public static EntityManager getEntityManager() {
+
+        return ProjectBeanHolder.ENTITY_MANAGER;
+    }
+
     public static ClientRegistrationRepository getClientRegistrationRepository() {
 
         return ProjectBeanHolder.CLIENT_REGISTRATION_REPOSITORY;
@@ -406,6 +414,12 @@ public class ProjectBeanHolder {
         public void setRedisConfiguration(RedisConfiguration config) {
 
             ProjectBeanHolder.REDIS_CONFIGURATION = config;
+        }
+
+        @Autowired
+        public void setEntityManager(EntityManager manager) {
+
+            ProjectBeanHolder.ENTITY_MANAGER = manager;
         }
 
         @Autowired
