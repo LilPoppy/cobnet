@@ -157,7 +157,7 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
         if(this.roleCollection == null) {
 
-            this.roleCollection = new OwnedRoleCollection(this.roles);
+            this.roleCollection = new OwnedRoleCollection(this, this.roles);
         }
 
         return this.roleCollection;

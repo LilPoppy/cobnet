@@ -3,15 +3,18 @@ package com.cobnet.spring.boot.entity.support;
 import com.cobnet.common.MultiwayTreeNode;
 import com.cobnet.common.MultiwayTreeNodeChild;
 import com.cobnet.common.wrapper.AbstractSetWrapper;
+import com.cobnet.interfaces.cache.CacheKeyProvider;
+import com.cobnet.interfaces.cache.annotation.SimpleCacheEvict;
 import com.cobnet.interfaces.security.Permissible;
 import com.cobnet.interfaces.security.Permission;
+import com.cobnet.spring.boot.entity.ExternalUser;
 
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 
 
-public class OwnedPermissionCollection extends AbstractSetWrapper<Permission> {
+public class OwnedPermissionCollection extends AbstractSetWrapper<Permission> implements CacheKeyProvider<String> {
 
     private final Permissible permissible;
 
@@ -62,6 +65,20 @@ public class OwnedPermissionCollection extends AbstractSetWrapper<Permission> {
         }
     }
 
+    @SimpleCacheEvict({"Users", "ExternalUsers"})
+    @Override
+    public boolean add(Permission permission) {
+
+        return super.add(permission);
+    }
+
+    @SimpleCacheEvict({"Users", "ExternalUsers"})
+    @Override
+    public boolean remove(Object permission) {
+
+        return super.remove(permission);
+    }
+
     private boolean hasPermission(MultiwayTreeNode<String> root, String permission) {
 
         String[] authorities = permission.split("\\.");
@@ -108,5 +125,11 @@ public class OwnedPermissionCollection extends AbstractSetWrapper<Permission> {
     public boolean hasPermission(String permission) {
 
         return this.hasPermission(getTreeNode(), permission);
+    }
+
+    @Override
+    public String[] getKeys() {
+
+        return new String[] { this.permissible.getIdentity() };
     }
 }

@@ -1,15 +1,18 @@
 package com.cobnet.spring.boot.entity.support;
 
 import com.cobnet.common.wrapper.AbstractSetWrapper;
+import com.cobnet.interfaces.cache.CacheKeyProvider;
+import com.cobnet.interfaces.cache.annotation.SimpleCacheEvict;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.ExternalUser;
 import com.cobnet.spring.boot.entity.User;
+import org.springframework.cache.annotation.CacheEvict;
 
 import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 
-public class OwnedExternalUserCollection extends AbstractSetWrapper<ExternalUser> {
+public class OwnedExternalUserCollection extends AbstractSetWrapper<ExternalUser> implements CacheKeyProvider<String> {
 	
 	private final User owner;
 	
@@ -27,6 +30,8 @@ public class OwnedExternalUserCollection extends AbstractSetWrapper<ExternalUser
 		return this.providers;
 	}
 
+	@SimpleCacheEvict("Users")
+	@CacheEvict(cacheNames = "ExternalUsers", key = "#user.identity")
 	@Override
     public boolean add(ExternalUser user) {
 		
@@ -65,6 +70,14 @@ public class OwnedExternalUserCollection extends AbstractSetWrapper<ExternalUser
 		return super.add(user);
     }
 
+	@SimpleCacheEvict("Users")
+	@CacheEvict(cacheNames = "ExternalUsers", key = "#user.getIdentity()")
+	@Override
+	public boolean remove(Object user) {
+
+		return super.remove(user);
+	}
+
 	@Override
 	public boolean addAll(Collection<? extends ExternalUser> c) {
 
@@ -81,5 +94,11 @@ public class OwnedExternalUserCollection extends AbstractSetWrapper<ExternalUser
 	public Optional<ExternalUser> getByName(String name) {
 		
 		return this.stream().filter(user -> user.getIdentity().equalsIgnoreCase(name)).findFirst();
+	}
+
+	@Override
+	public String[] getKeys() {
+
+		return new String[]{ this.owner.getUsername() };
 	}
 }

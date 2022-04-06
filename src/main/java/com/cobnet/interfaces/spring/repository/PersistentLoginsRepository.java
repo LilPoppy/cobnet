@@ -3,6 +3,7 @@ package com.cobnet.interfaces.spring.repository;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.PersistentLogins;
 import org.springframework.cache.Cache;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
@@ -43,6 +44,7 @@ public interface PersistentLoginsRepository extends JPABaseRepository<Persistent
     @Cacheable(value = "PersistentLogins")
     public PersistentLogins findByUsernameEqualsIgnoreCase(String username);
 
+    @CacheEvict(cacheNames = "PersistentLogins", key = "#username")
     @Override
     default void removeUserTokens(String username) {
 

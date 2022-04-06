@@ -2,6 +2,8 @@ package com.cobnet.interfaces.spring.repository;
 
 import com.cobnet.security.permission.UserPermission;
 import com.cobnet.spring.boot.entity.ExternalUser;
+import com.cobnet.spring.boot.entity.User;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
@@ -19,10 +21,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Repository
-@Cacheable(value = "ExternalUsers", unless="#result == null", keyGenerator = "StringOidcUserRequestCacheKeyGenerator")
 public interface ExternalUserRepository extends JPABaseRepository<ExternalUser, String>, OAuth2UserService<OidcUserRequest, OidcUser> {
 
     @Override
+    @Cacheable(value = "ExternalUsers", unless="#result == null")
     public default ExternalUser loadUser(OidcUserRequest request) throws OAuth2AuthenticationException {
 
         String username = "";
@@ -63,6 +65,10 @@ public interface ExternalUserRepository extends JPABaseRepository<ExternalUser, 
 
         return user;
     }
+
+    @CacheEvict(cacheNames = "ExternalUsers", key = "#entity.getIdentity()")
+    @Override
+    void delete(ExternalUser entity);
 
     public Optional<ExternalUser> findByIdTokenEquals(@Param("idToken") String idToken);
 

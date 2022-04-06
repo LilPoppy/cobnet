@@ -1,6 +1,7 @@
 package com.cobnet.interfaces.spring.repository;
 
 import com.cobnet.spring.boot.entity.User;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,7 +13,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Repository
-@Cacheable("Users")
 public interface UserRepository extends JPABaseRepository<User, String>, UserDetailsService {
 
     @Transactional
@@ -20,9 +20,13 @@ public interface UserRepository extends JPABaseRepository<User, String>, UserDet
 
     @Override
     @Transactional
+    @Cacheable("Users")
     default UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         return findByUsernameEqualsIgnoreCase(username).orElse(new User());
     }
 
+    @CacheEvict(cacheNames = "Users", key = "#entity.getUsername()")
+    @Override
+    void delete(User entity);
 }
