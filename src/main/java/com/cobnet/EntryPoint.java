@@ -4,10 +4,7 @@ import com.cobnet.connection.websocket.WebSocketServer;
 import com.cobnet.security.RoleRule;
 import com.cobnet.security.permission.UserPermission;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
-import com.cobnet.spring.boot.entity.Position;
-import com.cobnet.spring.boot.entity.Store;
-import com.cobnet.spring.boot.entity.User;
-import com.cobnet.spring.boot.entity.UserRole;
+import com.cobnet.spring.boot.entity.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -93,22 +90,25 @@ public class EntryPoint {
 		LOG.info(EntryPoint.getLogo());
 
 		User user = new User("admin", "123456", "Bob", "Smith", new UserRole("admin", RoleRule.ADMIN, new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")));
-//
-//		ProjectBeanHolder.getUserRepository().save(user);
-//
-//		Store store = new Store("8714 Youree Dr Shreveport LA 71115", "QQ Foot Spa", "3476986710");
-//
-//		ProjectBeanHolder.getStoreRepository().save(store);
-//
-//		store.addPosition("Masseur", true);
-//
-//		user = ProjectBeanHolder.getUserRepository().findByUsernameEqualsIgnoreCase("admin").get();
-//
-//
-//		System.out.println(user.getAssociated().size());
-//
-//		store.addStaff(user);
-//
+
+		ProjectBeanHolder.getUserRepository().save(user);
+
+		Store store = new Store("8714 Youree Dr Shreveport LA 71115", "QQ Foot Spa", "3476986710");
+
+		store.addService(new Service(store, "Foot Reflexology"));
+		ProjectBeanHolder.getStoreRepository().save(store);
+
+		store.addPosition("Masseur", true);
+
+		user = ProjectBeanHolder.getUserRepository().findByUsernameEqualsIgnoreCase("admin").get();
+
+		System.out.println(store.getServices());
+
+		System.out.println(user.getAssociated().size());
+
+		System.out.println(store.getPositions());
+		store.addStaff(user);
+
 		ProjectBeanHolder.getUserRepository().save(user);
 
 		if(Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("agent"))) {

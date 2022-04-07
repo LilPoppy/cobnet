@@ -4,22 +4,21 @@ import com.cobnet.interfaces.spring.dto.ServiceOption;
 import com.cobnet.spring.boot.entity.support.JsonServiceAttributeConverter;
 import com.cobnet.spring.boot.entity.support.JsonServiceOptionSetConverter;
 import com.cobnet.spring.boot.entity.support.JsonSetConverter;
+import com.cobnet.spring.boot.entity.support.ServiceKey;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class Service {
 
-    @Id
-    @Column(name = "name", nullable = false)
-    private String name;
+    @EmbeddedId
+    private ServiceKey id;
 
     @ManyToOne
-    @JoinColumn(name = "store")
+    @MapsId("store")
+    @JoinColumn(name = "store_id")
     private Store store;
 
     private long price;
@@ -33,12 +32,41 @@ public class Service {
     @Column(columnDefinition = "json")
     private Map<? extends ServiceOption, Object> attribute = new HashMap<>();
 
+    public Service() {}
+
+    public Service(ServiceKey id) {
+        this.id = id;
+    }
+
+    public Service(Store store, String name) {
+        this(new ServiceKey(store, name));
+    }
 
     public String getName() {
-        return name;
+        return this.id.getName();
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.id.setName(name);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Service service = (Service) o;
+        return id != null && Objects.equals(id, service.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "name = " + this.getName() + ", " +
+                "price = " + price + ")";
     }
 }

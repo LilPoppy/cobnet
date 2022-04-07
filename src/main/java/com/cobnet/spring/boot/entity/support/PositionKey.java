@@ -1,12 +1,14 @@
 package com.cobnet.spring.boot.entity.support;
 
 import com.cobnet.spring.boot.entity.Store;
+import org.hibernate.Hibernate;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Embeddable
 public class PositionKey implements Serializable {
@@ -38,5 +40,26 @@ public class PositionKey implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        PositionKey that = (PositionKey) o;
+        return store != null && Objects.equals(store, that.store)
+                && name != null && Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(store, name);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "store = " + store + ", " +
+                "name = " + name + ")";
     }
 }

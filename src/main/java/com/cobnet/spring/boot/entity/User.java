@@ -68,7 +68,7 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
     private Set<ExternalUser> externalUsers = new HashSet<ExternalUser>();
 
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", orphanRemoval = true)
     private Set<Staff> associated = new HashSet<>();
 
     private transient OwnedRoleCollection roleCollection;

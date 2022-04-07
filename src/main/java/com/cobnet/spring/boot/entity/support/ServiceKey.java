@@ -11,53 +11,57 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class StaffKey implements Serializable {
+public class ServiceKey implements Serializable {
 
-    private static final long serialVersionUID = -2660047644853689253L;
-
-    @ManyToOne
-    @JoinColumn(name = "user")
-    private User user;
-
+    private static final long serialVersionUID = -8992103030994708502L;
     @ManyToOne
     @JoinColumn(name = "store_id")
     private Store store;
 
-    public StaffKey() { }
+    private String name;
 
-    public StaffKey(User user, Store id) {
-        this.user = user;
-        this.store = id;
+    public ServiceKey() { }
+
+    public ServiceKey(Store store, String name) {
+        this.store = store;
+        this.name = name;
     }
 
-    public User getUser() {
-        return user;
-    }
 
     public Store getStore() {
         return store;
     }
 
+    public String getName() {
+        return name;
+    }
 
+    public void setStore(Store store) {
+        this.store = store;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        StaffKey staffKey = (StaffKey) o;
-        return user != null && Objects.equals(user, staffKey.user)
-                && store != null && Objects.equals(store, staffKey.store);
+        ServiceKey that = (ServiceKey) o;
+        return store != null && Objects.equals(store, that.store)
+                && name != null && Objects.equals(name, that.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(user, store);
+        return Objects.hash(store, name);
     }
 
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" +
-                "user = " + user + ", " +
-                "store = " + store + ")";
+                "store = " + store + ", " +
+                "name = " + name + ")";
     }
 }

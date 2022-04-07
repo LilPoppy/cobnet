@@ -28,19 +28,19 @@ public class Store implements Serializable, StoreMemberRelated {
     private String phone;
 
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "store")
+    @OneToMany(mappedBy = "store", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<Staff> crew = new HashSet<>();
 
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "store")
+    @OneToMany(mappedBy = "store", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<CheckInForm> checkInForms = new ArrayList<>();
 
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "store")
+    @OneToMany(mappedBy = "store", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<Service> services = new HashSet<>();
 
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "store")
+    @OneToMany(mappedBy = "store", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<Position> positions = new HashSet<>();
 
     private transient OwnedStoreStaffCollection storeStaffCollection;
@@ -78,6 +78,11 @@ public class Store implements Serializable, StoreMemberRelated {
         return Stream.of(checkInForms).flatMap(Collection::stream).collect(Collectors.toUnmodifiableList());
     }
 
+    public Collection<Service> getServices() {
+
+        return this.services.stream().collect(Collectors.toUnmodifiableList());
+    }
+
     public void addStaff(Staff staff) {
 
         this.getOwnedStoreStaffCollection().add(staff);
@@ -98,10 +103,19 @@ public class Store implements Serializable, StoreMemberRelated {
         this.getOwnedStorePositionCollection().add(new Position(this, name, isDefault));
     }
 
+    public void addService(Service service) {
+
+        this.services.add(service);
+    }
+
     public Collection<Staff> getCrew() {
         return crew.stream().collect(Collectors.toUnmodifiableList());
     }
 
+    public Collection<Position> getPositions() {
+
+        return this.positions.stream().collect(Collectors.toUnmodifiableList());
+    }
 
     public Position getDefaultPosition() {
 

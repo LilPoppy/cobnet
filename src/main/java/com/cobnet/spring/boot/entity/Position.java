@@ -1,14 +1,17 @@
 package com.cobnet.spring.boot.entity;
 
 import com.cobnet.interfaces.security.Permission;
-import com.cobnet.spring.boot.entity.support.JsonMapConverter;
 import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
 import com.cobnet.spring.boot.entity.support.PositionKey;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Entity
@@ -85,5 +88,25 @@ public class Position {
 
     public boolean isDefault() {
         return isDefault;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Position position = (Position) o;
+        return id != null && Objects.equals(id, position.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "name = " + id.getName() + ", " +
+                "default = " + isDefault + ")";
     }
 }

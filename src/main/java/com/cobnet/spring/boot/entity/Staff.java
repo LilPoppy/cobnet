@@ -1,5 +1,6 @@
 package com.cobnet.spring.boot.entity;
 
+import com.cobnet.spring.boot.dto.support.StaffStatus;
 import com.cobnet.spring.boot.entity.support.OwnedPermissionCollection;
 import com.cobnet.spring.boot.entity.support.PositionKey;
 import com.cobnet.spring.boot.entity.support.StaffKey;
@@ -23,15 +24,22 @@ public class Staff extends EntityBase implements Serializable {
     @JoinColumn(name = "store_id")
     private Store store;
 
-    @MapsId("store")
     @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "store_id", referencedColumnName = "store_id"),
-            @JoinColumn(name = "position_name", referencedColumnName = "name")
-    })
     private Position position;
 
     private boolean inService;
+
+    @Enumerated
+    @Column(name = "status")
+    private StaffStatus status;
+
+    public StaffStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(StaffStatus status) {
+        this.status = status;
+    }
 
     public Position getPosition() {
         return position;
