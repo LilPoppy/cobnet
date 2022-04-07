@@ -1,26 +1,23 @@
-package com.cobnet.spring.boot.entity.support;
+package com.cobnet.security.permission;
 
 import com.cobnet.common.MultiwayTreeNode;
 import com.cobnet.common.MultiwayTreeNodeChild;
 import com.cobnet.common.wrapper.AbstractSetWrapper;
-import com.cobnet.interfaces.cache.CacheKeyProvider;
-import com.cobnet.interfaces.cache.annotation.SimpleCacheEvict;
 import com.cobnet.interfaces.security.Permissible;
 import com.cobnet.interfaces.security.Permission;
-import com.cobnet.spring.boot.entity.ExternalUser;
 
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.Set;
 
 
-public class OwnedPermissionCollection extends AbstractSetWrapper<Permission> implements CacheKeyProvider<String> {
+public class PermissionValidator extends AbstractSetWrapper<Permission> {
 
     private final Permissible permissible;
 
     private final Set<Permission> permissions;
 
-    public OwnedPermissionCollection(Permissible permissible, Set<Permission> permissions) {
+    public PermissionValidator(Permissible permissible, Set<Permission> permissions) {
 
         this.permissible = permissible;
         this.permissions = permissions;
@@ -30,7 +27,6 @@ public class OwnedPermissionCollection extends AbstractSetWrapper<Permission> im
     protected Set<Permission> getSet() {
         return permissions;
     }
-
 
     public MultiwayTreeNode<String> getTreeNode() {
 
@@ -42,7 +38,6 @@ public class OwnedPermissionCollection extends AbstractSetWrapper<Permission> im
         }
 
         return root;
-
     }
 
     private void addToParent(MultiwayTreeNode<String> parent, MultiwayTreeNode<String> node) {
@@ -63,20 +58,6 @@ public class OwnedPermissionCollection extends AbstractSetWrapper<Permission> im
             }
 
         }
-    }
-
-    @SimpleCacheEvict({"Users", "ExternalUsers"})
-    @Override
-    public boolean add(Permission permission) {
-
-        return super.add(permission);
-    }
-
-    @SimpleCacheEvict({"Users", "ExternalUsers"})
-    @Override
-    public boolean remove(Object permission) {
-
-        return super.remove(permission);
     }
 
     private boolean hasPermission(MultiwayTreeNode<String> root, String permission) {
@@ -125,11 +106,5 @@ public class OwnedPermissionCollection extends AbstractSetWrapper<Permission> im
     public boolean hasPermission(String permission) {
 
         return this.hasPermission(getTreeNode(), permission);
-    }
-
-    @Override
-    public String[] getKeys() {
-
-        return new String[] { this.permissible.getIdentity() };
     }
 }

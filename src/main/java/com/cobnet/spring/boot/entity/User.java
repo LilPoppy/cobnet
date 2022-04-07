@@ -3,10 +3,8 @@ package com.cobnet.spring.boot.entity;
 import com.cobnet.interfaces.security.Account;
 import com.cobnet.interfaces.security.Permissible;
 import com.cobnet.interfaces.security.Permission;
-import com.cobnet.spring.boot.entity.support.OwnedExternalUserCollection;
 import com.cobnet.security.RoleRule;
-import com.cobnet.spring.boot.entity.support.OwnedPermissionCollection;
-import com.cobnet.spring.boot.entity.support.OwnedRoleCollection;
+import com.cobnet.security.permission.PermissionValidator;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
 import org.hibernate.annotations.LazyCollection;
@@ -47,7 +45,7 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
     private boolean emailVerified;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "user_roles", joinColumns = { @JoinColumn(name = "user", referencedColumnName = "username") },
             inverseJoinColumns = { @JoinColumn(name = "role", referencedColumnName = "role") })
@@ -66,14 +64,11 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
     private boolean enabled;
 
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy="user")
-    private Set<ExternalUser> externalUsers = new HashSet<ExternalUser>();
+    @OneToMany(mappedBy="user", orphanRemoval = true, cascade = CascadeType.ALL)
+    private Set<ExternalUser> externalUsers = new HashSet<>();
 
-    private transient OwnedRoleCollection roleCollection;
-
-    private transient OwnedPermissionCollection permissionsCollection;
-
-    private transient OwnedExternalUserCollection externalUserCollection;
+    @Transient
+    private transient PermissionValidator permissionValidator;
 
     public User() {}
 
@@ -87,7 +82,7 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
         this.phoneNumberVerified = phoneNumberVerified;
         this.email = email;
         this.emailVerified = emailVerified;
-        this.getOwnedRoleCollection().addAll(roles.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(EntityBase::getCreatedTime))), ArrayList::new)));
+        this.roles.addAll(roles.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(EntityBase::getCreatedTime))), ArrayList::new)));
         this.expired = expired;
         this.locked = locked;
         this.vaildPassword = vaildPassword;
@@ -215,41 +210,10 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
         return role.isEmpty() ? RoleRule.VISITOR : role.get().getRule();
     }
 
-    public OwnedRoleCollection getOwnedRoleCollection() {
+    public Set<ExternalUser> getExternalUsers() {
 
-        if(this.roleCollection == null) {
-
-            this.roleCollection = new OwnedRoleCollection(this, this.roles);
-        }
-
-        return this.roleCollection;
+        return this.externalUsers;
     }
-
-    public OwnedPermissionCollection getOwnedPermissionCollection() {
-
-        if(this.permissionsCollection == null) {
-
-            this.permissionsCollection = new OwnedPermissionCollection(this, this.permissions);
-        }
-
-        return this.permissionsCollection;
-    }
-
-    public OwnedExternalUserCollection getOwnedExternalUserCollection() {
-
-        if(this.externalUserCollection == null) {
-
-            this.externalUserCollection = new OwnedExternalUserCollection(this, this.externalUsers);
-        }
-
-        return this.externalUserCollection;
-    }
-
-    public Set<? extends ExternalUser> getExternalUsers() {
-
-        return Collections.unmodifiableSet(this.externalUsers);
-    }
-
 
     @Override
     public Collection<? extends Permission> getPermissions() {
@@ -267,44 +231,38 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
         return this.roles.stream().anyMatch(role -> role.getName().equalsIgnoreCase(name));
     }
 
+    private PermissionValidator getPermissionValidator() {
+
+        if(this.permissionValidator == null) {
+
+            this.permissionValidator = new PermissionValidator(this, this.permissions);
+        }
+
+        return this.permissionValidator;
+    }
+
     @Override
     public boolean isPermitted(String authority) {
 
-        return this.getOwnedPermissionCollection().hasPermission(authority) || this.getOwnedRoleCollection().stream().anyMatch(role -> role.isPermitted(authority));
+        return this.getPermissionValidator().hasPermission(authority) || this.roles.stream().anyMatch(role -> role.isPermitted(authority));
     }
+
 
     @Override
     public boolean addPermission(Permission permission) {
 
-        return this.getOwnedPermissionCollection().add(permission);
+        return this.permissions.add(permission);
     }
 
     @Override
     public boolean removePermission(Permission permission) {
 
-        if(this.getOwnedPermissionCollection().hasPermission(permission)) {
-
-            return this.getOwnedPermissionCollection().remove(permission);
-        }
-
-        boolean result = false;
-
-        for(ExternalUser user : this.getOwnedExternalUserCollection()) {
-
-            result = user.removePermission(permission);
-        }
-
-        return result;
+        return this.permissions.remove(permission) && externalUsers.stream().allMatch(user -> user.removePermission(permission));
     }
 
     public boolean addExternalUser(ExternalUser user) {
 
-        return this.getOwnedExternalUserCollection().add(user);
-    }
-
-    public boolean removeExternalUser(ExternalUser user) {
-
-        return this.getOwnedExternalUserCollection().remove(user);
+        return this.externalUsers.add(user);
     }
 
     public PersistentLogins getRemeberMeInfo() {
