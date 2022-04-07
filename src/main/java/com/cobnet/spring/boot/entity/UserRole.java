@@ -3,17 +3,13 @@ package com.cobnet.spring.boot.entity;
 import com.cobnet.interfaces.security.Permissible;
 import com.cobnet.interfaces.security.Permission;
 import com.cobnet.security.RoleRule;
-import com.cobnet.spring.boot.entity.support.OwnedPermissionCollection;
+import com.cobnet.security.permission.PermissionValidator;
 import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
 import org.springframework.lang.NonNull;
 
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,7 +26,8 @@ public class UserRole extends EntityBase implements Permissible, Serializable {
     @Column(columnDefinition = "json")
     private Set<Permission> permissions = new HashSet<>();
 
-    private transient OwnedPermissionCollection permissionCollection;
+    @Transient
+    private transient PermissionValidator permissionCollection;
 
     public UserRole() {}
 
@@ -67,16 +64,16 @@ public class UserRole extends EntityBase implements Permissible, Serializable {
         return this.getPermissions().stream().map(Permission::getPower).mapToInt(Integer::valueOf).sum();
     }
 
-    public Set<? extends Permission> getPermissions() {
+    public Set<Permission> getPermissions() {
 
-        return Collections.unmodifiableSet(permissions);
+        return this.permissions;
     }
 
-    public OwnedPermissionCollection getOwnedPermissionCollection() {
+    private PermissionValidator getPermissionValidator() {
 
         if(this.permissionCollection == null) {
 
-            this.permissionCollection = new OwnedPermissionCollection(this, this.permissions);
+            this.permissionCollection = new PermissionValidator(this, this.permissions);
         }
 
         return this.permissionCollection;
@@ -119,19 +116,19 @@ public class UserRole extends EntityBase implements Permissible, Serializable {
     @Override
     public boolean isPermitted(String authority) {
 
-        return this.getOwnedPermissionCollection().hasPermission(authority);
+        return this.getPermissionValidator().hasPermission(authority);
     }
 
     @Override
     public boolean addPermission(Permission permission) {
 
-        return this.getOwnedPermissionCollection().add(permission);
+        return this.permissions.add(permission);
     }
 
     @Override
     public boolean removePermission(Permission permission) {
 
-        return this.getOwnedPermissionCollection().remove(permission);
+        return this.permissions.remove(permission);
     }
 
     @Override

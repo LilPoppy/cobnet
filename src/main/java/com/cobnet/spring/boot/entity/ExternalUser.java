@@ -4,7 +4,7 @@ import com.cobnet.interfaces.security.Account;
 import com.cobnet.interfaces.security.Permissible;
 import com.cobnet.interfaces.security.Permission;
 import com.cobnet.security.RoleRule;
-import com.cobnet.spring.boot.entity.support.OwnedPermissionCollection;
+import com.cobnet.security.permission.PermissionValidator;
 import com.cobnet.spring.boot.entity.support.JsonMapConverter;
 import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
 import org.slf4j.Logger;
@@ -36,7 +36,7 @@ public class ExternalUser extends EntityBase implements OidcUser, Serializable, 
 	@Column(nullable = false)
 	private String accessToken;
 	
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user")
     private User user;
 
@@ -50,7 +50,7 @@ public class ExternalUser extends EntityBase implements OidcUser, Serializable, 
 	private HashMap<String, Object> attributes = new HashMap<>();
 
 	@Transient
-	public transient OwnedPermissionCollection permissionCollection;
+	private transient PermissionValidator permissionValidator;
 
     public ExternalUser() {}
     
@@ -59,7 +59,7 @@ public class ExternalUser extends EntityBase implements OidcUser, Serializable, 
     	this.identity = provider + ":" + identity;
     	this.idToken = idToken;
     	this.accessToken = accessToken;
-		permissions.forEach(this::addPermission);
+		this.authorities.addAll(permissions);
     	this.setAttributes(attributes);
     }
     
@@ -85,14 +85,14 @@ public class ExternalUser extends EntityBase implements OidcUser, Serializable, 
 		}
 	}
 
-	public OwnedPermissionCollection getOwnedPermissionCollection() {
+	private PermissionValidator getPermissionValidator() {
 		
-		if(this.permissionCollection == null) {
+		if(this.permissionValidator == null) {
 			
-			this.permissionCollection = new OwnedPermissionCollection(this, this.authorities);
+			this.permissionValidator = new PermissionValidator(this, this.authorities);
 		}
 		
-		return this.permissionCollection;
+		return this.permissionValidator;
 	}
 	
 	public Map<String, Object> getAttributes() {
@@ -188,15 +188,15 @@ public class ExternalUser extends EntityBase implements OidcUser, Serializable, 
 
 		return false;
 	}
-	
+
 	@Override
 	public int hashCode() {
-		
+
 		if(this.identity == null) {
 
 			return 0;
 		}
-		
+
 		return this.identity.hashCode() + this.idToken.hashCode() + this.accessToken.hashCode() + this.attributes.entrySet().stream().map(Map.Entry::hashCode).mapToInt(Integer::intValue).sum() + this.authorities.stream().map(Object::hashCode).mapToInt(Integer::intValue).sum();
 	}
 	
@@ -222,24 +222,24 @@ public class ExternalUser extends EntityBase implements OidcUser, Serializable, 
 	@Override
 	public Collection<? extends Permission> getPermissions() {
 		
-		return Collections.unmodifiableSet(this.authorities);
+		return this.authorities;
 	}
 
 	@Override
 	public boolean isPermitted(String authority) {
-		return this.getOwnedPermissionCollection().hasPermission(authority);
+		return this.getPermissionValidator().hasPermission(authority);
 	}
 
 	@Override
 	public boolean addPermission(Permission permission) {
 		
-		return this.getOwnedPermissionCollection().add(permission);
+		return this.authorities.add(permission);
 	}
 
 	@Override
 	public boolean removePermission(Permission permission) {
 		
-		return this.getOwnedPermissionCollection().remove(permission);
+		return this.authorities.remove(permission);
 	}
 
 	public static class Builder {

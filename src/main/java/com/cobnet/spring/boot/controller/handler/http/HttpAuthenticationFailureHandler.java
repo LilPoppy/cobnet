@@ -4,6 +4,7 @@ import com.cobnet.spring.boot.configuration.SecurityConfiguration;
 import com.cobnet.spring.boot.core.HttpRequestUrlResolver;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.AuthenticationResult;
+import com.cobnet.spring.boot.dto.RememberMeInfo;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,7 +35,7 @@ public class HttpAuthenticationFailureHandler implements AuthenticationFailureHa
 
             try (PrintWriter writer = response.getWriter()){
 
-                writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new AuthenticationResult()));
+                writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new AuthenticationResult(false, null, (RememberMeInfo)null)));
                 writer.flush();
             }
 

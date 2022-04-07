@@ -3,9 +3,12 @@ package com.cobnet.spring.boot.entity;
 import com.cobnet.interfaces.security.Account;
 import com.cobnet.interfaces.security.Permissible;
 import com.cobnet.interfaces.security.Permission;
+import com.cobnet.spring.boot.entity.support.OwnedExternalUserCollection;
 import com.cobnet.security.RoleRule;
+import com.cobnet.spring.boot.entity.support.OwnedPermissionCollection;
+import com.cobnet.spring.boot.entity.support.OwnedRoleCollection;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
-import com.cobnet.spring.boot.entity.support.*;
+import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.slf4j.Logger;
@@ -65,10 +68,6 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy="user")
     private Set<ExternalUser> externalUsers = new HashSet<ExternalUser>();
-
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
-    private Set<Staff> associated = new HashSet<>();
 
     private transient OwnedRoleCollection roleCollection;
 
@@ -256,21 +255,6 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
     public Collection<? extends Permission> getPermissions() {
 
         return Stream.of(roles.stream().map(UserRole::getPermissions).flatMap(Collection::stream).collect(Collectors.toList()), permissions).flatMap(Collection::stream).collect(Collectors.toUnmodifiableList());
-    }
-
-    public Collection<Staff> getAssociated() {
-
-        return associated.stream().collect(Collectors.toUnmodifiableList());
-    }
-
-    public void addStore(Store store) {
-
-        this.associated.add(new Staff(store, this, store.getDefaultPosition().get()));
-    }
-
-    public Collection<Store> getStores() {
-
-        return associated.stream().map(Staff::getStore).collect(Collectors.toUnmodifiableList());
     }
 
     public boolean hasRole(String... roles) {

@@ -142,7 +142,7 @@ public class OAuth2LoginAccountAuthenticationFilter extends AbstractAuthenticati
 
                     if (user.getExternalUsers().stream().noneMatch(child -> child.getUsername().equals(external.getUsername()))) {
 
-                        user.getOwnedExternalUserCollection().add(external);
+                        user.getExternalUsers().add(external);
 
                         ProjectBeanHolder.getUserRepository().save(user);
                     }

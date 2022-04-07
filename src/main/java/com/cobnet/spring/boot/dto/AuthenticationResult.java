@@ -23,11 +23,6 @@ public class AuthenticationResult extends HttpMapTransmission {
         this(authenticated, connectionToken, new RememberMeInfo(rememberMeInfo));
     }
 
-    public AuthenticationResult() {
-
-        this(false, null, (PersistentLogins)null);
-    }
-
     public boolean isAuthenticated() {
 
         return authenticated;
