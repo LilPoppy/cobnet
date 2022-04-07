@@ -6,10 +6,7 @@ import com.cobnet.interfaces.security.Permission;
 import com.cobnet.interfaces.spring.entity.StoreMemberRelated;
 import com.cobnet.security.RoleRule;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
-import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
-import com.cobnet.spring.boot.entity.support.OwnedExternalUserCollection;
-import com.cobnet.spring.boot.entity.support.OwnedPermissionCollection;
-import com.cobnet.spring.boot.entity.support.OwnedRoleCollection;
+import com.cobnet.spring.boot.entity.support.*;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.slf4j.Logger;
@@ -72,13 +69,15 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "user")
-    private Set<StoreStaff> associated = new HashSet<>();
+    private Set<Staff> associated = new HashSet<>();
 
     private transient OwnedRoleCollection roleCollection;
 
     private transient OwnedPermissionCollection permissionsCollection;
 
     private transient OwnedExternalUserCollection externalUserCollection;
+
+    private transient OwnedStoreStaffCollection storeStaffCollection;
 
     public User() {}
 
@@ -250,6 +249,16 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
         return this.externalUserCollection;
     }
 
+    public OwnedStoreStaffCollection getOwnedStoreStaffCollection() {
+
+        if(this.storeStaffCollection == null) {
+
+            this.storeStaffCollection = new OwnedStoreStaffCollection(this, this.associated);
+        }
+
+        return this.storeStaffCollection;
+    }
+
     public Set<? extends ExternalUser> getExternalUsers() {
 
         return Collections.unmodifiableSet(this.externalUsers);
@@ -262,14 +271,19 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
         return Stream.of(roles.stream().map(UserRole::getPermissions).flatMap(Collection::stream).collect(Collectors.toList()), permissions).flatMap(Collection::stream).collect(Collectors.toUnmodifiableList());
     }
 
-    public Collection<StoreStaff> getAssociated() {
+    public Collection<Staff> getAssociated() {
 
         return associated.stream().collect(Collectors.toUnmodifiableList());
     }
 
+    public void addStore(Store store) {
+
+        this.getOwnedStoreStaffCollection().add(new Staff(this, store, store.getDefaultPosition()));
+    }
+
     public Collection<Store> getStores() {
 
-        return associated.stream().map(staff -> staff.getStore()).collect(Collectors.toUnmodifiableList());
+        return associated.stream().map(Staff::getStore).collect(Collectors.toUnmodifiableList());
     }
 
     public boolean hasRole(String... roles) {

@@ -4,6 +4,7 @@ import com.cobnet.connection.websocket.WebSocketServer;
 import com.cobnet.security.RoleRule;
 import com.cobnet.security.permission.UserPermission;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
+import com.cobnet.spring.boot.entity.Position;
 import com.cobnet.spring.boot.entity.Store;
 import com.cobnet.spring.boot.entity.User;
 import com.cobnet.spring.boot.entity.UserRole;
@@ -14,7 +15,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 
@@ -93,16 +93,23 @@ public class EntryPoint {
 		LOG.info(EntryPoint.getLogo());
 
 		User user = new User("admin", "123456", "Bob", "Smith", new UserRole("admin", RoleRule.ADMIN, new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")));
-
+//
+//		ProjectBeanHolder.getUserRepository().save(user);
+//
+//		Store store = new Store("8714 Youree Dr Shreveport LA 71115", "QQ Foot Spa", "3476986710");
+//
+//		ProjectBeanHolder.getStoreRepository().save(store);
+//
+//		store.addPosition("Masseur", true);
+//
+//		user = ProjectBeanHolder.getUserRepository().findByUsernameEqualsIgnoreCase("admin").get();
+//
+//
+//		System.out.println(user.getAssociated().size());
+//
+//		store.addStaff(user);
+//
 		ProjectBeanHolder.getUserRepository().save(user);
-
-		Store store = new Store("8714 Youree Dr Shreveport LA 71115", "QQ Foot Spa", "3476986710");
-
-		ProjectBeanHolder.getStoreRepository().save(store);
-
-		System.out.println(ProjectBeanHolder.getUserRepository().findByUsernameEqualsIgnoreCase("admin").get().getAssociated().size());
-
-		store.addStoreStaff(user);
 
 		if(Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("agent"))) {
 

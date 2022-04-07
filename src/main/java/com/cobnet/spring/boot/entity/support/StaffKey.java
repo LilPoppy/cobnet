@@ -9,7 +9,7 @@ import javax.persistence.ManyToOne;
 import java.io.Serializable;
 
 @Embeddable
-public class StoreStaffSign implements Serializable {
+public class StaffKey implements Serializable {
 
     private static final long serialVersionUID = -2660047644853689253L;
 
@@ -19,25 +19,25 @@ public class StoreStaffSign implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "store_id")
-    private Store id;
+    private Store store;
 
-    public StoreStaffSign() { }
+    public StaffKey() { }
 
-    public StoreStaffSign(User user, Store id) {
+    public StaffKey(User user, Store id) {
         this.user = user;
-        this.id = id;
+        this.store = id;
     }
 
     public User getUser() {
         return user;
     }
 
-    public Store getId() {
-        return id;
+    public Store getStore() {
+        return store;
     }
 
     public String toString() {
 
-        return this.user.getUsername() + ":" + this.id;
+        return this.user.getUsername() + ":" + this.store;
     }
 }

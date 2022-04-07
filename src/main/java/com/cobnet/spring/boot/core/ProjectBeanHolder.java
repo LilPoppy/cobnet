@@ -112,7 +112,9 @@ public class ProjectBeanHolder {
 
     private static StoreRepository STORE_REPOSITORY;
 
-    private static StoreStaffRepository STORE_STAFF_REPOSITORY;
+    private static StaffRepository STAFF_REPOSITORY;
+
+    private static PositionRepository POSITION_REPOSITORY;
 
     private static RedirectStrategy REDIRECT_STRATEGY;
 
@@ -339,9 +341,14 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.STORE_REPOSITORY;
     }
 
-    public static StoreStaffRepository getStoreStaffRepository() {
+    public static StaffRepository getStaffRepository() {
 
-        return ProjectBeanHolder.STORE_STAFF_REPOSITORY;
+        return ProjectBeanHolder.STAFF_REPOSITORY;
+    }
+
+    public static PositionRepository getPositionRepository() {
+
+        return ProjectBeanHolder.POSITION_REPOSITORY;
     }
 
     public static RedirectStrategy getRedirectStrategy() {
@@ -562,9 +569,15 @@ public class ProjectBeanHolder {
         }
 
         @Autowired
-        public void setStoreStaffRepository(StoreStaffRepository repository) {
+        public void setStaffRepository(StaffRepository repository) {
 
-            ProjectBeanHolder.STORE_STAFF_REPOSITORY = repository;
+            ProjectBeanHolder.STAFF_REPOSITORY = repository;
+        }
+
+        @Autowired
+        public void setPositionRepository(PositionRepository repository) {
+
+            ProjectBeanHolder.POSITION_REPOSITORY = repository;
         }
 
         @Autowired

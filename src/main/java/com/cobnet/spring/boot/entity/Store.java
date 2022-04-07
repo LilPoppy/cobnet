@@ -2,9 +2,11 @@ package com.cobnet.spring.boot.entity;
 
 import com.cobnet.interfaces.spring.entity.StoreForm;
 import com.cobnet.interfaces.spring.entity.StoreMemberRelated;
+import com.cobnet.spring.boot.entity.support.OwnedStorePositionCollection;
 import com.cobnet.spring.boot.entity.support.OwnedStoreStaffCollection;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.expression.ConstructorExecutor;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -27,17 +29,28 @@ public class Store implements Serializable, StoreMemberRelated {
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "store")
-    private Set<StoreStaff> crew = new HashSet<>();
+    private Set<Staff> crew = new HashSet<>();
 
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy="store")
+    @OneToMany(mappedBy = "store")
     private List<CheckInForm> checkInForms = new ArrayList<>();
 
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "store")
+    private Set<Service> services = new HashSet<>();
+
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "store")
+    private Set<Position> positions = new HashSet<>();
+
     private transient OwnedStoreStaffCollection storeStaffCollection;
+
+    private transient OwnedStorePositionCollection storePositionCollection;
 
     public Store() {}
 
     public Store(String location, String name, String phone) {
+
         this.location = location;
         this.name = name;
         this.phone = phone;
@@ -65,18 +78,34 @@ public class Store implements Serializable, StoreMemberRelated {
         return Stream.of(checkInForms).flatMap(Collection::stream).collect(Collectors.toUnmodifiableList());
     }
 
-    public void addStoreStaff(StoreStaff staff) {
+    public void addStaff(Staff staff) {
 
         this.getOwnedStoreStaffCollection().add(staff);
     }
 
-    public void addStoreStaff(User user) {
+    public void addStaff(User user) {
 
-        this.getOwnedStoreStaffCollection().add(new StoreStaff(user, this));
+        this.getOwnedStoreStaffCollection().add(new Staff(user, this, this.getDefaultPosition()));
     }
 
-    public Collection<StoreStaff> getCrew() {
+    public void addPosition(Position position) {
+
+        this.getOwnedStorePositionCollection().add(position);
+    }
+
+    public void addPosition(String name, boolean isDefault) {
+
+        this.getOwnedStorePositionCollection().add(new Position(this, name, isDefault));
+    }
+
+    public Collection<Staff> getCrew() {
         return crew.stream().collect(Collectors.toUnmodifiableList());
+    }
+
+
+    public Position getDefaultPosition() {
+
+        return this.positions.stream().filter(positon -> positon.isDefault()).findFirst().get();
     }
 
     public OwnedStoreStaffCollection getOwnedStoreStaffCollection() {
@@ -87,6 +116,16 @@ public class Store implements Serializable, StoreMemberRelated {
         }
 
         return this.storeStaffCollection;
+    }
+
+    public OwnedStorePositionCollection getOwnedStorePositionCollection() {
+
+        if(this.storePositionCollection == null) {
+
+            this.storePositionCollection = new OwnedStorePositionCollection(this.positions);
+        }
+
+        return this.storePositionCollection;
     }
 
     @Override

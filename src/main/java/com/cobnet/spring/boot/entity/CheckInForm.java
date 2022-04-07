@@ -1,12 +1,11 @@
 package com.cobnet.spring.boot.entity;
 
 import com.cobnet.interfaces.spring.entity.StoreForm;
-import com.cobnet.spring.boot.entity.support.FormType;
+import com.cobnet.spring.boot.dto.support.FormType;
+import com.cobnet.spring.boot.entity.support.JsonMapConverter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
+import java.util.HashMap;
 
 @Entity
 public class CheckInForm implements StoreForm {
@@ -17,6 +16,11 @@ public class CheckInForm implements StoreForm {
     @ManyToOne
     @JoinColumn(name = "store")
     private Store store;
+
+    @SuppressWarnings("JpaAttributeTypeInspection")
+    @Convert(converter = JsonMapConverter.class)
+    @Column(columnDefinition = "json")
+    private HashMap<String, Object> data = new HashMap<>();
 
     public CheckInForm() {}
 
@@ -33,6 +37,16 @@ public class CheckInForm implements StoreForm {
     @Override
     public void setId(long id) {
         this.id = id;
+    }
+
+    @Override
+    public HashMap<String, Object> getData() {
+        return this.data;
+    }
+
+    @Override
+    public void setData(HashMap<String, Object> data) {
+        this.data = data;
     }
 
     @Override

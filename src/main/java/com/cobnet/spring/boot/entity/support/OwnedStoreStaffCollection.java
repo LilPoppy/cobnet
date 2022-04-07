@@ -13,39 +13,39 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class OwnedStoreStaffCollection extends AbstractSetWrapper<StoreStaff> implements CacheKeyProvider<String> {
+public class OwnedStoreStaffCollection extends AbstractSetWrapper<Staff> implements CacheKeyProvider<String> {
 
     private final StoreMemberRelated owner;
 
-    private final Set<StoreStaff> staffs;
+    private final Set<Staff> staffs;
 
-    public OwnedStoreStaffCollection(StoreMemberRelated owner, Set<StoreStaff> staffs) {
+    public OwnedStoreStaffCollection(StoreMemberRelated owner, Set<Staff> staffs) {
 
         this.owner = owner;
         this.staffs = staffs;
     }
 
     @Override
-    protected Set<StoreStaff> getSet() {
+    protected Set<Staff> getSet() {
         return this.staffs;
     }
 
     @CacheEvict(cacheNames = "StoreStaffs", key = "#staff.getIdentity()")
     @SimpleCacheEvict(cacheNames = {"Stores", "Users"})
     @Override
-    public boolean add(StoreStaff staff) {
+    public boolean add(Staff staff) {
 
-        if(ProjectBeanHolder.getStoreStaffRepository() != null) {
+        if(ProjectBeanHolder.getStaffRepository() != null) {
 
-            Optional<StoreStaff> existed = ProjectBeanHolder.getStoreStaffRepository().findById(staff.getId());
+            Optional<Staff> existed = ProjectBeanHolder.getStaffRepository().findById(staff.getId());
 
             if(existed.isEmpty()) {
 
-                ProjectBeanHolder.getStoreStaffRepository().save(staff);
+                ProjectBeanHolder.getStaffRepository().save(staff);
 
             } else if(existed.get().getLastModfiedTime().before(staff.getLastModfiedTime())) {
 
-                ProjectBeanHolder.getStoreStaffRepository().saveAndFlush(staff);
+                ProjectBeanHolder.getStaffRepository().saveAndFlush(staff);
             }
 
         }
@@ -56,32 +56,40 @@ public class OwnedStoreStaffCollection extends AbstractSetWrapper<StoreStaff> im
     @CacheEvict(cacheNames = "StoreStaffs", key = "#staff.getIdentity()")
     @SimpleCacheEvict(cacheNames = {"Stores", "Users"})
     @Override
-    public boolean remove(Object staff) {
+    public boolean remove(Object obj) {
 
-        return super.remove(staff);
+        if(obj instanceof Staff staff) {
+
+            if(ProjectBeanHolder.getStaffRepository().existsById(staff.getId())) {
+
+                ProjectBeanHolder.getStaffRepository().delete(staff);
+            }
+        }
+
+        return super.remove(obj);
     }
 
-    public Optional<StoreStaff> getByUsernameAndStore(String username, Store store) {
+    public Optional<Staff> getByUsernameAndStore(String username, Store store) {
 
         return this.stream().filter(staff -> staff.getUser().getUsername().equalsIgnoreCase(username) && staff.getStore().getId() == store.getId()).findFirst();
     }
 
-    public Optional<StoreStaff> getByUserAndStore(User user, Store store) {
+    public Optional<Staff> getByUserAndStore(User user, Store store) {
 
         return this.getByUsernameAndStore(user.getUsername(), store);
     }
 
-    public List<StoreStaff> getByUsername(String username) {
+    public List<Staff> getByUsername(String username) {
 
         return this.stream().filter(staff -> staff.getUser().getUsername().equalsIgnoreCase(username)).collect(Collectors.toUnmodifiableList());
     }
 
-    public List<StoreStaff> getByUser(User user) {
+    public List<Staff> getByUser(User user) {
 
         return this.getByUsername(user.getUsername());
     }
 
-    public List<StoreStaff> getByStore(Store store) {
+    public List<Staff> getByStore(Store store) {
 
         return this.stream().filter(staff -> staff.getStore().getId() == store.getId()).collect(Collectors.toUnmodifiableList());
     }
