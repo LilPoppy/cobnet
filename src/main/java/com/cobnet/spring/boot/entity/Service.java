@@ -46,8 +46,36 @@ public class Service {
         return this.id.getName();
     }
 
+    public ServiceKey getId() {
+        return id;
+    }
+
+    public Store getStore() {
+        return store;
+    }
+
+    public long getPrice() {
+        return price;
+    }
+
+    public Set<? extends ServiceOption> getOptions() {
+        return options;
+    }
+
+    public Map<? extends ServiceOption, Object> getAttribute() {
+        return attribute;
+    }
+
     public void setName(String name) {
         this.id.setName(name);
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
+    }
+
+    public void setPrice(long price) {
+        this.price = price;
     }
 
     @Override

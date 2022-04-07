@@ -33,25 +33,9 @@ public class Staff extends EntityBase implements Serializable {
     @Column(name = "status")
     private StaffStatus status;
 
-    public StaffStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(StaffStatus status) {
-        this.status = status;
-    }
-
-    public Position getPosition() {
-        return position;
-    }
-
-    public void setPosition(Position position) {
-        this.position = position;
-    }
-
     public Staff() {}
 
-    public Staff(User user, Store store, Position position) {
+    public Staff(Store store, User user, Position position) {
         this.id = new StaffKey(user, store);
         this.user = user;
         this.store = store;
@@ -60,11 +44,6 @@ public class Staff extends EntityBase implements Serializable {
 
     public StaffKey getId() {
         return id;
-    }
-
-    public String getIdentity() {
-
-        return this.getId().toString();
     }
 
     public User getUser() {
@@ -122,6 +101,22 @@ public class Staff extends EntityBase implements Serializable {
     public String getEmail() {
 
         return this.getUser().getEmail();
+    }
+
+    public StaffStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(StaffStatus status) {
+        this.status = status;
+    }
+
+    public Position getPosition() {
+        return position;
+    }
+
+    public void setPosition(Position position) {
+        this.position = position;
     }
 
     @Override

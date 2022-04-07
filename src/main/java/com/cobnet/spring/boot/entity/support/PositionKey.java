@@ -3,7 +3,6 @@ package com.cobnet.spring.boot.entity.support;
 import com.cobnet.spring.boot.entity.Store;
 import org.hibernate.Hibernate;
 
-import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -31,11 +30,6 @@ public class PositionKey implements Serializable {
 
     public Store getStore() {
         return store;
-    }
-
-    public void setStore(Store store) {
-
-        this.store = store;
     }
 
     public String getName() {

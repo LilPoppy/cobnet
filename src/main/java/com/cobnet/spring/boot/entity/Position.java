@@ -8,11 +8,9 @@ import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Entity
 public class Position {
@@ -26,7 +24,7 @@ public class Position {
     private Store store;
 
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "position", orphanRemoval = true)
+    @OneToMany(mappedBy = "position", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<Staff> staffs = new HashSet<>();
 
     @SuppressWarnings("JpaAttributeTypeInspection")
@@ -40,11 +38,6 @@ public class Position {
 
     public Position(PositionKey id) {
         this.id = id;
-    }
-
-    public Position(String name, boolean isDefault) {
-
-        this(null, name, isDefault);
     }
 
     public Position(Store store, String name) {
@@ -67,23 +60,21 @@ public class Position {
         return this.store;
     }
 
-    public void setStore(Store store) {
-
-        this.id.setStore(store);
-    }
-
     public String getName() {
 
         return this.id.getName();
     }
 
-    public Collection<Permission> getPermissions() {
-
-        return this.permissions.stream().collect(Collectors.toUnmodifiableList());
+    public Set<Staff> getStaffs() {
+        return staffs;
     }
 
-    public Collection<Staff> getStaffs() {
-        return this.staffs.stream().collect(Collectors.toUnmodifiableList());
+    public Set<Permission> getPermissions() {
+        return permissions;
+    }
+
+    public void setDefault(boolean isDefault) {
+        this.isDefault = isDefault;
     }
 
     public boolean isDefault() {

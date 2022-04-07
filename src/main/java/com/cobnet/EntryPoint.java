@@ -12,6 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.data.util.Pair;
 
 import java.util.Arrays;
 
@@ -93,23 +94,19 @@ public class EntryPoint {
 
 		ProjectBeanHolder.getUserRepository().save(user);
 
-		Store store = new Store("8714 Youree Dr Shreveport LA 71115", "QQ Foot Spa", "3476986710");
+		Store store = new Store.Builder().setName("QQ Foot Spa").setLocation("8714 Youree Dr Shreveport LA 71115").setPhone("3476986710").setServices("Foot Reflextology").setPositions(Pair.of("Masseur", true)).setCrew(user).build();
 
-		store.addService(new Service(store, "Foot Reflexology"));
+
 		ProjectBeanHolder.getStoreRepository().save(store);
 
-		store.addPosition("Masseur", true);
-
-		user = ProjectBeanHolder.getUserRepository().findByUsernameEqualsIgnoreCase("admin").get();
-
+		store.addStaff(user);
+		ProjectBeanHolder.getStoreRepository().save(store);
 		System.out.println(store.getServices());
 
 		System.out.println(user.getAssociated().size());
 
 		System.out.println(store.getPositions());
-		store.addStaff(user);
 
-		ProjectBeanHolder.getUserRepository().save(user);
 
 		if(Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("agent"))) {
 

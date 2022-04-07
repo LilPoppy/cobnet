@@ -3,7 +3,6 @@ package com.cobnet.spring.boot.entity;
 import com.cobnet.interfaces.security.Account;
 import com.cobnet.interfaces.security.Permissible;
 import com.cobnet.interfaces.security.Permission;
-import com.cobnet.interfaces.spring.entity.StoreMemberRelated;
 import com.cobnet.security.RoleRule;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.support.*;
@@ -21,7 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Entity
-public class User extends EntityBase implements Permissible, Account, UserDetails, StoreMemberRelated {
+public class User extends EntityBase implements Permissible, Account, UserDetails {
 
     private static final Logger LOG = LoggerFactory.getLogger(User.class);
 
@@ -68,7 +67,7 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
     private Set<ExternalUser> externalUsers = new HashSet<ExternalUser>();
 
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "user", orphanRemoval = true)
+    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<Staff> associated = new HashSet<>();
 
     private transient OwnedRoleCollection roleCollection;
@@ -76,8 +75,6 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
     private transient OwnedPermissionCollection permissionsCollection;
 
     private transient OwnedExternalUserCollection externalUserCollection;
-
-    private transient OwnedStoreStaffCollection storeStaffCollection;
 
     public User() {}
 
@@ -249,16 +246,6 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
         return this.externalUserCollection;
     }
 
-    public OwnedStoreStaffCollection getOwnedStoreStaffCollection() {
-
-        if(this.storeStaffCollection == null) {
-
-            this.storeStaffCollection = new OwnedStoreStaffCollection(this, this.associated);
-        }
-
-        return this.storeStaffCollection;
-    }
-
     public Set<? extends ExternalUser> getExternalUsers() {
 
         return Collections.unmodifiableSet(this.externalUsers);
@@ -278,7 +265,7 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
     public void addStore(Store store) {
 
-        this.getOwnedStoreStaffCollection().add(new Staff(this, store, store.getDefaultPosition()));
+        this.associated.add(new Staff(store, this, store.getDefaultPosition().get()));
     }
 
     public Collection<Store> getStores() {

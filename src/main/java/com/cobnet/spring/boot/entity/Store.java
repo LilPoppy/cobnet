@@ -1,21 +1,18 @@
 package com.cobnet.spring.boot.entity;
 
-import com.cobnet.interfaces.spring.entity.StoreForm;
-import com.cobnet.interfaces.spring.entity.StoreMemberRelated;
-import com.cobnet.spring.boot.entity.support.OwnedStorePositionCollection;
-import com.cobnet.spring.boot.entity.support.OwnedStoreStaffCollection;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-import org.springframework.expression.ConstructorExecutor;
+import org.springframework.data.util.Pair;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Entity
-public class Store implements Serializable, StoreMemberRelated {
+public class Store implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -29,31 +26,30 @@ public class Store implements Serializable, StoreMemberRelated {
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "store", orphanRemoval = true, cascade = CascadeType.ALL)
-    private Set<Staff> crew = new HashSet<>();
-
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "store", orphanRemoval = true, cascade = CascadeType.ALL)
-    private List<CheckInForm> checkInForms = new ArrayList<>();
-
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "store", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<Service> services = new HashSet<>();
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "store", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<Position> positions = new HashSet<>();
 
-    private transient OwnedStoreStaffCollection storeStaffCollection;
-
-    private transient OwnedStorePositionCollection storePositionCollection;
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "store", orphanRemoval = true, cascade = CascadeType.ALL)
+    private Set<Staff> crew = new HashSet<>();
 
     public Store() {}
 
     public Store(String location, String name, String phone) {
 
+        this(location, name, phone, new HashSet<>(), new HashSet<>());
+    }
+
+    public Store(String location, String name, String phone, Set<Service> services, Set<Position> positions, Staff... crew) {
         this.location = location;
         this.name = name;
         this.phone = phone;
+        this.services.addAll(services);
+        this.positions.addAll(positions);
+        this.crew.addAll(Arrays.asList(crew));
     }
 
     public long getId() {
@@ -68,82 +64,240 @@ public class Store implements Serializable, StoreMemberRelated {
         this.location = location;
     }
 
-    public List<CheckInForm> getCheckInForms() {
-
-        return checkInForms.stream().collect(Collectors.toUnmodifiableList());
+    public String getName() {
+        return name;
     }
 
-    public List<StoreForm> getForms() {
-
-        return Stream.of(checkInForms).flatMap(Collection::stream).collect(Collectors.toUnmodifiableList());
+    public String getPhone() {
+        return phone;
     }
 
-    public Collection<Service> getServices() {
-
-        return this.services.stream().collect(Collectors.toUnmodifiableList());
+    public Set<Staff> getCrew() {
+        return crew;
     }
 
-    public void addStaff(Staff staff) {
-
-        this.getOwnedStoreStaffCollection().add(staff);
+    public Set<Service> getServices() {
+        return services;
     }
 
-    public void addStaff(User user) {
-
-        this.getOwnedStoreStaffCollection().add(new Staff(user, this, this.getDefaultPosition()));
+    public Set<Position> getPositions() {
+        return positions;
     }
 
-    public void addPosition(Position position) {
+    public boolean addStaff(Staff staff) {
 
-        this.getOwnedStorePositionCollection().add(position);
+        return this.crew.add(staff);
     }
 
-    public void addPosition(String name, boolean isDefault) {
+    public boolean addStaff(User user) {
 
-        this.getOwnedStorePositionCollection().add(new Position(this, name, isDefault));
+        return this.addStaff(new Staff(this, user, this.getDefaultPosition().get()));
     }
 
-    public void addService(Service service) {
+    public boolean addService(Service service) {
 
-        this.services.add(service);
+        return this.services.add(service);
     }
 
-    public Collection<Staff> getCrew() {
-        return crew.stream().collect(Collectors.toUnmodifiableList());
+    public boolean addService(String name) {
+
+        return this.addService(new Service(this, name));
     }
 
-    public Collection<Position> getPositions() {
+    public boolean addPosition(Position position) {
 
-        return this.positions.stream().collect(Collectors.toUnmodifiableList());
+        return this.positions.add(position);
     }
 
-    public Position getDefaultPosition() {
+    public boolean addPosition(String name, boolean isDefault) {
 
-        return this.positions.stream().filter(positon -> positon.isDefault()).findFirst().get();
+        return this.addPosition(new Position(this, name, isDefault));
     }
 
-    public OwnedStoreStaffCollection getOwnedStoreStaffCollection() {
+    public boolean addPosition(String name) {
 
-        if(this.storeStaffCollection == null) {
-
-            this.storeStaffCollection = new OwnedStoreStaffCollection(this, this.crew);
-        }
-
-        return this.storeStaffCollection;
+        return this.addPosition(name, false);
     }
 
-    public OwnedStorePositionCollection getOwnedStorePositionCollection() {
+    public void setName(String name) {
+        this.name = name;
+    }
 
-        if(this.storePositionCollection == null) {
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
-            this.storePositionCollection = new OwnedStorePositionCollection(this.positions);
-        }
+    public Optional<Position> getDefaultPosition() {
 
-        return this.storePositionCollection;
+        return this.getPositions().stream().filter(Position::isDefault).findFirst();
     }
 
     @Override
-    public String getIdentity() {
-        return String.valueOf(this.getId());
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Store store = (Store) o;
+        return Objects.equals(id, store.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "id = " + id + ", " +
+                "location = " + location + ", " +
+                "name = " + name + ", " +
+                "phone = " + phone + ", " +
+                "crew = " + crew + ", " +
+                "services = " + services + ", " +
+                "positions = " + positions + ")";
+    }
+
+    public static class Builder {
+
+        private String location;
+
+        private String name;
+
+        private String phone;
+
+        private Set<Object> services = new HashSet<>();
+
+        private Set<Object> positions = new HashSet<>();
+
+        private Set<Object> crew = new HashSet<>();
+
+        public Builder setLocation(String location) {
+
+            this.location = location;
+
+            return this;
+        }
+
+        public Builder setName(String name) {
+
+            this.name = name;
+
+            return this;
+        }
+
+        public Builder setPhone(String phone) {
+
+            this.phone = phone;
+
+            return this;
+        }
+
+        public Builder setServices(Service... services) {
+
+            this.services = Arrays.stream(services).collect(Collectors.toSet());
+
+            return this;
+        }
+
+        public Builder setServices(String... services) {
+
+            this.services = Arrays.stream(services).collect(Collectors.toSet());
+
+            return this;
+        }
+
+        public Builder setPositions(Position... positions) {
+
+            this.positions = Arrays.stream(positions).collect(Collectors.toSet());
+
+            return this;
+        }
+
+        @SafeVarargs
+        public final Builder setPositions(Pair<String, Boolean>... positions) {
+
+            this.positions = Arrays.stream(positions).collect(Collectors.toSet());
+
+            return this;
+        }
+
+        public Builder setPositions(String... positions) {
+
+            this.positions = Arrays.stream(positions).collect(Collectors.toSet());
+
+            return this;
+        }
+
+        public Builder setCrew(Staff... crew) {
+
+            this.crew = Arrays.stream(crew).collect(Collectors.toSet());
+
+            return this;
+        }
+
+        @SafeVarargs
+        public final Builder setCrew(Pair<User, Position>... crew) {
+
+            this.crew = Arrays.stream(crew).collect(Collectors.toSet());
+
+            return this;
+        }
+
+        public Builder setCrew(User... crew) {
+
+            this.crew = Arrays.stream(crew).collect(Collectors.toSet());
+
+            return this;
+        }
+
+        public Store build() {
+
+            Store store = new Store(this.location, this.name, this.phone);
+
+            store.services = this.services.stream().map(service -> {
+
+                if(service instanceof String name2) {
+
+                    return new Service(store, name2);
+                }
+
+                return (Service) service;
+
+            }).collect(Collectors.toSet());
+
+            store.positions = this.positions.stream().map(position -> {
+
+                if(position instanceof Pair pair1) {
+
+                    return new Position(store, (String) pair1.getFirst(), (Boolean) pair1.getSecond());
+                }
+
+                if(position instanceof String name1) {
+
+                    return new Position(store, name1, false);
+                }
+
+                return (Position) position;
+
+            }).collect(Collectors.toSet());
+
+            store.crew = this.crew.stream().map(staff -> {
+
+                if (staff instanceof Pair pair) {
+
+                    return new Staff(store, (User) pair.getFirst(), (Position) pair.getSecond());
+                }
+
+                if(staff instanceof User user) {
+
+                    return new Staff(store, user, store.getDefaultPosition().get());
+                }
+
+                return (Staff)staff;
+
+            }).collect(Collectors.toSet());
+
+            return store;
+        }
     }
 }
