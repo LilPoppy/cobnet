@@ -43,7 +43,7 @@ spring:
    jpa:
       hibernate:
          ddl-auto: update
-      show-sql: false
+      show-sql: true
    redis:
       message:
          topics: "chat"

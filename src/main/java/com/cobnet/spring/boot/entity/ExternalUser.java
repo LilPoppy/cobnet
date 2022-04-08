@@ -36,7 +36,7 @@ public class ExternalUser extends EntityBase implements OidcUser, Serializable, 
 	@Column(nullable = false)
 	private String accessToken;
 	
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "user")
     private User user;
 

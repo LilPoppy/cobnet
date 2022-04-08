@@ -7,7 +7,6 @@ import org.springframework.data.util.Pair;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -130,19 +129,6 @@ public class Store implements Serializable {
     public Optional<Position> getDefaultPosition() {
 
         return this.getPositions().stream().filter(Position::isDefault).findFirst();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        Store store = (Store) o;
-        return Objects.equals(id, store.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
     }
 
     @Override
@@ -299,5 +285,18 @@ public class Store implements Serializable {
 
             return store;
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Store store = (Store) o;
+        return Objects.equals(id, store.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }

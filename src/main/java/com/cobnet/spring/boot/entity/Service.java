@@ -8,15 +8,16 @@ import com.cobnet.spring.boot.entity.support.ServiceKey;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.*;
 
 @Entity
-public class Service {
+public class Service implements Serializable {
 
     @EmbeddedId
     private ServiceKey id;
 
-    @ManyToOne
+    @ManyToOne(optional = false, cascade = { CascadeType.MERGE, CascadeType.REFRESH })
     @MapsId("store")
     @JoinColumn(name = "store_id")
     private Store store;
@@ -78,6 +79,14 @@ public class Service {
         this.price = price;
     }
 
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "name = " + this.getName() + ", " +
+                "price = " + price + ")";
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -89,12 +98,5 @@ public class Service {
     @Override
     public int hashCode() {
         return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "(" +
-                "name = " + this.getName() + ", " +
-                "price = " + price + ")";
     }
 }

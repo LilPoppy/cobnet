@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+@Transactional
 @Repository
 public interface UserRepository extends JPABaseRepository<User, String>, UserDetailsService {
 
@@ -19,7 +20,6 @@ public interface UserRepository extends JPABaseRepository<User, String>, UserDet
     Optional<User> findByUsernameEqualsIgnoreCase(@Param("username") String username);
 
     @Override
-    @Transactional
     @Cacheable("Users")
     default UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 

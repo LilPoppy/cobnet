@@ -4,6 +4,7 @@ import com.cobnet.spring.boot.entity.Store;
 import com.cobnet.spring.boot.entity.User;
 import org.hibernate.Hibernate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -14,7 +15,7 @@ import java.util.Objects;
 public class ServiceKey implements Serializable {
 
     private static final long serialVersionUID = -8992103030994708502L;
-    @ManyToOne
+    @ManyToOne(optional = false, cascade = { CascadeType.MERGE, CascadeType.REFRESH })
     @JoinColumn(name = "store_id")
     private Store store;
 

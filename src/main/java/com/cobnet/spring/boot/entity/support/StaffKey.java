@@ -4,6 +4,7 @@ import com.cobnet.spring.boot.entity.Store;
 import com.cobnet.spring.boot.entity.User;
 import org.hibernate.Hibernate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -15,11 +16,11 @@ public class StaffKey implements Serializable {
 
     private static final long serialVersionUID = -2660047644853689253L;
 
-    @ManyToOne
+    @ManyToOne(optional = false, cascade = { CascadeType.MERGE, CascadeType.REFRESH })
     @JoinColumn(name = "user")
     private User user;
 
-    @ManyToOne
+    @ManyToOne(optional = false, cascade = { CascadeType.MERGE, CascadeType.REFRESH })
     @JoinColumn(name = "store_id")
     private Store store;
 

@@ -1,30 +1,40 @@
 package com.cobnet.spring.boot.entity;
 
 import com.cobnet.spring.boot.dto.support.StaffStatus;
-import com.cobnet.spring.boot.entity.support.OwnedPermissionCollection;
-import com.cobnet.spring.boot.entity.support.PositionKey;
-import com.cobnet.spring.boot.entity.support.StaffKey;
+import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Objects;
 
 @Entity
 public class Staff extends EntityBase implements Serializable {
 
-    @EmbeddedId
-    private StaffKey id;
+    @Id
+    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-    @ManyToOne
-    @MapsId("user")
-    @JoinColumn(name = "user")
+    @ManyToOne(optional = false, cascade = { CascadeType.MERGE, CascadeType.REFRESH} )
+    @JoinColumns(value = {
+            @JoinColumn(name = "username", referencedColumnName = "username"),
+            @JoinColumn(name = "first_name", referencedColumnName = "firstName"),
+            @JoinColumn(name = "last_name", referencedColumnName = "lastName")
+    })
     private User user;
 
-    @ManyToOne
-    @MapsId("store")
-    @JoinColumn(name = "store_id")
+    @ManyToOne(optional = false, cascade = { CascadeType.MERGE, CascadeType.REFRESH })
+    @JoinColumns(value = {
+            @JoinColumn(name = "store_id", referencedColumnName = "id"),
+            @JoinColumn(name = "store_name", referencedColumnName = "name")
+    })
     private Store store;
 
-    @ManyToOne
+    @ManyToOne(optional = false, cascade = { CascadeType.MERGE, CascadeType.REFRESH })
+    @JoinColumns(value = {
+            @JoinColumn(name = "position_id", referencedColumnName = "id"),
+            @JoinColumn(name = "position_name", referencedColumnName = "name")
+    })
     private Position position;
 
     private boolean inService;
@@ -36,13 +46,12 @@ public class Staff extends EntityBase implements Serializable {
     public Staff() {}
 
     public Staff(Store store, User user, Position position) {
-        this.id = new StaffKey(user, store);
         this.user = user;
         this.store = store;
         this.position = position;
     }
 
-    public StaffKey getId() {
+    public long getId() {
         return id;
     }
 
@@ -52,10 +61,6 @@ public class Staff extends EntityBase implements Serializable {
 
     public Store getStore() {
         return store;
-    }
-
-    public void setId(StaffKey id) {
-        this.id = id;
     }
 
     public void setUser(User user) {
@@ -119,15 +124,27 @@ public class Staff extends EntityBase implements Serializable {
         this.position = position;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        Staff staff = (Staff) o;
+        return Objects.equals(id, staff.id);
+    }
+
     @Override
     public int hashCode() {
-
-        return this.user.hashCode() + this.store.hashCode();
+        return getClass().hashCode();
     }
 
     @Override
     public String toString() {
-
-        return String.format("%s(%s,%s)",this.getClass().getSimpleName(), this.user.getUsername(), this.getStore().getLocation());
+        return getClass().getSimpleName() + "(" +
+                "user = " + user + ", " +
+                "store = " + store + ", " +
+                "position = " + position + ", " +
+                "inService = " + inService + ", " +
+                "status = " + status + ")";
     }
 }

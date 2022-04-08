@@ -3,6 +3,7 @@ package com.cobnet.spring.boot.entity.support;
 import com.cobnet.spring.boot.entity.Store;
 import org.hibernate.Hibernate;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -14,7 +15,7 @@ public class PositionKey implements Serializable {
 
     private static final long serialVersionUID = 1838438778954397256L;
 
-    @ManyToOne
+    @ManyToOne(optional = false, cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "store_id")
     private Store store;
 

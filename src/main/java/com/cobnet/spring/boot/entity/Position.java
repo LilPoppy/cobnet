@@ -2,29 +2,32 @@ package com.cobnet.spring.boot.entity;
 
 import com.cobnet.interfaces.security.Permission;
 import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
-import com.cobnet.spring.boot.entity.support.PositionKey;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 @Entity
-public class Position {
+public class Position implements Serializable {
 
-    @EmbeddedId
-    private PositionKey id;
+    @Id
+    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @ManyToOne
-    @MapsId("store")
+    private String name;
+
+    @ManyToOne(optional = false, cascade = { CascadeType.MERGE, CascadeType.REFRESH })
     @JoinColumn(name = "store_id")
     private Store store;
 
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "position", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "position")
     private Set<Staff> staffs = new HashSet<>();
 
     @SuppressWarnings("JpaAttributeTypeInspection")
@@ -36,10 +39,6 @@ public class Position {
 
     public Position() {}
 
-    public Position(PositionKey id) {
-        this.id = id;
-    }
-
     public Position(Store store, String name) {
 
         this(store, name, false);
@@ -47,11 +46,12 @@ public class Position {
 
     public Position(Store store, String name, boolean isDefault) {
 
-        this.id = new PositionKey(store, name);
+        this.store = store;
+        this.name = name;
         this.isDefault = isDefault;
     }
 
-    public PositionKey getId() {
+    public long getId() {
         return id;
     }
 
@@ -62,11 +62,7 @@ public class Position {
 
     public String getName() {
 
-        return this.id.getName();
-    }
-
-    public Set<Staff> getStaffs() {
-        return staffs;
+        return this.name;
     }
 
     public Set<Permission> getPermissions() {
@@ -82,6 +78,15 @@ public class Position {
     }
 
     @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "name = " + name + ", " +
+                "store = " + store + ", " +
+                "permissions = " + permissions + ", " +
+                "isDefault = " + isDefault + ")";
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
@@ -91,13 +96,6 @@ public class Position {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "(" +
-                "name = " + id.getName() + ", " +
-                "default = " + isDefault + ")";
+        return getClass().hashCode();
     }
 }
