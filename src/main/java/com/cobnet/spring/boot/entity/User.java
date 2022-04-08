@@ -7,6 +7,7 @@ import com.cobnet.security.RoleRule;
 import com.cobnet.security.permission.PermissionValidator;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.slf4j.Logger;
@@ -260,6 +261,7 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
         return this.permissions.remove(permission) && externalUsers.stream().allMatch(user -> user.removePermission(permission));
     }
 
+    @JsonIgnore
     public PersistentLogins getRemeberMeInfo() {
 
         return ProjectBeanHolder.getPersistentLoginsRepository().findByUsernameEqualsIgnoreCase(this.getUsername());
