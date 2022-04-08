@@ -64,7 +64,7 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
     private boolean enabled;
 
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy="user", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="user", cascade = CascadeType.ALL)
     private Set<ExternalUser> externalUsers = new HashSet<>();
 
     @Transient
@@ -258,11 +258,6 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
     public boolean removePermission(Permission permission) {
 
         return this.permissions.remove(permission) && externalUsers.stream().allMatch(user -> user.removePermission(permission));
-    }
-
-    public boolean addExternalUser(ExternalUser user) {
-
-        return this.externalUsers.add(user);
     }
 
     public PersistentLogins getRemeberMeInfo() {
