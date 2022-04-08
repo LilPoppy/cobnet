@@ -35,6 +35,10 @@ public class Store implements Serializable {
     @OneToMany(mappedBy = "store", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<Staff> crew = new HashSet<>();
 
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST)
+    private Set<Work> works = new HashSet<>();
+
     public Store() {}
 
     public Store(String location, String name, String phone) {
@@ -116,6 +120,16 @@ public class Store implements Serializable {
     public boolean addPosition(String name) {
 
         return this.addPosition(name, false);
+    }
+
+    public boolean addWork(Work work) {
+
+        return this.works.add(work);
+    }
+
+    public boolean addWork(Service service, Staff... workers) {
+
+        return this.addWork(new Work(this, service, workers));
     }
 
     public void setName(String name) {

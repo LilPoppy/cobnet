@@ -15,6 +15,7 @@ import java.util.Objects;
 public class ServiceKey implements Serializable {
 
     private static final long serialVersionUID = -8992103030994708502L;
+
     @ManyToOne(optional = false, cascade = { CascadeType.MERGE, CascadeType.REFRESH })
     @JoinColumn(name = "store_id")
     private Store store;
@@ -27,7 +28,6 @@ public class ServiceKey implements Serializable {
         this.store = store;
         this.name = name;
     }
-
 
     public Store getStore() {
         return store;

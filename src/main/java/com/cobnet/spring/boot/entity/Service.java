@@ -6,6 +6,8 @@ import com.cobnet.spring.boot.entity.support.JsonServiceOptionSetConverter;
 import com.cobnet.spring.boot.entity.support.JsonSetConverter;
 import com.cobnet.spring.boot.entity.support.ServiceKey;
 import org.hibernate.Hibernate;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -14,40 +16,43 @@ import java.util.*;
 @Entity
 public class Service implements Serializable {
 
-    @EmbeddedId
-    private ServiceKey id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
     @ManyToOne(optional = false, cascade = { CascadeType.MERGE, CascadeType.REFRESH })
-    @MapsId("store")
-    @JoinColumn(name = "store_id")
+    @JoinColumns({
+            @JoinColumn(name = "store_id", referencedColumnName = "id"),
+            @JoinColumn(name = "store_name", referencedColumnName = "name")
+    })
     private Store store;
 
-    private long price;
+    private String name;
 
-    @Convert(converter = JsonServiceOptionSetConverter.class)
-    @Column(columnDefinition = "json")
-    private Set<? extends ServiceOption> options = new HashSet<>();
+    private long price;
 
     @SuppressWarnings("JpaAttributeTypeInspection")
     @Convert(converter = JsonServiceAttributeConverter.class)
     @Column(columnDefinition = "json")
     private Map<? extends ServiceOption, Object> attribute = new HashMap<>();
 
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToMany(mappedBy = "service", cascade = CascadeType.PERSIST)
+    private Set<Work> works = new HashSet<>();
+
     public Service() {}
 
-    public Service(ServiceKey id) {
-        this.id = id;
-    }
-
     public Service(Store store, String name) {
-        this(new ServiceKey(store, name));
+
+        this.store = store;
+        this.name = name;
     }
 
     public String getName() {
-        return this.id.getName();
+        return this.name;
     }
 
-    public ServiceKey getId() {
+    public long getId() {
         return id;
     }
 
@@ -59,16 +64,12 @@ public class Service implements Serializable {
         return price;
     }
 
-    public Set<? extends ServiceOption> getOptions() {
-        return options;
-    }
-
     public Map<? extends ServiceOption, Object> getAttribute() {
         return attribute;
     }
 
     public void setName(String name) {
-        this.id.setName(name);
+        this.name = name;
     }
 
     public void setStore(Store store) {
@@ -79,24 +80,25 @@ public class Service implements Serializable {
         this.price = price;
     }
 
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "(" +
-                "name = " + this.getName() + ", " +
-                "price = " + price + ")";
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
         Service service = (Service) o;
-        return id != null && Objects.equals(id, service.id);
+        return Objects.equals(id, service.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "store = " + store + ", " +
+                "name = " + name + ", " +
+                "price = " + price + ", " +
+                "attribute = " + attribute + ")";
     }
 }

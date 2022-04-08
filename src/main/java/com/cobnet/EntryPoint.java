@@ -93,7 +93,7 @@ public class EntryPoint {
 		User user = new User("admin", "123456", "Bob", "Smith", new UserRole("admin", RoleRule.ADMIN, new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")));
 
 		Store store = new Store.Builder().setName("QQ Foot Spa").setLocation("8714 Youree Dr Shreveport LA 71115").setPhone("3476986710").setServices("Foot Reflextology").setPositions(Pair.of("Masseur", true)).setCrew(user).build();
-
+		store.addWork(store.getServices().stream().findFirst().get(), store.getCrew().stream().findFirst().get());
 
 		ProjectBeanHolder.getUserRepository().save(user);
 		System.out.println("@@@");

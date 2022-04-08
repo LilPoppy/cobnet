@@ -7,6 +7,7 @@ import com.cobnet.security.RoleRule;
 import com.cobnet.security.permission.PermissionValidator;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.slf4j.Logger;
@@ -65,7 +66,7 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
     private boolean enabled;
 
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy="user", orphanRemoval = true, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy="user", cascade = CascadeType.ALL)
     private Set<ExternalUser> externalUsers = new HashSet<>();
 
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -280,15 +281,11 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
         return this.permissions.remove(permission) && externalUsers.stream().allMatch(user -> user.removePermission(permission));
     }
 
-    public boolean addExternalUser(ExternalUser user) {
-
-        return this.externalUsers.add(user);
-    }
-
     public PersistentLogins getRemeberMeInfo() {
 
         return ProjectBeanHolder.getPersistentLoginsRepository().findByUsernameEqualsIgnoreCase(this.getUsername());
     }
+
 
 
 
@@ -416,5 +413,35 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
             return new User(this.username, this.password, this.firstName, this.lastName, this.phoneNumber, this.phoneNumberVerified, this.email, this.emailVerified, this.roles, this.expired, this.locked, this.vaildPassword, this.enabled);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        User user = (User) o;
+        return username != null && Objects.equals(username, user.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "username = " + username + ", " +
+                "firstName = " + firstName + ", " +
+                "lastName = " + lastName + ", " +
+                "phoneNumber = " + phoneNumber + ", " +
+                "phoneNumberVerified = " + phoneNumberVerified + ", " +
+                "email = " + email + ", " +
+                "emailVerified = " + emailVerified + ", " +
+                "permissions = " + permissions + ", " +
+                "expired = " + expired + ", " +
+                "locked = " + locked + ", " +
+                "vaildPassword = " + vaildPassword + ", " +
+                "enabled = " + enabled + ")";
     }
 }
