@@ -174,3 +174,8 @@ netty:
          log-banned-ip-active: true
          allow-unauthorized: false
          allow-unknown-packet: false
+springdoc:
+   api-docs:
+      enable: true
+   swagger-ui:
+      path: /swagger-ui

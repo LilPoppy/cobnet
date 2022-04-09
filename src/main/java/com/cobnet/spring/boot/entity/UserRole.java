@@ -22,6 +22,8 @@ public class UserRole extends EntityBase implements Permissible, Serializable {
 
     private RoleRule rule;
 
+    private boolean isDefault;
+
     @Convert(converter = JsonPermissionSetConverter.class)
     @Column(columnDefinition = "json")
     private Set<Permission> permissions = new HashSet<>();
@@ -31,27 +33,28 @@ public class UserRole extends EntityBase implements Permissible, Serializable {
 
     public UserRole() {}
 
-    public UserRole(@NonNull String role, RoleRule rule) {
+    public UserRole(@NonNull String role, RoleRule rule, boolean isDefault) {
 
         this.role = role;
         this.rule = rule;
+        this.isDefault = isDefault;
     }
 
-    public UserRole(@NonNull String role, RoleRule rule, Permission... permissions) {
+    public UserRole(@NonNull String role, RoleRule rule, boolean isDefault, Permission... permissions) {
 
-        this(role, rule);
+        this(role, rule, isDefault);
 
         Arrays.stream(permissions).forEach(this::addPermission);
     }
 
     public UserRole(@NonNull String role) {
 
-        this(role, RoleRule.USER);
+        this(role, RoleRule.USER, false);
     }
 
     public UserRole(@NonNull String role, Permission... permissions) {
 
-        this(role, RoleRule.USER, permissions);
+        this(role, RoleRule.USER, false, permissions);
     }
 
     public String getName() {
@@ -67,6 +70,24 @@ public class UserRole extends EntityBase implements Permissible, Serializable {
     public Set<Permission> getPermissions() {
 
         return this.permissions;
+    }
+
+    public String getRole() {
+
+        return role;
+    }
+
+    public boolean isDefault() {
+
+        return isDefault;
+    }
+
+    public void setRule(RoleRule rule) {
+        this.rule = rule;
+    }
+
+    public void setDefault(boolean isDefault) {
+        this.isDefault = isDefault;
     }
 
     private PermissionValidator getPermissionValidator() {
