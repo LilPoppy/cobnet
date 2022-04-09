@@ -42,6 +42,8 @@ public class Work extends EntityBase implements Serializable {
     })
     private Set<Staff> workers = new HashSet<>();
 
+    private Date bookTime;
+
     private Date checkInTime;
 
     @Enumerated
@@ -66,6 +68,14 @@ public class Work extends EntityBase implements Serializable {
 
     public Date getCheckInTime() {
         return checkInTime;
+    }
+
+    public void setBookTime(Date bookTime) {
+        this.bookTime = bookTime;
+    }
+
+    public Date getBookTime() {
+        return bookTime;
     }
 
     public Set<Staff> getWorkers() {
@@ -100,6 +110,7 @@ public class Work extends EntityBase implements Serializable {
                 "store = " + store.getName() + ", " +
                 "service = " + service.getName() + ", " +
                 "workers = " + workers + ", " +
+                "bookTime = " + bookTime + ", " +
                 "checkInTime = " + checkInTime + ", " +
                 "status = " + status + ")";
     }
