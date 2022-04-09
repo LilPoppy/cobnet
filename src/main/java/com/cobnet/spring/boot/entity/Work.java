@@ -1,38 +1,45 @@
 package com.cobnet.spring.boot.entity;
 
 import com.cobnet.spring.boot.dto.support.WorkStatus;
-import com.cobnet.spring.boot.entity.support.JsonStaffSetConverter;
+import org.hibernate.Hibernate;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.io.Serializable;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
-public class Work extends EntityBase {
+public class Work extends EntityBase implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumns({
             @JoinColumn(name = "store_id", referencedColumnName = "id"),
             @JoinColumn(name = "store_name", referencedColumnName = "name")
     })
     private Store store;
 
-    @ManyToOne
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumns({
             @JoinColumn(name = "service_id", referencedColumnName = "id"),
             @JoinColumn(name = "service_name", referencedColumnName = "name")
     })
     private Service service;
 
-    @Convert(converter = JsonStaffSetConverter.class)
-    @Column(columnDefinition = "json")
+    @ManyToMany(cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(name = "staff_works",
+            joinColumns = {
+                @JoinColumn(name = "work_id", referencedColumnName = "id")
+    },
+            inverseJoinColumns = {
+                @JoinColumn(name = "staff_id", referencedColumnName = "id")
+    })
     private Set<Staff> workers = new HashSet<>();
 
     private Date checkInTime;
@@ -86,4 +93,18 @@ public class Work extends EntityBase {
 
         return store;
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "store = " + store.getName() + ", " +
+                "service = " + service.getName() + ", " +
+                "workers = " + workers + ", " +
+                "checkInTime = " + checkInTime + ", " +
+                "status = " + status + ")";
+    }
+
+
+
+
 }

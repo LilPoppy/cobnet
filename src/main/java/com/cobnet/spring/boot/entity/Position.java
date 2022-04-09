@@ -13,6 +13,7 @@ import java.util.Objects;
 import java.util.Set;
 
 @Entity
+@Cacheable
 public class Position implements Serializable {
 
     @Id

@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
+@Cacheable
 public class Store implements Serializable {
 
     @Id
@@ -36,7 +37,7 @@ public class Store implements Serializable {
     private Set<Staff> crew = new HashSet<>();
 
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "store", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "store", cascade = { CascadeType.PERSIST })
     private Set<Work> works = new HashSet<>();
 
     public Store() {}
@@ -85,6 +86,10 @@ public class Store implements Serializable {
 
     public Set<Position> getPositions() {
         return positions;
+    }
+
+    public Set<Work> getWorks() {
+        return works.stream().collect(Collectors.toUnmodifiableSet());
     }
 
     public boolean addStaff(Staff staff) {
@@ -145,17 +150,7 @@ public class Store implements Serializable {
         return this.getPositions().stream().filter(Position::isDefault).findFirst();
     }
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "(" +
-                "id = " + id + ", " +
-                "location = " + location + ", " +
-                "name = " + name + ", " +
-                "phone = " + phone + ", " +
-                "crew = " + crew + ", " +
-                "services = " + services + ", " +
-                "positions = " + positions + ")";
-    }
+
 
     public static class Builder {
 
@@ -312,5 +307,13 @@ public class Store implements Serializable {
     @Override
     public int hashCode() {
         return getClass().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" +
+                "location = " + location + ", " +
+                "name = " + name + ", " +
+                "phone = " + phone + ")";
     }
 }

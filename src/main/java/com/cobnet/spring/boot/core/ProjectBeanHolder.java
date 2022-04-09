@@ -108,6 +108,10 @@ public class ProjectBeanHolder {
 
     private static ExternalUserRepository EXTERNAL_USER_REPOSITORY;
 
+    private static WorkRepository WORK_REPOSITORY;
+
+    private static ServiceRepository SERVICE_REPOSITORY;
+
     private static PersistentLoginsRepository PERSISTENT_LOGINS_REPOSITORY;
 
     private static StoreRepository STORE_REPOSITORY;
@@ -346,6 +350,16 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.STAFF_REPOSITORY;
     }
 
+    public static WorkRepository getWorkRepository() {
+
+        return ProjectBeanHolder.WORK_REPOSITORY;
+    }
+
+    public static ServiceRepository getServiceRepository() {
+
+        return ProjectBeanHolder.SERVICE_REPOSITORY;
+    }
+
     public static PositionRepository getPositionRepository() {
 
         return ProjectBeanHolder.POSITION_REPOSITORY;
@@ -572,6 +586,18 @@ public class ProjectBeanHolder {
         public void setStaffRepository(StaffRepository repository) {
 
             ProjectBeanHolder.STAFF_REPOSITORY = repository;
+        }
+
+        @Autowired
+        public void setWorkRepository(WorkRepository repository) {
+
+            ProjectBeanHolder.WORK_REPOSITORY = repository;
+        }
+
+        @Autowired
+        public void setServiceRepository(ServiceRepository repository) {
+
+            ProjectBeanHolder.SERVICE_REPOSITORY = repository;
         }
 
         @Autowired

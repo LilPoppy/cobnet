@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
+@Cacheable
 public class Staff extends EntityBase implements Serializable {
 
     @Id
@@ -141,9 +142,9 @@ public class Staff extends EntityBase implements Serializable {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" +
-                "user = " + user + ", " +
-                "store = " + store + ", " +
-                "position = " + position + ", " +
+                "user = " + user.getUsername() + ", " +
+                "store = " + store.getName() + ", " +
+                "position = " + position.getName() + ", " +
                 "inService = " + inService + ", " +
                 "status = " + status + ")";
     }

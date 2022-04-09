@@ -12,8 +12,10 @@ import org.hibernate.annotations.LazyCollectionOption;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
+@Cacheable
 public class Service implements Serializable {
 
     @Id
@@ -37,7 +39,7 @@ public class Service implements Serializable {
     private Map<? extends ServiceOption, Object> attribute = new HashMap<>();
 
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "service", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "service")
     private Set<Work> works = new HashSet<>();
 
     public Service() {}
@@ -96,7 +98,7 @@ public class Service implements Serializable {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" +
-                "store = " + store + ", " +
+                "store = " + store.getName() + ", " +
                 "name = " + name + ", " +
                 "price = " + price + ", " +
                 "attribute = " + attribute + ")";
