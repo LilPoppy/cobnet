@@ -4,7 +4,8 @@ import com.cobnet.connection.websocket.WebSocketServer;
 import com.cobnet.security.RoleRule;
 import com.cobnet.security.permission.UserPermission;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
-import com.cobnet.spring.boot.entity.*;
+import com.cobnet.spring.boot.entity.User;
+import com.cobnet.spring.boot.entity.UserRole;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -12,10 +13,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.data.util.Pair;
 
 import java.util.Arrays;
-import java.util.Date;
 
 @EnableEurekaClient
 @SpringBootApplication(proxyBeanMethods = false)
@@ -84,49 +83,15 @@ public class EntryPoint {
 			                        ****
 			""";
 
-
 	public static void main(String[] args) {
 
 		SpringApplication.run(EntryPoint.class, args);
 
 		LOG.info(EntryPoint.getLogo());
 
-		Store store = ProjectBeanHolder.getStoreRepository().findById(1L);
-		System.out.println(store);
-		for(Work work : store.getWorks()) {
+		User user = new User("admin", "123456", "Bob", "Smith", new UserRole("admin", RoleRule.ADMIN, new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")));
 
-			System.out.println(work);
-		}
-
-//		User user = new User("admin", "123456", "Bob", "Smith", new UserRole("admin", RoleRule.ADMIN, new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")));
-//
-//		Store store = new Store.Builder().setName("QQ Foot Spa").setLocation("8714 Youree Dr Shreveport LA 71115").setPhone("3476986710").setServices("Foot Reflextology").setPositions(Pair.of("Masseur", true)).setCrew(user).build();
-//
-//		for(int i = 0; i < 1000; i++) {
-//			store.addWork(store.getServices().stream().findFirst().get(), store.getCrew().stream().findFirst().get());
-//		}
-//		ProjectBeanHolder.getUserRepository().save(user);
-//		System.out.println("@@@" + store.getWorks().size());
-//		ProjectBeanHolder.getStoreRepository().save(store);
-//
-//		System.out.println("@@@@3");
-//		store = ProjectBeanHolder.getStoreRepository().findById(1);
-//
-		Work work = store.getWorks().stream().findFirst().get();
-		work.setCheckInTime(new Date(System.currentTimeMillis()));
-
-		ProjectBeanHolder.getWorkRepository().save(work);
-//
-//		System.out.println(store.getWorks().stream().findFirst().get());
-//		System.out.println(work);
-
-
-		//System.out.println(store.getServices());
-
-		//System.out.println(user.getAssociated().size());
-
-		//System.out.println(store.getPositions());
-
+		ProjectBeanHolder.getUserRepository().save(user);
 
 		if(Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("agent"))) {
 
@@ -183,6 +148,7 @@ public class EntryPoint {
 					if(format != null) {
 
 						StringBuilder builder = new StringBuilder(line).delete(posStart, posEnd).insert(posStart, format);
+
 
 						if(builder.length() > length) {
 

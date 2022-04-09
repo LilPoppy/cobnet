@@ -70,6 +70,8 @@ spring:
    session:
       store-type: redis
       namespace: spring
+   cache:
+      start-clear: false
    mail:
       host: smtp.gmail.com
       #465 SSL 587 TLS
