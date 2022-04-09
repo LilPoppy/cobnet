@@ -15,6 +15,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Objects;
 
 @EnableEurekaClient
 @SpringBootApplication(proxyBeanMethods = false)
@@ -87,6 +89,11 @@ public class EntryPoint {
 
 		SpringApplication.run(EntryPoint.class, args);
 
+		if(ProjectBeanHolder.getCacheConfiguration().isStartClear()) {
+
+			clearCaches();
+		}
+
 		LOG.info(EntryPoint.getLogo());
 
 		User user = new User("admin", "123456", "Bob", "Smith", new UserRole("admin", RoleRule.ADMIN, new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")));
@@ -103,6 +110,16 @@ public class EntryPoint {
 	public WebSocketServer webSocketServer() {
 
 		return (WebSocketServer) new WebSocketServer("web-socket").bind(8090);
+	}
+
+	private static void clearCaches() {
+
+		Collection<String> cacheNames = ProjectBeanHolder.getRedisCacheManager().getCacheNames();
+
+		for(String name : cacheNames) {
+
+			Objects.requireNonNull(ProjectBeanHolder.getRedisCacheManager().getCache(name)).clear();
+		}
 	}
 
 	public static String getLogo() {
