@@ -40,6 +40,8 @@ public class UserRole extends EntityBase implements Permissible, Serializable {
         this.isDefault = isDefault;
     }
 
+
+
     public UserRole(@NonNull String role, RoleRule rule, boolean isDefault, Permission... permissions) {
 
         this(role, rule, isDefault);
