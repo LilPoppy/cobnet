@@ -15,4 +15,10 @@ public class HttpMapTransmission implements Transmission<Map<String,Object>>, Se
 
         return ProjectBeanHolder.getObjectMapper().convertValue(this, Map.class);
     }
+
+    @Override
+    public String toString() {
+
+        return getData().toString();
+    }
 }

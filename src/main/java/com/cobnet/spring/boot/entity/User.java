@@ -96,6 +96,15 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
         this(username, password,firstName, lastName, null, false, null, false, roles, false, false, true, true);
     }
 
+    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, String phoneNumber, String email, @NonNull List<UserRole> roles) {
+
+        this(username, password,firstName, lastName, phoneNumber, false, email, false, roles, false, false, true, true);
+    }
+
+    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, String phoneNumber, String email, UserRole... roles) {
+        this(username, password, firstName, lastName, phoneNumber, email, Arrays.stream(roles).toList());
+    }
+
     public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, UserRole... roles) {
 
         this(username, password, firstName, lastName, Arrays.stream(roles).toList());

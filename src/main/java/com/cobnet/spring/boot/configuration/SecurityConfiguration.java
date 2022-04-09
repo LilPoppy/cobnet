@@ -46,7 +46,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public final static String CONNECTION_TOKEN = "CONNECTION_TOKEN";
 
-    final static String[] PERMITTED_MATCHERS = { "/register", "/checkRegistry", "/authenticate", "/login/oauth2/redirect/binding", "/oauth2/registration-urls", "/sms/reply" };
+    final static String[] PERMITTED_MATCHERS = { "/registry", "/swagger-ui", "/checkRegistry", "/authenticate", "/login/oauth2/redirect/binding", "/oauth2/registration-urls", "/sms/reply" };
 
     private byte permissionDefaultPower;
 

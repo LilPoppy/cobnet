@@ -12,6 +12,7 @@ import com.cobnet.spring.boot.controller.handler.http.HttpAuthenticationSuccessH
 import com.cobnet.spring.boot.service.RedisCacheKeyGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -132,6 +133,8 @@ public class ProjectBeanHolder {
     private static DataSource DATA_SOURCE;
 
     private static RedisCacheKeyGenerator REDIS_CACHE_KEY_GENERATOR;
+
+    private static ModelMapper MODEL_MAPPER;
 
     public static Account getCurrentAccount() {
 
@@ -381,6 +384,11 @@ public class ProjectBeanHolder {
     public static RedisCacheKeyGenerator getRedisCacheKeyGenerator() {
 
         return ProjectBeanHolder.REDIS_CACHE_KEY_GENERATOR;
+    }
+
+    public static ModelMapper getModelMapper() {
+
+        return ProjectBeanHolder.MODEL_MAPPER;
     }
 
     @Component("autowireLoader")
@@ -651,10 +659,24 @@ public class ProjectBeanHolder {
 
             ProjectBeanHolder.REDIS_CACHE_KEY_GENERATOR = generator;
         }
+
+        @Autowired
+        public void setModelMapper(ModelMapper mapper) {
+
+            ProjectBeanHolder.MODEL_MAPPER = mapper;
+        }
     }
 
     @Component
     final static class BeanRegister {
+
+        @Bean
+        public ModelMapper modelMapperBean() {
+
+            ModelMapper mapper = new ModelMapper();
+
+            return mapper;
+        }
 
         @Bean
         public ObjectMapper objectMapperBean() {
