@@ -45,7 +45,7 @@ public class AccountService {
 
             Cache.ValueWrapper cache = ProjectBeanHolder.getRedisCacheManager().getCache(HumanValidator.class.getSimpleName()).get(request.getSession(true).getId() + "::" + HumanValidator.VALIDATED_KEY);
 
-            if(cache != null && cache.get() instanceof Boolean validated && validated) {
+            if((!ProjectBeanHolder.getSecurityConfiguration().isHumanValidationEnable()) || (cache != null && cache.get() instanceof Boolean validated && validated)) {
 
                 System.out.println("authen@@@");
                 request.getSession().setAttribute(HumanValidator.VALIDATED_KEY, false);

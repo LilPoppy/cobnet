@@ -86,6 +86,7 @@ spring:
                   enable: true
    security:
       permission-default-power: 3
+      human-validation-enable: false
       human-validation-create-interval: 30s
       human-validation-expire: 3m
       human-validation-movement-parameter: "movement"
@@ -129,7 +130,7 @@ logging:
       root: INFO
 server:
    port: "@tomcat-port@"
-   forward-headers-strategy: none
+   forward-headers-strategy: framework
    session: 
       cookie:
         http-only: false
