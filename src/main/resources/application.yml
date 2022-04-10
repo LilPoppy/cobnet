@@ -126,6 +126,7 @@ logging:
       root: INFO
 server:
    port: "@tomcat-port@"
+   use-forward-headers: true
    session: 
       cookie:
         http-only: false

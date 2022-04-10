@@ -1,9 +1,12 @@
 package com.cobnet;
 
+import com.cobnet.common.PuzzledImage;
 import com.cobnet.connection.websocket.WebSocketServer;
 import com.cobnet.security.RoleRule;
 import com.cobnet.security.permission.UserPermission;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
+import com.cobnet.spring.boot.core.RandomImageProvider;
+import com.cobnet.spring.boot.dto.Base64Image;
 import com.cobnet.spring.boot.entity.User;
 import com.cobnet.spring.boot.entity.UserRole;
 import org.slf4j.Logger;
@@ -14,6 +17,10 @@ import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
+import javax.imageio.ImageIO;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
@@ -85,7 +92,7 @@ public class EntryPoint {
 			                        ****
 			""";
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 
 		SpringApplication.run(EntryPoint.class, args);
 
@@ -102,6 +109,7 @@ public class EntryPoint {
 		ProjectBeanHolder.getUserRoleRepository().save(new UserRole("user", RoleRule.USER, true));
 		ProjectBeanHolder.getUserRepository().save(user);
 
+		ProjectBeanHolder.getHumanValidator().createImageValidation("tester");
 		if(Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("agent"))) {
 
 			System.exit(0);

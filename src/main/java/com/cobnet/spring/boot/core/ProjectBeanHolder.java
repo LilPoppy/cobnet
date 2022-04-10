@@ -6,6 +6,7 @@ import com.cobnet.spring.boot.configuration.*;
 import com.cobnet.spring.boot.controller.handler.http.HttpAccessDeniedHandler;
 import com.cobnet.spring.boot.controller.handler.http.HttpAuthenticationFailureHandler;
 import com.cobnet.spring.boot.controller.handler.http.HttpAuthenticationSuccessHandler;
+import com.cobnet.spring.boot.service.HumanValidator;
 import com.cobnet.spring.boot.service.RedisCacheKeyGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -42,6 +43,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 public class ProjectBeanHolder {
+
+    private static HumanValidator HUMAN_VALIDATOR;
+
+    private static RandomImageProvider RANDOM_IMAGE_PROVIDER;
 
     private static EntityManager ENTITY_MANAGER;
 
@@ -142,6 +147,16 @@ public class ProjectBeanHolder {
     private static RedisCacheKeyGenerator REDIS_CACHE_KEY_GENERATOR;
 
     private static ModelMapper MODEL_MAPPER;
+
+    public static RandomImageProvider getRandomImageProvider() {
+
+        return ProjectBeanHolder.RANDOM_IMAGE_PROVIDER;
+    }
+
+    public static HumanValidator getHumanValidator() {
+
+        return ProjectBeanHolder.HUMAN_VALIDATOR;
+    }
 
     public static Account getCurrentAccount() {
 
@@ -439,6 +454,12 @@ public class ProjectBeanHolder {
         }
 
         @Autowired
+        public void setRandomImageProvider(RandomImageProvider provider) {
+
+            ProjectBeanHolder.RANDOM_IMAGE_PROVIDER = provider;
+        }
+
+        @Autowired
         public void setDatasourceConfiguration(DatasourceConfiguration config) {
 
             ProjectBeanHolder.DATASOURCE_CONFIGURATION = config;
@@ -502,6 +523,12 @@ public class ProjectBeanHolder {
         public void setScriptEngineManager(ScriptEngineManager manager) {
 
             ProjectBeanHolder.SCRIPT_ENGINE_MANAGER = manager;
+        }
+
+        @Autowired
+        public void setHumanValidator(HumanValidator validator) {
+
+            ProjectBeanHolder.HUMAN_VALIDATOR = validator;
         }
 
         @Autowired
@@ -792,9 +819,15 @@ public class ProjectBeanHolder {
         }
 
         @Bean
-        public  QRCodeProvider qrCodeProvider() {
+        public  QRCodeProvider qrCodeProviderBean() {
 
             return new QRCodeProvider();
+        }
+
+        @Bean
+        public RandomImageProvider randomImageProviderBean() {
+
+            return new RandomImageProvider();
         }
 
     }
