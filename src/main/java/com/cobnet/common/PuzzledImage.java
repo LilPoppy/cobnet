@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Random;
 
 public class PuzzledImage implements Serializable {
@@ -18,6 +19,8 @@ public class PuzzledImage implements Serializable {
     private final int circleR;
 
     private final int padding;
+
+    private final Date createdTime;
 
     @JsonIgnore
     private transient final int[][] template;
@@ -45,6 +48,7 @@ public class PuzzledImage implements Serializable {
         this.jigsawX = random.nextInt(image.getWidth() - 2 * jigsawWidth) + jigsawWidth;
         this.jigsawY = random.nextInt(image.getHeight() - jigsawHeight);
         render();
+        this.createdTime = new Date(System.currentTimeMillis());
     }
 
     public int getJigsawWidth() {
@@ -84,6 +88,10 @@ public class PuzzledImage implements Serializable {
 
     public int getJigsawY() {
         return jigsawY;
+    }
+
+    public Date getCreatedTime() {
+        return createdTime;
     }
 
     @JsonIgnore

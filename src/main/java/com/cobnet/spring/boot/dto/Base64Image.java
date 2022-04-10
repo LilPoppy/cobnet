@@ -13,11 +13,17 @@ import java.util.Base64;
 
 public class Base64Image implements Transmission<String>, Serializable {
 
-    private String image;
+    private final String image;
+
+    private final String format;
+
+    private final String charset;
 
     public Base64Image(BufferedImage image, String format, Charset charset) throws IOException {
 
         this.image = encode(image, format, charset);
+        this.format = format;
+        this.charset = charset.name();
     }
 
     public Base64Image(BufferedImage image, String format) throws IOException {
@@ -33,6 +39,14 @@ public class Base64Image implements Transmission<String>, Serializable {
 
     public String getImage() {
         return image;
+    }
+
+    public String getFormat() {
+        return format;
+    }
+
+    public String getCharset() {
+        return charset;
     }
 
     public static String encode(BufferedImage image, String format, Charset charset) throws IOException {

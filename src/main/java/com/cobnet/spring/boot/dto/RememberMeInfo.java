@@ -1,11 +1,11 @@
 package com.cobnet.spring.boot.dto;
 
-import com.cobnet.spring.boot.dto.support.HttpMapTransmission;
+import com.cobnet.spring.boot.dto.support.ApplicationJsonTransmission;
 import com.cobnet.spring.boot.entity.PersistentLogins;
 
 import java.util.Date;
 
-public class RememberMeInfo extends HttpMapTransmission {
+public class RememberMeInfo extends ApplicationJsonTransmission {
 
     private final String series;
 

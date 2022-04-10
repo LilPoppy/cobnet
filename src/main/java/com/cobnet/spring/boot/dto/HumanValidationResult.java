@@ -1,9 +1,9 @@
 package com.cobnet.spring.boot.dto;
 
-import com.cobnet.spring.boot.dto.support.HttpMapTransmission;
+import com.cobnet.spring.boot.dto.support.ApplicationJsonTransmission;
 import com.cobnet.spring.boot.dto.support.HumanValidationFailureReason;
 
-public class HumanValidationResult extends HttpMapTransmission {
+public class HumanValidationResult extends ApplicationJsonTransmission {
 
     private boolean result;
 

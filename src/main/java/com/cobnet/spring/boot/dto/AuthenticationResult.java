@@ -1,9 +1,8 @@
 package com.cobnet.spring.boot.dto;
 
-import com.cobnet.spring.boot.dto.support.HttpMapTransmission;
-import com.cobnet.spring.boot.entity.PersistentLogins;
+import com.cobnet.spring.boot.dto.support.ApplicationJsonTransmission;
 
-public class AuthenticationResult extends HttpMapTransmission {
+public class AuthenticationResult extends ApplicationJsonTransmission {
 
     private final boolean authenticated;
 
@@ -16,11 +15,6 @@ public class AuthenticationResult extends HttpMapTransmission {
         this.authenticated = authenticated;
         this.connectionToken = connectionToken;
         this.rememberMeInfo = rememberMeInfo;
-    }
-
-    public AuthenticationResult(boolean authenticated, ConnectionToken connectionToken, PersistentLogins rememberMeInfo) {
-
-        this(authenticated, connectionToken, new RememberMeInfo(rememberMeInfo));
     }
 
     public boolean isAuthenticated() {

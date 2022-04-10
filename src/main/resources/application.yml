@@ -86,9 +86,12 @@ spring:
                   enable: true
    security:
       permission-default-power: 3
+      human-validation-create-interval: 30s
+      human-validation-expire: 3m
+      human-validation-movement-parameter: "movement"
       user-default-role: "user"
-      authentication-url: "/login"
-      login-page-url: "/login"
+      authentication-url: "/user/login"
+      login-page-url: "/user/login"
 # default will do restful way
 #      login-success-url: "/index"
 #      login-failure-url: "/login?error=true"
@@ -96,8 +99,8 @@ spring:
       password-parameter: "password"
       remember-me-parameter: "remember-me"
       oauth2:
-         authentication-url: "/login/oauth2/authorization"
-         redirect-url: "/login/oauth2/code"
+         authentication-url: "/oauth2/login/authorization"
+         redirect-url: "/oauth2/login/code"
 #         login-failure-url: "/login?oauth2Failure=true"
          client:
             registration:
@@ -126,7 +129,7 @@ logging:
       root: INFO
 server:
    port: "@tomcat-port@"
-   use-forward-headers: true
+   forward-headers-strategy: none
    session: 
       cookie:
         http-only: false
@@ -178,5 +181,8 @@ netty:
 springdoc:
    api-docs:
       enable: true
+      path: /v3/api-docs
    swagger-ui:
       path: /swagger-ui
+      enabled: true
+      disable-swagger-default-url: true

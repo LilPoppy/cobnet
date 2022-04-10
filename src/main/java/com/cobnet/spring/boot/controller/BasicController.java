@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 public class BasicController {
 
-    @GetMapping("/login")
+    @GetMapping("/user/login")
     public String login(HttpServletRequest request, Model model) {
 
         model.addAttribute("registrations", OAuth2RegistryRepositoryHelper.getRegistrationUrls());

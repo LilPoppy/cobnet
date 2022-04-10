@@ -21,13 +21,16 @@ public class RegisterForm extends FormBase<RegisterForm, User> {
 
     private String lastName;
 
-    public RegisterForm(String username, String password, String email, String phoneNumber, String firstName, String lastName) {
+    private int movement;
+
+    public RegisterForm(String username, String password, String email, String phoneNumber, String firstName, String lastName, int movement) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.movement = movement;
     }
 
     public String getUsername() {
@@ -54,6 +57,10 @@ public class RegisterForm extends FormBase<RegisterForm, User> {
         return lastName;
     }
 
+    public int getMovement() {
+        return movement;
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
@@ -76,6 +83,10 @@ public class RegisterForm extends FormBase<RegisterForm, User> {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public void setMovement(int movement) {
+        this.movement = movement;
     }
 
     @Override
