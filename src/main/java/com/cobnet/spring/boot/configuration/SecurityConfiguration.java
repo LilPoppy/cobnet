@@ -5,6 +5,11 @@ import com.cobnet.security.UserAuthenticationProvider;
 import com.cobnet.security.UserDetailCheckFilter;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.UserRole;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -29,6 +34,7 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.authentication.session.*;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -46,9 +52,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public final static String CONNECTION_TOKEN = "CONNECTION_TOKEN";
 
-    final static String[] PERMITTED_MATCHERS = { "/register", "/swagger-ui", "/checkRegistry", "/authenticate", "/login/oauth2/redirect/binding", "/oauth2/registration-urls", "/sms/reply" };
+    final static String[] PERMITTED_MATCHERS = { "/user/register", "/user/human/validate", "/user/human/create", "/swagger-ui", "/oauth2/registration-urls", "/sms/reply" };
 
     private byte permissionDefaultPower;
+
+    private Duration humanValidationCreateInterval;
+
+    private Duration humanValidationExpire;
+
+    private String humanValidationMovementParameter;
 
     private String userDefaultRole;
 
@@ -119,7 +131,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .successHandler(ProjectBeanHolder.getHttpAuthenticationSuccessHandler()).failureHandler(ProjectBeanHolder.getHttpAuthenticationFailureHandler()).and()
                 .userDetailsService(ProjectBeanHolder.getUserRepository())
                 .authenticationProvider(authenticationProviderBean())
-                .rememberMe().rememberMeParameter(this.getRememberMeParameter()).rememberMeServices(rememberMeServicesBean()).and()
+                .rememberMe().rememberMeParameter(this.getRememberMeParameter()).rememberMeServices(rememberMeServicesBean()).key("uniqueAndSecret").tokenValiditySeconds(86400).and()
                 //oauth2
                 .oauth2Login().loginPage(this.getLoginPageUrl())
                 .successHandler(ProjectBeanHolder.getHttpAuthenticationSuccessHandler()).failureHandler(ProjectBeanHolder.getHttpAuthenticationFailureHandler())
@@ -236,6 +248,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.oauth2 = oauth2;
     }
 
+    public Duration getHumanValidationCreateInterval() {
+        return humanValidationCreateInterval;
+    }
+
+    public Duration getHumanValidationExpire() {
+        return humanValidationExpire;
+    }
+
     public String getUserDefaultRole() {
         return userDefaultRole;
     }
@@ -262,6 +282,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public String getRememberMeParameter() {
         return rememberMeParameter;
+    }
+
+    public String getHumanValidationMovementParameter() {
+        return humanValidationMovementParameter;
+    }
+
+    public void setHumanValidationMovementParameter(String humanValidationMovementParameter) {
+        this.humanValidationMovementParameter = humanValidationMovementParameter;
+    }
+
+    public void setHumanValidationCreateInterval(Duration humanValidationCreateInterval) {
+        this.humanValidationCreateInterval = humanValidationCreateInterval;
+    }
+
+    public void setHumanValidationExpire(Duration humanValidationExpire) {
+        this.humanValidationExpire = humanValidationExpire;
     }
 
     public void setLoginPageUrl(String loginPageUrl) {

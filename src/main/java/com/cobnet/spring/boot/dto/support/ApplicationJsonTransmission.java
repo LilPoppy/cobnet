@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Map;
 
-public class HttpMapTransmission implements Transmission<Map<String,Object>>, Serializable {
+public class ApplicationJsonTransmission implements Transmission<Map<String,Object>>, Serializable {
 
     @Override
     @JsonIgnore

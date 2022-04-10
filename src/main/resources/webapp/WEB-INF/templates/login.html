@@ -14,13 +14,13 @@
 		</div>
 		<div style="float:left">&nbsp;</div>
 		<div style="float:right">
-			<form action="#" th:action="@{/logout}" method="post">
+			<form action="#" th:action="@{/user/logout}" method="post">
 				<input type="submit" value="Logout" />
 			</form>
 		</div>
 	</div>
 	<div class="container">
-		<form class="form-signin" method="post" action="/login">
+		<form class="form-signin" method="post" action="/user/login">
     		<h2 class="form-signin-heading">Please sign in</h2>
 			<p>
   				<label for="username" class="sr-only">Username</label>
@@ -41,7 +41,7 @@
 			</p>
 			<div> &nbsp;</div>
 			<div>
-				<a href="/userinfo" th:href="@{/userinfo}">Display User Information</a>
+				<a href="/user/info" th:href="@{/user/info}">Display User Information</a>
 			</div>
   		</form>
 	</div>

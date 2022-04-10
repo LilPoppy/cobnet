@@ -3,6 +3,7 @@ package com.cobnet.spring.boot.service;
 import com.cobnet.event.account.AccountLoginEvent;
 import com.cobnet.event.account.AccountPasswordEncodingEvent;
 import com.cobnet.exception.AuthenticationCancelledException;
+import com.cobnet.exception.HumanValidationFailureException;
 import com.cobnet.interfaces.security.Account;
 import com.cobnet.security.AccountAuthenticationToken;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
@@ -10,6 +11,7 @@ import com.cobnet.spring.boot.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.Cache;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -19,6 +21,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class AccountService {
@@ -35,62 +39,76 @@ public class AccountService {
 
         if(!authentication.isAuthenticated()) {
 
-            Object principal = authentication.getPrincipal();
+            HttpServletRequest request = ProjectBeanHolder.getCurrentHttpRequest();
 
-            String username = null;
+            assert request != null;
 
-            if (principal instanceof String) {
+            Cache.ValueWrapper cache = ProjectBeanHolder.getRedisCacheManager().getCache(HumanValidator.class.getSimpleName()).get(request.getSession(true).getId() + "::" + HumanValidator.VALIDATED_KEY);
 
-                username = (String) principal;
-            }
+            if(cache != null && cache.get() instanceof Boolean validated && validated) {
 
-            Assert.notNull(username, "Username cannot be null.");
+                System.out.println("authen@@@");
+                request.getSession().setAttribute(HumanValidator.VALIDATED_KEY, false);
 
-            UserDetails details = userDetailsService.loadUserByUsername(username);
+                Object principal = authentication.getPrincipal();
 
-            if (details instanceof Account account) {
+                String username = null;
 
-                AccountLoginEvent loginEvent = new AccountLoginEvent(account);
+                if (principal instanceof String) {
 
-                ProjectBeanHolder.getApplicationEventPublisher().publishEvent(loginEvent);
-
-                if(details.getUsername() == null && details.getPassword() == null) {
-
-                    throw new UsernameNotFoundException("User " + username + " is not exist!");
+                    username = (String) principal;
                 }
 
-                if (!loginEvent.isCancelled()) {
+                Assert.notNull(username, "Username cannot be null.");
 
-                    if (details.getPassword().equals(authentication.getCredentials().toString()) || encoder.matches(authentication.getCredentials().toString(), details.getPassword()) || encoder.matches(details.getPassword(), authentication.getCredentials().toString())) {
+                UserDetails details = userDetailsService.loadUserByUsername(username);
 
-                        if (account instanceof User user && !user.isPasswordEncoded()) {
+                if (details instanceof Account account) {
 
-                            AccountPasswordEncodingEvent encodingEvent = new AccountPasswordEncodingEvent(account, user.getPassword(), encoder);
+                    AccountLoginEvent loginEvent = new AccountLoginEvent(account);
 
-                            ProjectBeanHolder.getApplicationEventPublisher().publishEvent(encodingEvent);
+                    ProjectBeanHolder.getApplicationEventPublisher().publishEvent(loginEvent);
 
-                            if (!encodingEvent.isCancelled()) {
+                    if (details.getUsername() == null && details.getPassword() == null) {
 
-                                LOG.debug("Encoding password for user: " + user.getUsername());
-
-                                user.setPassword(encoder.encode(encodingEvent.getPassword()));
-                                user.setPasswordEncoded(true);
-
-                                ProjectBeanHolder.getUserRepository().save(user);
-                            }
-                        }
-
-
-                        return new AccountAuthenticationToken(account, ((UserDetails) account).getPassword());
+                        throw new UsernameNotFoundException("User " + username + " is not exist!");
                     }
 
-                    throw new BadCredentialsException("Wrong password");
+                    if (!loginEvent.isCancelled()) {
+
+                        if (details.getPassword().equals(authentication.getCredentials().toString()) || encoder.matches(authentication.getCredentials().toString(), details.getPassword()) || encoder.matches(details.getPassword(), authentication.getCredentials().toString())) {
+
+                            if (account instanceof User user && !user.isPasswordEncoded()) {
+
+                                AccountPasswordEncodingEvent encodingEvent = new AccountPasswordEncodingEvent(account, user.getPassword(), encoder);
+
+                                ProjectBeanHolder.getApplicationEventPublisher().publishEvent(encodingEvent);
+
+                                if (!encodingEvent.isCancelled()) {
+
+                                    LOG.debug("Encoding password for user: " + user.getUsername());
+
+                                    user.setPassword(encoder.encode(encodingEvent.getPassword()));
+                                    user.setPasswordEncoded(true);
+
+                                    ProjectBeanHolder.getUserRepository().save(user);
+                                }
+                            }
+
+
+                            return new AccountAuthenticationToken(account, ((UserDetails) account).getPassword());
+                        }
+
+                        throw new BadCredentialsException("Wrong password");
+                    }
+
+                    throw new AuthenticationCancelledException("Authentication cancelled.");
                 }
 
-                throw new AuthenticationCancelledException("Authentication cancelled.");
+                throw new UsernameNotFoundException("User " + username + " is not exist!");
             }
 
-            throw new UsernameNotFoundException("User " + username + " is not exist!");
+            throw new HumanValidationFailureException("Human validation failure!");
         }
 
         return authentication;

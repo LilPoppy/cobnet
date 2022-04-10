@@ -36,7 +36,7 @@ if (!window.WebSocket) {
 
 if (window.WebSocket) {
 
-    socket = new WebSocket("wss://localhost:8090/web-socket");
+    socket = new WebSocket("ws://localhost:8090/web-socket");
     socket.binaryType = "arraybuffer"
     socket.onmessage = function (event) {
         var ta = document.getElementById('responseText');

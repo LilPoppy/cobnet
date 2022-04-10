@@ -13,6 +13,8 @@ public class PersistentLogins implements Serializable {
     @Id
     private String username;
 
+    private boolean enable;
+
     private String series;
 
     private String token;
@@ -21,7 +23,8 @@ public class PersistentLogins implements Serializable {
 
     public PersistentLogins() {}
 
-    public PersistentLogins(String username, String series, String token, Date lastUsed) {
+    public PersistentLogins(boolean enable, String username, String series, String token, Date lastUsed) {
+        this.enable = enable;
         this.username = username;
         this.series = series;
         this.token = token;
@@ -30,6 +33,10 @@ public class PersistentLogins implements Serializable {
 
     public String getUsername() {
         return username;
+    }
+
+    public boolean isEnable() {
+        return enable;
     }
 
     public String getSeries() {
@@ -46,6 +53,10 @@ public class PersistentLogins implements Serializable {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public void setEnable(boolean enable) {
+        this.enable = enable;
     }
 
     public void setSeries(String series) {

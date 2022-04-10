@@ -1,11 +1,11 @@
 package com.cobnet.spring.boot.dto;
 
-import com.cobnet.spring.boot.dto.support.HttpMapTransmission;
+import com.cobnet.spring.boot.dto.support.ApplicationJsonTransmission;
 
 import java.util.Date;
 import java.util.UUID;
 
-public class ConnectionToken extends HttpMapTransmission {
+public class ConnectionToken extends ApplicationJsonTransmission {
 
     public static final String ATTRIBUTE_KEY = "CONNECTION_TOKEN";
 
