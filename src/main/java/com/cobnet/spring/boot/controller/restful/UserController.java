@@ -48,12 +48,7 @@ public class UserController {
     @PostMapping("/user/register")
     public String register(HttpServletRequest request, RegisterForm form) {
 
-        HumanValidationResult result = ProjectBeanHolder.getHumanValidator().imageValidate(request.getSession(true).getId(), form.getMovement());
 
-        if(result.isSuccess() && result.getReason() == HumanValidationFailureReason.NONE) {
-
-
-        }
         //TODO Verification code
         System.out.println(form);
 
