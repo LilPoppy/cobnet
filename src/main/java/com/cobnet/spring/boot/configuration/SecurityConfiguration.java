@@ -56,6 +56,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private byte permissionDefaultPower;
 
+    private boolean humanValidationEnable;
+
     private Duration humanValidationCreateInterval;
 
     private Duration humanValidationExpire;
@@ -286,6 +288,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public String getHumanValidationMovementParameter() {
         return humanValidationMovementParameter;
+    }
+
+    public boolean isHumanValidationEnable() {
+        return humanValidationEnable;
+    }
+
+    public void setHumanValidationEnable(boolean humanValidationEnable) {
+        this.humanValidationEnable = humanValidationEnable;
     }
 
     public void setHumanValidationMovementParameter(String humanValidationMovementParameter) {
