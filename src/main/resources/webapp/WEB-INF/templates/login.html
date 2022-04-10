@@ -36,8 +36,8 @@
 			</p>
 			<button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
 			<br />
-			<p th:each="url : ${urls}">
-			    <a th:text="${url.key}" th:href="${url.value}">Client</a>
+			<p th:each="registration : ${registrations}">
+			    <a th:text="${registration.name}" th:href="${registration.url}">Client</a>
 			</p>
 			<div> &nbsp;</div>
 			<div>

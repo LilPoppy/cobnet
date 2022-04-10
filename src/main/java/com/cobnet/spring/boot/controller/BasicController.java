@@ -13,7 +13,7 @@ public class BasicController {
     @GetMapping("/login")
     public String login(HttpServletRequest request, Model model) {
 
-        model.addAttribute("urls", OAuth2RegistryRepositoryHelper.getRegistrationUrls());
+        model.addAttribute("registrations", OAuth2RegistryRepositoryHelper.getRegistrationUrls());
 
         return "login.html";
     }
