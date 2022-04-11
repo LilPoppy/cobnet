@@ -116,7 +116,7 @@ public class OAuth2LoginAccountAuthenticationFilter extends AbstractAuthenticati
         OAuth2LoginAuthenticationToken result = (OAuth2LoginAuthenticationToken) this.getAuthenticationManager().authenticate(authenticationRequest);
 
         AccountAuthenticationToken token = this.authenticationResultConverter.convert(result);
-        Assert.notNull(token, "authentication result cannot be null");
+        Assert.notNull(token, "authentication status cannot be null");
         token.setDetails(details);
 
         OAuth2AuthorizedClient client = new OAuth2AuthorizedClient(result.getClientRegistration(), token.getName(), result.getAccessToken(), result.getRefreshToken());

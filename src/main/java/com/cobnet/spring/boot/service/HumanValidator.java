@@ -1,82 +1,83 @@
 package com.cobnet.spring.boot.service;
 
+import com.cobnet.common.DateUtils;
 import com.cobnet.common.PuzzledImage;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.Base64Image;
-import com.cobnet.spring.boot.dto.HumanValidationRequire;
+import com.cobnet.spring.boot.dto.HumanValidationRequest;
 import com.cobnet.spring.boot.dto.HumanValidationResult;
-import com.cobnet.spring.boot.dto.support.HumanValidationFailureReason;
-import com.cobnet.spring.boot.dto.support.HumanValidationRequireResult;
+import com.cobnet.spring.boot.dto.support.HumanValidationResultStatus;
+import com.cobnet.spring.boot.dto.support.HumanValidationRequestStatus;
+import com.cobnet.spring.boot.service.support.HumanValidationCache;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.io.Serializable;
-import java.time.Duration;
-import java.util.Objects;
 
 @Service
 public class HumanValidator {
 
-    public static final String VALIDATED_KEY = "VALIDATED";
+    public <T extends Serializable> HumanValidationRequest createImageValidation(T key) throws IOException {
 
-    public <T extends Serializable> Duration getIntervalLeft(T key) {
+        HumanValidationCache cache = this.getCache(key);
 
-        PuzzledImage image = getPuzzledImage(key);
+        if(cache != null) {
 
-        if(image == null) {
+            if(DateUtils.addDuration(cache.getCreatedTime(), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationCreateInterval()).before(DateUtils.now())) {
 
-            return Duration.ZERO;
+                return generateImage(key);
+            }
+
+            return new HumanValidationRequest(HumanValidationRequestStatus.INTERVAL_LIMITED);
         }
 
-        long ms = System.currentTimeMillis() - image.getCreatedTime().getTime();
+        return generateImage(key);
 
-        return ms > 0 ? Duration.ofMillis(ms) : Duration.ZERO;
     }
 
-
-    public <T extends Serializable> HumanValidationRequire createImageValidation(T key) throws IOException {
-
-        if(!this.getIntervalLeft(key).isZero()) {
-
-            return new HumanValidationRequire(HumanValidationRequireResult.INTERVAL_LIMITED);
-        }
+    private <T extends Serializable> HumanValidationRequest generateImage(T key) throws IOException {
 
         PuzzledImage image = new PuzzledImage(ImageIO.read(ProjectBeanHolder.getRandomImageProvider().getFromPicsum(256, 128).get()), 55, 45, 8, 4);
 
-        Objects.requireNonNull(ProjectBeanHolder.getRedisCacheManager().getCache(this.getClass().getSimpleName())).put(key, image);
+        ProjectBeanHolder.getCacheService().set(HumanValidationCache.HumanValidatorKey, key, new HumanValidationCache(image, DateUtils.now(), false, false), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire());
 
-        ProjectBeanHolder.getRedisTemplate().expire(this.getClass().getSimpleName() + "::" + key, ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire());
-
-        return new HumanValidationRequire(HumanValidationRequireResult.SUCCESS, new Base64Image(image.getImage(), "png"), new Base64Image(image.getJigsawImage(), "png"));
+        return new HumanValidationRequest(HumanValidationRequestStatus.SUCCESS, new Base64Image(image.getImage(), "png"), new Base64Image(image.getJigsawImage(), "png"));
     }
 
-    public <T extends Serializable> PuzzledImage getPuzzledImage(T key) {
+    public <T extends Serializable> HumanValidationCache getCache(T key) {
 
-        return Objects.requireNonNull(ProjectBeanHolder.getRedisCacheManager().getCache(this.getClass().getSimpleName())).get(key, PuzzledImage.class);
+        return ProjectBeanHolder.getCacheService().get(HumanValidationCache.HumanValidatorKey, key, HumanValidationCache.class);
     }
 
-    public <T extends Serializable> HumanValidationResult imageValidate(T key, double movement) {
+    public <T extends Serializable> HumanValidationResult imageValidate(T key, double position) {
 
-        PuzzledImage image = getPuzzledImage(key);
+        //TODO more advance to check is human operating
 
-        if(image == null) {
+        HumanValidationCache cache = getCache(key);
 
-            return new HumanValidationResult(false, HumanValidationFailureReason.TIMEOUT);
+        if(cache != null && DateUtils.addDuration(cache.getCreatedTime(), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire()).before(DateUtils.now())) {
+
+            try {
+
+                PuzzledImage image = cache.getImage();
+
+                if (Math.abs(image.getJigsawX() - position) < 8) {
+
+                    cache.setValidated(true);
+
+                    return new HumanValidationResult(HumanValidationResultStatus.SUCCESS);
+                }
+
+                return new HumanValidationResult(HumanValidationResultStatus.WRONG_POSITION);
+
+            } finally {
+
+                ProjectBeanHolder.getCacheService().set(HumanValidationCache.HumanValidatorKey, key, cache, ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire());
+
+            }
         }
 
-        ProjectBeanHolder.getRedisCacheManager().getCache(this.getClass().getSimpleName()).evict(key);
-        System.out.println(image.getJigsawX());
-        System.out.println(Math.abs(image.getJigsawX() - movement));
-        if(Math.abs(image.getJigsawX() - movement) < 10) {
-
-            ProjectBeanHolder.getRedisCacheManager().getCache(this.getClass().getSimpleName()).put(key + "::" + HumanValidator.VALIDATED_KEY, true);
-
-            ProjectBeanHolder.getRedisTemplate().expire(this.getClass().getSimpleName() + "::" + key + "::" + HumanValidator.VALIDATED_KEY, ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire());
-
-            return new HumanValidationResult(true, HumanValidationFailureReason.NONE);
-        }
-
-        return new HumanValidationResult(false, HumanValidationFailureReason.WRONG_POSITION);
+        return new HumanValidationResult(HumanValidationResultStatus.TIMEOUT);
     }
 }

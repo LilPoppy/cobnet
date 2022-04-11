@@ -89,7 +89,11 @@ spring:
       human-validation-enable: false
       human-validation-create-interval: 30s
       human-validation-expire: 3m
-      human-validation-movement-parameter: "movement"
+      phone-number-verify-enable: true
+      phone-number-sms-generate-interval: 60s
+      phone-number-sms-code-expire: 5m
+      phone-number-verify-sms-message: "$(code) is your ${project.information.name} verification code."
+      phone-number-max-use: 10
       user-default-role: "user"
       authentication-url: "/user/login"
       login-page-url: "/user/login"
@@ -154,8 +158,8 @@ management:
          enable: true
 twilio:
    account-sid: ACaa871dd615aca9c8d798ec44aaeed2f5
-   authentication-token: 0c3eebb272e459e6bf06683757a8d9c8
-   numbers: 19108078297
+   authentication-token: 04b537f56e5fd3b436ca25d7b19e703e
+   numbers: +19108078297
 netty:
    enable: true
    servers:

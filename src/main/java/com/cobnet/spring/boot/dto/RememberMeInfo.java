@@ -1,38 +1,29 @@
 package com.cobnet.spring.boot.dto;
 
-import com.cobnet.spring.boot.dto.support.ApplicationJsonTransmission;
+import com.cobnet.interfaces.connection.web.ApplicationJson;
 import com.cobnet.spring.boot.entity.PersistentLogins;
 
 import java.util.Date;
 
-public class RememberMeInfo extends ApplicationJsonTransmission {
-
-    private final String series;
-
-    private final String token;
-
-    private final Date lastUsed;
-
-    public RememberMeInfo(String series, String token, Date lastUsed) {
-        this.series = series;
-        this.token = token;
-        this.lastUsed = lastUsed;
-    }
+public record RememberMeInfo(String series, String token, Date lastUsed) implements ApplicationJson {
 
     public RememberMeInfo(PersistentLogins info) {
 
         this(info.getSeries(), info.getToken(), info.getLastUsed());
     }
 
-    public String getSeries() {
+    @Override
+    public String series() {
         return series;
     }
 
-    public String getToken() {
+    @Override
+    public String token() {
         return token;
     }
 
-    public Date getLastUsed() {
+    @Override
+    public Date lastUsed() {
         return lastUsed;
     }
 }

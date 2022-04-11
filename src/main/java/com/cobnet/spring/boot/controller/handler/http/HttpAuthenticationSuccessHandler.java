@@ -11,12 +11,15 @@ import com.cobnet.spring.boot.entity.ExternalUser;
 import com.cobnet.spring.boot.entity.PersistentLogins;
 import com.cobnet.spring.boot.entity.User;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.session.FindByIndexNameSessionRepository;
 import org.springframework.stereotype.Controller;
 
@@ -29,6 +32,9 @@ import java.io.PrintWriter;
 
 @Controller
 public class HttpAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+
+    @Autowired
+    private PersistentTokenRepository rememberMeRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -72,9 +78,21 @@ public class HttpAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
         if(authentication.getPrincipal() instanceof User user) {
 
-            if(user.getRemeberMeInfo() != null) {
+            String parameter = request.getParameter(ProjectBeanHolder.getSecurityConfiguration().getRememberMeParameter());
 
-                rememberMe = new RememberMeInfo(user.getRemeberMeInfo());
+            if(parameter != null) {
+
+                boolean enabled = Boolean.getBoolean(parameter);
+
+                if(user.getRemeberMeInfo() != null && enabled) {
+
+                    rememberMe = new RememberMeInfo(user.getRemeberMeInfo());
+                }
+
+                if(!enabled) {
+
+                    rememberMeRepository.removeUserTokens(user.getUsername());
+                }
             }
         }
 

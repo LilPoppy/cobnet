@@ -1,9 +1,8 @@
 package com.cobnet.spring.boot.dto;
 
-import com.cobnet.interfaces.connection.FormGenerator;
+import com.cobnet.interfaces.connection.web.FormGenerator;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.Map;
 

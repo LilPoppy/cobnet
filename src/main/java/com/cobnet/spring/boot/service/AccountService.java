@@ -1,5 +1,6 @@
 package com.cobnet.spring.boot.service;
 
+import com.cobnet.common.DateUtils;
 import com.cobnet.event.account.AccountLoginEvent;
 import com.cobnet.event.account.AccountPasswordEncodingEvent;
 import com.cobnet.exception.AuthenticationCancelledException;
@@ -7,11 +8,16 @@ import com.cobnet.exception.HumanValidationFailureException;
 import com.cobnet.interfaces.security.Account;
 import com.cobnet.security.AccountAuthenticationToken;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
+import com.cobnet.spring.boot.dto.PhoneNumberSmsRequestResult;
+import com.cobnet.spring.boot.dto.PhoneNumberSmsRequest;
+import com.cobnet.spring.boot.dto.support.PhoneNumberSmsRequestResultReason;
+import com.cobnet.spring.boot.dto.support.PhoneNumberSmsRequestType;
 import com.cobnet.spring.boot.entity.User;
+import com.cobnet.spring.boot.service.support.AccountPhoneNumberVerifyCache;
+import com.cobnet.spring.boot.service.support.HumanValidationCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.Cache;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -23,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Random;
 
 @Service
 public class AccountService {
@@ -43,12 +50,13 @@ public class AccountService {
 
             assert request != null;
 
-            Cache.ValueWrapper cache = ProjectBeanHolder.getRedisCacheManager().getCache(HumanValidator.class.getSimpleName()).get(request.getSession(true).getId() + "::" + HumanValidator.VALIDATED_KEY);
+            String key = request.getSession(true).getId();
 
-            if((!ProjectBeanHolder.getSecurityConfiguration().isHumanValidationEnable()) || (cache != null && cache.get() instanceof Boolean validated && validated)) {
+            HumanValidationCache cache = ProjectBeanHolder.getHumanValidator().getCache(key);
 
-                System.out.println("authen@@@");
-                request.getSession().setAttribute(HumanValidator.VALIDATED_KEY, false);
+            if(!ProjectBeanHolder.getSecurityConfiguration().isHumanValidationEnable() || (cache != null && cache.isValidated())) {
+
+                ProjectBeanHolder.getCacheService().evict(HumanValidationCache.HumanValidatorKey, key);
 
                 Object principal = authentication.getPrincipal();
 
@@ -76,30 +84,33 @@ public class AccountService {
 
                     if (!loginEvent.isCancelled()) {
 
-                        if (details.getPassword().equals(authentication.getCredentials().toString()) || encoder.matches(authentication.getCredentials().toString(), details.getPassword()) || encoder.matches(details.getPassword(), authentication.getCredentials().toString())) {
+                        if(account instanceof User user) {
 
-                            if (account instanceof User user && !user.isPasswordEncoded()) {
+                            if(user.getPassword().equals(authentication.getCredentials().toString()) || (!user.isPasswordEncoded() && encoder.matches(user.getPassword(), authentication.getCredentials().toString()))) {
 
-                                AccountPasswordEncodingEvent encodingEvent = new AccountPasswordEncodingEvent(account, user.getPassword(), encoder);
+                                if(!user.isPasswordEncoded()) {
 
-                                ProjectBeanHolder.getApplicationEventPublisher().publishEvent(encodingEvent);
+                                    AccountPasswordEncodingEvent encodingEvent = new AccountPasswordEncodingEvent(account, user.getPassword(), encoder);
 
-                                if (!encodingEvent.isCancelled()) {
+                                    ProjectBeanHolder.getApplicationEventPublisher().publishEvent(encodingEvent);
 
-                                    LOG.debug("Encoding password for user: " + user.getUsername());
+                                    if (!encodingEvent.isCancelled()) {
 
-                                    user.setPassword(encoder.encode(encodingEvent.getPassword()));
-                                    user.setPasswordEncoded(true);
+                                        LOG.debug("Encoding password for user: " + user.getUsername());
 
-                                    ProjectBeanHolder.getUserRepository().save(user);
+                                        user.setPassword(encoder.encode(encodingEvent.getPassword()));
+                                        user.setPasswordEncoded(true);
+
+                                        ProjectBeanHolder.getUserRepository().save(user);
+                                    }
                                 }
+
+                                return new AccountAuthenticationToken(account, ((UserDetails) account).getPassword());
+
                             }
 
-
-                            return new AccountAuthenticationToken(account, ((UserDetails) account).getPassword());
+                            throw new BadCredentialsException("Wrong password");
                         }
-
-                        throw new BadCredentialsException("Wrong password");
                     }
 
                     throw new AuthenticationCancelledException("Authentication cancelled.");
@@ -112,5 +123,47 @@ public class AccountService {
         }
 
         return authentication;
+    }
+
+    public PhoneNumberSmsRequestResult requestPhoneNumberSms(PhoneNumberSmsRequest request) {
+
+        if(request.type() == PhoneNumberSmsRequestType.ACCOUNT_REGISTER) {
+
+            long count = ProjectBeanHolder.getUserRepository().countByPhoneNumberContaining(request.phoneNumber());
+
+            if(count > ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberMaxUse()) {
+
+                return new PhoneNumberSmsRequestResult(PhoneNumberSmsRequestResultReason.NUMBER_OVERUSED);
+            }
+        }
+
+        AccountPhoneNumberVerifyCache cache = ProjectBeanHolder.getCacheService().get(AccountPhoneNumberVerifyCache.AccountServiceKey, request.username(), AccountPhoneNumberVerifyCache.class);
+
+        System.out.println(cache);
+
+        if(cache != null) {
+
+            if (DateUtils.addDuration(cache.createdTime(), ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsGenerateInterval()).before(DateUtils.now())) {
+
+                return sendSms(request);
+            }
+
+            return new PhoneNumberSmsRequestResult(PhoneNumberSmsRequestResultReason.INTERVAL_LIMITED);
+        }
+
+        return sendSms(request);
+    }
+
+    private PhoneNumberSmsRequestResult sendSms(PhoneNumberSmsRequest request) {
+
+        Random random = new Random();
+
+        int code = random.nextInt(987654 + 1 - 123456) + 123456;
+
+        ProjectBeanHolder.getCacheService().set(AccountPhoneNumberVerifyCache.AccountServiceKey, request.username(), new AccountPhoneNumberVerifyCache(code, DateUtils.now(), request.type()), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire());
+
+        ProjectBeanHolder.getMessager().message(request.phoneNumber(), ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberVerifySmsMessage().replace("$(code)", Integer.toString(code))).create();
+
+        return new PhoneNumberSmsRequestResult(PhoneNumberSmsRequestResultReason.SUCCESS);
     }
 }

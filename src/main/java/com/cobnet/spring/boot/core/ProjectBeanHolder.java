@@ -9,6 +9,8 @@ import com.cobnet.spring.boot.configuration.*;
 import com.cobnet.spring.boot.controller.handler.http.HttpAccessDeniedHandler;
 import com.cobnet.spring.boot.controller.handler.http.HttpAuthenticationFailureHandler;
 import com.cobnet.spring.boot.controller.handler.http.HttpAuthenticationSuccessHandler;
+import com.cobnet.spring.boot.service.AccountService;
+import com.cobnet.spring.boot.service.CacheService;
 import com.cobnet.spring.boot.service.HumanValidator;
 import com.cobnet.spring.boot.service.RedisCacheKeyGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -34,6 +36,7 @@ import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.DefaultRedirectStrategy;
 import org.springframework.security.web.RedirectStrategy;
+import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.session.data.redis.RedisIndexedSessionRepository;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -46,6 +49,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 public class ProjectBeanHolder {
+
+    private static RememberMeServices REMEMBER_ME_SERVICE;
+
+    private static AccountService ACCOUNT_SERVICE;
+
+    private static CacheService CACHE_SERVICE;
 
     private static HumanValidator HUMAN_VALIDATOR;
 
@@ -146,6 +155,16 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.RANDOM_IMAGE_PROVIDER;
     }
 
+    public static AccountService getAccountService() {
+
+        return ProjectBeanHolder.ACCOUNT_SERVICE;
+    }
+
+    public static CacheService getCacheService() {
+
+        return ProjectBeanHolder.CACHE_SERVICE;
+    }
+
     public static HumanValidator getHumanValidator() {
 
         return ProjectBeanHolder.HUMAN_VALIDATOR;
@@ -194,6 +213,11 @@ public class ProjectBeanHolder {
     public static DatasourceConfiguration getDatasourceConfiguration() {
 
         return  ProjectBeanHolder.DATASOURCE_CONFIGURATION;
+    }
+
+    public static RememberMeServices getRememberMeService() {
+
+        return ProjectBeanHolder.REMEMBER_ME_SERVICE;
     }
 
     public static CacheConfiguration getCacheConfiguration() {
@@ -410,6 +434,18 @@ public class ProjectBeanHolder {
     public static class AutowireLoader {
 
         @Autowired
+        public void setAccountService(AccountService service) {
+
+            ProjectBeanHolder.ACCOUNT_SERVICE = service;
+        }
+
+        @Autowired
+        public void setCacheService(CacheService service) {
+
+            ProjectBeanHolder.CACHE_SERVICE = service;
+        }
+
+        @Autowired
         public void setConfigurableApplicationContext(ConfigurableApplicationContext context) {
 
             ProjectBeanHolder.SPRING_CONTEXT = context;
@@ -503,6 +539,12 @@ public class ProjectBeanHolder {
         public void setTaskProvider(TaskProvider provider) {
 
             ProjectBeanHolder.TASK_PROVIDER = provider;
+        }
+
+        @Autowired
+        public void setRememberMeServices(RememberMeServices services) {
+
+            ProjectBeanHolder.REMEMBER_ME_SERVICE = services;
         }
 
         @Autowired

@@ -1,9 +1,7 @@
-package com.cobnet.interfaces.connection;
+package com.cobnet.interfaces.connection.web;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public interface Form extends Serializable {
 

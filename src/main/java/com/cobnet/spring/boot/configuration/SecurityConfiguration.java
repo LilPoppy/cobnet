@@ -5,11 +5,6 @@ import com.cobnet.security.UserAuthenticationProvider;
 import com.cobnet.security.UserDetailCheckFilter;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.UserRole;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -29,7 +24,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.authentication.session.*;
@@ -52,7 +46,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public final static String CONNECTION_TOKEN = "CONNECTION_TOKEN";
 
-    final static String[] PERMITTED_MATCHERS = { "/user/register", "/user/human/validate", "/user/human/create", "/swagger-ui", "/oauth2/registration-urls", "/sms/reply" };
+    final static String[] PERMITTED_MATCHERS = { "/user/sms/request" ,"/user/register", "/user/human/validate", "/user/human/create", "/swagger-ui", "/oauth2/registration-urls", "/sms/reply" };
 
     private byte permissionDefaultPower;
 
@@ -62,7 +56,15 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private Duration humanValidationExpire;
 
-    private String humanValidationMovementParameter;
+    private boolean phoneNumberVerifyEnable;
+
+    private Duration phoneNumberSmsGenerateInterval;
+
+    private Duration phoneNumberSmsCodeExpire;
+
+    private String phoneNumberVerifySmsMessage;
+
+    private int phoneNumberMaxUse;
 
     private String userDefaultRole;
 
@@ -286,8 +288,24 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return rememberMeParameter;
     }
 
-    public String getHumanValidationMovementParameter() {
-        return humanValidationMovementParameter;
+    public boolean isPhoneNumberVerifyEnable() {
+        return phoneNumberVerifyEnable;
+    }
+
+    public Duration getPhoneNumberSmsGenerateInterval() {
+        return phoneNumberSmsGenerateInterval;
+    }
+
+    public Duration getPhoneNumberSmsCodeExpire() {
+        return phoneNumberSmsCodeExpire;
+    }
+
+    public String getPhoneNumberVerifySmsMessage() {
+        return phoneNumberVerifySmsMessage;
+    }
+
+    public int getPhoneNumberMaxUse() {
+        return phoneNumberMaxUse;
     }
 
     public boolean isHumanValidationEnable() {
@@ -298,16 +316,32 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.humanValidationEnable = humanValidationEnable;
     }
 
-    public void setHumanValidationMovementParameter(String humanValidationMovementParameter) {
-        this.humanValidationMovementParameter = humanValidationMovementParameter;
-    }
-
     public void setHumanValidationCreateInterval(Duration humanValidationCreateInterval) {
         this.humanValidationCreateInterval = humanValidationCreateInterval;
     }
 
     public void setHumanValidationExpire(Duration humanValidationExpire) {
         this.humanValidationExpire = humanValidationExpire;
+    }
+
+    public void setPhoneNumberVerifyEnable(boolean phoneNumberVerifyEnable) {
+        this.phoneNumberVerifyEnable = phoneNumberVerifyEnable;
+    }
+
+    public void setPhoneNumberSmsGenerateInterval(Duration phoneNumberSmsGenerateInterval) {
+        this.phoneNumberSmsGenerateInterval = phoneNumberSmsGenerateInterval;
+    }
+
+    public void setPhoneNumberSmsCodeExpire(Duration phoneNumberSmsCodeExpire) {
+        this.phoneNumberSmsCodeExpire = phoneNumberSmsCodeExpire;
+    }
+
+    public void setPhoneNumberVerifySmsMessage(String phoneNumberVerifySmsMessage) {
+        this.phoneNumberVerifySmsMessage = phoneNumberVerifySmsMessage;
+    }
+
+    public void setPhoneNumberMaxUse(int phoneNumberMaxUse) {
+        this.phoneNumberMaxUse = phoneNumberMaxUse;
     }
 
     public void setLoginPageUrl(String loginPageUrl) {
