@@ -3,7 +3,7 @@ package com.cobnet.spring.boot.dto;
 import com.cobnet.interfaces.connection.web.ApplicationJson;
 import com.cobnet.spring.boot.dto.support.PhoneNumberSmsType;
 
-public record PhoneNumberSmsRequest(String username, String phoneNumber, PhoneNumberSmsType type) implements ApplicationJson {
+public record PhoneNumberSmsVerify(String username, PhoneNumberSmsType type, int code) implements ApplicationJson {
 
     @Override
     public String username() {
@@ -11,11 +11,12 @@ public record PhoneNumberSmsRequest(String username, String phoneNumber, PhoneNu
     }
 
     @Override
-    public String phoneNumber() {
-        return phoneNumber;
+    public PhoneNumberSmsType type() {
+        return type;
     }
 
     @Override
-    public PhoneNumberSmsType type() { return type; }
-
+    public int code() {
+        return code;
+    }
 }

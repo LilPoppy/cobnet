@@ -85,6 +85,8 @@ spring:
                ssl:
                   enable: true
    security:
+      username-format-regex: ^[a-zA-Z0-9]{8,16}$
+      password-format-regex: ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$
       permission-default-power: 3
       human-validation-enable: false
       human-validation-create-interval: 30s
@@ -94,12 +96,15 @@ spring:
       phone-number-sms-code-expire: 5m
       phone-number-verify-sms-message: "$(code) is your ${project.information.name} verification code."
       phone-number-max-use: 10
+      email-max-use: 10
       user-default-role: "user"
       authentication-url: "/user/login"
       login-page-url: "/user/login"
+      logout-url: "/user/logout"
 # default will do restful way
 #      login-success-url: "/index"
 #      login-failure-url: "/login?error=true"
+#      logout-success-url: "/index"
       username-parameter: "username"
       password-parameter: "password"
       remember-me-parameter: "remember-me"

@@ -1,14 +1,15 @@
 package com.cobnet.spring.boot.dto.support;
 
-public enum HumanValidationResultStatus {
+public enum PhoneNumberSmsRequestResultStatus {
 
     SUCCESS(201),
-    TIMEOUT(408),
-    WRONG_POSITION(400);
+    INTERVAL_LIMITED(400),
+    NUMBER_OVERUSED(409),
+    SERVICE_DOWN(503);
 
     private final int code;
 
-    private HumanValidationResultStatus(int code) {
+    private PhoneNumberSmsRequestResultStatus(int code) {
         this.code = code;
     }
 

@@ -1,15 +1,15 @@
 package com.cobnet.spring.boot.dto.support;
 
-public enum PhoneNumberSmsRequestResultReason {
+public enum UserRegisterResultStatus {
 
     SUCCESS(201),
-    INTERVAL_LIMITED(400),
-    NUMBER_OVERUSED(409),
-    SERVICE_DOWN(503);
+    UNACCEPTABLE_CONTENT(400),
+    VERIFICATION_FAILED(408),
+    REJECTED(400);
 
     private final int code;
 
-    private PhoneNumberSmsRequestResultReason(int code) {
+    private UserRegisterResultStatus(int code) {
         this.code = code;
     }
 

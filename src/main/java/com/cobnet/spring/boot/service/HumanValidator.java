@@ -5,8 +5,8 @@ import com.cobnet.common.PuzzledImage;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.Base64Image;
 import com.cobnet.spring.boot.dto.HumanValidationRequest;
-import com.cobnet.spring.boot.dto.HumanValidationResult;
-import com.cobnet.spring.boot.dto.support.HumanValidationResultStatus;
+import com.cobnet.spring.boot.dto.HumanValidationValidate;
+import com.cobnet.spring.boot.dto.support.HumanValidationValidateStatus;
 import com.cobnet.spring.boot.dto.support.HumanValidationRequestStatus;
 import com.cobnet.spring.boot.service.support.HumanValidationCache;
 import org.springframework.stereotype.Service;
@@ -50,7 +50,7 @@ public class HumanValidator {
         return ProjectBeanHolder.getCacheService().get(HumanValidationCache.HumanValidatorKey, key, HumanValidationCache.class);
     }
 
-    public <T extends Serializable> HumanValidationResult imageValidate(T key, double position) {
+    public <T extends Serializable> HumanValidationValidate imageValidate(T key, double position) {
 
         //TODO more advance to check is human operating
 
@@ -66,10 +66,10 @@ public class HumanValidator {
 
                     cache.setValidated(true);
 
-                    return new HumanValidationResult(HumanValidationResultStatus.SUCCESS);
+                    return new HumanValidationValidate(HumanValidationValidateStatus.SUCCESS);
                 }
 
-                return new HumanValidationResult(HumanValidationResultStatus.WRONG_POSITION);
+                return new HumanValidationValidate(HumanValidationValidateStatus.WRONG_POSITION);
 
             } finally {
 
@@ -78,6 +78,6 @@ public class HumanValidator {
             }
         }
 
-        return new HumanValidationResult(HumanValidationResultStatus.TIMEOUT);
+        return new HumanValidationValidate(HumanValidationValidateStatus.TIMEOUT);
     }
 }

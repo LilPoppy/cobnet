@@ -13,8 +13,10 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
@@ -30,6 +32,9 @@ import java.util.Arrays;
 public class AccessSecuredAspect {
 
     private static Logger LOG = LoggerFactory.getLogger(AccessSecuredAspect.class);
+
+    @Autowired
+    private AccessDeniedHandler accessDeniedHandler;
 
     @Around("@annotation(com.cobnet.interfaces.security.annotation.AccessSecured)")
     public Object processMethodsAnnotatedWithAccessSecuredAnnotation(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -104,7 +109,7 @@ public class AccessSecuredAspect {
 
             try {
 
-                ProjectBeanHolder.getHttpAccessDeniedHandler().handle(request, response, new AccessDeniedException("An exception occurred when getting access denied response."));
+                accessDeniedHandler.handle(request, response, new AccessDeniedException("An exception occurred when getting access denied response."));
 
             } catch (IOException | ServletException e) {
                 e.printStackTrace();

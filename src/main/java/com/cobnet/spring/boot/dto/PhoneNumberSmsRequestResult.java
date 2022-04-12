@@ -1,12 +1,11 @@
 package com.cobnet.spring.boot.dto;
 
 import com.cobnet.interfaces.connection.web.ApplicationJson;
-import com.cobnet.spring.boot.dto.support.PhoneNumberSmsRequestResultReason;
+import com.cobnet.spring.boot.dto.support.PhoneNumberSmsRequestResultStatus;
 
-public record PhoneNumberSmsRequestResult(PhoneNumberSmsRequestResultReason result) implements ApplicationJson {
+public record PhoneNumberSmsRequestResult(PhoneNumberSmsRequestResultStatus status) implements ApplicationJson {
 
-    @Override
-    public PhoneNumberSmsRequestResultReason result() {
-        return result;
+    public PhoneNumberSmsRequestResultStatus status() {
+        return status;
     }
 }

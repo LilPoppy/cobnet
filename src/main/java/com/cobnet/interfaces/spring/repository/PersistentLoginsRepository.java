@@ -60,6 +60,11 @@ public interface PersistentLoginsRepository extends JPABaseRepository<Persistent
             }
         }
 
-        this.deleteById(username);
+        PersistentLogins entity = findByUsernameEqualsIgnoreCase(username);
+
+        if(entity != null) {
+
+            this.delete(entity);
+        }
     }
 }

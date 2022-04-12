@@ -132,12 +132,6 @@ public class ProjectBeanHolder {
 
     private static OidcUserService OIDC_USER_SERVICE;
 
-    private static HttpAuthenticationSuccessHandler HTTP_AUTHENTICATION_SUCCESS_HANDLER;
-
-    private static HttpAuthenticationFailureHandler HTTP_AUTHENTICATION_FAILURE_HANDLER;
-
-    private static HttpAccessDeniedHandler HTTP_ACCESS_DENIED_HANDLER;
-
     private static Messager MESSAGER;
 
     private static JavaMailSender JAVA_MAIL_SENDER;
@@ -383,21 +377,6 @@ public class ProjectBeanHolder {
     public static OidcUserService getOidcUserService() {
 
         return ProjectBeanHolder.OIDC_USER_SERVICE;
-    }
-
-    public static HttpAuthenticationSuccessHandler getHttpAuthenticationSuccessHandler() {
-
-        return ProjectBeanHolder.HTTP_AUTHENTICATION_SUCCESS_HANDLER;
-    }
-
-    public static HttpAuthenticationFailureHandler getHttpAuthenticationFailureHandler() {
-
-        return ProjectBeanHolder.HTTP_AUTHENTICATION_FAILURE_HANDLER;
-    }
-
-    public static HttpAccessDeniedHandler getHttpAccessDeniedHandler() {
-
-        return ProjectBeanHolder.HTTP_ACCESS_DENIED_HANDLER;
     }
 
     public static Messager getMessager() {
@@ -679,24 +658,6 @@ public class ProjectBeanHolder {
         public void setOidcUserService(OidcUserService service) {
 
             ProjectBeanHolder.OIDC_USER_SERVICE = service;
-        }
-
-        @Autowired
-        public void setHttpAuthenticationSuccessHandler(HttpAuthenticationSuccessHandler handler) {
-
-            ProjectBeanHolder.HTTP_AUTHENTICATION_SUCCESS_HANDLER = handler;
-        }
-
-        @Autowired
-        public void setHttpAuthenticationFailureHandler(HttpAuthenticationFailureHandler handler) {
-
-            ProjectBeanHolder.HTTP_AUTHENTICATION_FAILURE_HANDLER = handler;
-        }
-
-        @Autowired
-        public void setHttpAccessDeniedHandler(HttpAccessDeniedHandler handler) {
-
-            ProjectBeanHolder.HTTP_ACCESS_DENIED_HANDLER = handler;
         }
 
         @Autowired

@@ -17,6 +17,11 @@ public class HttpRequestUrlResolver {
         return  getResolvedUrl(request, request.getRequestURI().startsWith(ProjectBeanHolder.getSecurityConfiguration().getOauth2().getRedirectUrl()) ? ProjectBeanHolder.getSecurityConfiguration().getOauth2().getLoginFailureUrl() : ProjectBeanHolder.getSecurityConfiguration().getLoginFailureUrl());
     }
 
+    public static String getLogoutRedirectUrl(HttpServletRequest request) {
+
+        return getResolvedUrl(request, ProjectBeanHolder.getSecurityConfiguration().getLogoutSuccessUrl());
+    }
+
     public static String getResolvedUrl(HttpServletRequest request, String url) {
 
         HttpSession session = request.getSession();

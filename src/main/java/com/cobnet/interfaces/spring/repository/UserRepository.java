@@ -31,5 +31,5 @@ public interface UserRepository extends JPABaseRepository<User, String>, UserDet
 
     long countByPhoneNumberContaining(String phoneNumber);
 
-
+    long countByEmailEquals(String email);
 }
