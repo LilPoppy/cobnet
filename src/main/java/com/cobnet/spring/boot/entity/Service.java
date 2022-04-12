@@ -2,9 +2,6 @@ package com.cobnet.spring.boot.entity;
 
 import com.cobnet.interfaces.spring.dto.ServiceOption;
 import com.cobnet.spring.boot.entity.support.JsonServiceAttributeConverter;
-import com.cobnet.spring.boot.entity.support.JsonServiceOptionSetConverter;
-import com.cobnet.spring.boot.entity.support.JsonSetConverter;
-import com.cobnet.spring.boot.entity.support.ServiceKey;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -36,7 +33,7 @@ public class Service implements Serializable {
     @SuppressWarnings("JpaAttributeTypeInspection")
     @Convert(converter = JsonServiceAttributeConverter.class)
     @Column(columnDefinition = "json")
-    private Map<? extends ServiceOption, Object> attribute = new HashMap<>();
+    private Map<? extends ServiceOption<?>, ?> attribute = new HashMap<>();
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "service")
@@ -48,6 +45,13 @@ public class Service implements Serializable {
 
         this.store = store;
         this.name = name;
+    }
+
+    public Service(String name, long price, Map.Entry<ServiceOption<?>, Object>... attributes) {
+
+        this.name = name;
+        this.price = price;
+        this.attribute = Arrays.stream(attributes).collect(Collectors.toMap(Map.Entry<ServiceOption<?>, Object>::getKey, Map.Entry<ServiceOption<?>, Object>::getValue));
     }
 
     public String getName() {
@@ -66,7 +70,7 @@ public class Service implements Serializable {
         return price;
     }
 
-    public Map<? extends ServiceOption, Object> getAttribute() {
+    public Map<? extends ServiceOption<?>, ?> getAttribute() {
         return attribute;
     }
 

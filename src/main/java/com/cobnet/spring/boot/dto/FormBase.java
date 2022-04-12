@@ -17,7 +17,7 @@ public abstract class FormBase<T extends Form, E> implements Form, ApplicationJs
 
     @Override
     @JsonIgnore
-    public Map<String, ?> getOptions() {
+    public Map<String, ?> getFields() {
 
         return this.getData();
     }

@@ -5,7 +5,7 @@ import java.util.Map;
 
 public interface Form extends Serializable {
 
-    public Map<String, ?> getOptions();
+    public Map<String, ?> getFields();
 
     public static <T extends Form> T generate(FormGenerator<T> generator, Map<String, ?> options) {
 

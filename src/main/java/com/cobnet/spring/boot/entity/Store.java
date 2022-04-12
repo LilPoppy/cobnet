@@ -24,6 +24,9 @@ public class Store implements Serializable {
 
     private String phone;
 
+    //TODO verify information
+    private boolean verified;
+
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "store", orphanRemoval = true, cascade = CascadeType.ALL)
     private Set<Service> services = new HashSet<>();
@@ -76,6 +79,10 @@ public class Store implements Serializable {
         return phone;
     }
 
+    public boolean isVerified() {
+        return verified;
+    }
+
     public Set<Staff> getCrew() {
         return crew;
     }
@@ -90,6 +97,10 @@ public class Store implements Serializable {
 
     public Set<Work> getWorks() {
         return works.stream().collect(Collectors.toUnmodifiableSet());
+    }
+
+    public void setVerified(boolean verified) {
+        this.verified = verified;
     }
 
     public boolean addStaff(Staff staff) {

@@ -52,6 +52,12 @@ public class Position implements Serializable {
         this.isDefault = isDefault;
     }
 
+    public Position(String name, boolean isDefault) {
+
+        this.name = name;
+        this.isDefault = isDefault;
+    }
+
     public long getId() {
         return id;
     }
@@ -72,6 +78,14 @@ public class Position implements Serializable {
 
     public void setDefault(boolean isDefault) {
         this.isDefault = isDefault;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
     }
 
     public boolean isDefault() {

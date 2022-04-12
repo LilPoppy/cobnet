@@ -94,9 +94,9 @@ public class UserRegisterForm extends FormBase<UserRegisterForm, User> {
     public static class RegisterFormGenerator implements FormGenerator<UserRegisterForm> {
 
         @Override
-        public UserRegisterForm generate(Map<String, ?> options) {
+        public UserRegisterForm generate(Map<String, ?> fields) {
 
-            return ProjectBeanHolder.getObjectMapper().convertValue(options, UserRegisterForm.class);
+            return ProjectBeanHolder.getObjectMapper().convertValue(fields, UserRegisterForm.class);
         }
     }
 }

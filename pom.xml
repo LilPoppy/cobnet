@@ -385,7 +385,7 @@
 					</execution>
 					<execution>
 						<id>down</id>
-						<phase>initialize</phase>
+						<phase>clean</phase>
 						<goals>
 							<goal>down</goal>
 						</goals>

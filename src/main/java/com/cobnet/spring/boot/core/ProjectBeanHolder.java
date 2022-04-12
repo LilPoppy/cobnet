@@ -6,10 +6,7 @@ import com.cobnet.spring.boot.configuration.*;
 import com.cobnet.spring.boot.controller.handler.http.HttpAccessDeniedHandler;
 import com.cobnet.spring.boot.controller.handler.http.HttpAuthenticationFailureHandler;
 import com.cobnet.spring.boot.controller.handler.http.HttpAuthenticationSuccessHandler;
-import com.cobnet.spring.boot.service.AccountService;
-import com.cobnet.spring.boot.service.CacheService;
-import com.cobnet.spring.boot.service.HumanValidator;
-import com.cobnet.spring.boot.service.RedisCacheKeyGenerator;
+import com.cobnet.spring.boot.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.modelmapper.ModelMapper;
@@ -62,6 +59,8 @@ public class ProjectBeanHolder {
     private static ConfigurableApplicationContext SPRING_CONTEXT;
 
     private static ProjectConfiguration PROJECT_CONFIGURATION;
+
+    private static StoreService STORE_SERVICE;
 
     private static DatasourceConfiguration DATASOURCE_CONFIGURATION;
 
@@ -239,6 +238,11 @@ public class ProjectBeanHolder {
     public static SecurityConfiguration getSecurityConfiguration() {
 
         return ProjectBeanHolder.SECURITY_CONFIGURATION;
+    }
+
+    public static StoreService getStoreService() {
+
+        return ProjectBeanHolder.STORE_SERVICE;
     }
 
     public static TwilioConfiguration getTwilioConfiguration() {
@@ -460,6 +464,12 @@ public class ProjectBeanHolder {
         public void setConfigurableApplicationContext(ConfigurableApplicationContext context) {
 
             ProjectBeanHolder.SPRING_CONTEXT = context;
+        }
+
+        @Autowired
+        public void setStoreService(StoreService service) {
+
+            ProjectBeanHolder.STORE_SERVICE = service;
         }
 
         @Autowired

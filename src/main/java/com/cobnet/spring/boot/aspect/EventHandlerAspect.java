@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-@EnableAspectJAutoProxy
 @Aspect
 @Component
 public class EventHandlerAspect {

@@ -11,10 +11,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Converter(autoApply = true)
-public class JsonServiceAttributeConverter implements AttributeConverter<Map<? extends ServiceOption,Object>, String> {
+public class JsonServiceAttributeConverter implements AttributeConverter<Map<? extends ServiceOption<Object>, Object>, String> {
 
     @Override
-    public String convertToDatabaseColumn(Map<? extends ServiceOption, Object> attribute) {
+    public String convertToDatabaseColumn(Map<? extends ServiceOption<Object>, Object> attribute) {
 
         try {
 
@@ -29,7 +29,7 @@ public class JsonServiceAttributeConverter implements AttributeConverter<Map<? e
     }
 
     @Override
-    public Map<? extends ServiceOption, Object> convertToEntityAttribute(String dbData) {
+    public Map<? extends ServiceOption<Object>, Object> convertToEntityAttribute(String dbData) {
 
         try {
 

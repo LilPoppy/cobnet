@@ -6,5 +6,5 @@ import java.util.Map;
 
 public interface FormGenerator<T extends Form> {
 
-    public T generate(Map<String, ?> options);
+    public T generate(Map<String, ?> fields);
 }
