@@ -17,7 +17,7 @@ public interface PersistentLoginsRepository extends JPABaseRepository<Persistent
 
     default void createNewToken(PersistentRememberMeToken token) {
 
-        this.save(new PersistentLogins(true, token.getUsername(), token.getSeries(), token.getTokenValue(), token.getDate()));
+        this.save(new PersistentLogins(token.getUsername(), token.getSeries(), token.getTokenValue(), token.getDate()));
     }
 
     default void updateToken(String series, String tokenValue, Date lastUsed) {
@@ -60,6 +60,11 @@ public interface PersistentLoginsRepository extends JPABaseRepository<Persistent
             }
         }
 
-        this.deleteById(username);
+        PersistentLogins entity = findByUsernameEqualsIgnoreCase(username);
+
+        if(entity != null) {
+
+            this.delete(entity);
+        }
     }
 }

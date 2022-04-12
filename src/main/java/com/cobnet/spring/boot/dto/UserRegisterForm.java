@@ -1,13 +1,12 @@
 package com.cobnet.spring.boot.dto;
 
-import com.cobnet.interfaces.connection.FormGenerator;
+import com.cobnet.interfaces.connection.web.FormGenerator;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.User;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.util.Map;
 
-public class RegisterForm extends FormBase<RegisterForm, User> {
+public class UserRegisterForm extends FormBase<UserRegisterForm, User> {
 
     private String username;
 
@@ -21,7 +20,7 @@ public class RegisterForm extends FormBase<RegisterForm, User> {
 
     private String lastName;
 
-    public RegisterForm(String username, String password, String email, String phoneNumber, String firstName, String lastName) {
+    public UserRegisterForm(String username, String password, String email, String phoneNumber, String firstName, String lastName) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -80,7 +79,7 @@ public class RegisterForm extends FormBase<RegisterForm, User> {
     }
 
     @Override
-    public FormGenerator<RegisterForm> getGenerator() {
+    public FormGenerator<UserRegisterForm> getGenerator() {
 
         return new RegisterFormGenerator();
     }
@@ -92,12 +91,12 @@ public class RegisterForm extends FormBase<RegisterForm, User> {
     }
 
 
-    public static class RegisterFormGenerator implements FormGenerator<RegisterForm> {
+    public static class RegisterFormGenerator implements FormGenerator<UserRegisterForm> {
 
         @Override
-        public RegisterForm generate(Map<String, ?> options) {
+        public UserRegisterForm generate(Map<String, ?> options) {
 
-            return ProjectBeanHolder.getObjectMapper().convertValue(options, RegisterForm.class);
+            return ProjectBeanHolder.getObjectMapper().convertValue(options, UserRegisterForm.class);
         }
     }
 }

@@ -1,7 +1,8 @@
-package com.cobnet.interfaces.connection;
+package com.cobnet.interfaces.connection.web;
+
+import com.cobnet.interfaces.connection.web.Form;
 
 import java.util.Map;
-import java.util.Set;
 
 public interface FormGenerator<T extends Form> {
 

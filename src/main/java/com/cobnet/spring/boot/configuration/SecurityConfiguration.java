@@ -5,13 +5,9 @@ import com.cobnet.security.UserAuthenticationProvider;
 import com.cobnet.security.UserDetailCheckFilter;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.UserRole;
-import io.swagger.v3.oas.annotations.OpenAPIDefinition;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
-import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
-import io.swagger.v3.oas.annotations.info.Info;
-import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,12 +20,16 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
+import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.RememberMeServices;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.rememberme.JdbcTokenRepositoryImpl;
+import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.authentication.session.*;
@@ -52,7 +52,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public final static String CONNECTION_TOKEN = "CONNECTION_TOKEN";
 
-    final static String[] PERMITTED_MATCHERS = { "/user/register", "/user/human/validate", "/user/human/create", "/swagger-ui", "/oauth2/registration-urls", "/sms/reply" };
+    final static String[] PERMITTED_MATCHERS = { "/user/register" ,"/user/sms/verify", "/user/sms/request", "/user/human-validate/request", "/user/human-validate/validate", "/swagger-ui", "/oauth2/registration-urls", "/sms/reply" };
+
+    private String usernameFormatRegex;
+
+    private String passwordFormatRegex;
 
     private byte permissionDefaultPower;
 
@@ -62,7 +66,17 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private Duration humanValidationExpire;
 
-    private String humanValidationMovementParameter;
+    private boolean phoneNumberVerifyEnable;
+
+    private Duration phoneNumberSmsGenerateInterval;
+
+    private Duration phoneNumberSmsCodeExpire;
+
+    private String phoneNumberVerifySmsMessage;
+
+    private int phoneNumberMaxUse;
+
+    private int emailMaxUse;
 
     private String userDefaultRole;
 
@@ -74,6 +88,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private String loginFailureUrl;
 
+    private String logoutUrl;
+
+    private String logoutSuccessUrl;
+
     private String usernameParameter;
 
     private String passwordParameter;
@@ -81,6 +99,24 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private String rememberMeParameter;
 
     private OAuth2Configuration oauth2;
+
+    @Autowired
+    private AuthenticationSuccessHandler authenticationSuccessHandler;
+
+    @Autowired
+    private AuthenticationFailureHandler authenticationFailureHandler;
+
+    @Autowired
+    private AccessDeniedHandler accessDeniedHandler;
+
+    @Autowired
+    private LogoutHandler logoutHandler;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
+
+    @Autowired
+    private PersistentTokenRepository persistentTokenRepository;
 
     @Bean
     public PasswordEncoder passwordEncoderBean() {
@@ -116,9 +152,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 //    }
 
     @Bean
-    public RememberMeServices rememberMeServicesBean() throws Exception {
+    public RememberMeServices rememberMeServicesBean(@Autowired UserDetailsService service, @Autowired PersistentTokenRepository repository) throws Exception {
 
-        return new PersistentTokenBasedRememberMeServices("remember-me-service", ProjectBeanHolder.getUserRepository(), persistentTokenRepositoryBean());
+        return new PersistentTokenBasedRememberMeServices("remember-me-service", service, repository);
     }
 
     @Override
@@ -130,13 +166,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 //form login
                 .formLogin().loginPage(this.getLoginPageUrl()).loginProcessingUrl(this.getAuthenticationUrl())
                 .usernameParameter(this.getUsernameParameter()).passwordParameter(this.getPasswordParameter())
-                .successHandler(ProjectBeanHolder.getHttpAuthenticationSuccessHandler()).failureHandler(ProjectBeanHolder.getHttpAuthenticationFailureHandler()).and()
+                .successHandler(authenticationSuccessHandler).failureHandler(authenticationFailureHandler).and()
                 .userDetailsService(ProjectBeanHolder.getUserRepository())
                 .authenticationProvider(authenticationProviderBean())
-                .rememberMe().rememberMeParameter(this.getRememberMeParameter()).rememberMeServices(rememberMeServicesBean()).key("uniqueAndSecret").tokenValiditySeconds(86400).and()
+                .rememberMe().rememberMeParameter(this.getRememberMeParameter()).rememberMeServices(rememberMeServicesBean(userDetailsService, persistentTokenRepository)).key("uniqueAndSecret").tokenValiditySeconds(86400).and()
+                .logout().logoutUrl(this.getLogoutUrl()).invalidateHttpSession(true).clearAuthentication(true).deleteCookies("JSESSIONID").addLogoutHandler(logoutHandler).and()
                 //oauth2
                 .oauth2Login().loginPage(this.getLoginPageUrl())
-                .successHandler(ProjectBeanHolder.getHttpAuthenticationSuccessHandler()).failureHandler(ProjectBeanHolder.getHttpAuthenticationFailureHandler())
+                .successHandler(authenticationSuccessHandler).failureHandler(authenticationFailureHandler)
                 .authorizationEndpoint().baseUri(this.getOauth2().getAuthenticationUrl()).and()
                 .userInfoEndpoint().oidcUserService(ProjectBeanHolder.getExternalUserRepository()).and().and()
                 //session
@@ -164,25 +201,19 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public PersistentTokenRepository persistentTokenRepositoryBean() {
-        
-        return ProjectBeanHolder.getPersistentLoginsRepository();
-    }
-
-    @Bean
     @DependsOn("autowireLoader")
     public OAuth2LoginAccountAuthenticationFilter oAuth2LoginAccountAuthenticationFilterBean() throws Exception {
 
         OAuth2LoginAccountAuthenticationFilter filter = new OAuth2LoginAccountAuthenticationFilter(ProjectBeanHolder.getClientRegistrationRepository(), ProjectBeanHolder.getOauth2AuthorizedClientService());
         filter.setAuthenticationManager(ProjectBeanHolder.getAuthenticationManager());
-        filter.setAuthenticationSuccessHandler(ProjectBeanHolder.getHttpAuthenticationSuccessHandler());
-        filter.setAuthenticationFailureHandler(ProjectBeanHolder.getHttpAuthenticationFailureHandler());
+        filter.setAuthenticationSuccessHandler(authenticationSuccessHandler);
+        filter.setAuthenticationFailureHandler(authenticationFailureHandler);
         filter.setApplicationEventPublisher(ProjectBeanHolder.getApplicationEventPublisher());
         SessionCreationPolicy policy = getSessionCreationPolicy();
         filter.setAllowSessionCreation(policy != SessionCreationPolicy.NEVER && policy != SessionCreationPolicy.STATELESS);
         filter.setFilterProcessesUrl(this.getOauth2().getRedirectUrl() + "/*");
         filter.setSessionAuthenticationStrategy(compositeSessionAuthenticationStrategyBean());
-        filter.setRememberMeServices(rememberMeServicesBean());
+        filter.setRememberMeServices(rememberMeServicesBean(userDetailsService, persistentTokenRepository));
 
         return filter;
     }
@@ -250,6 +281,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.oauth2 = oauth2;
     }
 
+    public String getUsernameFormatRegex() {
+        return usernameFormatRegex;
+    }
+
+    public String getPasswordFormatRegex() {
+        return passwordFormatRegex;
+    }
+
     public Duration getHumanValidationCreateInterval() {
         return humanValidationCreateInterval;
     }
@@ -274,6 +313,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return loginFailureUrl;
     }
 
+    public String getLogoutUrl() {
+        return logoutUrl;
+    }
+
+    public String getLogoutSuccessUrl() {
+        return logoutSuccessUrl;
+    }
+
     public String getUsernameParameter() {
         return usernameParameter;
     }
@@ -286,20 +333,44 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return rememberMeParameter;
     }
 
-    public String getHumanValidationMovementParameter() {
-        return humanValidationMovementParameter;
+    public boolean isPhoneNumberVerifyEnable() {
+        return phoneNumberVerifyEnable;
+    }
+
+    public Duration getPhoneNumberSmsGenerateInterval() {
+        return phoneNumberSmsGenerateInterval;
+    }
+
+    public Duration getPhoneNumberSmsCodeExpire() {
+        return phoneNumberSmsCodeExpire;
+    }
+
+    public String getPhoneNumberVerifySmsMessage() {
+        return phoneNumberVerifySmsMessage;
+    }
+
+    public int getPhoneNumberMaxUse() {
+        return phoneNumberMaxUse;
+    }
+
+    public int getEmailMaxUse() {
+        return emailMaxUse;
     }
 
     public boolean isHumanValidationEnable() {
         return humanValidationEnable;
     }
 
-    public void setHumanValidationEnable(boolean humanValidationEnable) {
-        this.humanValidationEnable = humanValidationEnable;
+    public void setUsernameFormatRegex(String usernameFormatRegex) {
+        this.usernameFormatRegex = usernameFormatRegex;
     }
 
-    public void setHumanValidationMovementParameter(String humanValidationMovementParameter) {
-        this.humanValidationMovementParameter = humanValidationMovementParameter;
+    public void setPasswordFormatRegex(String passwordFormatRegex) {
+        this.passwordFormatRegex = passwordFormatRegex;
+    }
+
+    public void setHumanValidationEnable(boolean humanValidationEnable) {
+        this.humanValidationEnable = humanValidationEnable;
     }
 
     public void setHumanValidationCreateInterval(Duration humanValidationCreateInterval) {
@@ -308,6 +379,31 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public void setHumanValidationExpire(Duration humanValidationExpire) {
         this.humanValidationExpire = humanValidationExpire;
+    }
+
+    public void setPhoneNumberVerifyEnable(boolean phoneNumberVerifyEnable) {
+        this.phoneNumberVerifyEnable = phoneNumberVerifyEnable;
+    }
+
+    public void setPhoneNumberSmsGenerateInterval(Duration phoneNumberSmsGenerateInterval) {
+        this.phoneNumberSmsGenerateInterval = phoneNumberSmsGenerateInterval;
+    }
+
+    public void setPhoneNumberSmsCodeExpire(Duration phoneNumberSmsCodeExpire) {
+        this.phoneNumberSmsCodeExpire = phoneNumberSmsCodeExpire;
+    }
+
+    public void setPhoneNumberVerifySmsMessage(String phoneNumberVerifySmsMessage) {
+        this.phoneNumberVerifySmsMessage = phoneNumberVerifySmsMessage;
+    }
+
+    public void setPhoneNumberMaxUse(int phoneNumberMaxUse) {
+        this.phoneNumberMaxUse = phoneNumberMaxUse;
+    }
+
+
+    public void setEmailMaxUse(int emailMaxUse) {
+        this.emailMaxUse = emailMaxUse;
     }
 
     public void setLoginPageUrl(String loginPageUrl) {
@@ -320,6 +416,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public void setLoginFailureUrl(String loginFailureUrl) {
         this.loginFailureUrl = loginFailureUrl;
+    }
+
+    public void setLogoutUrl(String logoutUrl) {
+        this.logoutUrl = logoutUrl;
+    }
+
+    public void setLogoutSuccessUrl(String logoutSuccessUrl) {
+        this.logoutSuccessUrl = logoutSuccessUrl;
     }
 
     public void setUsernameParameter(String usernameParameter) {

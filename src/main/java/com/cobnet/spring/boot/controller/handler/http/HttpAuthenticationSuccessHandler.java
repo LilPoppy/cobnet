@@ -1,23 +1,19 @@
 package com.cobnet.spring.boot.controller.handler.http;
 
 import com.cobnet.security.AccountAuthenticationToken;
-import com.cobnet.spring.boot.configuration.SecurityConfiguration;
 import com.cobnet.spring.boot.core.HttpRequestUrlResolver;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.AuthenticationResult;
 import com.cobnet.spring.boot.dto.ConnectionToken;
-import com.cobnet.spring.boot.dto.RememberMeInfo;
 import com.cobnet.spring.boot.entity.ExternalUser;
-import com.cobnet.spring.boot.entity.PersistentLogins;
 import com.cobnet.spring.boot.entity.User;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
-import org.springframework.session.FindByIndexNameSessionRepository;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.stereotype.Controller;
 
 import javax.servlet.ServletException;
@@ -29,6 +25,9 @@ import java.io.PrintWriter;
 
 @Controller
 public class HttpAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+
+    @Autowired
+    private PersistentTokenRepository rememberMeRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -68,16 +67,6 @@ public class HttpAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
         ConnectionToken connectionToken = null;
 
-        RememberMeInfo rememberMe = null;
-
-        if(authentication.getPrincipal() instanceof User user) {
-
-            if(user.getRemeberMeInfo() != null) {
-
-                rememberMe = new RememberMeInfo(user.getRemeberMeInfo());
-            }
-        }
-
         if(session != null) {
 
             connectionToken = (ConnectionToken) session.getAttribute(ConnectionToken.ATTRIBUTE_KEY);
@@ -99,7 +88,7 @@ public class HttpAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
             try (PrintWriter writer = response.getWriter()) {
 
-                writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new AuthenticationResult(true, connectionToken, rememberMe)));
+                writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new AuthenticationResult(true, connectionToken)));
                 writer.flush();
             }
 

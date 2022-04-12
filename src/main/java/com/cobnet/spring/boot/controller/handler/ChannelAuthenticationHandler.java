@@ -38,12 +38,12 @@ public class ChannelAuthenticationHandler implements EventListener {
 			for (Object principal : ProjectBeanHolder.getSessionRegistry().getAllPrincipals()) {
 
 				if (principal instanceof Account account) {
-
+					//TODO change token store place into cache
 					Map<String, ? extends Session> sessions = ProjectBeanHolder.getRedisIndexedSessionRepository().findByPrincipalName(username);
 
 					for (String key : sessions.keySet()) {
 
-						if (((ConnectionToken)sessions.get(key).getAttribute(SecurityConfiguration.CONNECTION_TOKEN)).getToken().equals(token)) {
+						if (((ConnectionToken)sessions.get(key).getAttribute(SecurityConfiguration.CONNECTION_TOKEN)).token().equals(token)) {
 
 							authentication.setAccount(account);
 							LOG.info(String.format("%s has logged in as '%s' successfully.", channel.getRemoteAddress(), account.getUsername()));

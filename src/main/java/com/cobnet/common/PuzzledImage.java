@@ -20,8 +20,6 @@ public class PuzzledImage implements Serializable {
 
     private final int padding;
 
-    private final Date createdTime;
-
     @JsonIgnore
     private transient final int[][] template;
 
@@ -41,14 +39,13 @@ public class PuzzledImage implements Serializable {
         this.jigsawHeight = jigsawHeight;
         this.circleR = circleR;
         this.padding = padding;
-        this.template = generateBlock();
+        this.template = generateImage();
         this.image = image;
         this.jigsawImage = new BufferedImage(jigsawWidth, jigsawHeight, BufferedImage.TYPE_4BYTE_ABGR);
         Random random = new Random();
         this.jigsawX = random.nextInt(image.getWidth() - 2 * jigsawWidth) + jigsawWidth;
         this.jigsawY = random.nextInt(image.getHeight() - jigsawHeight);
         render();
-        this.createdTime = new Date(System.currentTimeMillis());
     }
 
     public int getJigsawWidth() {
@@ -90,12 +87,8 @@ public class PuzzledImage implements Serializable {
         return jigsawY;
     }
 
-    public Date getCreatedTime() {
-        return createdTime;
-    }
-
     @JsonIgnore
-    private int[][] generateBlock() {
+    private int[][] generateImage() {
 
         int[][] key = new int[jigsawWidth][jigsawHeight];
 
@@ -126,7 +119,7 @@ public class PuzzledImage implements Serializable {
     }
 
     private void render() throws IOException {
-
+        //TODO random circle position
         int[][] martrix = new int[3][3];
         int[] values = new int[9];
 

@@ -110,6 +110,7 @@ public class EntryPoint {
 		ProjectBeanHolder.getUserRepository().save(user);
 
 		ProjectBeanHolder.getHumanValidator().createImageValidation("tester");
+
 		if(Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("agent"))) {
 
 			System.exit(0);

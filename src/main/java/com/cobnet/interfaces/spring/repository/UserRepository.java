@@ -29,4 +29,8 @@ public interface UserRepository extends JPABaseRepository<User, String>, UserDet
     @CacheEvict(cacheNames = "Users", key = "#entity.getUsername()")
     @Override
     void delete(User entity);
+
+    long countByPhoneNumberContaining(String phoneNumber);
+
+    long countByEmailEquals(String email);
 }

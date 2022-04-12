@@ -1,34 +1,22 @@
 package com.cobnet.spring.boot.dto;
 
-import com.cobnet.spring.boot.dto.support.ApplicationJsonTransmission;
+import com.cobnet.interfaces.connection.web.ApplicationJson;
 
 import java.util.Date;
 import java.util.UUID;
 
-public class ConnectionToken extends ApplicationJsonTransmission {
+public record ConnectionToken(Date initialTime, String token) implements ApplicationJson {
 
     public static final String ATTRIBUTE_KEY = "CONNECTION_TOKEN";
 
-    private final Date initialTime;
-
-    private String token;
-
-    public ConnectionToken(Date initialTime, String token) {
-        this.initialTime = initialTime;
-        this.token = token;
-    }
-
-    public Date getInitialTime() {
-
+    @Override
+    public Date initialTime() {
         return initialTime;
     }
 
-    public String getToken() {
+    @Override
+    public String token() {
         return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 
     public static ConnectionToken generate() {

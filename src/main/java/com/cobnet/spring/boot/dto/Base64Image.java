@@ -1,29 +1,19 @@
 package com.cobnet.spring.boot.dto;
 
-import com.cobnet.interfaces.connection.Transmission;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.cobnet.interfaces.connection.web.ApplicationJson;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.Serializable;
 import java.nio.charset.Charset;
 import java.util.Base64;
 
-public class Base64Image implements Transmission<String>, Serializable {
-
-    private final String image;
-
-    private final String format;
-
-    private final String charset;
+public record Base64Image(String image, String format, String charset) implements ApplicationJson {
 
     public Base64Image(BufferedImage image, String format, Charset charset) throws IOException {
 
-        this.image = encode(image, format, charset);
-        this.format = format;
-        this.charset = charset.name();
+        this(encode(image, format, charset), format, charset.name());
     }
 
     public Base64Image(BufferedImage image, String format) throws IOException {
@@ -31,21 +21,18 @@ public class Base64Image implements Transmission<String>, Serializable {
         this(image, format, Charset.defaultCharset());
     }
 
-    @JsonIgnore
     @Override
-    public String getData() {
-        return null;
-    }
-
-    public String getImage() {
+    public String image() {
         return image;
     }
 
-    public String getFormat() {
+    @Override
+    public String format() {
         return format;
     }
 
-    public String getCharset() {
+    @Override
+    public String charset() {
         return charset;
     }
 

@@ -1,34 +1,16 @@
 package com.cobnet.spring.boot.dto;
 
-import com.cobnet.spring.boot.dto.support.ApplicationJsonTransmission;
+import com.cobnet.interfaces.connection.web.ApplicationJson;
 
-public class AuthenticationResult extends ApplicationJsonTransmission {
+public record AuthenticationResult(boolean authenticated, ConnectionToken connectionToken) implements ApplicationJson {
 
-    private final boolean authenticated;
-
-    private final ConnectionToken connectionToken;
-
-    private final RememberMeInfo rememberMeInfo;
-
-    public AuthenticationResult(boolean authenticated, ConnectionToken connectionToken, RememberMeInfo rememberMeInfo) {
-
-        this.authenticated = authenticated;
-        this.connectionToken = connectionToken;
-        this.rememberMeInfo = rememberMeInfo;
-    }
-
-    public boolean isAuthenticated() {
-
+    @Override
+    public boolean authenticated() {
         return authenticated;
     }
 
-    public ConnectionToken getConnectionToken() {
-
-        return this.connectionToken;
-    }
-
-    public RememberMeInfo getRememberMeInfo() {
-
-        return this.rememberMeInfo;
+    @Override
+    public ConnectionToken connectionToken() {
+        return connectionToken;
     }
 }
