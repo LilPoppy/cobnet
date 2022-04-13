@@ -54,8 +54,17 @@ public class Store implements Serializable {
         this.location = location;
         this.name = name;
         this.phone = phone;
-        this.services.addAll(services);
-        this.positions.addAll(positions);
+
+        if(services != null) {
+
+            this.services.addAll(services);
+        }
+
+        if(positions != null) {
+
+            this.positions.addAll(positions);
+        }
+
         this.crew.addAll(Arrays.asList(crew));
     }
 

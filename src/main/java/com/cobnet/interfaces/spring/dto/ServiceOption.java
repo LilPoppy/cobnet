@@ -1,10 +1,10 @@
 package com.cobnet.interfaces.spring.dto;
 
-import com.cobnet.interfaces.connection.EventListener;
-import com.cobnet.interfaces.connection.web.TextPlain;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 
-public interface ServiceOption<T> extends TextPlain {
+import java.io.Serializable;
+
+public interface ServiceOption<T> extends Serializable {
 
     String name();
 
@@ -22,5 +22,5 @@ public interface ServiceOption<T> extends TextPlain {
         return null;
     }
 
-    public ServiceOptionGenerator<? extends ServiceOption<T>> getGenerator();
+    public ServiceOptionGenerator<? extends ServiceOption<T>, T> getGenerator();
 }

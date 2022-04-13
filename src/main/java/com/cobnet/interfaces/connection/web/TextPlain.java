@@ -1,6 +1,8 @@
 package com.cobnet.interfaces.connection.web;
 
-public interface TextPlain extends Content<String> {
+import java.io.Serializable;
+
+public interface TextPlain<T> extends Content<T> {
 
 
 }

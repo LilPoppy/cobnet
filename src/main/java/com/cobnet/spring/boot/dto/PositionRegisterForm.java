@@ -12,6 +12,11 @@ public class PositionRegisterForm extends FormBase<PositionRegisterForm, Positio
 
     private boolean isDefault;
 
+    public PositionRegisterForm(String name, boolean isDefault) {
+        this.name = name;
+        this.isDefault = isDefault;
+    }
+
     @Override
     public FormGenerator<PositionRegisterForm> getGenerator() {
 

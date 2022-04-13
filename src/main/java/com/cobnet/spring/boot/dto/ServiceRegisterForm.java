@@ -18,11 +18,11 @@ public class ServiceRegisterForm extends FormBase<ServiceRegisterForm, Service> 
 
     private Map<ServiceOption<?>, ?> options;
 
-    public ServiceRegisterForm(String name, long price, Map<ServiceOption<?>, ?> options) {
+    public ServiceRegisterForm(String name, long price, Map<String, Object> options) {
 
         this.name = name;
         this.price = price;
-        this.options = options;
+        this.options = options != null ? options.entrySet().stream().map(option -> new KeyValuePair<>(ServiceOption.generate(option.getKey()), option.getValue())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)) : new HashMap<>();
     }
 
     public String getName() {

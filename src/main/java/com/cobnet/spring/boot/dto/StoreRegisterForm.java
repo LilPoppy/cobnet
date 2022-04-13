@@ -25,17 +25,11 @@ public class StoreRegisterForm extends FormBase<StoreRegisterForm, Store> {
 
     private String phone;
 
-    private Set<ServiceRegisterForm> services;
-
-    private Set<PositionRegisterForm> positions;
-
-    public StoreRegisterForm(String location, String name, String phone, Set<ServiceRegisterForm> services, Set<PositionRegisterForm> positions) {
+    public StoreRegisterForm(String location, String name, String phone) {
 
         this.location = location;
         this.name = name;
         this.phone = phone;
-        this.services = services;
-        this.positions = positions;
     }
 
     public String getLocation() {
@@ -50,14 +44,6 @@ public class StoreRegisterForm extends FormBase<StoreRegisterForm, Store> {
         return phone;
     }
 
-    public Set<ServiceRegisterForm> getServices() {
-        return services;
-    }
-
-    public Set<PositionRegisterForm> getPositions() {
-        return positions;
-    }
-
     public void setLocation(String location) {
         this.location = location;
     }
@@ -70,14 +56,6 @@ public class StoreRegisterForm extends FormBase<StoreRegisterForm, Store> {
         this.phone = phone;
     }
 
-    public void setServices(Set<ServiceRegisterForm> services) {
-        this.services = services;
-    }
-
-    public void setPositions(Set<PositionRegisterForm> positions) {
-        this.positions = positions;
-    }
-
     @Override
     public FormGenerator<StoreRegisterForm> getGenerator() {
 
@@ -87,7 +65,7 @@ public class StoreRegisterForm extends FormBase<StoreRegisterForm, Store> {
     @Override
     public Store getEntity() {
 
-        return new Store(this.location, this.name, this.phone, this.services.stream().map(ServiceRegisterForm::getEntity).collect(Collectors.toSet()), this.positions.stream().map(PositionRegisterForm::getEntity).collect(Collectors.toSet()));
+        return new Store(this.location, this.name, this.phone);
     }
 
 

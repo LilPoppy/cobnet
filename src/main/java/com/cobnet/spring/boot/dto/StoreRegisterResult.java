@@ -8,4 +8,5 @@ public record StoreRegisterResult(StoreRegisterResultStatus status) {
     public StoreRegisterResultStatus status() {
         return status;
     }
+
 }
