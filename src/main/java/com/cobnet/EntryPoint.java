@@ -1,12 +1,10 @@
 package com.cobnet;
 
-import com.cobnet.common.PuzzledImage;
+import com.cobnet.common.ImageUtils;
 import com.cobnet.connection.websocket.WebSocketServer;
 import com.cobnet.security.RoleRule;
 import com.cobnet.security.permission.UserPermission;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
-import com.cobnet.spring.boot.core.RandomImageProvider;
-import com.cobnet.spring.boot.dto.Base64Image;
 import com.cobnet.spring.boot.entity.User;
 import com.cobnet.spring.boot.entity.UserRole;
 import org.slf4j.Logger;
@@ -18,8 +16,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;

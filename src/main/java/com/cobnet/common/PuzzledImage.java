@@ -1,13 +1,11 @@
 package com.cobnet.common;
 
-import com.cobnet.spring.boot.dto.Base64Image;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.Random;
 
 public class PuzzledImage implements Serializable {

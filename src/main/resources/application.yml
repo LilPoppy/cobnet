@@ -89,7 +89,7 @@ spring:
       password-format-regex: ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$
       permission-default-power: 3
       human-validation-enable: false
-      human-validation-create-interval: 30s
+      human-validation-create-interval: 1s
       human-validation-expire: 3m
       phone-number-verify-enable: true
       phone-number-sms-generate-interval: 60s
