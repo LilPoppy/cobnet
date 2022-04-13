@@ -94,6 +94,7 @@ spring:
       phone-number-verify-enable: true
       phone-number-sms-generate-interval: 60s
       phone-number-sms-code-expire: 5m
+      phone-number-sms-verify-times: 3
       phone-number-verify-sms-message: "$(code) is your ${project.information.name} verification code."
       phone-number-max-use: 10
       email-max-use: 10
@@ -163,7 +164,7 @@ management:
          enable: true
 twilio:
    account-sid: ACaa871dd615aca9c8d798ec44aaeed2f5
-   authentication-token: 04b537f56e5fd3b436ca25d7b19e703e
+   authentication-token: c7ee5074a7d5c361128887b044705da9
    numbers: +19108078297
 netty:
    enable: true

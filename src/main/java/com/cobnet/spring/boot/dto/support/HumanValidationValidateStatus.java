@@ -4,7 +4,8 @@ public enum HumanValidationValidateStatus {
 
     SUCCESS(201),
     TIMEOUT(408),
-    WRONG_POSITION(400);
+    WRONG_POSITION(400),
+    REJECTED(400);
 
     private final int code;
 

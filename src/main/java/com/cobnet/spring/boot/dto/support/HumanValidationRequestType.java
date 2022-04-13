@@ -1,15 +1,13 @@
 package com.cobnet.spring.boot.dto.support;
 
-public enum HumanValidationRequestStatus {
+public enum HumanValidationRequestType {
 
-    SUCCESS(201),
-    INTERVAL_LIMITED(400),
-    REJECTED(400);
-
+    LOGIN(0),
+    SMS_REQUEST(1);
 
     private final int code;
 
-    private HumanValidationRequestStatus(int code) {
+    private HumanValidationRequestType(int code) {
         this.code = code;
     }
 
