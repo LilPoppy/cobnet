@@ -4,6 +4,7 @@ public enum PhoneNumberSmsRequestResultStatus {
 
     SUCCESS(201),
     INTERVAL_LIMITED(400),
+    HUMAN_VALIDATION_REQUEST(400),
     NUMBER_OVERUSED(409),
     SERVICE_DOWN(503);
 

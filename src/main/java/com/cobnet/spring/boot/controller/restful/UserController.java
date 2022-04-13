@@ -1,8 +1,11 @@
 package com.cobnet.spring.boot.controller.restful;
 
-import com.cobnet.interfaces.security.annotation.AccessSecured;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.*;
+import com.cobnet.spring.boot.dto.support.HumanValidationRequestStatus;
+import com.cobnet.spring.boot.dto.support.HumanValidationRequestType;
+import com.cobnet.spring.boot.dto.support.HumanValidationValidateStatus;
+import com.cobnet.spring.boot.service.support.AccountPhoneNumberVerifyCache;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,9 +36,25 @@ public class UserController {
 
     @Operation(summary = "Validate is human operation.")
     @PostMapping("/user/human-validate/validate")
-    public HumanValidationValidate humanValidate(HttpServletRequest request, HttpServletResponse response, int position) {
+    public HumanValidationValidate humanValidate(HttpServletRequest http, HttpServletResponse response, HumanValidationRequest request, int position) {
 
-        HumanValidationValidate result = ProjectBeanHolder.getHumanValidator().imageValidate(request.getSession(true).getId(), position);
+        HumanValidationValidate result = null;
+
+        switch (request.type()) {
+            case LOGIN -> result = ProjectBeanHolder.getHumanValidator().validate(http.getSession(true).getId(), position);
+            case SMS_REQUEST -> {
+
+                AccountPhoneNumberVerifyCache cache = ProjectBeanHolder.getAccountService().getPhoneNumberVerifyCache(request.username());
+
+                if (cache == null) {
+
+                    result = new HumanValidationValidate(HumanValidationValidateStatus.REJECTED);
+                    break;
+                }
+
+                result = ProjectBeanHolder.getHumanValidator().validate(request.key(), position);
+            }
+        };
 
         response.setStatus(result.status().getCode());
 
@@ -43,10 +62,26 @@ public class UserController {
     }
 
     @Operation(summary = "Request new resources to verify is human operating.")
-    @GetMapping("/user/human-validate/request")
-    public HumanValidationRequest requestHumanValidation(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @PostMapping("/user/human-validate/request")
+    public HumanValidationRequestResult requestHumanValidation(HttpServletRequest http, HttpServletResponse response, HumanValidationRequest request) throws IOException {
 
-        HumanValidationRequest result = ProjectBeanHolder.getHumanValidator().createImageValidation(request.getSession(true).getId());
+        HumanValidationRequestResult result = null;
+
+        switch (request.type()) {
+            case LOGIN -> result = ProjectBeanHolder.getHumanValidator().create(http.getSession(true).getId());
+            case SMS_REQUEST -> {
+
+                AccountPhoneNumberVerifyCache cache = ProjectBeanHolder.getAccountService().getPhoneNumberVerifyCache(request.username());
+
+                if (cache == null) {
+
+                    result = new HumanValidationRequestResult(HumanValidationRequestStatus.REJECTED);
+                    break;
+                }
+
+                result = ProjectBeanHolder.getHumanValidator().create(request.key());
+            }
+        }
 
         response.setStatus(result.status().getCode());
 
@@ -55,7 +90,7 @@ public class UserController {
 
     @Operation(summary = "Request sms verify for provided phone number.")
     @PostMapping("/user/sms/request")
-    public PhoneNumberSmsRequestResult phoneNumberSmsRequest(HttpServletResponse response, PhoneNumberSmsRequest request) {
+    public PhoneNumberSmsRequestResult phoneNumberSmsRequest(HttpServletResponse response, PhoneNumberSmsRequest request) throws IOException {
 
         PhoneNumberSmsRequestResult result = ProjectBeanHolder.getAccountService().requestPhoneNumberSms(request);
 
@@ -64,7 +99,7 @@ public class UserController {
         return result;
     }
 
-    @Operation(summary = "Verify sms code on record.")
+    @Operation(summary = "Verify sms code from record.")
     @PostMapping("/user/sms/verify")
     public PhoneNumberSmsVerifyResult phoneNumberSmsVerify(HttpServletResponse response, PhoneNumberSmsVerify verify) {
 

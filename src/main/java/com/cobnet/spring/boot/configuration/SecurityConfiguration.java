@@ -72,6 +72,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private Duration phoneNumberSmsCodeExpire;
 
+    private int phoneNumberSmsVerifyTimes;
+
     private String phoneNumberVerifySmsMessage;
 
     private int phoneNumberMaxUse;
@@ -131,7 +133,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     *  Unable to pass in run time
+     *  Unable to pass in run times
      *     Caused by: java.lang.NullPointerException: null
      *      at org.springframework.util.ReflectionUtils.makeAccessible(ReflectionUtils.java:788) ~[na:na]
      *      at org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter$AuthenticationManagerDelegator.<init>(WebSecurityConfigurerAdapter.java:501) ~[na:na]
@@ -349,6 +351,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return phoneNumberVerifySmsMessage;
     }
 
+    public int getPhoneNumberSmsVerifyTimes() {
+        return phoneNumberSmsVerifyTimes;
+    }
+
     public int getPhoneNumberMaxUse() {
         return phoneNumberMaxUse;
     }
@@ -391,6 +397,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public void setPhoneNumberSmsCodeExpire(Duration phoneNumberSmsCodeExpire) {
         this.phoneNumberSmsCodeExpire = phoneNumberSmsCodeExpire;
+    }
+
+    public void setPhoneNumberSmsVerifyTimes(int phoneNumberSmsVerifyTimes) {
+        this.phoneNumberSmsVerifyTimes = phoneNumberSmsVerifyTimes;
     }
 
     public void setPhoneNumberVerifySmsMessage(String phoneNumberVerifySmsMessage) {

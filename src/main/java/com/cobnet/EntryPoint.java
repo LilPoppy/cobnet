@@ -108,8 +108,6 @@ public class EntryPoint {
 		ProjectBeanHolder.getUserRoleRepository().save(new UserRole("user", RoleRule.USER, true));
 		ProjectBeanHolder.getUserRepository().save(user);
 
-		ProjectBeanHolder.getHumanValidator().createImageValidation("tester");
-
 		if(Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("agent"))) {
 
 			System.exit(0);

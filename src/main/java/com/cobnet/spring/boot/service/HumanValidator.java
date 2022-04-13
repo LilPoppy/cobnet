@@ -5,10 +5,10 @@ import com.cobnet.common.ImageUtils;
 import com.cobnet.common.PuzzledImage;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.Base64Image;
-import com.cobnet.spring.boot.dto.HumanValidationRequest;
+import com.cobnet.spring.boot.dto.HumanValidationRequestResult;
 import com.cobnet.spring.boot.dto.HumanValidationValidate;
-import com.cobnet.spring.boot.dto.support.HumanValidationValidateStatus;
 import com.cobnet.spring.boot.dto.support.HumanValidationRequestStatus;
+import com.cobnet.spring.boot.dto.support.HumanValidationValidateStatus;
 import com.cobnet.spring.boot.service.support.HumanValidationCache;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ import java.io.Serializable;
 @Service
 public class HumanValidator {
 
-    public <T extends Serializable> HumanValidationRequest createImageValidation(T key) throws IOException {
+    public <T extends Serializable> HumanValidationRequestResult create(T key) throws IOException {
 
         HumanValidationCache cache = this.getCache(key);
 
@@ -31,7 +31,7 @@ public class HumanValidator {
                 return generateImage(key);
             }
 
-            return new HumanValidationRequest(HumanValidationRequestStatus.INTERVAL_LIMITED);
+            return new HumanValidationRequestResult(HumanValidationRequestStatus.INTERVAL_LIMITED);
         }
 
         return generateImage(key);
@@ -47,9 +47,7 @@ public class HumanValidator {
         return ImageUtils.getLuminance(grayscale) <= 30 && hsv[2] <= 0.125f;
     }
 
-    private <T extends Serializable> HumanValidationRequest generateImage(T key) throws IOException {
-
-        System.out.println("aaa");
+    private <T extends Serializable> HumanValidationRequestResult generateImage(T key) throws IOException {
 
         BufferedImage pulled = ImageIO.read(ProjectBeanHolder.getRandomImageProvider().getFromPicsum(256, 128).get());
 
@@ -67,7 +65,7 @@ public class HumanValidator {
 
         ProjectBeanHolder.getCacheService().set(HumanValidationCache.HumanValidatorKey, key, new HumanValidationCache(image, DateUtils.now(), false, false), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire());
 
-        return new HumanValidationRequest(HumanValidationRequestStatus.SUCCESS, image.getJigsawY(), new Base64Image(image.getImage(), "png"), new Base64Image(image.getJigsawImage(), "png"));
+        return new HumanValidationRequestResult(HumanValidationRequestStatus.SUCCESS, image.getJigsawY(), new Base64Image(image.getImage(), "png"), new Base64Image(image.getJigsawImage(), "png"));
     }
 
     public <T extends Serializable> HumanValidationCache getCache(T key) {
@@ -75,7 +73,7 @@ public class HumanValidator {
         return ProjectBeanHolder.getCacheService().get(HumanValidationCache.HumanValidatorKey, key, HumanValidationCache.class);
     }
 
-    public <T extends Serializable> HumanValidationValidate imageValidate(T key, double position) {
+    public <T extends Serializable> HumanValidationValidate validate(T key, double position) {
 
         //TODO more advance to check is human operating
 

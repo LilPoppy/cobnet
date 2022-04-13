@@ -6,7 +6,7 @@ import com.cobnet.spring.boot.service.AccountService;
 import java.io.Serializable;
 import java.util.Date;
 
-public record AccountPhoneNumberVerifyCache(int code, Date createdTime, PhoneNumberSmsType type, boolean verified) implements Serializable {
+public record AccountPhoneNumberVerifyCache(int code, Date createdTime, PhoneNumberSmsType type, int times, boolean verified) implements Serializable {
 
     public static final String AccountServiceKey = AccountService.class.getSimpleName();
 
@@ -21,6 +21,10 @@ public record AccountPhoneNumberVerifyCache(int code, Date createdTime, PhoneNum
     }
 
     public PhoneNumberSmsType type() { return type; }
+
+    public int times() {
+        return times;
+    }
 
     @Override
     public boolean verified() {
