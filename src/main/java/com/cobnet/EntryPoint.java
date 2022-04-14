@@ -5,6 +5,7 @@ import com.cobnet.connection.websocket.WebSocketServer;
 import com.cobnet.security.RoleRule;
 import com.cobnet.security.permission.UserPermission;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
+import com.cobnet.spring.boot.entity.Address;
 import com.cobnet.spring.boot.entity.User;
 import com.cobnet.spring.boot.entity.UserRole;
 import org.slf4j.Logger;
@@ -103,7 +104,7 @@ public class EntryPoint {
 		LOG.info(EntryPoint.getLogo());
 
 
-		User user = new User("admin", "123456", "Bob", "Smith", new UserRole("admin", RoleRule.ADMIN, false, new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")));
+		User user = new User("admin", "123456", "Bob", "Smith", new Address.Builder().setStreet("1 Heaven Street").build(), new UserRole("admin", RoleRule.ADMIN, false, new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")));
 
 		ProjectBeanHolder.getUserRoleRepository().save(new UserRole("user", RoleRule.USER, true));
 		ProjectBeanHolder.getUserRepository().save(user);

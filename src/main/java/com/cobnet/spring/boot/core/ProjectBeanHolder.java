@@ -41,6 +41,8 @@ import javax.sql.DataSource;
 
 public class ProjectBeanHolder {
 
+    private static StoreService STORE_SERVICE;
+
     private static AddressRepository ADDRESS_REPOSITORY;
 
     private static PhoneNumberSmsVerifyService PHONE_NUMBER_SMS_VERIFY_SERVICE;
@@ -355,6 +357,11 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.OAUTH2_AUTHORIZED_CLIENT_SERVICE;
     }
 
+    public static StoreService getStoreService() {
+
+        return ProjectBeanHolder.STORE_SERVICE;
+    }
+
     public static SessionRegistry getSessionRegistry() {
 
         return ProjectBeanHolder.SESSION_REGISTRY;
@@ -472,6 +479,12 @@ public class ProjectBeanHolder {
         public void setDatasourceConfiguration(DatasourceConfiguration config) {
 
             ProjectBeanHolder.DATASOURCE_CONFIGURATION = config;
+        }
+
+        @Autowired
+        public void setStoreService(StoreService service) {
+
+            ProjectBeanHolder.STORE_SERVICE = service;
         }
 
         @Autowired
