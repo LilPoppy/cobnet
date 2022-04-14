@@ -7,6 +7,8 @@ import com.cobnet.security.permission.UserPermission;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.User;
 import com.cobnet.spring.boot.entity.UserRole;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.PlaceType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -91,7 +93,7 @@ public class EntryPoint {
 			                        ****
 			""";
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException, ApiException {
 
 		SpringApplication.run(EntryPoint.class, args);
 

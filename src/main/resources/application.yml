@@ -166,6 +166,9 @@ twilio:
    account-sid: ACaa871dd615aca9c8d798ec44aaeed2f5
    authentication-token: c7ee5074a7d5c361128887b044705da9
    numbers: +19108078297
+google:
+   map:
+      api-key: "AIzaSyD392d2n4sjnKsekSGT2CcCzfgXjEFkJ_A"
 netty:
    enable: true
    servers:

@@ -6,6 +6,9 @@ import com.cobnet.spring.boot.dto.support.HumanValidationRequestStatus;
 import com.cobnet.spring.boot.dto.support.HumanValidationRequestType;
 import com.cobnet.spring.boot.dto.support.HumanValidationValidateStatus;
 import com.cobnet.spring.boot.service.support.AccountPhoneNumberVerifyCache;
+import com.google.maps.PlaceAutocompleteRequest;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.AutocompletePrediction;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,6 +29,13 @@ public class UserController {
     public AuthenticationResult login(String username, String password, @RequestParam(name = "remember-me") boolean rememberme) {
 
         throw new RuntimeException("apidoc");
+    }
+
+    @PostMapping("/user/test")
+    public AutocompletePrediction[] autoCompleteRequest(HttpServletRequest request, String text) throws IOException, InterruptedException, ApiException {
+
+
+        return ProjectBeanHolder.getGoogleMap().placeAutocompleteRequest(text, request.getSession(true)).await();
     }
 
     @Operation(summary = "Logout user")

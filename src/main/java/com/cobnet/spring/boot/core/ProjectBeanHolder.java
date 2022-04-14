@@ -50,6 +50,10 @@ import javax.sql.DataSource;
 
 public class ProjectBeanHolder {
 
+    private static GoogleMap GOOGLE_MAP;
+
+    private static GoogleMapConfiguration GOOGLE_MAP_CONFIGURATION;
+
     private static RememberMeServices REMEMBER_ME_SERVICE;
 
     private static AccountService ACCOUNT_SERVICE;
@@ -232,6 +236,16 @@ public class ProjectBeanHolder {
     public static SecurityConfiguration getSecurityConfiguration() {
 
         return ProjectBeanHolder.SECURITY_CONFIGURATION;
+    }
+
+    public static GoogleMap getGoogleMap() {
+
+        return ProjectBeanHolder.GOOGLE_MAP;
+    }
+
+    public static GoogleMapConfiguration getGoogleMapConfiguration() {
+
+        return ProjectBeanHolder.GOOGLE_MAP_CONFIGURATION;
     }
 
     public static TwilioConfiguration getTwilioConfiguration() {
@@ -679,6 +693,18 @@ public class ProjectBeanHolder {
         }
 
         @Autowired
+        public void setGoogleMap(GoogleMap map) {
+
+            ProjectBeanHolder.GOOGLE_MAP = map;
+        }
+
+        @Autowired
+        public void setGoogleMapConfiguration(GoogleMapConfiguration configuration) {
+
+            ProjectBeanHolder.GOOGLE_MAP_CONFIGURATION = configuration;
+        }
+
+        @Autowired
         public void setDataSource(DataSource source) {
 
             ProjectBeanHolder.DATA_SOURCE = source;
@@ -769,6 +795,12 @@ public class ProjectBeanHolder {
         public RandomImageProvider randomImageProviderBean() {
 
             return new RandomImageProvider();
+        }
+
+        @Bean
+        public GoogleMap googleMapBean(GoogleMapConfiguration configuration) {
+
+            return new GoogleMap(configuration);
         }
 
     }
