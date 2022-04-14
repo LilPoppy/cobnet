@@ -66,9 +66,9 @@ public class GoogleMap {
         return PlacesApi.placeAutocomplete(this.context, input, token);
     }
 
-    public PlaceAutocompleteRequest placeAutocompleteRequest(String input, HttpSession session) {
+    public PlaceAutocompleteRequest placeAutocompleteRequest(String input, String token) {
 
-        return this.placeAutocompleteRequest(input, new PlaceAutocompleteRequest.SessionToken(session.getId()));
+        return this.placeAutocompleteRequest(input, new PlaceAutocompleteRequest.SessionToken(token));
     }
 
     public QueryAutocompleteRequest queryAutocompleteRequest(String input) {

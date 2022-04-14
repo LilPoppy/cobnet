@@ -1,18 +1,9 @@
 package com.cobnet.spring.boot.core;
 
 import com.cobnet.interfaces.security.Account;
-import com.cobnet.interfaces.spring.repository.ExternalUserRepository;
-import com.cobnet.interfaces.spring.repository.PersistentLoginsRepository;
-import com.cobnet.interfaces.spring.repository.UserRepository;
-import com.cobnet.interfaces.spring.repository.UserRoleRepository;
+import com.cobnet.interfaces.spring.repository.*;
 import com.cobnet.spring.boot.configuration.*;
-import com.cobnet.spring.boot.controller.handler.http.HttpAccessDeniedHandler;
-import com.cobnet.spring.boot.controller.handler.http.HttpAuthenticationFailureHandler;
-import com.cobnet.spring.boot.controller.handler.http.HttpAuthenticationSuccessHandler;
-import com.cobnet.spring.boot.service.AccountService;
-import com.cobnet.spring.boot.service.CacheService;
-import com.cobnet.spring.boot.service.HumanValidator;
-import com.cobnet.spring.boot.service.RedisCacheKeyGenerator;
+import com.cobnet.spring.boot.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.modelmapper.ModelMapper;
@@ -49,6 +40,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 public class ProjectBeanHolder {
+
+    private static AddressRepository ADDRESS_REPOSITORY;
+
+    private static PhoneNumberSmsVerifyService PHONE_NUMBER_SMS_VERIFY_SERVICE;
+
+    private static GoogleMapService GOOGLE_MAP_SERVICE;
 
     private static GoogleMap GOOGLE_MAP;
 
@@ -273,6 +270,16 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.SCRIPT_ENGINE_MANAGER;
     }
 
+    public static PhoneNumberSmsVerifyService getPhoneNumberSmsVerifyService() {
+
+        return ProjectBeanHolder.PHONE_NUMBER_SMS_VERIFY_SERVICE;
+    }
+
+    public static GoogleMapService getGoogleMapService() {
+
+        return ProjectBeanHolder.GOOGLE_MAP_SERVICE;
+    }
+
     public static TaskProvider getTaskProvider() {
 
         return ProjectBeanHolder.TASK_PROVIDER;
@@ -423,6 +430,11 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.MODEL_MAPPER;
     }
 
+    public static AddressRepository getAddressRepository() {
+
+        return ProjectBeanHolder.ADDRESS_REPOSITORY;
+    }
+
     @Component("autowireLoader")
     public static class AutowireLoader {
 
@@ -514,6 +526,12 @@ public class ProjectBeanHolder {
         public void setHashMapper(Jackson2HashMapper mapper) {
 
             ProjectBeanHolder.HASH_MAPPER = mapper;
+        }
+
+        @Autowired
+        public void setAddressRepository(AddressRepository repository) {
+
+            ProjectBeanHolder.ADDRESS_REPOSITORY = repository;
         }
 
         @Autowired
@@ -666,6 +684,18 @@ public class ProjectBeanHolder {
         public void setRedirectStrategy(RedirectStrategy strategy) {
 
             ProjectBeanHolder.REDIRECT_STRATEGY = strategy;
+        }
+
+        @Autowired
+        public void setPhoneSmsVerifyService(PhoneNumberSmsVerifyService service) {
+
+            ProjectBeanHolder.PHONE_NUMBER_SMS_VERIFY_SERVICE = service;
+        }
+
+        @Autowired
+        public void setGoogleMapService(GoogleMapService service) {
+
+            ProjectBeanHolder.GOOGLE_MAP_SERVICE = service;
         }
 
         @Autowired

@@ -85,7 +85,7 @@ spring:
                ssl:
                   enable: true
    security:
-      username-format-regex: ^[a-zA-Z0-9]{8,16}$
+      username-format-regex: ^[a-zA-Z0-9]{6,16}$
       password-format-regex: ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$
       permission-default-power: 3
       human-validation-enable: false
@@ -98,9 +98,12 @@ spring:
       phone-number-verify-sms-message: "$(code) is your ${project.information.name} verification code."
       phone-number-max-use: 10
       email-max-use: 10
+      google-map-autocomplete-limit: 15
+      google-map-autocomplete-limit-duration: 5m
+      google-map-autocomplete-session-require: 30s
       user-default-role: "user"
-      authentication-url: "/user/login"
-      login-page-url: "/user/login"
+      authentication-url: "/visitor/login"
+      login-page-url: "/visitor/login"
       logout-url: "/user/logout"
 # default will do restful way
 #      login-success-url: "/index"
@@ -139,6 +142,8 @@ logging:
    level:
       root: INFO
 server:
+   tomcat:
+      relaxed-query-chars: '[,]'
    port: "@tomcat-port@"
    forward-headers-strategy: framework
    session: 

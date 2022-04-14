@@ -5,7 +5,7 @@ import com.cobnet.spring.boot.dto.support.UserRegisterResultStatus;
 
 import java.util.List;
 
-public record UserRegisterResult(UserRegisterResultStatus status, List<UserRegisterFormField> content) {
+public record UserRegisterResult(UserRegisterResultStatus status, Object result) {
 
     public UserRegisterResult(UserRegisterResultStatus status) {
 
@@ -18,7 +18,7 @@ public record UserRegisterResult(UserRegisterResultStatus status, List<UserRegis
     }
 
     @Override
-    public List<UserRegisterFormField> content() {
-        return content;
+    public Object result() {
+        return result;
     }
 }

@@ -1,8 +1,12 @@
 package com.cobnet.spring.boot.dto;
 
+import com.cobnet.interfaces.connection.web.ApplicationJson;
+import com.cobnet.interfaces.connection.web.Form;
 import com.cobnet.interfaces.connection.web.FormGenerator;
+import com.cobnet.interfaces.connection.web.annotation.FormParam;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.User;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
@@ -53,7 +57,6 @@ public class UserRegisterForm extends FormBase<UserRegisterForm, User> {
         return lastName;
     }
 
-
     public void setUsername(String username) {
         this.username = username;
     }
@@ -87,9 +90,8 @@ public class UserRegisterForm extends FormBase<UserRegisterForm, User> {
     @Override
     public User getEntity() {
 
-        return new User(this.username, this.password, this.firstName, this.lastName, this.phoneNumber, this.email, ProjectBeanHolder.getUserRoleRepository().getDefaultRole().get());
+        return new User.Builder().setUsername(this.username).setPassword(this.password).setFirstName(this.firstName).setLastName(this.lastName).setPhoneNumber(this.phoneNumber).setEmail(this.email).setRoles(ProjectBeanHolder.getUserRoleRepository().getDefaultRole().get()).build();
     }
-
 
     public static class RegisterFormGenerator implements FormGenerator<UserRegisterForm> {
 

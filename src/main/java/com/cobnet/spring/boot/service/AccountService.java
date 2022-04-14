@@ -1,6 +1,6 @@
 package com.cobnet.spring.boot.service;
 
-import com.cobnet.common.DateUtils;
+import com.cobnet.common.KeyValuePair;
 import com.cobnet.event.account.AccountLoginEvent;
 import com.cobnet.event.account.AccountPasswordEncodingEvent;
 import com.cobnet.exception.AuthenticationCancelledException;
@@ -12,13 +12,14 @@ import com.cobnet.spring.boot.configuration.SecurityConfiguration;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.*;
 import com.cobnet.spring.boot.dto.support.*;
+import com.cobnet.spring.boot.entity.Address;
 import com.cobnet.spring.boot.entity.User;
 import com.cobnet.spring.boot.service.support.AccountPhoneNumberVerifyCache;
 import com.cobnet.spring.boot.service.support.HumanValidationCache;
-import org.apache.http.NoHttpResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -30,11 +31,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
-import java.util.stream.StreamSupport;
 
 @Service
 public class AccountService {
@@ -130,124 +128,36 @@ public class AccountService {
         return authentication;
     }
 
-    public PhoneNumberSmsRequestResult requestPhoneNumberSms(PhoneNumberSmsRequest request) throws IOException {
-
-        if(request.type() == PhoneNumberSmsType.ACCOUNT_REGISTER) {
-
-            long count = ProjectBeanHolder.getUserRepository().countByPhoneNumberContaining(request.phoneNumber());
-
-            if(count > ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberMaxUse()) {
-
-                return new PhoneNumberSmsRequestResult(PhoneNumberSmsRequestResultStatus.NUMBER_OVERUSED);
-            }
-        }
-
-        AccountPhoneNumberVerifyCache cache = ProjectBeanHolder.getCacheService().get(AccountPhoneNumberVerifyCache.AccountServiceKey, request.username(), AccountPhoneNumberVerifyCache.class);
-
-        if(cache != null) {
-
-            if (DateUtils.addDuration(cache.createdTime(), ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsGenerateInterval()).before(DateUtils.now())) {
-
-                if(cache.times() >= ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsVerifyTimes()) {
-
-                    HumanValidationCache humanValidationCache = ProjectBeanHolder.getHumanValidator().getCache(request.phoneNumber());
-
-                    if(humanValidationCache == null || !humanValidationCache.isValidated()) {
-
-                        return new PhoneNumberSmsRequestResult(PhoneNumberSmsRequestResultStatus.HUMAN_VALIDATION_REQUEST, new Object[]{ "/user/human-validate/request", new HumanValidationRequest(HumanValidationRequestType.SMS_REQUEST, request.username(), request.phoneNumber())});
-                    }
-                }
-
-                return sendSms(request);
-            }
-
-            return new PhoneNumberSmsRequestResult(PhoneNumberSmsRequestResultStatus.INTERVAL_LIMITED, ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsGenerateInterval().minus(DateUtils.getInterval(DateUtils.now(), cache.createdTime())));
-        }
-
-        return sendSms(request);
-    }
-
-    private PhoneNumberSmsRequestResult sendSms(PhoneNumberSmsRequest request) throws IOException {
-
-        Random random = new Random();
-
-        int code = random.nextInt(987654 + 1 - 123456) + 123456;
-
-        AccountPhoneNumberVerifyCache cache = this.getPhoneNumberVerifyCache(request.username());
-
-        ProjectBeanHolder.getCacheService().set(AccountPhoneNumberVerifyCache.AccountServiceKey, request.username(), new AccountPhoneNumberVerifyCache(code, DateUtils.now(), request.type(), cache != null ? cache.times() + 1 : 0, false), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire());
-
-        try {
-
-            ProjectBeanHolder.getMessager().message(request.phoneNumber(), ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberVerifySmsMessage().replace("$(code)", Integer.toString(code))).create();
-
-        } catch (Exception ex) {
-
-            return new PhoneNumberSmsRequestResult(PhoneNumberSmsRequestResultStatus.SERVICE_DOWN);
-        }
-
-        return new PhoneNumberSmsRequestResult(PhoneNumberSmsRequestResultStatus.SUCCESS);
-    }
-
-    public PhoneNumberSmsVerifyResult requestPhoneNumberVerify(PhoneNumberSmsVerify verify) {
-
-        AccountPhoneNumberVerifyCache cache = getPhoneNumberVerifyCache(verify.username());
-
-        if(cache != null && cache.type() == verify.type() && cache.code() == verify.code()) {
-
-            ProjectBeanHolder.getCacheService().set(AccountPhoneNumberVerifyCache.AccountServiceKey, verify.username(), new AccountPhoneNumberVerifyCache(verify.code(), DateUtils.now(), verify.type(), cache.times(),true), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire());
-
-            return new PhoneNumberSmsVerifyResult(PhoneNumberSmsVerifyResultStatus.SUCCESS);
-        }
-
-        return new PhoneNumberSmsVerifyResult(PhoneNumberSmsVerifyResultStatus.FAILED);
-    }
-
-    public AccountPhoneNumberVerifyCache getPhoneNumberVerifyCache(String key) {
-
-        return ProjectBeanHolder.getCacheService().get(AccountPhoneNumberVerifyCache.AccountServiceKey, key, AccountPhoneNumberVerifyCache.class);
-    }
-
-    public int getSmsCode(String key, PhoneNumberSmsType type) {
-
-        AccountPhoneNumberVerifyCache cache = getPhoneNumberVerifyCache(key);
-
-        if(cache != null) {
-
-            if(cache.type() == type) {
-
-                return cache.code();
-            }
-
-            return 0;
-        }
-
-        return 0;
-    }
-
-    public UserRegisterResult register(UserRegisterForm form) {
+    public UserRegisterResult register(UserRegisterForm form, AddressForm address) {
 
         if(ProjectBeanHolder.getSecurityConfiguration().isPhoneNumberVerifyEnable()) {
 
-            AccountPhoneNumberVerifyCache cache = ProjectBeanHolder.getCacheService().get(AccountPhoneNumberVerifyCache.AccountServiceKey, form.getUsername(), AccountPhoneNumberVerifyCache.class);
+            AccountPhoneNumberVerifyCache cache = ProjectBeanHolder.getCacheService().get(AccountPhoneNumberVerifyCache.PhoneNumberSmsVerifyServiceKey, form.getUsername(), AccountPhoneNumberVerifyCache.class);
 
             if (cache != null) {
 
                 if (cache.type() == PhoneNumberSmsType.ACCOUNT_REGISTER && cache.verified()) {
 
-                    return register(form.getEntity());
+                    return register(form.getEntity(), address.getEntity());
                 }
 
                 return new UserRegisterResult(UserRegisterResultStatus.VERIFICATION_FAILED);
             }
 
-            return new UserRegisterResult(UserRegisterResultStatus.REJECTED);
+            return new UserRegisterResult(UserRegisterResultStatus.REJECTED, new Object[]{ new KeyValuePair<>(HttpMethod.POST, "/visitor/sms/request"), new PhoneNumberSmsRequest(form.getUsername(), form.getPhoneNumber(), PhoneNumberSmsType.ACCOUNT_REGISTER)});
         }
 
-        return register(form.getEntity());
+        return register(form.getEntity(), address.getEntity());
     }
 
-    public UserRegisterResult register(User user) {
+    public UserRegisterResult register(User user, Address... addresses) {
+
+        if(user == null) {
+
+            return new UserRegisterResult(UserRegisterResultStatus.UNACCEPTABLE_CONTENT);
+        }
+
+        user.getAddresses().addAll(List.of(addresses));
 
         UserRepository repository = ProjectBeanHolder.getUserRepository();
 
@@ -294,7 +204,7 @@ public class AccountService {
 
         repository.save(user);
 
-        ProjectBeanHolder.getCacheService().evictIfPresent(AccountPhoneNumberVerifyCache.AccountServiceKey, user.getUsername());
+        ProjectBeanHolder.getCacheService().evictIfPresent(AccountPhoneNumberVerifyCache.PhoneNumberSmsVerifyServiceKey, user.getUsername());
 
         return new UserRegisterResult(UserRegisterResultStatus.SUCCESS);
     }
