@@ -10,6 +10,8 @@ import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
@@ -49,6 +51,15 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
     @ManyToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(name = "user_address", joinColumns = { @JoinColumn(name = "user", referencedColumnName = "username") },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "STREET", referencedColumnName = "STREET"),
+                    @JoinColumn(name = "UNIT", referencedColumnName = "UNIT"),
+                    @JoinColumn(name = "ZIPCODE", referencedColumnName = "ZIPCODE")})
+    private Set<Address> addresses = new HashSet<>();
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(name = "user_roles", joinColumns = { @JoinColumn(name = "user", referencedColumnName = "username") },
             inverseJoinColumns = { @JoinColumn(name = "role", referencedColumnName = "role") })
     private Set<UserRole> roles = new HashSet<>();
@@ -78,7 +89,7 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
     public User() {}
 
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, String phoneNumber, boolean phoneNumberVerified, String email, boolean emailVerified,  @NonNull List<UserRole> roles, boolean expired, boolean locked, boolean vaildPassword, boolean enabled) {
+    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, String phoneNumber, boolean phoneNumberVerified, String email, boolean emailVerified, @NonNull List<Address> addresses,  @NonNull List<UserRole> roles, boolean expired, boolean locked, boolean vaildPassword, boolean enabled) {
 
         this.username = username;
         this.password = password;
@@ -88,6 +99,10 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
         this.phoneNumberVerified = phoneNumberVerified;
         this.email = email;
         this.emailVerified = emailVerified;
+
+        if(addresses != null) {
+            this.addresses.addAll(addresses);
+        }
         this.roles.addAll(roles.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(EntityBase::getCreatedTime))), ArrayList::new)));
         this.expired = expired;
         this.locked = locked;
@@ -96,23 +111,45 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
     }
 
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, @NonNull List<UserRole> roles) {
 
-        this(username, password,firstName, lastName, null, false, null, false, roles, false, false, true, true);
+    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, @NonNull List<Address> addresses ,@NonNull List<UserRole> roles) {
+
+        this(username, password,firstName, lastName, null, false, null, false, addresses, roles, false, false, true, true);
     }
 
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, String phoneNumber, String email, @NonNull List<UserRole> roles) {
+    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, @NonNull Address addresse ,@NonNull List<UserRole> roles) {
 
-        this(username, password,firstName, lastName, phoneNumber, false, email, false, roles, false, false, true, true);
+        this(username, password, firstName, lastName, List.of(addresse), roles);
     }
 
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, String phoneNumber, String email, UserRole... roles) {
-        this(username, password, firstName, lastName, phoneNumber, email, Arrays.stream(roles).toList());
+    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, String phoneNumber, String email, @NonNull List<Address> addresses, @NonNull List<UserRole> roles) {
+
+        this(username, password,firstName, lastName, phoneNumber, false, email, false, addresses, roles, false, false, true, true);
     }
 
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, UserRole... roles) {
+    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, String phoneNumber, String email, @NonNull Address addresse, @NonNull List<UserRole> roles) {
 
-        this(username, password, firstName, lastName, Arrays.stream(roles).toList());
+        this(username, password,firstName, lastName, phoneNumber, false, email, false, List.of(addresse), roles, false, false, true, true);
+    }
+
+    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, String phoneNumber, String email, List<Address> addresses, UserRole... roles) {
+
+        this(username, password, firstName, lastName, phoneNumber, email, addresses, Arrays.stream(roles).toList());
+    }
+
+    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, String phoneNumber, String email, Address addresse, UserRole... roles) {
+
+        this(username, password, firstName, lastName, phoneNumber, email, List.of(addresse), Arrays.stream(roles).toList());
+    }
+
+    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, List<Address> addresses, UserRole... roles) {
+
+        this(username, password, firstName, lastName, addresses, Arrays.stream(roles).toList());
+    }
+
+    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, Address address, UserRole... roles) {
+
+        this(username, password, firstName, lastName, List.of(address), Arrays.stream(roles).toList());
     }
 
     @Override
@@ -230,6 +267,11 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
         return this.externalUsers;
     }
 
+    public Set<Address> getAddresses() {
+
+        return this.addresses;
+    }
+
     @Override
     public Collection<? extends Permission> getPermissions() {
 
@@ -316,6 +358,8 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
         private boolean emailVerified;
 
+        private List<Address> addresses;
+
         private List<UserRole> roles;
 
         private boolean expired;
@@ -382,6 +426,12 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
             return this;
         }
 
+        public Builder setAddresses(Address... addresses) {
+
+            this.addresses = Arrays.stream(addresses).toList();
+
+            return this;
+        }
 
         public Builder setRoles(UserRole... roles) {
 
@@ -420,7 +470,7 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
         public User build() {
 
-            return new User(this.username, this.password, this.firstName, this.lastName, this.phoneNumber, this.phoneNumberVerified, this.email, this.emailVerified, this.roles, this.expired, this.locked, this.vaildPassword, this.enabled);
+            return new User(this.username, this.password, this.firstName, this.lastName, this.phoneNumber, this.phoneNumberVerified, this.email, this.emailVerified, this.addresses, this.roles, this.expired, this.locked, this.vaildPassword, this.enabled);
         }
     }
 

@@ -52,7 +52,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public final static String CONNECTION_TOKEN = "CONNECTION_TOKEN";
 
-    final static String[] PERMITTED_MATCHERS = { "/user/register" ,"/user/sms/verify", "/user/sms/request", "/user/human-validate/request", "/user/human-validate/validate", "/swagger-ui", "/oauth2/registration-urls", "/sms/reply" };
+    final static String[] PERMITTED_MATCHERS = { "/visitor/**", "/swagger-ui", "/oauth2/**", "/sms/reply" };
 
     private String usernameFormatRegex;
 
@@ -79,6 +79,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private int phoneNumberMaxUse;
 
     private int emailMaxUse;
+
+    private int googleMapAutoCompleteLimit;
+
+    private Duration googleMapAutoCompleteLimitDuration;
+
+    private Duration googleMapAutocompleteSessionRequire;
 
     private String userDefaultRole;
 
@@ -363,6 +369,18 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return emailMaxUse;
     }
 
+    public int getGoogleMapAutoCompleteLimit() {
+        return googleMapAutoCompleteLimit;
+    }
+
+    public Duration getGoogleMapAutoCompleteLimitDuration() {
+        return googleMapAutoCompleteLimitDuration;
+    }
+
+    public Duration getGoogleMapAutocompleteSessionRequire() {
+        return googleMapAutocompleteSessionRequire;
+    }
+
     public boolean isHumanValidationEnable() {
         return humanValidationEnable;
     }
@@ -411,9 +429,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.phoneNumberMaxUse = phoneNumberMaxUse;
     }
 
-
     public void setEmailMaxUse(int emailMaxUse) {
         this.emailMaxUse = emailMaxUse;
+    }
+
+    public void setGoogleMapAutoCompleteLimit(int googleMapAutoCompleteLimit) {
+        this.googleMapAutoCompleteLimit = googleMapAutoCompleteLimit;
+    }
+
+    public void setGoogleMapAutoCompleteLimitDuration(Duration googleMapAutoCompleteLimitDuration) {
+        this.googleMapAutoCompleteLimitDuration = googleMapAutoCompleteLimitDuration;
+    }
+
+    public void setGoogleMapAutocompleteSessionRequire(Duration googleMapAutocompleteSessionRequire) {
+        this.googleMapAutocompleteSessionRequire = googleMapAutocompleteSessionRequire;
     }
 
     public void setLoginPageUrl(String loginPageUrl) {

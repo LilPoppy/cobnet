@@ -3,9 +3,6 @@ package com.cobnet.spring.boot.core;
 import com.cobnet.interfaces.security.Account;
 import com.cobnet.interfaces.spring.repository.*;
 import com.cobnet.spring.boot.configuration.*;
-import com.cobnet.spring.boot.controller.handler.http.HttpAccessDeniedHandler;
-import com.cobnet.spring.boot.controller.handler.http.HttpAuthenticationFailureHandler;
-import com.cobnet.spring.boot.controller.handler.http.HttpAuthenticationSuccessHandler;
 import com.cobnet.spring.boot.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -44,6 +41,16 @@ import javax.sql.DataSource;
 
 public class ProjectBeanHolder {
 
+    private static AddressRepository ADDRESS_REPOSITORY;
+
+    private static PhoneNumberSmsVerifyService PHONE_NUMBER_SMS_VERIFY_SERVICE;
+
+    private static GoogleMapService GOOGLE_MAP_SERVICE;
+
+    private static GoogleMap GOOGLE_MAP;
+
+    private static GoogleMapConfiguration GOOGLE_MAP_CONFIGURATION;
+
     private static RememberMeServices REMEMBER_ME_SERVICE;
 
     private static AccountService ACCOUNT_SERVICE;
@@ -59,8 +66,6 @@ public class ProjectBeanHolder {
     private static ConfigurableApplicationContext SPRING_CONTEXT;
 
     private static ProjectConfiguration PROJECT_CONFIGURATION;
-
-    private static StoreService STORE_SERVICE;
 
     private static DatasourceConfiguration DATASOURCE_CONFIGURATION;
 
@@ -122,17 +127,7 @@ public class ProjectBeanHolder {
 
     private static ExternalUserRepository EXTERNAL_USER_REPOSITORY;
 
-    private static WorkRepository WORK_REPOSITORY;
-
-    private static ServiceRepository SERVICE_REPOSITORY;
-
     private static PersistentLoginsRepository PERSISTENT_LOGINS_REPOSITORY;
-
-    private static StoreRepository STORE_REPOSITORY;
-
-    private static StaffRepository STAFF_REPOSITORY;
-
-    private static PositionRepository POSITION_REPOSITORY;
 
     private static RedirectStrategy REDIRECT_STRATEGY;
 
@@ -240,9 +235,14 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.SECURITY_CONFIGURATION;
     }
 
-    public static StoreService getStoreService() {
+    public static GoogleMap getGoogleMap() {
 
-        return ProjectBeanHolder.STORE_SERVICE;
+        return ProjectBeanHolder.GOOGLE_MAP;
+    }
+
+    public static GoogleMapConfiguration getGoogleMapConfiguration() {
+
+        return ProjectBeanHolder.GOOGLE_MAP_CONFIGURATION;
     }
 
     public static TwilioConfiguration getTwilioConfiguration() {
@@ -268,6 +268,16 @@ public class ProjectBeanHolder {
     public static ScriptEngineManager getScriptEngineManager() {
 
         return ProjectBeanHolder.SCRIPT_ENGINE_MANAGER;
+    }
+
+    public static PhoneNumberSmsVerifyService getPhoneNumberSmsVerifyService() {
+
+        return ProjectBeanHolder.PHONE_NUMBER_SMS_VERIFY_SERVICE;
+    }
+
+    public static GoogleMapService getGoogleMapService() {
+
+        return ProjectBeanHolder.GOOGLE_MAP_SERVICE;
     }
 
     public static TaskProvider getTaskProvider() {
@@ -380,31 +390,6 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.PERSISTENT_LOGINS_REPOSITORY;
     }
 
-    public static StoreRepository getStoreRepository() {
-
-        return ProjectBeanHolder.STORE_REPOSITORY;
-    }
-
-    public static StaffRepository getStaffRepository() {
-
-        return ProjectBeanHolder.STAFF_REPOSITORY;
-    }
-
-    public static WorkRepository getWorkRepository() {
-
-        return ProjectBeanHolder.WORK_REPOSITORY;
-    }
-
-    public static ServiceRepository getServiceRepository() {
-
-        return ProjectBeanHolder.SERVICE_REPOSITORY;
-    }
-
-    public static PositionRepository getPositionRepository() {
-
-        return ProjectBeanHolder.POSITION_REPOSITORY;
-    }
-
     public static RedirectStrategy getRedirectStrategy() {
 
         return ProjectBeanHolder.REDIRECT_STRATEGY;
@@ -445,6 +430,11 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.MODEL_MAPPER;
     }
 
+    public static AddressRepository getAddressRepository() {
+
+        return ProjectBeanHolder.ADDRESS_REPOSITORY;
+    }
+
     @Component("autowireLoader")
     public static class AutowireLoader {
 
@@ -464,12 +454,6 @@ public class ProjectBeanHolder {
         public void setConfigurableApplicationContext(ConfigurableApplicationContext context) {
 
             ProjectBeanHolder.SPRING_CONTEXT = context;
-        }
-
-        @Autowired
-        public void setStoreService(StoreService service) {
-
-            ProjectBeanHolder.STORE_SERVICE = service;
         }
 
         @Autowired
@@ -542,6 +526,12 @@ public class ProjectBeanHolder {
         public void setHashMapper(Jackson2HashMapper mapper) {
 
             ProjectBeanHolder.HASH_MAPPER = mapper;
+        }
+
+        @Autowired
+        public void setAddressRepository(AddressRepository repository) {
+
+            ProjectBeanHolder.ADDRESS_REPOSITORY = repository;
         }
 
         @Autowired
@@ -643,36 +633,6 @@ public class ProjectBeanHolder {
         }
 
         @Autowired
-        public void setStoreRepository(StoreRepository repository) {
-
-            ProjectBeanHolder.STORE_REPOSITORY = repository;
-        }
-
-        @Autowired
-        public void setStaffRepository(StaffRepository repository) {
-
-            ProjectBeanHolder.STAFF_REPOSITORY = repository;
-        }
-
-        @Autowired
-        public void setWorkRepository(WorkRepository repository) {
-
-            ProjectBeanHolder.WORK_REPOSITORY = repository;
-        }
-
-        @Autowired
-        public void setServiceRepository(ServiceRepository repository) {
-
-            ProjectBeanHolder.SERVICE_REPOSITORY = repository;
-        }
-
-        @Autowired
-        public void setPositionRepository(PositionRepository repository) {
-
-            ProjectBeanHolder.POSITION_REPOSITORY = repository;
-        }
-
-        @Autowired
         public void setOAuth2AuthorizedClientService(OAuth2AuthorizedClientService service) {
 
             ProjectBeanHolder.OAUTH2_AUTHORIZED_CLIENT_SERVICE = service;
@@ -727,6 +687,18 @@ public class ProjectBeanHolder {
         }
 
         @Autowired
+        public void setPhoneSmsVerifyService(PhoneNumberSmsVerifyService service) {
+
+            ProjectBeanHolder.PHONE_NUMBER_SMS_VERIFY_SERVICE = service;
+        }
+
+        @Autowired
+        public void setGoogleMapService(GoogleMapService service) {
+
+            ProjectBeanHolder.GOOGLE_MAP_SERVICE = service;
+        }
+
+        @Autowired
         public void setOidcUserService(OidcUserService service) {
 
             ProjectBeanHolder.OIDC_USER_SERVICE = service;
@@ -748,6 +720,18 @@ public class ProjectBeanHolder {
         public void setQRCodeProvider(QRCodeProvider provider) {
 
             ProjectBeanHolder.QR_CODE_PROVIDER = provider;
+        }
+
+        @Autowired
+        public void setGoogleMap(GoogleMap map) {
+
+            ProjectBeanHolder.GOOGLE_MAP = map;
+        }
+
+        @Autowired
+        public void setGoogleMapConfiguration(GoogleMapConfiguration configuration) {
+
+            ProjectBeanHolder.GOOGLE_MAP_CONFIGURATION = configuration;
         }
 
         @Autowired
@@ -841,6 +825,12 @@ public class ProjectBeanHolder {
         public RandomImageProvider randomImageProviderBean() {
 
             return new RandomImageProvider();
+        }
+
+        @Bean
+        public GoogleMap googleMapBean(GoogleMapConfiguration configuration) {
+
+            return new GoogleMap(configuration);
         }
 
     }
