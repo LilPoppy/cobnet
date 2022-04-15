@@ -11,7 +11,6 @@ import java.util.Objects;
 @Entity
 public class Address extends EntityBase implements Serializable {
 
-
     @EmbeddedId
     private AddressKey id;
 
