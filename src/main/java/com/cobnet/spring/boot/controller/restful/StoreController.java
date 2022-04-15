@@ -2,6 +2,7 @@ package com.cobnet.spring.boot.controller.restful;
 
 import com.cobnet.interfaces.security.annotation.AccessSecured;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
+import com.cobnet.spring.boot.dto.AddressForm;
 import com.cobnet.spring.boot.dto.StoreRegisterForm;
 import com.cobnet.spring.boot.dto.StoreRegisterResult;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,9 +14,9 @@ import javax.servlet.http.HttpServletResponse;
 public class StoreController {
 
     @PostMapping("/store/create")
-    public StoreRegisterResult create(HttpServletResponse response, StoreRegisterForm form) {
+    public StoreRegisterResult create(HttpServletResponse response, StoreRegisterForm store, AddressForm address) {
 
-        StoreRegisterResult result = ProjectBeanHolder.getStoreService().register(form);
+        StoreRegisterResult result = ProjectBeanHolder.getStoreService().register(store, address);
 
         response.setStatus(result.status().getCode());
 

@@ -19,21 +19,13 @@ import java.util.stream.Collectors;
 
 public class StoreRegisterForm extends FormBase<StoreRegisterForm, Store> {
 
-    private String location;
-
     private String name;
 
     private String phone;
 
-    public StoreRegisterForm(String location, String name, String phone) {
-
-        this.location = location;
+    public StoreRegisterForm(String name, String phone) {
         this.name = name;
         this.phone = phone;
-    }
-
-    public String getLocation() {
-        return location;
     }
 
     public String getName() {
@@ -42,10 +34,6 @@ public class StoreRegisterForm extends FormBase<StoreRegisterForm, Store> {
 
     public String getPhone() {
         return phone;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
     }
 
     public void setName(String name) {
@@ -65,7 +53,7 @@ public class StoreRegisterForm extends FormBase<StoreRegisterForm, Store> {
     @Override
     public Store getEntity() {
 
-        return new Store(this.location, this.name, this.phone);
+        return new Store(this.name, this.phone);
     }
 
 

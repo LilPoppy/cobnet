@@ -18,7 +18,15 @@ public class Store implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private String location;
+    @OneToOne(cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(name = "store_address", joinColumns = {
+            @JoinColumn(name = "store_id", referencedColumnName = "id")},
+            inverseJoinColumns = {
+                    @JoinColumn(name = "STREET", referencedColumnName = "STREET"),
+                    @JoinColumn(name = "UNIT", referencedColumnName = "UNIT"),
+                    @JoinColumn(name = "ZIPCODE", referencedColumnName = "ZIPCODE")})
+    private Address location;
 
     private String name;
 
@@ -45,12 +53,17 @@ public class Store implements Serializable {
 
     public Store() {}
 
-    public Store(String location, String name, String phone) {
+    public Store(String name, String phone) {
+
+        this(null, name, phone);
+    }
+
+    public Store(Address location, String name, String phone) {
 
         this(location, name, phone, new HashSet<>(), new HashSet<>());
     }
 
-    public Store(String location, String name, String phone, Set<Service> services, Set<Position> positions, Staff... crew) {
+    public Store(Address location, String name, String phone, Set<Service> services, Set<Position> positions, Staff... crew) {
         this.location = location;
         this.name = name;
         this.phone = phone;
@@ -72,11 +85,11 @@ public class Store implements Serializable {
         return id;
     }
 
-    public String getLocation() {
+    public Address getLocation() {
         return location;
     }
 
-    public void setLocation(String location) {
+    public void setLocation(Address location) {
         this.location = location;
     }
 
@@ -174,7 +187,7 @@ public class Store implements Serializable {
 
     public static class Builder {
 
-        private String location;
+        private Address location;
 
         private String name;
 
@@ -186,7 +199,7 @@ public class Store implements Serializable {
 
         private Set<Object> crew = new HashSet<>();
 
-        public Builder setLocation(String location) {
+        public Builder setLocation(Address location) {
 
             this.location = location;
 

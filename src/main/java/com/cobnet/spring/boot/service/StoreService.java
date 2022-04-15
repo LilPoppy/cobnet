@@ -2,6 +2,7 @@ package com.cobnet.spring.boot.service;
 
 import com.cobnet.interfaces.spring.repository.StoreRepository;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
+import com.cobnet.spring.boot.dto.AddressForm;
 import com.cobnet.spring.boot.dto.StoreRegisterForm;
 import com.cobnet.spring.boot.dto.StoreRegisterResult;
 import com.cobnet.spring.boot.dto.support.StoreRegisterResultStatus;
@@ -17,8 +18,10 @@ public class StoreService {
     @Autowired
     private StoreRepository repository;
 
-    public StoreRegisterResult register(StoreRegisterForm form) {
+    public StoreRegisterResult register(StoreRegisterForm store, AddressForm address) {
 
+
+        store.getEntity().setLocation(address.getEntity());
 
         return new StoreRegisterResult(StoreRegisterResultStatus.SUCCESS);
 
