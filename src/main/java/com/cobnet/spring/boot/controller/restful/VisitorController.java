@@ -8,9 +8,8 @@ import com.cobnet.spring.boot.service.support.AccountPhoneNumberVerifyCache;
 import com.google.maps.errors.ApiException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +18,15 @@ import java.io.IOException;
 @Tag(name = "Visitor")
 @RestController
 public class VisitorController {
+
+    @Operation(summary = "Create session for visitor.")
+    @RequestMapping(value = "/visitor/check-in", method = RequestMethod.OPTIONS)
+    public boolean checkIn(HttpServletRequest request) {
+
+        request.getSession(true);
+
+        return true;
+    }
 
     @Operation(summary = "Login in default way.", description = "")
     @PostMapping("/visitor/login")
@@ -34,6 +42,7 @@ public class VisitorController {
         HumanValidationValidate result = null;
 
         switch (request.type()) {
+
             case LOGIN -> result = ProjectBeanHolder.getHumanValidator().validate(http.getSession(true).getId(), position);
             case SMS_REQUEST -> {
 
@@ -61,6 +70,7 @@ public class VisitorController {
         HumanValidationRequestResult result = null;
 
         switch (request.type()) {
+
             case LOGIN -> result = ProjectBeanHolder.getHumanValidator().create(http.getSession(true).getId());
             case SMS_REQUEST -> {
 
