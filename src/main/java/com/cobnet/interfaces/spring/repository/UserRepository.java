@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.Entity;
 import java.util.Optional;
 
 @Repository
@@ -28,6 +29,10 @@ public interface UserRepository extends JPABaseRepository<User, String>, UserDet
     @CacheEvict(cacheNames = "Users", key = "#entity.getUsername()")
     @Override
     void delete(User entity);
+
+    @CacheEvict(cacheNames = "Users", key = "#entity.getUsername()")
+    @Override
+    <S extends User> S save(S entity);
 
     long countByPhoneNumberContaining(String phoneNumber);
 

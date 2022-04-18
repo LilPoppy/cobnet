@@ -1,9 +1,13 @@
 package com.cobnet.security;
 
+import com.cobnet.common.DateUtils;
+import com.cobnet.spring.boot.core.ProjectBeanHolder;
+import com.cobnet.spring.boot.dto.AuthenticationResult;
+import com.cobnet.spring.boot.dto.support.AuthenticationStatus;
+import com.cobnet.spring.boot.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.log.LogMessage;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -16,15 +20,16 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Date;
 
-public class UserDetailCheckFilter extends GenericFilterBean {
+public class UserLockStatusFilter extends GenericFilterBean {
 
     private final RequestMatcher matcher;
 
     @Autowired
     private UserDetailsService userDetailsService;
 
-    public UserDetailCheckFilter(String url) {
+    public UserLockStatusFilter(String url) {
 
         this.matcher = new AntPathRequestMatcher(url);
     }
@@ -36,12 +41,18 @@ public class UserDetailCheckFilter extends GenericFilterBean {
 
             if (this.matcher.matches(httpRequest) && httpRequest.getMethod().equalsIgnoreCase("post")) {
 
-                if(response instanceof HttpServletResponse httpResponse) {
+                String username = request.getParameter(ProjectBeanHolder.getSecurityConfiguration().getUsernameParameter());
 
-                    if(this.userDetailsService == null) {
+                if(username != null) {
 
-                        //this.userDetailsService.loadUserByUsername()
-                        httpResponse.setStatus(HttpStatus.SERVICE_UNAVAILABLE.value());
+                    if(userDetailsService.loadUserByUsername(username) instanceof User user) {
+
+                        if(user.getLockTime() != null && user.getLockTime().before(DateUtils.now())) {
+
+                            user.setLocked(false);
+                            user.setLockTime(null);
+                            ProjectBeanHolder.getUserRepository().save(user);
+                        }
                     }
                 }
 

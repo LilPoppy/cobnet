@@ -4,22 +4,36 @@ import com.cobnet.common.DateUtils;
 import com.cobnet.common.KeyValuePair;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.*;
-import com.cobnet.spring.boot.dto.support.HumanValidationRequestType;
+import com.cobnet.spring.boot.dto.support.AutocompleteResultStatus;
 import com.cobnet.spring.boot.dto.support.PhoneNumberSmsRequestResultStatus;
 import com.cobnet.spring.boot.dto.support.PhoneNumberSmsType;
 import com.cobnet.spring.boot.dto.support.PhoneNumberSmsVerifyResultStatus;
 import com.cobnet.spring.boot.service.support.AccountPhoneNumberVerifyCache;
-import com.cobnet.spring.boot.service.support.HumanValidationCache;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.Date;
+import java.util.Objects;
 import java.util.Random;
 
 @Service
 public class PhoneNumberSmsVerifyService {
 
     public PhoneNumberSmsRequestResult request(PhoneNumberSmsRequest request) throws IOException {
+
+        HttpSession session = Objects.requireNonNull(ProjectBeanHolder.getCurrentHttpRequest()).getSession(true);
+
+        if(ProjectBeanHolder.getSecurityConfiguration().isHumanValidationEnable() && !ProjectBeanHolder.getHumanValidator().isValidated(session.getId())) {
+
+            return new PhoneNumberSmsRequestResult(PhoneNumberSmsRequestResultStatus.HUMAN_VALIDATION_REQUEST);
+        }
+
+        if(!ProjectBeanHolder.getSecurityConfiguration().isSessionLimitEnable() || ProjectBeanHolder.getSecurityConfiguration().getSessionCreatedTimeRequire().compareTo(DateUtils.getInterval(new Date(session.getCreationTime()), DateUtils.now())) > 0) {
+
+            return new PhoneNumberSmsRequestResult(PhoneNumberSmsRequestResultStatus.REJECTED);
+        }
 
         if(request.type() == PhoneNumberSmsType.ACCOUNT_REGISTER) {
 
@@ -39,12 +53,7 @@ public class PhoneNumberSmsVerifyService {
 
                 if(cache.times() >= ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsVerifyTimes()) {
 
-                    HumanValidationCache humanValidationCache = ProjectBeanHolder.getHumanValidator().getCache(request.phoneNumber());
-
-                    if(humanValidationCache == null || !humanValidationCache.isValidated()) {
-
-                        return new PhoneNumberSmsRequestResult(PhoneNumberSmsRequestResultStatus.HUMAN_VALIDATION_REQUEST, new Object[]{ new KeyValuePair<>(HttpMethod.POST, "/visitor/human-validate/request"), new HumanValidationRequest(HumanValidationRequestType.SMS_REQUEST, request.username(), request.phoneNumber())});
-                    }
+                    return new PhoneNumberSmsRequestResult(PhoneNumberSmsRequestResultStatus.EXHAUSTED);
                 }
 
                 return send(request);
@@ -78,13 +87,13 @@ public class PhoneNumberSmsVerifyService {
         return new PhoneNumberSmsRequestResult(PhoneNumberSmsRequestResultStatus.SUCCESS);
     }
 
-    public PhoneNumberSmsVerifyResult request(PhoneNumberSmsVerify verify) {
+    public PhoneNumberSmsVerifyResult verify(PhoneNumberSmsVerify verify) {
 
         AccountPhoneNumberVerifyCache cache = getCache(verify.username());
 
         if(cache != null && cache.type() == verify.type() && cache.code() == verify.code()) {
 
-            ProjectBeanHolder.getCacheService().set(AccountPhoneNumberVerifyCache.PhoneNumberSmsVerifyServiceKey, verify.username(), new AccountPhoneNumberVerifyCache(verify.code(), DateUtils.now(), verify.type(), cache.times(),true), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire());
+            ProjectBeanHolder.getCacheService().set(AccountPhoneNumberVerifyCache.PhoneNumberSmsVerifyServiceKey, verify.username(), new AccountPhoneNumberVerifyCache(verify.code(), DateUtils.now(), verify.type(), cache.times(),true), ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsCodeExpire());
 
             return new PhoneNumberSmsVerifyResult(PhoneNumberSmsVerifyResultStatus.SUCCESS);
         }

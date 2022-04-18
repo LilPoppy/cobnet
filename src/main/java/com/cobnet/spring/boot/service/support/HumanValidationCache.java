@@ -16,7 +16,7 @@ public class HumanValidationCache implements Serializable {
 
     private boolean validated;
 
-    public HumanValidationCache(PuzzledImage image, Date createdTime, boolean validated, boolean used) {
+    public HumanValidationCache(PuzzledImage image, Date createdTime, boolean validated) {
 
         this.image = image;
         this.createdTime = createdTime;

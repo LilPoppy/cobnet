@@ -10,8 +10,6 @@ import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
@@ -70,6 +68,8 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
     private boolean expired;
 
     private boolean locked;
+
+    private Date lockTime;
 
     private boolean vaildPassword;
 
@@ -218,6 +218,18 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
     @Override
     public boolean isEnabled() {
         return this.enabled;
+    }
+
+    public void setLocked(boolean locked) {
+        this.locked = locked;
+    }
+
+    public void setLockTime(Date lockTime) {
+        this.lockTime = lockTime;
+    }
+
+    public Date getLockTime() {
+        return lockTime;
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.cobnet.spring.boot.configuration;
 
 import com.cobnet.security.OAuth2LoginAccountAuthenticationFilter;
 import com.cobnet.security.UserAuthenticationProvider;
-import com.cobnet.security.UserDetailCheckFilter;
+import com.cobnet.security.UserLockStatusFilter;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.UserRole;
 import org.slf4j.Logger;
@@ -54,11 +54,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     final static String[] PERMITTED_MATCHERS = { "/visitor/**", "/swagger-ui", "/oauth2/**", "/sms/reply" };
 
+    private boolean sessionLimitEnable;
+
+    private Duration sessionCreatedTimeRequire;
+
     private String usernameFormatRegex;
 
     private String passwordFormatRegex;
 
     private byte permissionDefaultPower;
+
+    private int maxAttemptLogin;
+
+    private Duration maxAttemptLoginReset;
+
+    private boolean maxAttemptLoginAccountLocks;
+
+    private Duration maxAttemptLoginAccountLocksDuration;
 
     private boolean humanValidationEnable;
 
@@ -176,7 +188,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .usernameParameter(this.getUsernameParameter()).passwordParameter(this.getPasswordParameter())
                 .successHandler(authenticationSuccessHandler).failureHandler(authenticationFailureHandler).and()
                 .userDetailsService(ProjectBeanHolder.getUserRepository())
-                .authenticationProvider(authenticationProviderBean())
                 .rememberMe().rememberMeParameter(this.getRememberMeParameter()).rememberMeServices(rememberMeServicesBean(userDetailsService, persistentTokenRepository)).key("uniqueAndSecret").tokenValiditySeconds(86400).and()
                 .logout().logoutUrl(this.getLogoutUrl()).invalidateHttpSession(true).clearAuthentication(true).deleteCookies("JSESSIONID").addLogoutHandler(logoutHandler).and()
                 //oauth2
@@ -203,9 +214,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public UserDetailCheckFilter userDetailCheckFilterBean() {
+    public UserLockStatusFilter userDetailCheckFilterBean() {
 
-        return new UserDetailCheckFilter(this.getAuthenticationUrl());
+        return new UserLockStatusFilter(this.getAuthenticationUrl());
     }
 
     @Bean
@@ -254,6 +265,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     public void setPermissionDefaultPower(byte authorityDefaultPower) {
+
         this.permissionDefaultPower = authorityDefaultPower;
     }
 
@@ -262,6 +274,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         Optional<UserRole> role = ProjectBeanHolder.getUserRoleRepository().findByRoleEqualsIgnoreCase(userDefaultRole);
 
         return role.orElse(null);
+    }
+
+    public void setMaxAttemptLogin(int maxAttemptLogin) {
+        this.maxAttemptLogin = maxAttemptLogin;
+    }
+
+    public void setMaxAttemptLoginReset(Duration maxAttemptLoginReset) {
+        this.maxAttemptLoginReset = maxAttemptLoginReset;
+    }
+
+    public void setMaxAttemptLoginAccountLocks(boolean maxAttemptLoginAccountLocks) {
+        this.maxAttemptLoginAccountLocks = maxAttemptLoginAccountLocks;
+    }
+
+    public void setMaxAttemptLoginAccountLocksDuration(Duration maxAttemptLoginAccountLocksDuration) {
+        this.maxAttemptLoginAccountLocksDuration = maxAttemptLoginAccountLocksDuration;
     }
 
     public void setUserDefaultRole(String userDefaultRole) {
@@ -287,6 +315,31 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void setOauth2(OAuth2Configuration oauth2) {
 
         this.oauth2 = oauth2;
+    }
+
+    public boolean isSessionLimitEnable() {
+
+        return sessionLimitEnable;
+    }
+
+    public Duration getSessionCreatedTimeRequire() {
+        return sessionCreatedTimeRequire;
+    }
+
+    public int getMaxAttemptLogin() {
+        return maxAttemptLogin;
+    }
+
+    public Duration getMaxAttemptLoginReset() {
+        return maxAttemptLoginReset;
+    }
+
+    public boolean isMaxAttemptLoginAccountLocks() {
+        return maxAttemptLoginAccountLocks;
+    }
+
+    public Duration getMaxAttemptLoginAccountLocksDuration() {
+        return maxAttemptLoginAccountLocksDuration;
     }
 
     public String getUsernameFormatRegex() {
@@ -377,12 +430,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return googleMapAutoCompleteLimitDuration;
     }
 
-    public Duration getGoogleMapAutocompleteSessionRequire() {
-        return googleMapAutocompleteSessionRequire;
-    }
-
     public boolean isHumanValidationEnable() {
         return humanValidationEnable;
+    }
+
+    public void setSessionLimitEnable(boolean sessionLimitEnable) {
+        this.sessionLimitEnable = sessionLimitEnable;
+    }
+
+    public void setSessionCreatedTimeRequire(Duration sessionCreatedTimeRequire) {
+        this.sessionCreatedTimeRequire = sessionCreatedTimeRequire;
     }
 
     public void setUsernameFormatRegex(String usernameFormatRegex) {
@@ -439,10 +496,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public void setGoogleMapAutoCompleteLimitDuration(Duration googleMapAutoCompleteLimitDuration) {
         this.googleMapAutoCompleteLimitDuration = googleMapAutoCompleteLimitDuration;
-    }
-
-    public void setGoogleMapAutocompleteSessionRequire(Duration googleMapAutocompleteSessionRequire) {
-        this.googleMapAutocompleteSessionRequire = googleMapAutocompleteSessionRequire;
     }
 
     public void setLoginPageUrl(String loginPageUrl) {

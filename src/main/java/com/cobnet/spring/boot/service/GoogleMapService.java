@@ -5,7 +5,6 @@ import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.AddressForm;
 import com.cobnet.spring.boot.dto.AutocompleteResult;
 import com.cobnet.spring.boot.dto.support.AutocompleteResultStatus;
-import com.cobnet.spring.boot.service.support.AccountPhoneNumberVerifyCache;
 import com.cobnet.spring.boot.service.support.AutocompleteRequestCache;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.AutocompletePrediction;
@@ -13,7 +12,6 @@ import com.google.maps.model.PlacesSearchResult;
 import org.springframework.session.Session;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
@@ -46,14 +44,14 @@ public class GoogleMapService {
 
     public AutocompleteResult autocompleteRequest(HttpServletRequest request, AddressForm form) {
 
-        HttpSession session = request.getSession();
+        HttpSession session = request.getSession(true);
 
-        if(session == null || ProjectBeanHolder.getSecurityConfiguration().getGoogleMapAutocompleteSessionRequire().compareTo(DateUtils.getInterval(new Date(session.getCreationTime()), DateUtils.now())) > 0) {
+        if(ProjectBeanHolder.getSecurityConfiguration().isHumanValidationEnable() && !ProjectBeanHolder.getHumanValidator().isValidated(session.getId())) {
 
-            if(session == null) {
+            return new AutocompleteResult(AutocompleteResultStatus.HUMAN_VALIDATION_REQUEST);
+        }
 
-                request.getSession(true);
-            }
+        if(!ProjectBeanHolder.getSecurityConfiguration().isSessionLimitEnable() || ProjectBeanHolder.getSecurityConfiguration().getSessionCreatedTimeRequire().compareTo(DateUtils.getInterval(new Date(session.getCreationTime()), DateUtils.now())) > 0) {
 
             return new AutocompleteResult(AutocompleteResultStatus.REJECTED);
         }
