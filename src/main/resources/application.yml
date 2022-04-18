@@ -85,12 +85,18 @@ spring:
                ssl:
                   enable: true
    security:
+      session-limit-enable: true
+      session-created-time-require: 5s
       username-format-regex: ^[a-zA-Z0-9]{6,16}$
       password-format-regex: ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$
       permission-default-power: 3
-      human-validation-enable: false
-      human-validation-create-interval: 1s
-      human-validation-expire: 3m
+      max-attempt-login: 5
+      max-attempt-login-reset: 10m
+      max-attempt-login-account-locks: true
+      max-attempt-login-account-locks-duration: 30m
+      human-validation-enable: true
+      human-validation-create-interval: 30s
+      human-validation-expire: 10m
       phone-number-verify-enable: true
       phone-number-sms-generate-interval: 60s
       phone-number-sms-code-expire: 5m
@@ -100,7 +106,6 @@ spring:
       email-max-use: 10
       google-map-autocomplete-limit: 15
       google-map-autocomplete-limit-duration: 5m
-      google-map-autocomplete-session-require: 30s
       user-default-role: "user"
       authentication-url: "/visitor/login"
       login-page-url: "/visitor/login"
@@ -169,7 +174,7 @@ management:
          enable: true
 twilio:
    account-sid: ACaa871dd615aca9c8d798ec44aaeed2f5
-   authentication-token: c7ee5074a7d5c361128887b044705da9
+   authentication-token: 156bde0a8e70633a63c5d880738744ac
    numbers: +19108078297
 google:
    map:

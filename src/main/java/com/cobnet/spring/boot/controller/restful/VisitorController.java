@@ -2,13 +2,9 @@ package com.cobnet.spring.boot.controller.restful;
 
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.*;
-import com.cobnet.spring.boot.dto.support.HumanValidationRequestStatus;
-import com.cobnet.spring.boot.dto.support.HumanValidationValidateStatus;
-import com.cobnet.spring.boot.service.support.AccountPhoneNumberVerifyCache;
 import com.google.maps.errors.ApiException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.HttpMethod;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -36,55 +32,28 @@ public class VisitorController {
     }
 
     @Operation(summary = "Validate is human operation.")
-    @PostMapping("/visitor/human-validate/validate")
-    public HumanValidationValidate humanValidate(HttpServletRequest http, HttpServletResponse response, HumanValidationRequest request, int position) {
+    @PostMapping("/visitor/human-validate")
+    public HumanValidationValidate humanValidate(HttpServletRequest http, HttpServletResponse response, int position) {
 
-        HumanValidationValidate result = null;
-
-        switch (request.type()) {
-
-            case LOGIN -> result = ProjectBeanHolder.getHumanValidator().validate(http.getSession(true).getId(), position);
-            case SMS_REQUEST -> {
-
-                AccountPhoneNumberVerifyCache cache = ProjectBeanHolder.getPhoneNumberSmsVerifyService().getCache(request.username());
-
-                if (cache == null) {
-
-                    result = new HumanValidationValidate(HumanValidationValidateStatus.REJECTED);
-                    break;
-                }
-
-                result = ProjectBeanHolder.getHumanValidator().validate(request.key(), position);
-            }
-        };
+        HumanValidationValidate result = ProjectBeanHolder.getHumanValidator().validate(http.getSession(true).getId(), position);
 
         response.setStatus(result.status().getCode());
 
         return result;
     }
 
+    @Operation(summary = "Check is cache human validated.")
+    @GetMapping( "/visitor/human-validate")
+    public boolean humanValidate(HttpServletRequest http) {
+
+        return ProjectBeanHolder.getHumanValidator().isValidated(http.getSession(true).getId());
+    }
+
     @Operation(summary = "Request new resources to verify is human operating.")
-    @PostMapping("/visitor/human-validate/request")
-    public HumanValidationRequestResult requestHumanValidation(HttpServletRequest http, HttpServletResponse response, HumanValidationRequest request) throws IOException {
+    @RequestMapping(method = RequestMethod.PATCH,value = "/visitor/human-validate")
+    public HumanValidationRequestResult humanValidate(HttpServletRequest http, HttpServletResponse response) throws IOException {
 
-        HumanValidationRequestResult result = null;
-
-        switch (request.type()) {
-
-            case LOGIN -> result = ProjectBeanHolder.getHumanValidator().create(http.getSession(true).getId());
-            case SMS_REQUEST -> {
-
-                AccountPhoneNumberVerifyCache cache = ProjectBeanHolder.getPhoneNumberSmsVerifyService().getCache(request.username());
-
-                if (cache == null) {
-
-                    result = new HumanValidationRequestResult(HumanValidationRequestStatus.REJECTED);
-                    break;
-                }
-
-                result = ProjectBeanHolder.getHumanValidator().create(request.key());
-            }
-        }
+        HumanValidationRequestResult result = ProjectBeanHolder.getHumanValidator().create(http.getSession(true).getId());
 
         response.setStatus(result.status().getCode());
 
@@ -106,7 +75,7 @@ public class VisitorController {
     @PostMapping("/visitor/sms/verify")
     public PhoneNumberSmsVerifyResult phoneNumberSmsVerify(HttpServletResponse response, PhoneNumberSmsVerify verify) {
 
-        PhoneNumberSmsVerifyResult result = ProjectBeanHolder.getPhoneNumberSmsVerifyService().request(verify);
+        PhoneNumberSmsVerifyResult result = ProjectBeanHolder.getPhoneNumberSmsVerifyService().verify(verify);
 
         response.setStatus(result.status().getCode());
 

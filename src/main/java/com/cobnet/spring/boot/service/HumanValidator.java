@@ -4,9 +4,11 @@ import com.cobnet.common.DateUtils;
 import com.cobnet.common.ImageUtils;
 import com.cobnet.common.PuzzledImage;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
+import com.cobnet.spring.boot.dto.AutocompleteResult;
 import com.cobnet.spring.boot.dto.Base64Image;
 import com.cobnet.spring.boot.dto.HumanValidationRequestResult;
 import com.cobnet.spring.boot.dto.HumanValidationValidate;
+import com.cobnet.spring.boot.dto.support.AutocompleteResultStatus;
 import com.cobnet.spring.boot.dto.support.HumanValidationRequestStatus;
 import com.cobnet.spring.boot.dto.support.HumanValidationValidateStatus;
 import com.cobnet.spring.boot.service.support.HumanValidationCache;
@@ -16,11 +18,17 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Date;
 
 @Service
 public class HumanValidator {
 
     public <T extends Serializable> HumanValidationRequestResult create(T key) throws IOException {
+
+        if(!ProjectBeanHolder.getSecurityConfiguration().isSessionLimitEnable() || (ProjectBeanHolder.getCurrentHttpRequest() == null || ProjectBeanHolder.getSecurityConfiguration().getSessionCreatedTimeRequire().compareTo(DateUtils.getInterval(new Date(ProjectBeanHolder.getCurrentHttpRequest().getSession(true).getCreationTime()), DateUtils.now())) > 0)) {
+
+            return new HumanValidationRequestResult(HumanValidationRequestStatus.REJECTED);
+        }
 
         HumanValidationCache cache = this.getCache(key);
 
@@ -35,7 +43,6 @@ public class HumanValidator {
         }
 
         return generateImage(key);
-
     }
 
     private boolean isDarkImage(BufferedImage image) {
@@ -44,10 +51,19 @@ public class HumanValidator {
 
         BufferedImage grayscale = ImageUtils.toGrayscale(image);
 
-        return ImageUtils.getLuminance(grayscale) <= 30 && hsv[2] <= 0.125f;
+        return ImageUtils.getLuminance(grayscale) <= 50 && hsv[2] <= 0.150f;
+    }
+
+    public <T extends Serializable> boolean isValidated(T key) {
+
+        HumanValidationCache cache = getCache(key);
+
+        return cache != null && !DateUtils.addDuration(cache.getCreatedTime(), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire()).before(DateUtils.now());
     }
 
     private <T extends Serializable> HumanValidationRequestResult generateImage(T key) throws IOException {
+
+        //TODO create image provider upstream pool
 
         BufferedImage pulled = ImageIO.read(ProjectBeanHolder.getRandomImageProvider().getFromPicsum(256, 128).get());
 
@@ -63,7 +79,7 @@ public class HumanValidator {
             return generateImage(key);
         }
 
-        ProjectBeanHolder.getCacheService().set(HumanValidationCache.HumanValidatorKey, key, new HumanValidationCache(image, DateUtils.now(), false, false), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire());
+        ProjectBeanHolder.getCacheService().set(HumanValidationCache.HumanValidatorKey, key, new HumanValidationCache(image, DateUtils.now(), false), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire());
 
         return new HumanValidationRequestResult(HumanValidationRequestStatus.SUCCESS, image.getJigsawY(), new Base64Image(image.getImage(), "png"), new Base64Image(image.getJigsawImage(), "png"));
     }
@@ -79,7 +95,7 @@ public class HumanValidator {
 
         HumanValidationCache cache = getCache(key);
 
-        if(cache != null && DateUtils.addDuration(cache.getCreatedTime(), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire()).before(DateUtils.now())) {
+        if(this.isValidated(key)) {
 
             try {
 
@@ -97,7 +113,6 @@ public class HumanValidator {
             } finally {
 
                 ProjectBeanHolder.getCacheService().set(HumanValidationCache.HumanValidatorKey, key, cache, ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire());
-
             }
         }
 
