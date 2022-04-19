@@ -9,8 +9,12 @@ import com.cobnet.spring.boot.dto.support.StoreRegisterResultStatus;
 import com.cobnet.spring.boot.entity.Store;
 import com.google.maps.FindPlaceFromTextRequest;
 import com.google.maps.GeoApiContext;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.PlacesSearchResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 @Service
 public class StoreService {
@@ -18,18 +22,44 @@ public class StoreService {
     @Autowired
     private StoreRepository repository;
 
-    public StoreRegisterResult register(StoreRegisterForm store, AddressForm address) {
+    public StoreRegisterResult register(StoreRegisterForm storeForm, AddressForm addressForm) {
+
+        Store store = storeForm.getEntity();
+        store.setLocation(addressForm.getEntity());
+        System.out.println();
+        PlacesSearchResult[] results;
+
+        try {
+            System.out.println(store.getLocation().address());
+            results = ProjectBeanHolder.getGoogleMapService().search(store.getName(), store.getPhone(), store.getLocation().address());
+
+        } catch (IOException | InterruptedException | ApiException ex) {
+
+            ex.printStackTrace();
+
+            return new StoreRegisterResult(StoreRegisterResultStatus.SERVICE_DOWN);
+        }
+
+        if(results == null) {
+
+            return new StoreRegisterResult(StoreRegisterResultStatus.STORE_NONEXISTENT);
+        }
+
+        for(PlacesSearchResult result : results) {
+
+            System.out.println("Output:" + result);
+        }
 
 
-        store.getEntity().setLocation(address.getEntity());
+
+        //实体验证store数据是否可被创建
+        //判断store是否存在 且store是否可被新数据覆盖或更改
+        //
+
+
 
         return new StoreRegisterResult(StoreRegisterResultStatus.SUCCESS);
-
     }
 
-//    public StoreRegisterResult register(Store store) {
-//
-//
-//        ProjectBeanHolder.getStoreRepository().saveAndFlush(store);
-//    }
+    //
 }

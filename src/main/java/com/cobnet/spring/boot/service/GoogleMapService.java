@@ -24,7 +24,7 @@ public class GoogleMapService {
 
     public PlacesSearchResult[] search(String... params) throws IOException, InterruptedException, ApiException {
 
-        return ProjectBeanHolder.getGoogleMap().textSearchRequest().query(Arrays.toString(params)).await().results;
+        return ProjectBeanHolder.getGoogleMap().textSearchRequest().query(String.join(" ", params)).await().results;
     }
 
     public AutocompletePrediction[] autocomplete(HttpSession session, String... params) throws IOException, InterruptedException, ApiException {

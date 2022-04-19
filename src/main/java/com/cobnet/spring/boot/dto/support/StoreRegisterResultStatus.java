@@ -3,7 +3,9 @@ package com.cobnet.spring.boot.dto.support;
 public enum StoreRegisterResultStatus {
 
     SUCCESS(201),
-    STORE_EXISTED(400);
+    STORE_NONEXISTENT(400),
+    STORE_EXISTED(400),
+    SERVICE_DOWN(502);
 
     private final int code;
 

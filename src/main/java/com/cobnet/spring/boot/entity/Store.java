@@ -15,8 +15,7 @@ import java.util.stream.Collectors;
 public class Store implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private UUID id;
 
     @OneToOne(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -81,7 +80,7 @@ public class Store implements Serializable {
         this.crew.addAll(Arrays.asList(crew));
     }
 
-    public long getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -119,6 +118,11 @@ public class Store implements Serializable {
 
     public Set<Work> getWorks() {
         return works.stream().collect(Collectors.toUnmodifiableSet());
+    }
+
+    public void setId(UUID id) {
+
+        this.id = id;
     }
 
     public void setVerified(boolean verified) {
