@@ -152,7 +152,8 @@ public class AddressForm extends FormBase<AddressForm, Address> {
 
     @Override
     public Address getEntity() {
-        return new Address();
+
+        return new Address.Builder().setStreet(this.street).setUnit(this.unit).setCity(this.city).setState(this.state).setZipCode(this.zipCode).setCountry(this.country).build();
     }
 
     public static class AddressFormGenerator implements FormGenerator<AddressForm> {
