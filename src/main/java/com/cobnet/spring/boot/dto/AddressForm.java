@@ -101,6 +101,49 @@ public class AddressForm extends FormBase<AddressForm, Address> {
         this.zipCode = zipCode;
     }
 
+    public String address() {
+
+        StringBuilder sb = new StringBuilder();
+
+        if(this.getStreet() != null && this.getStreet().length() > 0) {
+
+            sb.append(this.getStreet());
+        }
+
+        if(this.getUnit() != null && this.getUnit().length() > 0) {
+
+            sb.append(" ").append(this.getUnit());
+        }
+
+        if(this.getCity() != null && this.getCity().length() > 0) {
+
+            sb.append(" ").append(this.getCity());
+        }
+
+        if(this.getState() != null && this.getState().length() > 0) {
+
+            sb.append(", ").append(this.getState());
+        }
+
+        if(this.getZipCode() != null && this.getZipCode() > 0) {
+
+            sb.append(" ").append(this.getZipCode());
+        }
+
+        if(this.getCountry() != null && this.getCountry().length() > 0) {
+
+            sb.append(" ").append(this.getCountry());
+        }
+
+        return sb.toString();
+    }
+
+    @Override
+    public String toString() {
+
+        return address();
+    }
+
     @Override
     public FormGenerator<AddressForm> getGenerator() {
 
@@ -109,8 +152,7 @@ public class AddressForm extends FormBase<AddressForm, Address> {
 
     @Override
     public Address getEntity() {
-
-        return new Address.Builder().setStreet(this.street).setUnit(this.unit).setCity(this.city).setState(this.state).setCountry(this.country).setZipCode(this.zipCode).build();
+        return new Address();
     }
 
     public static class AddressFormGenerator implements FormGenerator<AddressForm> {
