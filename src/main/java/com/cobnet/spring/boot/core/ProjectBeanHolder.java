@@ -10,7 +10,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.hash.Jackson2HashMapper;
@@ -40,6 +43,10 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 public class ProjectBeanHolder {
+
+    private static MessageSource MESSAGE_SOURCE;
+
+    private static StoreService STORE_SERVICE;
 
     private static AddressRepository ADDRESS_REPOSITORY;
 
@@ -120,6 +127,12 @@ public class ProjectBeanHolder {
     private static PasswordEncoder PASSWORD_ENCODER;
 
     private static AuthenticationManager AUTHENTICATION_MANAGER;
+
+    private static StoreRepository STORE_REPOSITORY;
+
+    private static StoreOrderRepository STORE_ORDER_REPOSITORY;
+
+    private static WorkRepository WORK_REPOSITORY;
 
     private static UserRepository USER_REPOSITORY;
 
@@ -218,6 +231,11 @@ public class ProjectBeanHolder {
     public static CacheConfiguration getCacheConfiguration() {
 
         return  ProjectBeanHolder.CACHE_CONFIGURATION;
+    }
+
+    public static MessageSource getMessageSource() {
+
+        return ProjectBeanHolder.MESSAGE_SOURCE;
     }
 
     public static RedisConfiguration getRedisConfiguration() {
@@ -330,6 +348,21 @@ public class ProjectBeanHolder {
         return  ProjectBeanHolder.REDIS_Z_SET_OPERATIONS;
     }
 
+    public static StoreRepository getStoreRepository() {
+
+        return ProjectBeanHolder.STORE_REPOSITORY;
+    }
+
+    public static StoreOrderRepository getStoreOrderRepository() {
+
+        return ProjectBeanHolder.STORE_ORDER_REPOSITORY;
+    }
+
+    public static WorkRepository getWorkRepository() {
+
+        return ProjectBeanHolder.WORK_REPOSITORY;
+    }
+
     public static PlatformTransactionManager getPlatformTransactionManager() {
 
         return ProjectBeanHolder.PLATFORM_TRANSACTION_MANAGER;
@@ -353,6 +386,11 @@ public class ProjectBeanHolder {
     public static OAuth2AuthorizedClientService getOauth2AuthorizedClientService() {
 
         return ProjectBeanHolder.OAUTH2_AUTHORIZED_CLIENT_SERVICE;
+    }
+
+    public static StoreService getStoreService() {
+
+        return ProjectBeanHolder.STORE_SERVICE;
     }
 
     public static SessionRegistry getSessionRegistry() {
@@ -475,6 +513,12 @@ public class ProjectBeanHolder {
         }
 
         @Autowired
+        public void setStoreService(StoreService service) {
+
+            ProjectBeanHolder.STORE_SERVICE = service;
+        }
+
+        @Autowired
         public void setCacheConfiguration(CacheConfiguration config) {
 
             ProjectBeanHolder.CACHE_CONFIGURATION = config;
@@ -568,6 +612,30 @@ public class ProjectBeanHolder {
         public void setRedisCacheManager(RedisCacheManager manager) {
 
             ProjectBeanHolder.REDIS_CACHE_MANAGER = manager;
+        }
+
+        @Autowired
+        public void setStoreRepository(StoreRepository repository) {
+
+            ProjectBeanHolder.STORE_REPOSITORY = repository;
+        }
+
+        @Autowired
+        public void setMessageSource(MessageSource source) {
+
+            ProjectBeanHolder.MESSAGE_SOURCE = source;
+        }
+
+        @Autowired
+        public void setStoreOrderRepository(StoreOrderRepository repository) {
+
+            ProjectBeanHolder.STORE_ORDER_REPOSITORY = repository;
+        }
+
+        @Autowired
+        public void setWorkRepository(WorkRepository repository) {
+
+            ProjectBeanHolder.WORK_REPOSITORY = repository;
         }
 
         @Autowired
@@ -831,6 +899,16 @@ public class ProjectBeanHolder {
         public GoogleMap googleMapBean(GoogleMapConfiguration configuration) {
 
             return new GoogleMap(configuration);
+        }
+
+        @Bean
+        @Primary
+        public MessageSource messageSourceBean () {
+            ResourceBundleMessageSource source = new ResourceBundleMessageSource();
+            source.setBasename("locale/messages");
+            source.setUseCodeAsDefaultMessage(true);
+
+            return source;
         }
 
     }

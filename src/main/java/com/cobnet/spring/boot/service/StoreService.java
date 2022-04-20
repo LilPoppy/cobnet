@@ -6,6 +6,7 @@ import com.cobnet.spring.boot.dto.FormField;
 import com.cobnet.spring.boot.dto.StoreRegisterForm;
 import com.cobnet.spring.boot.dto.StoreRegisterResult;
 import com.cobnet.spring.boot.dto.support.StoreRegisterResultStatus;
+import com.cobnet.spring.boot.dto.support.UIType;
 import com.cobnet.spring.boot.entity.Address;
 import com.cobnet.spring.boot.entity.Store;
 import com.google.maps.errors.ApiException;
@@ -112,11 +113,15 @@ public class StoreService {
 
     public List<FormField> getStoreCheckInFormFields(String storeId, String language) {
 
-        Locale locale = Locale.forLanguageTag(language);
+        Locale locale = new Locale(language);
 
         List<FormField> fields = new ArrayList<>();
 
-        //fields.add(new FormField("firstName", "", locale.getExtension()));
+        fields.add(new FormField("firstName", null, ProjectBeanHolder.getMessageSource().getMessage("label.first-name", new Object[]{}, locale), UIType.INPUT, null));
+        fields.add(new FormField("lastName", null, ProjectBeanHolder.getMessageSource().getMessage("label.last-name", new Object[]{}, locale), UIType.INPUT, null));
+        fields.add(new FormField("gender", null, ProjectBeanHolder.getMessageSource().getMessage("label.gender", new Object[]{}, locale), UIType.SELECT, null));
+        fields.add(new FormField("phoneNumber", null, ProjectBeanHolder.getMessageSource().getMessage("label.phone-number", new Object[]{}, locale), UIType.PHONE_INPUT, null));
+        fields.add(new FormField("referral", null, ProjectBeanHolder.getMessageSource().getMessage("label.referral", new Object[]{}, locale), UIType.SELECT, null));
 
         return fields;
     }

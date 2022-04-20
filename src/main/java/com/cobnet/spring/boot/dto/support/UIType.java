@@ -4,5 +4,6 @@ public enum UIType {
 
     SELECT,
     INPUT,
+    PHONE_INPUT,
     DROPDOWN;
 }
