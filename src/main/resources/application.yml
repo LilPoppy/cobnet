@@ -36,6 +36,7 @@ spring:
       compatibility-verifier:
          enabled: false
    datasource:
+      initialize: false
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://@db-host@:@db-port@/@db-database@
       username: "@db-user@"

@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class Store implements Serializable {
 
     @Id
-    private UUID id;
+    private String id;
 
     @OneToOne(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -48,7 +48,7 @@ public class Store implements Serializable {
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "store", cascade = { CascadeType.PERSIST })
-    private Set<Work> works = new HashSet<>();
+    private Set<StoreOrder> orders = new HashSet<>();
 
     public Store() {}
 
@@ -59,10 +59,11 @@ public class Store implements Serializable {
 
     public Store(Address location, String name, String phone) {
 
-        this(location, name, phone, new HashSet<>(), new HashSet<>());
+        this(null, location, name, phone, new HashSet<>(), new HashSet<>());
     }
 
-    public Store(Address location, String name, String phone, Set<Service> services, Set<Position> positions, Staff... crew) {
+    public Store(String id, Address location, String name, String phone, Set<Service> services, Set<Position> positions, Staff... crew) {
+        this.id = id;
         this.location = location;
         this.name = name;
         this.phone = phone;
@@ -80,7 +81,7 @@ public class Store implements Serializable {
         this.crew.addAll(Arrays.asList(crew));
     }
 
-    public UUID getId() {
+    public String getId() {
         return id;
     }
 
@@ -116,11 +117,12 @@ public class Store implements Serializable {
         return positions;
     }
 
-    public Set<Work> getWorks() {
-        return works.stream().collect(Collectors.toUnmodifiableSet());
+    public Set<StoreOrder> getOrders() {
+
+        return orders;
     }
 
-    public void setId(UUID id) {
+    public void setId(String id) {
 
         this.id = id;
     }
@@ -164,14 +166,9 @@ public class Store implements Serializable {
         return this.addPosition(name, false);
     }
 
-    public boolean addWork(Work work) {
+    public boolean addOrder(StoreOrder order) {
 
-        return this.works.add(work);
-    }
-
-    public boolean addWork(Service service, Staff... workers) {
-
-        return this.addWork(new Work(this, service, workers));
+        return this.orders.add(order);
     }
 
     public void setName(String name) {
@@ -187,9 +184,9 @@ public class Store implements Serializable {
         return this.getPositions().stream().filter(Position::isDefault).findFirst();
     }
 
-
-
     public static class Builder {
+
+        private String placeId;
 
         private Address location;
 
@@ -202,6 +199,13 @@ public class Store implements Serializable {
         private Set<Object> positions = new HashSet<>();
 
         private Set<Object> crew = new HashSet<>();
+
+        public Builder setPlaceId(String placeId) {
+
+            this.placeId = placeId;
+
+            return this;
+        }
 
         public Builder setLocation(Address location) {
 
@@ -284,7 +288,7 @@ public class Store implements Serializable {
 
         public Store build() {
 
-            Store store = new Store(this.location, this.name, this.phone);
+            Store store = new Store(this.placeId, this.location, this.name, this.phone, new HashSet<>(), new HashSet<>());
 
             store.services = this.services.stream().map(service -> {
 
@@ -349,8 +353,10 @@ public class Store implements Serializable {
     @Override
     public String toString() {
         return getClass().getSimpleName() + "(" +
+                "id = " + id + ", " +
                 "location = " + location + ", " +
                 "name = " + name + ", " +
-                "phone = " + phone + ")";
+                "phone = " + phone + ", " +
+                "verified = " + verified + ")";
     }
 }

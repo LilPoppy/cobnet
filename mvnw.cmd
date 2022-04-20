@@ -1,7 +1,7 @@
 @REM ----------------------------------------------------------------------------
 @REM Licensed to the Apache Software Foundation (ASF) under one
 @REM or more contributor license agreements.  See the NOTICE file
-@REM distributed with this work for additional information
+@REM distributed with this order for additional information
 @REM regarding copyright ownership.  The ASF licenses this file
 @REM to you under the Apache License, Version 2.0 (the
 @REM "License"); you may not use this file except in compliance
@@ -155,7 +155,7 @@ if exist %WRAPPER_JAR% (
 @REM End of extension
 
 @REM Provide a "standardized" way to retrieve the CLI args that will
-@REM work with both Windows and non-Windows executions.
+@REM order with both Windows and non-Windows executions.
 set MAVEN_CMD_LINE_ARGS=%*
 
 %MAVEN_JAVA_EXE% ^

@@ -1,14 +1,17 @@
 package com.cobnet.spring.boot.entity;
 
+import com.cobnet.interfaces.spring.dto.ServiceOption;
 import com.cobnet.spring.boot.dto.support.WorkStatus;
-import org.hibernate.Hibernate;
+import com.cobnet.spring.boot.entity.support.JsonServiceAttributeConverter;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @Entity
 public class Work extends EntityBase implements Serializable {
@@ -17,12 +20,17 @@ public class Work extends EntityBase implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @ManyToOne(optional = false, cascade = CascadeType.ALL)
-    @JoinColumns({
-            @JoinColumn(name = "store_id", referencedColumnName = "id"),
-            @JoinColumn(name = "store_name", referencedColumnName = "name")
-    })
-    private Store store;
+
+    @ManyToMany(cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JoinTable(name = "staff_works",
+            joinColumns = {
+                    @JoinColumn(name = "work_id", referencedColumnName = "id")
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "staff_id", referencedColumnName = "id")
+            })
+    private Set<Staff> workers = new HashSet<>();
 
     @ManyToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumns({
@@ -31,91 +39,59 @@ public class Work extends EntityBase implements Serializable {
     })
     private Service service;
 
-    @ManyToMany(cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinTable(name = "staff_works",
-            joinColumns = {
-                @JoinColumn(name = "work_id", referencedColumnName = "id")
-    },
-            inverseJoinColumns = {
-                @JoinColumn(name = "staff_id", referencedColumnName = "id")
-    })
-    private Set<Staff> workers = new HashSet<>();
-
-    private Date bookTime;
-
-    private Date checkInTime;
+    @SuppressWarnings("JpaAttributeTypeInspection")
+    @Convert(converter = JsonServiceAttributeConverter.class)
+    @Column(columnDefinition = "json")
+    private Map<? extends ServiceOption<?>, ?> attribute = new HashMap<>();
 
     @Enumerated
     @Column(name = "status")
     private WorkStatus status;
 
+    @ManyToOne(optional = false, cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id")
+    private StoreOrder order;
+
+
+    public Work(StoreOrder order, Set<Staff> workers, Service service, WorkStatus status) {
+        this.order = order;
+        this.workers = workers;
+        this.service = service;
+        this.attribute = new HashMap<>(this.service.getAttribute());
+        this.status = status;
+    }
+
     public Work() {}
 
-    public Work(Store store, Service service, Staff... workers) {
-        this.store = store;
-        this.service = service;
-        this.workers = Arrays.stream(workers).collect(Collectors.toSet());
+    public long getId() {
+        return id;
     }
 
-    public void setService(Service service) {
-        this.service = service;
-    }
-
-    public void setCheckInTime(Date checkInTime) {
-        this.checkInTime = checkInTime;
-    }
-
-    public Date getCheckInTime() {
-        return checkInTime;
-    }
-
-    public void setBookTime(Date bookTime) {
-        this.bookTime = bookTime;
-    }
-
-    public Date getBookTime() {
-        return bookTime;
+    public StoreOrder getOrder() {
+        return order;
     }
 
     public Set<Staff> getWorkers() {
         return workers;
     }
 
+    public Service getService() {
+        return service;
+    }
+
     public WorkStatus getStatus() {
         return status;
+    }
+
+    public void setOrder(StoreOrder order) {
+        this.order = order;
     }
 
     public void setStatus(WorkStatus status) {
         this.status = status;
     }
 
-    public Service getService() {
-        return service;
+    public Map<? extends ServiceOption<?>, ?> getAttribute() {
+        return attribute;
     }
-
-    public Long getId() {
-
-        return id;
-    }
-
-    public Store getStore() {
-
-        return store;
-    }
-
-    @Override
-    public String toString() {
-        return getClass().getSimpleName() + "(" +
-                "store = " + store.getName() + ", " +
-                "service = " + service.getName() + ", " +
-                "workers = " + workers + ", " +
-                "bookTime = " + bookTime + ", " +
-                "checkInTime = " + checkInTime + ", " +
-                "status = " + status + ")";
-    }
-
-
-
-
 }

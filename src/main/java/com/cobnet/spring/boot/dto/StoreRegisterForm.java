@@ -6,42 +6,43 @@ import com.cobnet.spring.boot.entity.Position;
 import com.cobnet.spring.boot.entity.Service;
 import com.cobnet.spring.boot.entity.Store;
 import com.cobnet.spring.boot.entity.User;
+import com.google.maps.errors.ApiException;
+import com.google.maps.model.PlaceDetails;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.CascadeType;
 import javax.persistence.OneToMany;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class StoreRegisterForm extends FormBase<StoreRegisterForm, Store> {
 
-    private String name;
+    private String placeId;
 
-    private String phone;
+    private String phoneNumber;
 
-    public StoreRegisterForm(String name, String phone) {
-        this.name = name;
-        this.phone = phone;
+    public StoreRegisterForm(String placeId, String phoneNumber) {
+
+        this.placeId = placeId;
+        this.phoneNumber = phoneNumber;
     }
 
-    public String getName() {
-        return name;
+    public String getPlaceId() {
+        return placeId;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPlaceId(String placeId) {
+        this.placeId = placeId;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     @Override
@@ -53,7 +54,7 @@ public class StoreRegisterForm extends FormBase<StoreRegisterForm, Store> {
     @Override
     public Store getEntity() {
 
-        return new Store(this.name, this.phone);
+        return new Store.Builder().setPlaceId(this.placeId).setPhone(this.phoneNumber).build();
     }
 
 
