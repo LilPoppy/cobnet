@@ -6,6 +6,7 @@ import com.cobnet.interfaces.security.Permission;
 import com.cobnet.security.RoleRule;
 import com.cobnet.security.permission.PermissionValidator;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
+import com.cobnet.spring.boot.entity.support.Gender;
 import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.LazyCollection;
@@ -38,6 +39,9 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
     private String firstName;
 
     private String lastName;
+
+    @Enumerated
+    private Gender gender;
 
     private String phoneNumber;
 
@@ -89,18 +93,19 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
     public User() {}
 
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, String phoneNumber, boolean phoneNumberVerified, String email, boolean emailVerified, @NonNull List<Address> addresses,  @NonNull List<UserRole> roles, boolean expired, boolean locked, boolean vaildPassword, boolean enabled) {
+    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, @NonNull Gender gender, String phoneNumber, boolean phoneNumberVerified, String email, boolean emailVerified, @NonNull List<Address> addresses,  @NonNull List<UserRole> roles, boolean expired, boolean locked, boolean vaildPassword, boolean enabled) {
 
         this.username = username;
         this.password = password;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.gender = gender;
         this.phoneNumber = phoneNumber;
         this.phoneNumberVerified = phoneNumberVerified;
         this.email = email;
         this.emailVerified = emailVerified;
 
-        if(addresses != null) {
+        if(addresses.size() > 0) {
             this.addresses.addAll(addresses);
         }
         this.roles.addAll(roles.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(EntityBase::getCreatedTime))), ArrayList::new)));
@@ -112,44 +117,44 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
     }
 
 
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, @NonNull List<Address> addresses ,@NonNull List<UserRole> roles) {
+    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, @NonNull Gender gender, @NonNull List<Address> addresses ,@NonNull List<UserRole> roles) {
 
-        this(username, password,firstName, lastName, null, false, null, false, addresses, roles, false, false, true, true);
+        this(username, password,firstName, lastName, gender,null, false, null, false, addresses, roles, false, false, true, true);
     }
 
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, @NonNull Address addresse ,@NonNull List<UserRole> roles) {
+    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, @NonNull Gender gender, @NonNull Address address ,@NonNull List<UserRole> roles) {
 
-        this(username, password, firstName, lastName, List.of(addresse), roles);
+        this(username, password, firstName, lastName, gender, List.of(address), roles);
     }
 
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, String phoneNumber, String email, @NonNull List<Address> addresses, @NonNull List<UserRole> roles) {
+    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, Gender gender, String phoneNumber, String email, @NonNull List<Address> addresses, @NonNull List<UserRole> roles) {
 
-        this(username, password,firstName, lastName, phoneNumber, false, email, false, addresses, roles, false, false, true, true);
+        this(username, password,firstName, lastName, gender, phoneNumber, false, email, false, addresses, roles, false, false, true, true);
     }
 
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, String phoneNumber, String email, @NonNull Address addresse, @NonNull List<UserRole> roles) {
+    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, @NonNull Gender gender, String phoneNumber, String email, @NonNull Address address, @NonNull List<UserRole> roles) {
 
-        this(username, password,firstName, lastName, phoneNumber, false, email, false, List.of(addresse), roles, false, false, true, true);
+        this(username, password,firstName, lastName, gender, phoneNumber, false, email, false, List.of(address), roles, false, false, true, true);
     }
 
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, String phoneNumber, String email, List<Address> addresses, UserRole... roles) {
+    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, @NonNull Gender gender, String phoneNumber, String email, List<Address> addresses, UserRole... roles) {
 
-        this(username, password, firstName, lastName, phoneNumber, email, addresses, Arrays.stream(roles).toList());
+        this(username, password, firstName, lastName, gender, phoneNumber, email, addresses, Arrays.stream(roles).toList());
     }
 
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, String phoneNumber, String email, Address addresse, UserRole... roles) {
+    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, @NonNull Gender gender, String phoneNumber, String email, Address addresse, UserRole... roles) {
 
-        this(username, password, firstName, lastName, phoneNumber, email, List.of(addresse), Arrays.stream(roles).toList());
+        this(username, password, firstName, lastName, gender, phoneNumber, email, List.of(addresse), Arrays.stream(roles).toList());
     }
 
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, List<Address> addresses, UserRole... roles) {
+    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, @NonNull Gender gender, List<Address> addresses, UserRole... roles) {
 
-        this(username, password, firstName, lastName, addresses, Arrays.stream(roles).toList());
+        this(username, password, firstName, lastName, gender, addresses, Arrays.stream(roles).toList());
     }
 
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, Address address, UserRole... roles) {
+    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, @NonNull Gender gender, Address address, UserRole... roles) {
 
-        this(username, password, firstName, lastName, List.of(address), Arrays.stream(roles).toList());
+        this(username, password, firstName, lastName, gender, List.of(address), Arrays.stream(roles).toList());
     }
 
     @Override
@@ -315,6 +320,14 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
         return this.roles.stream().anyMatch(role -> role.getName().equalsIgnoreCase(name));
     }
 
+    public Gender getGender() {
+        return gender;
+    }
+
+    public void setGender(Gender gender) {
+        this.gender = gender;
+    }
+
     private PermissionValidator getPermissionValidator() {
 
         if(this.permissionValidator == null) {
@@ -362,6 +375,8 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
         private String lastName;
 
+        private Gender gender;
+
         private String phoneNumber;
 
         private boolean phoneNumberVerified;
@@ -406,6 +421,13 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
         public Builder setLastName(String lastName) {
 
             this.lastName = lastName;
+
+            return this;
+        }
+
+        public Builder setGender(Gender gender) {
+
+            this.gender = gender;
 
             return this;
         }
@@ -482,7 +504,7 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
         public User build() {
 
-            return new User(this.username, this.password, this.firstName, this.lastName, this.phoneNumber, this.phoneNumberVerified, this.email, this.emailVerified, this.addresses, this.roles, this.expired, this.locked, this.vaildPassword, this.enabled);
+            return new User(this.username, this.password, this.firstName, this.lastName, this.gender, this.phoneNumber, this.phoneNumberVerified, this.email, this.emailVerified, this.addresses, this.roles, this.expired, this.locked, this.vaildPassword, this.enabled);
         }
     }
 
