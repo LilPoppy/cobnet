@@ -10,7 +10,10 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.hash.Jackson2HashMapper;
@@ -40,6 +43,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
 public class ProjectBeanHolder {
+
+    private static MessageSource MESSAGE_SOURCE;
 
     private static AddressRepository ADDRESS_REPOSITORY;
 
@@ -253,6 +258,11 @@ public class ProjectBeanHolder {
     public static ApplicationEventPublisher getApplicationEventPublisher() {
 
         return ProjectBeanHolder.APPLICATION_EVENT_PUBLISHER;
+    }
+
+    public static MessageSource getMessageSource() {
+
+        return ProjectBeanHolder.MESSAGE_SOURCE;
     }
 
     public static ObjectMapper getObjectMapper() {
@@ -751,6 +761,12 @@ public class ProjectBeanHolder {
 
             ProjectBeanHolder.MODEL_MAPPER = mapper;
         }
+
+        @Autowired
+        public void setMessageSource(MessageSource source) {
+
+            ProjectBeanHolder.MESSAGE_SOURCE = source;
+        }
     }
 
     @Component
@@ -831,6 +847,16 @@ public class ProjectBeanHolder {
         public GoogleMap googleMapBean(GoogleMapConfiguration configuration) {
 
             return new GoogleMap(configuration);
+        }
+
+        @Bean
+        @Primary
+        public MessageSource messageSourceBean () {
+            ResourceBundleMessageSource source = new ResourceBundleMessageSource();
+            source.setBasename("locale/messages");
+            source.setUseCodeAsDefaultMessage(true);
+
+            return source;
         }
 
     }
