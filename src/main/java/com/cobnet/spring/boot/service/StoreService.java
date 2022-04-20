@@ -2,6 +2,7 @@ package com.cobnet.spring.boot.service;
 
 import com.cobnet.interfaces.spring.repository.StoreRepository;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
+import com.cobnet.spring.boot.dto.FormField;
 import com.cobnet.spring.boot.dto.StoreRegisterForm;
 import com.cobnet.spring.boot.dto.StoreRegisterResult;
 import com.cobnet.spring.boot.dto.support.StoreRegisterResultStatus;
@@ -15,9 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class StoreService {
@@ -26,8 +25,6 @@ public class StoreService {
     private StoreRepository repository;
 
     public StoreRegisterResult register(StoreRegisterForm storeForm) throws IOException, InterruptedException, ApiException {
-
-        System.out.println(Arrays.toString(ProjectBeanHolder.getGoogleMapService().search("QQ Foot Massage", "8714 Youree Dr")));
 
         //ChIJKZHAALQtMYYRnE0zrKPsS8I
         Store store = storeForm.getEntity();
@@ -111,5 +108,16 @@ public class StoreService {
         repository.save(store);
 
         return new StoreRegisterResult(StoreRegisterResultStatus.SUCCESS);
+    }
+
+    public List<FormField> getStoreCheckInFormFields(String storeId, String language) {
+
+        Locale locale = Locale.forLanguageTag(language);
+
+        List<FormField> fields = new ArrayList<>();
+
+        //fields.add(new FormField("firstName", "", locale.getExtension()));
+
+        return fields;
     }
 }
