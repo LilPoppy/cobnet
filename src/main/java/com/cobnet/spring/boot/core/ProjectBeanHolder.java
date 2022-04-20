@@ -41,8 +41,6 @@ import javax.sql.DataSource;
 
 public class ProjectBeanHolder {
 
-    private static StoreService STORE_SERVICE;
-
     private static AddressRepository ADDRESS_REPOSITORY;
 
     private static PhoneNumberSmsVerifyService PHONE_NUMBER_SMS_VERIFY_SERVICE;
@@ -122,12 +120,6 @@ public class ProjectBeanHolder {
     private static PasswordEncoder PASSWORD_ENCODER;
 
     private static AuthenticationManager AUTHENTICATION_MANAGER;
-
-    private static StoreRepository STORE_REPOSITORY;
-
-    private static StoreOrderRepository STORE_ORDER_REPOSITORY;
-
-    private static WorkRepository WORK_REPOSITORY;
 
     private static UserRepository USER_REPOSITORY;
 
@@ -338,21 +330,6 @@ public class ProjectBeanHolder {
         return  ProjectBeanHolder.REDIS_Z_SET_OPERATIONS;
     }
 
-    public static StoreRepository getStoreRepository() {
-
-        return ProjectBeanHolder.STORE_REPOSITORY;
-    }
-
-    public static StoreOrderRepository getStoreOrderRepository() {
-
-        return ProjectBeanHolder.STORE_ORDER_REPOSITORY;
-    }
-
-    public static WorkRepository getWorkRepository() {
-
-        return ProjectBeanHolder.WORK_REPOSITORY;
-    }
-
     public static PlatformTransactionManager getPlatformTransactionManager() {
 
         return ProjectBeanHolder.PLATFORM_TRANSACTION_MANAGER;
@@ -376,11 +353,6 @@ public class ProjectBeanHolder {
     public static OAuth2AuthorizedClientService getOauth2AuthorizedClientService() {
 
         return ProjectBeanHolder.OAUTH2_AUTHORIZED_CLIENT_SERVICE;
-    }
-
-    public static StoreService getStoreService() {
-
-        return ProjectBeanHolder.STORE_SERVICE;
     }
 
     public static SessionRegistry getSessionRegistry() {
@@ -503,12 +475,6 @@ public class ProjectBeanHolder {
         }
 
         @Autowired
-        public void setStoreService(StoreService service) {
-
-            ProjectBeanHolder.STORE_SERVICE = service;
-        }
-
-        @Autowired
         public void setCacheConfiguration(CacheConfiguration config) {
 
             ProjectBeanHolder.CACHE_CONFIGURATION = config;
@@ -602,24 +568,6 @@ public class ProjectBeanHolder {
         public void setRedisCacheManager(RedisCacheManager manager) {
 
             ProjectBeanHolder.REDIS_CACHE_MANAGER = manager;
-        }
-
-        @Autowired
-        public void setStoreRepository(StoreRepository repository) {
-
-            ProjectBeanHolder.STORE_REPOSITORY = repository;
-        }
-
-        @Autowired
-        public void setStoreOrderRepository(StoreOrderRepository repository) {
-
-            ProjectBeanHolder.STORE_ORDER_REPOSITORY = repository;
-        }
-
-        @Autowired
-        public void setWorkRepository(WorkRepository repository) {
-
-            ProjectBeanHolder.WORK_REPOSITORY = repository;
         }
 
         @Autowired
