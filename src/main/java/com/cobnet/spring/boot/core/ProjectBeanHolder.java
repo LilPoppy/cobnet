@@ -41,6 +41,7 @@ import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
+import java.io.IOException;
 
 public class ProjectBeanHolder {
 
@@ -56,7 +57,7 @@ public class ProjectBeanHolder {
 
     private static GoogleMap GOOGLE_MAP;
 
-    private static GoogleMapConfiguration GOOGLE_MAP_CONFIGURATION;
+    private static GoogleConsoleConfiguration GOOGLE_CONSOLE_CONFIGURATION;
 
     private static RememberMeServices REMEMBER_ME_SERVICE;
 
@@ -253,9 +254,9 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.GOOGLE_MAP;
     }
 
-    public static GoogleMapConfiguration getGoogleMapConfiguration() {
+    public static GoogleConsoleConfiguration getGoogleConsoleConfiguration() {
 
-        return ProjectBeanHolder.GOOGLE_MAP_CONFIGURATION;
+        return ProjectBeanHolder.GOOGLE_CONSOLE_CONFIGURATION;
     }
 
     public static TwilioConfiguration getTwilioConfiguration() {
@@ -471,6 +472,11 @@ public class ProjectBeanHolder {
     public static AddressRepository getAddressRepository() {
 
         return ProjectBeanHolder.ADDRESS_REPOSITORY;
+    }
+
+    public static GoogleTranslatorBundleMessageSource getTranslatorMessageSource() {
+
+        return (GoogleTranslatorBundleMessageSource) ProjectBeanHolder.MESSAGE_SOURCE;
     }
 
     @Component("autowireLoader")
@@ -791,9 +797,9 @@ public class ProjectBeanHolder {
         }
 
         @Autowired
-        public void setGoogleMapConfiguration(GoogleMapConfiguration configuration) {
+        public void setGoogleMapConfiguration(GoogleConsoleConfiguration configuration) {
 
-            ProjectBeanHolder.GOOGLE_MAP_CONFIGURATION = configuration;
+            ProjectBeanHolder.GOOGLE_CONSOLE_CONFIGURATION = configuration;
         }
 
         @Autowired
@@ -896,15 +902,15 @@ public class ProjectBeanHolder {
         }
 
         @Bean
-        public GoogleMap googleMapBean(GoogleMapConfiguration configuration) {
+        public GoogleMap googleMapBean(GoogleConsoleConfiguration configuration) {
 
             return new GoogleMap(configuration);
         }
 
         @Bean
         @Primary
-        public MessageSource messageSourceBean () {
-            ResourceBundleMessageSource source = new ResourceBundleMessageSource();
+        public MessageSource messageSourceBean (@Autowired GoogleConsoleConfiguration configuration) throws IOException {
+            GoogleTranslatorBundleMessageSource source = new GoogleTranslatorBundleMessageSource(configuration);
             source.setBasename("locale/messages");
             source.setUseCodeAsDefaultMessage(true);
 

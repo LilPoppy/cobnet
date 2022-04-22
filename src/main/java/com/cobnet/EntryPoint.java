@@ -108,16 +108,12 @@ public class EntryPoint {
 
 		LOG.info(EntryPoint.getLogo());
 
-		System.out.println(ProjectBeanHolder.getStoreService().getStoreCheckInFormFields("aaa", "zh_CN"));
+		System.out.println(ProjectBeanHolder.getStoreService().getStoreCheckInFormFields("aaa", Locale.SIMPLIFIED_CHINESE));
 
 		User user = new User("admin", "123456", "Bob", "Smith", Gender.MALE, new Address.Builder().setStreet("1 Heaven Street").build(), new UserRole("admin", RoleRule.ADMIN, false, new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")));
 
 		ProjectBeanHolder.getUserRoleRepository().save(new UserRole("user", RoleRule.USER, true));
 		ProjectBeanHolder.getUserRepository().save(user);
-
-		System.out.println(ProjectBeanHolder.getTranslatorMessageSource().getMessage("sss", Locale.SIMPLIFIED_CHINESE, "Tommy"));
-
-		System.out.println(ProjectBeanHolder.getTranslatorMessageSource().getMessage("zzz", Locale.SIMPLIFIED_CHINESE));
 
 		if(Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("agent"))) {
 

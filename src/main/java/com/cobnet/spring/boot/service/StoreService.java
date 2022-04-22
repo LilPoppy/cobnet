@@ -111,17 +111,15 @@ public class StoreService {
         return new StoreRegisterResult(StoreRegisterResultStatus.SUCCESS);
     }
 
-    public List<FormField> getStoreCheckInFormFields(String storeId, String language) {
-
-        Locale locale = new Locale(language);
+    public List<FormField> getStoreCheckInFormFields(String storeId, Locale locale) throws IOException {
 
         List<FormField> fields = new ArrayList<>();
 
-        fields.add(new FormField("firstName", null, ProjectBeanHolder.getMessageSource().getMessage("label.first-name", new Object[]{}, locale), UIType.INPUT, null));
-        fields.add(new FormField("lastName", null, ProjectBeanHolder.getMessageSource().getMessage("label.last-name", new Object[]{}, locale), UIType.INPUT, null));
-        fields.add(new FormField("gender", null, ProjectBeanHolder.getMessageSource().getMessage("label.gender", new Object[]{}, locale), UIType.SELECT, null));
-        fields.add(new FormField("phoneNumber", null, ProjectBeanHolder.getMessageSource().getMessage("label.phone-number", new Object[]{}, locale), UIType.PHONE_INPUT, null));
-        fields.add(new FormField("referral", null, ProjectBeanHolder.getMessageSource().getMessage("label.referral", new Object[]{}, locale), UIType.SELECT, null));
+        fields.add(new FormField("firstName", null, ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.first-name", locale), UIType.INPUT, null));
+        fields.add(new FormField("lastName", null, ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.last-name", locale), UIType.INPUT, null));
+        fields.add(new FormField("gender", null, ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.gender", locale), UIType.SELECT, null));
+        fields.add(new FormField("phoneNumber", null, ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.phone-number", locale), UIType.PHONE_INPUT, null));
+        fields.add(new FormField("referral", null, ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.referral", locale), UIType.SELECT, null));
 
         return fields;
     }

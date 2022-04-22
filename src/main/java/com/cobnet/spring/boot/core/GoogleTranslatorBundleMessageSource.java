@@ -13,6 +13,7 @@ import org.springframework.util.DefaultPropertiesPersister;
 import java.io.*;
 import java.net.URL;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -57,7 +58,7 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
             return super.getMessage(key, args, locale);
         }
 
-        String message = super.resolveCodeWithoutArguments(key, locale);
+        String message = super.resolveCodeWithoutArguments(key, Objects.requireNonNull(this.getDefaultLocale()));
 
         if (message == null) {
 
