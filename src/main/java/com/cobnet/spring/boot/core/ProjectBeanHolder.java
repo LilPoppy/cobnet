@@ -233,11 +233,6 @@ public class ProjectBeanHolder {
         return  ProjectBeanHolder.CACHE_CONFIGURATION;
     }
 
-    public static MessageSource getMessageSource() {
-
-        return ProjectBeanHolder.MESSAGE_SOURCE;
-    }
-
     public static RedisConfiguration getRedisConfiguration() {
 
         return ProjectBeanHolder.REDIS_CONFIGURATION;
@@ -271,6 +266,11 @@ public class ProjectBeanHolder {
     public static ApplicationEventPublisher getApplicationEventPublisher() {
 
         return ProjectBeanHolder.APPLICATION_EVENT_PUBLISHER;
+    }
+
+    public static MessageSource getMessageSource() {
+
+        return ProjectBeanHolder.MESSAGE_SOURCE;
     }
 
     public static ObjectMapper getObjectMapper() {
@@ -621,12 +621,6 @@ public class ProjectBeanHolder {
         }
 
         @Autowired
-        public void setMessageSource(MessageSource source) {
-
-            ProjectBeanHolder.MESSAGE_SOURCE = source;
-        }
-
-        @Autowired
         public void setStoreOrderRepository(StoreOrderRepository repository) {
 
             ProjectBeanHolder.STORE_ORDER_REPOSITORY = repository;
@@ -818,6 +812,12 @@ public class ProjectBeanHolder {
         public void setModelMapper(ModelMapper mapper) {
 
             ProjectBeanHolder.MODEL_MAPPER = mapper;
+        }
+
+        @Autowired
+        public void setMessageSource(MessageSource source) {
+
+            ProjectBeanHolder.MESSAGE_SOURCE = source;
         }
     }
 

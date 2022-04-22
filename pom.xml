@@ -267,9 +267,12 @@
 			<version>2.0.0</version>
 		</dependency>
 		<dependency>
-			<groupId>javax.xml.registry</groupId>
-			<artifactId>javax.xml.registry-api</artifactId>
-			<version>1.0.8</version>
+			<groupId>com.google.cloud</groupId>
+			<artifactId>google-cloud-translate</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.cloud</groupId>
+			<artifactId>google-cloud-storage</artifactId>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
@@ -281,9 +284,15 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<dependency>
+				<groupId>com.google.cloud</groupId>
+				<artifactId>libraries-bom</artifactId>
+				<version>25.1.0</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
 	<build>
 		<finalName>${project.artifactId}</finalName>
 		<plugins>
@@ -395,7 +404,7 @@
 					</execution>
 					<execution>
 						<id>down</id>
-						<phase>clean</phase>
+						<phase>initialize</phase>
 						<goals>
 							<goal>down</goal>
 						</goals>
@@ -434,7 +443,6 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
-
 	<profiles>
 		<profile>
 			<id>docker</id>
