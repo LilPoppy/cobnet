@@ -8,9 +8,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
 import io.netty.buffer.Unpooled;
-import org.bouncycastle.util.Arrays;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Map;
 
 public class OutboundPacket extends Packet {

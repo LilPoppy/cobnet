@@ -1,12 +1,11 @@
 package com.cobnet.spring.boot.core;
 
-import com.cobnet.spring.boot.configuration.GoogleMapConfiguration;
+import com.cobnet.spring.boot.configuration.GoogleConsoleConfiguration;
 import com.google.maps.*;
 import com.google.maps.model.ElevationResult;
 import com.google.maps.model.EncodedPolyline;
 import com.google.maps.model.LatLng;
 
-import javax.servlet.http.HttpSession;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -14,28 +13,31 @@ public class GoogleMap {
 
     private final GeoApiContext context;
 
-    GoogleMap(GoogleMapConfiguration configuration) {
+    GoogleMap(GoogleConsoleConfiguration configuration) {
 
         GeoApiContext.Builder builder = new GeoApiContext.Builder().apiKey(configuration.getApiKey());
 
-        if(configuration.getChannel() != null) {
+        if(configuration.getMap() != null) {
 
-            builder = builder.channel(configuration.getChannel());
-        }
+            if (configuration.getMap().getChannel() != null) {
 
-        if(configuration.getErrorTimeout() != null) {
+                builder = builder.channel(configuration.getMap().getChannel());
+            }
 
-            builder = builder.connectTimeout(configuration.getErrorTimeout().toMillis(), TimeUnit.MILLISECONDS);
-        }
+            if (configuration.getMap().getErrorTimeout() != null) {
 
-        if(configuration.getMaxRetries() != null) {
+                builder = builder.connectTimeout(configuration.getMap().getErrorTimeout().toMillis(), TimeUnit.MILLISECONDS);
+            }
 
-            builder = builder.maxRetries(configuration.getMaxRetries());
-        }
+            if (configuration.getMap().getMaxRetries() != null) {
 
-        if(configuration.getClientId() != null && configuration.getCryptographicSecret() != null) {
+                builder = builder.maxRetries(configuration.getMap().getMaxRetries());
+            }
 
-            builder = builder.enterpriseCredentials(configuration.getClientId(), configuration.getCryptographicSecret());
+            if (configuration.getMap().getClientId() != null && configuration.getMap().getCryptographicSecret() != null) {
+
+                builder = builder.enterpriseCredentials(configuration.getMap().getClientId(), configuration.getMap().getCryptographicSecret());
+            }
         }
 
         this.context = builder.build();

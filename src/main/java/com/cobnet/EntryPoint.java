@@ -20,11 +20,15 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.util.DefaultPropertiesPersister;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -111,6 +115,10 @@ public class EntryPoint {
 		ProjectBeanHolder.getUserRepository().save(user);
 
 		ProjectBeanHolder.getUserRoleRepository().save(new UserRole("user", RoleRule.USER, true));
+
+		System.out.println(ProjectBeanHolder.getTranslatorMessageSource().getMessage("sss", Locale.SIMPLIFIED_CHINESE, "Tommy"));
+
+		System.out.println(ProjectBeanHolder.getTranslatorMessageSource().getMessage("zzz", Locale.SIMPLIFIED_CHINESE));
 
 		if(Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("agent"))) {
 
