@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ResourceBundleMessageSource;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.util.DefaultPropertiesPersister;
 
 import java.io.*;
@@ -37,8 +38,9 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
         GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(configuration.getCredentials())).createScoped(Lists.newArrayList("https://www.googleapis.com/auth/cloud-platform"));
 
         this.translate = helper.getOptions().toBuilder().setCredentials(credentials).build().getService();
-
         this.setBasename(DEFAULT_BASENAME);
+        this.setUseCodeAsDefaultMessage(true);
+        this.setDefaultLocale(new Locale("en", "US"));
     }
 
     public boolean hasKey(String key, Locale locale) {
@@ -51,12 +53,22 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
         });
     }
 
+    public String getMessage(String key, Object... args) throws IOException, ServiceDownException {
+
+        return this.getMessage(key, (String) null, null);
+    }
+
     public String getMessage(String key, Locale locale, Object... args) throws IOException, ServiceDownException {
 
         return this.getMessage(key, null, locale, args);
     }
 
     public String getMessage(String key, String defaultValue, Locale locale, Object... args) throws IOException, ServiceDownException {
+
+        if(locale == null) {
+
+            locale = this.getDefaultLocale();
+        }
 
         if(hasKey(key, locale)) {
 
@@ -85,8 +97,11 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
 
         } catch (TranslateException exception) {
 
-            exception.addSuppressed(new ServiceDownException(this.getClass()));
-            exception.printStackTrace();
+            if(LOG.isTraceEnabled() || LOG.isDebugEnabled()) {
+
+                exception.addSuppressed(new ServiceDownException(this.getClass()));
+                exception.printStackTrace();
+            }
 
             return super.getMessage(key, args, defaultValue, this.getDefaultLocale());
         }

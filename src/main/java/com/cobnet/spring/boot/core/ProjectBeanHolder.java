@@ -858,11 +858,8 @@ public class ProjectBeanHolder {
         @Bean
         @Primary
         public MessageSource messageSourceBean (GoogleConsoleConfiguration configuration) throws IOException {
-            GoogleTranslatorBundleMessageSource source = new GoogleTranslatorBundleMessageSource(configuration);
-            source.setUseCodeAsDefaultMessage(true);
-            source.setDefaultLocale(new Locale("en", "US"));
 
-            return source;
+            return new GoogleTranslatorBundleMessageSource(configuration);
         }
 
     }
