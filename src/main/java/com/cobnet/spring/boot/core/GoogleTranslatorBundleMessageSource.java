@@ -89,7 +89,7 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
             exception.addSuppressed(new ServiceDownException(this.getClass()));
             exception.printStackTrace();
 
-            return null;
+            return super.getMessage(key, args, defaultValue, locale);
         }
     }
 
