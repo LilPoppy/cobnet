@@ -175,12 +175,12 @@ management:
          enable: true
 twilio:
    account-sid: ACaa871dd615aca9c8d798ec44aaeed2f5
-   authentication-token: 3b4dba82bf2d8d65f3ce457eaa785cf4
+   authentication-token: a4432efb86248b3392669ede7ace9c06
    numbers: +19108078297
 google:
    console:
       api-key: "AIzaSyD392d2n4sjnKsekSGT2CcCzfgXjEFkJ_A"
-      credentials: ${PWD}/src/main/resources/keystore/storechain-integration-d27a5e6fca53.json
+      credentials: ${PWD}/target/classes/keystore/storechain-integration-d27a5e6fca53.json
 netty:
    enable: true
    servers:

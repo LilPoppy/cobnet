@@ -1,11 +1,15 @@
 package com.cobnet.spring.boot.core;
 
+import com.cobnet.exception.ServiceDownException;
 import com.cobnet.spring.boot.configuration.GoogleConsoleConfiguration;
+import com.google.api.client.http.HttpResponseException;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.Translation;
 import com.google.cloud.translate.testing.RemoteTranslateHelper;
 import com.google.common.collect.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.util.DefaultPropertiesPersister;
@@ -19,19 +23,27 @@ import java.util.ResourceBundle;
 
 public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSource {
 
+    private static final Logger LOG = LoggerFactory.getLogger(GoogleTranslatorBundleMessageSource.class);
     public static final String DEFAULT_BASENAME = "locale/messages";
 
-    private final Translate translate;
+    private Translate translate;
 
-    GoogleTranslatorBundleMessageSource(@Autowired GoogleConsoleConfiguration configuration) throws IOException {
+    GoogleTranslatorBundleMessageSource(@Autowired GoogleConsoleConfiguration configuration) {
 
         super();
 
-        RemoteTranslateHelper helper = RemoteTranslateHelper.create();
+        try {
 
-        GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(configuration.getCredentials())) .createScoped(Lists.newArrayList("https://www.googleapis.com/auth/cloud-platform"));
+            RemoteTranslateHelper helper = RemoteTranslateHelper.create();
 
-        this.translate = helper.getOptions().toBuilder().setCredentials(credentials).build().getService();
+            GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(configuration.getCredentials())).createScoped(Lists.newArrayList("https://www.googleapis.com/auth/cloud-platform"));
+
+            this.translate = helper.getOptions().toBuilder().setCredentials(credentials).build().getService();
+
+        } catch (IOException ex) {
+
+            LOG.error("Check application.yml of google.console.credentials to resolve %s", ex.getMessage());
+        }
 
         this.setBasename(DEFAULT_BASENAME);
     }
@@ -46,12 +58,12 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
         });
     }
 
-    public String getMessage(String key, Locale locale, Object... args) throws IOException {
+    public String getMessage(String key, Locale locale, Object... args) throws IOException, ServiceDownException {
 
         return this.getMessage(key, null, locale, args);
     }
 
-    public String getMessage(String key, String defaultValue, Locale locale, Object... args) throws IOException {
+    public String getMessage(String key, String defaultValue, Locale locale, Object... args) throws IOException, ServiceDownException {
 
         if(hasKey(key, locale)) {
 
@@ -68,6 +80,11 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
         if (message == null) {
 
             message = this.getDefaultMessage(key);
+        }
+
+        if(this.translate == null) {
+
+            throw new ServiceDownException(this.getClass(), this.translate);
         }
 
         Translation translation = this.translate.translate(message, Translate.TranslateOption.targetLanguage(locale.getLanguage()));
