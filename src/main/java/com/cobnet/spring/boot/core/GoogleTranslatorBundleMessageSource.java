@@ -5,6 +5,7 @@ import com.cobnet.spring.boot.configuration.GoogleConsoleConfiguration;
 import com.google.api.client.http.HttpResponseException;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.translate.Translate;
+import com.google.cloud.translate.TranslateException;
 import com.google.cloud.translate.Translation;
 import com.google.cloud.translate.testing.RemoteTranslateHelper;
 import com.google.common.collect.Lists;
@@ -82,16 +83,26 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
             message = this.getDefaultMessage(key);
         }
 
-        if(this.translate == null) {
+        if(this.translate == null || this.translate.getOptions().getCredentials() == null) {
 
             throw new ServiceDownException(this.getClass(), this.translate);
         }
 
-        Translation translation = this.translate.translate(message, Translate.TranslateOption.targetLanguage(locale.getLanguage()));
+        try {
 
-        this.add(DEFAULT_BASENAME, key, translation.getTranslatedText(), locale);
+            Translation translation = this.translate.translate(message, Translate.TranslateOption.targetLanguage(locale.getLanguage()));
 
-        return String.format(translation.getTranslatedText(), args);
+            this.add(DEFAULT_BASENAME, key, translation.getTranslatedText(), locale);
+
+            return String.format(translation.getTranslatedText(), args);
+
+        } catch (TranslateException exception) {
+
+            exception.addSuppressed(new ServiceDownException(this.getClass(), this.translate));
+            exception.printStackTrace();
+
+            return null;
+        }
     }
 
     public void add(String basename, String key, String value, Locale locale) throws IOException {

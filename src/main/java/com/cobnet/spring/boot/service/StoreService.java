@@ -1,8 +1,9 @@
 package com.cobnet.spring.boot.service;
 
+import com.cobnet.exception.ServiceDownException;
 import com.cobnet.interfaces.spring.repository.StoreRepository;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
-import com.cobnet.spring.boot.dto.FormField;
+import com.cobnet.spring.boot.dto.CheckInFormField;
 import com.cobnet.spring.boot.dto.StoreRegisterForm;
 import com.cobnet.spring.boot.dto.StoreRegisterResult;
 import com.cobnet.spring.boot.dto.support.StoreRegisterResultStatus;
@@ -111,15 +112,15 @@ public class StoreService {
         return new StoreRegisterResult(StoreRegisterResultStatus.SUCCESS);
     }
 
-    public List<FormField> getStoreCheckInFormFields(String storeId, Locale locale) throws IOException {
+    public List<CheckInFormField> getStoreCheckInFormFields(String storeId, Locale locale) throws IOException, ServiceDownException {
 
-        List<FormField> fields = new ArrayList<>();
+        List<CheckInFormField> fields = new ArrayList<>();
 
-        fields.add(new FormField("firstName", null, ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.first-name", locale), UIType.INPUT, null));
-        fields.add(new FormField("lastName", null, ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.last-name", locale), UIType.INPUT, null));
-        fields.add(new FormField("gender", null, ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.gender", locale), UIType.SELECT, null));
-        fields.add(new FormField("phoneNumber", null, ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.phone-number", locale), UIType.PHONE_INPUT, null));
-        fields.add(new FormField("referral", null, ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.referral", locale), UIType.SELECT, null));
+        fields.add(new CheckInFormField(0, "firstName", null, ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.first-name", locale), UIType.INPUT, null));
+        fields.add(new CheckInFormField(1, "lastName", null, ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.last-name", locale), UIType.INPUT, null));
+        fields.add(new CheckInFormField(2,"gender", null, ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.gender", locale), UIType.SELECT, null));
+        fields.add(new CheckInFormField(3,"phoneNumber", null, ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.phone-number", locale), UIType.PHONE_INPUT, null));
+        fields.add(new CheckInFormField(4,"referral", null, ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.referral", locale), UIType.SELECT, null));
 
         return fields;
     }

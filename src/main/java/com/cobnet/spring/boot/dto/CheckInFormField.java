@@ -1,9 +1,15 @@
 package com.cobnet.spring.boot.dto;
 
+import com.cobnet.common.KeyValuePair;
 import com.cobnet.interfaces.connection.web.ApplicationJson;
 import com.cobnet.spring.boot.dto.support.UIType;
 
-public record FormField(String key, String value, String label, UIType type, Object addition) implements ApplicationJson {
+import java.util.List;
+
+public record CheckInFormField(int groupId, String key, String value, String label, UIType type, List<KeyValuePair<String, String>> list) implements ApplicationJson {
+
+    @Override
+    public int groupId() { return groupId; }
 
     @Override
     public String key() {
@@ -26,7 +32,7 @@ public record FormField(String key, String value, String label, UIType type, Obj
     }
 
     @Override
-    public Object addition() {
-        return addition;
+    public List<KeyValuePair<String, String>> list() {
+        return list;
     }
 }
