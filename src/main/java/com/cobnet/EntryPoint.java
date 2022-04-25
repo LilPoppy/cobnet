@@ -2,6 +2,7 @@ package com.cobnet;
 
 import com.cobnet.common.ImageUtils;
 import com.cobnet.connection.websocket.WebSocketServer;
+import com.cobnet.exception.ServiceDownException;
 import com.cobnet.security.RoleRule;
 import com.cobnet.security.permission.UserPermission;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
@@ -99,7 +100,7 @@ public class EntryPoint {
 			                        ****
 			""";
 
-	public static void main(String[] args) throws IOException, InterruptedException, ApiException {
+	public static void main(String[] args) throws IOException, InterruptedException, ApiException, ServiceDownException {
 
 		SpringApplication.run(EntryPoint.class, args);
 
