@@ -2,8 +2,8 @@ package com.cobnet.exception;
 
 public class ServiceDownException extends Exception{
 
-    public ServiceDownException(Class<?> clazz, Object instance) {
+    public ServiceDownException(Object instance) {
 
-        super(String.format("Service Class: %s , not set %s", clazz.getName(), instance.getClass()));
+        super(String.format("Service Class: %s is down!", instance.getClass().getName()));
     }
 }

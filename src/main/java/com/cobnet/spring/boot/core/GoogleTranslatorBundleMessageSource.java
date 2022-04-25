@@ -18,7 +18,6 @@ import org.springframework.util.DefaultPropertiesPersister;
 import java.io.*;
 import java.net.URL;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.ResourceBundle;
 
@@ -27,24 +26,18 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
     private static final Logger LOG = LoggerFactory.getLogger(GoogleTranslatorBundleMessageSource.class);
     public static final String DEFAULT_BASENAME = "locale/messages";
 
-    private Translate translate;
+    private final Translate translate;
 
-    GoogleTranslatorBundleMessageSource(@Autowired GoogleConsoleConfiguration configuration) {
+    GoogleTranslatorBundleMessageSource(@Autowired GoogleConsoleConfiguration configuration) throws IOException {
 
         super();
 
-        try {
+        RemoteTranslateHelper helper = RemoteTranslateHelper.create();
 
-            RemoteTranslateHelper helper = RemoteTranslateHelper.create();
+        GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(configuration.getCredentials())).createScoped(Lists.newArrayList("https://www.googleapis.com/auth/cloud-platform"));
 
-            GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(configuration.getCredentials())).createScoped(Lists.newArrayList("https://www.googleapis.com/auth/cloud-platform"));
+        this.translate = helper.getOptions().toBuilder().setCredentials(credentials).build().getService();
 
-            this.translate = helper.getOptions().toBuilder().setCredentials(credentials).build().getService();
-
-        } catch (IOException ex) {
-
-            LOG.error("Check application.yml of google.console.credentials to resolve %s", ex.getMessage());
-        }
 
         this.setBasename(DEFAULT_BASENAME);
     }
@@ -71,7 +64,7 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
             return super.getMessage(key, args, locale);
         }
 
-        String message = super.resolveCodeWithoutArguments(key, Objects.requireNonNull(this.getDefaultLocale()));
+        String message = super.resolveCodeWithoutArguments(key, locale);
 
         if (message == null) {
 
@@ -81,11 +74,6 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
         if (message == null) {
 
             message = this.getDefaultMessage(key);
-        }
-
-        if(this.translate == null || this.translate.getOptions().getCredentials() == null) {
-
-            throw new ServiceDownException(this.getClass(), this.translate);
         }
 
         try {
@@ -98,7 +86,7 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
 
         } catch (TranslateException exception) {
 
-            exception.addSuppressed(new ServiceDownException(this.getClass(), this.translate));
+            exception.addSuppressed(new ServiceDownException(this.getClass()));
             exception.printStackTrace();
 
             return null;
