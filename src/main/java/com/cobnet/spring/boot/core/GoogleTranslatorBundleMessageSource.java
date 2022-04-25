@@ -38,7 +38,6 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
 
         this.translate = helper.getOptions().toBuilder().setCredentials(credentials).build().getService();
 
-
         this.setBasename(DEFAULT_BASENAME);
     }
 
@@ -89,7 +88,7 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
             exception.addSuppressed(new ServiceDownException(this.getClass()));
             exception.printStackTrace();
 
-            return super.getMessage(key, args, defaultValue, locale);
+            return super.getMessage(key, args, defaultValue, this.getDefaultLocale());
         }
     }
 
