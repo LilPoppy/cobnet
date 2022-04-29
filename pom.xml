@@ -31,9 +31,9 @@
 		<websocket-port>8090</websocket-port>
 		<repackage.classifier/>
 		<spring-cloud.version>2021.0.1</spring-cloud.version>
-		<spring-native.version>0.11.3</spring-native.version>
-		<native-build-tools.version>0.9.10</native-build-tools.version>
-		<graalvm.version>22.0.0.2</graalvm.version>
+		<spring-native.version>0.11.4</spring-native.version>
+		<native-build-tools.version>0.9.11</native-build-tools.version>
+		<graalvm.version>22.1.0</graalvm.version>
 		<dockerfile-maven.version>0.38.0</dockerfile-maven.version>
 		<google-zxing.version>3.4.1</google-zxing.version>
 		<docker-maintainer>LilPoppy</docker-maintainer>
@@ -187,7 +187,7 @@
 		<dependency>
 			<groupId>org.graalvm.nativeimage</groupId>
 			<artifactId>svm</artifactId>
-			<version>${graalvm.version}</version>
+			<version>22.0.0.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -590,10 +590,10 @@
 								<buildArgs>-Dlogging.config=logback-config.xml</buildArgs>
 								<buildArgs>--features=com.cobnet.RuntimeReflectionRegistrationFeature</buildArgs>
 								<buildArgs>-H:ConfigurationFileDirectories==${basedir}/src/main/java/</buildArgs>
-								<buildArgs>-H:ReflectionConfigurationFiles=${basedir}/src/main/java/extra-reflect-config.json</buildArgs>
-								<buildArgs>-H:ResourceConfigurationFiles=${basedir}/src/main/java/extra-resource-config.json</buildArgs>
-								<buildArgs>-H:DynamicProxyConfigurationFiles=${basedir}/src/main/java/extra-proxy-config.json</buildArgs>
-								<buildArgs>-H:IncludeResources=".*.xml|.*.conf|.*.yml"</buildArgs>
+								<buildArgs>-H:ReflectionConfigurationFiles=${basedir}/src/main/java/extra-reflect-config.json, ${basedir}/src/main/java/reflect-config.json</buildArgs>
+								<buildArgs>-H:ResourceConfigurationFiles=${basedir}/src/main/java/extra-resource-config.json, ${basedir}/src/main/java/resource-config.json</buildArgs>
+								<buildArgs>-H:DynamicProxyConfigurationFiles=${basedir}/src/main/java/extra-proxy-config.json, ${basedir}/src/main/java/proxy-config.json</buildArgs>
+								<buildArgs>-H:IncludeResources=".*.xml|.*.conf|.*.yml|.*.json"</buildArgs>
 								<buildArgs>-H:TraceClassInitialization=true</buildArgs>
 								<buildArgs>-Dtruffle.TruffleRuntime=com.oracle.svm.truffle.api.SubstrateTruffleRuntime</buildArgs>
 								<buildArgs>-H:-TruffleCheckBlockListMethods</buildArgs>

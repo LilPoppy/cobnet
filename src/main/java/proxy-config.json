@@ -1,9 +1,15 @@
 [
   {
+    "interfaces":["com.cobnet.interfaces.spring.repository.AddressRepository","org.springframework.data.repository.Repository","org.springframework.transaction.interceptor.TransactionalProxy","org.springframework.aop.framework.Advised","org.springframework.core.DecoratingProxy"]}
+  ,
+  {
     "interfaces":["com.cobnet.interfaces.spring.repository.ExternalUserRepository","org.springframework.data.repository.Repository","org.springframework.transaction.interceptor.TransactionalProxy","org.springframework.aop.framework.Advised","org.springframework.core.DecoratingProxy"]}
   ,
   {
     "interfaces":["com.cobnet.interfaces.spring.repository.ExternalUserRepository","org.springframework.data.repository.Repository","org.springframework.transaction.interceptor.TransactionalProxy","org.springframework.aop.framework.Advised","org.springframework.core.DecoratingProxy","java.io.Serializable"]}
+  ,
+  {
+    "interfaces":["com.cobnet.interfaces.spring.repository.PersistentLoginsRepository","org.springframework.data.repository.Repository","org.springframework.transaction.interceptor.TransactionalProxy","org.springframework.aop.framework.Advised","org.springframework.core.DecoratingProxy"]}
   ,
   {
     "interfaces":["com.cobnet.interfaces.spring.repository.UserRepository","org.springframework.data.repository.Repository","org.springframework.transaction.interceptor.TransactionalProxy","org.springframework.aop.framework.Advised","org.springframework.core.DecoratingProxy"]}
@@ -120,6 +126,12 @@
     "interfaces":["org.springframework.boot.context.properties.ConfigurationProperties","org.springframework.core.annotation.SynthesizedAnnotation"]}
   ,
   {
+    "interfaces":["org.springframework.cache.annotation.CacheEvict","org.springframework.core.annotation.SynthesizedAnnotation"]}
+  ,
+  {
+    "interfaces":["org.springframework.cache.annotation.Cacheable","org.springframework.core.annotation.SynthesizedAnnotation"]}
+  ,
+  {
     "interfaces":["org.springframework.cloud.client.serviceregistry.AutoServiceRegistration","org.springframework.context.SmartLifecycle","org.springframework.core.Ordered","org.springframework.context.event.SmartApplicationListener"]}
   ,
   {
@@ -138,7 +150,13 @@
     "interfaces":["org.springframework.context.annotation.ConfigurationClassEnhancer$EnhancedConfiguration","org.springframework.security.config.annotation.web.WebSecurityConfigurer"]}
   ,
   {
+    "interfaces":["org.springframework.context.annotation.ConfigurationClassEnhancer$EnhancedConfiguration","org.springframework.web.servlet.config.annotation.WebMvcConfigurer"]}
+  ,
+  {
     "interfaces":["org.springframework.core.task.AsyncListenableTaskExecutor","org.springframework.scheduling.SchedulingTaskExecutor","org.springframework.beans.factory.BeanNameAware","org.springframework.beans.factory.InitializingBean","org.springframework.beans.factory.DisposableBean","java.util.concurrent.ThreadFactory","java.io.Serializable"]}
+  ,
+  {
+    "interfaces":["org.springframework.data.annotation.QueryAnnotation","org.springframework.core.annotation.SynthesizedAnnotation"]}
   ,
   {
     "interfaces":["org.springframework.data.jpa.repository.support.CrudMethodMetadata","org.springframework.aop.SpringProxy","org.springframework.aop.framework.Advised","org.springframework.core.DecoratingProxy"]}
@@ -165,6 +183,12 @@
     "interfaces":["org.springframework.transaction.support.TransactionOperations","org.springframework.beans.factory.InitializingBean","org.springframework.transaction.TransactionDefinition","java.io.Serializable"]}
   ,
   {
+    "interfaces":["org.springframework.validation.SmartValidator","org.springframework.context.ApplicationContextAware","org.springframework.beans.factory.InitializingBean","org.springframework.beans.factory.DisposableBean"]}
+  ,
+  {
+    "interfaces":["org.springframework.web.bind.annotation.ControllerAdvice","org.springframework.core.annotation.SynthesizedAnnotation"]}
+  ,
+  {
     "interfaces":["org.springframework.web.bind.annotation.RequestMapping","org.springframework.core.annotation.SynthesizedAnnotation"]}
   ,
   {
@@ -175,4 +199,5 @@
   ,
   {
     "interfaces":["org.springframework.web.servlet.config.annotation.WebMvcConfigurer","org.springframework.web.context.ServletContextAware"]}
+  
 ]

@@ -107,6 +107,9 @@
       "pattern":"\\Qcom/cobnet/interfaces/PolyglotContextGroup.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/interfaces/Properties.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/interfaces/TreeNode.class\\E"
     }, 
     {
@@ -140,6 +143,33 @@
       "pattern":"\\Qcom/cobnet/interfaces/connection/annotation/EventHandler.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/interfaces/connection/web/ApplicationJson.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/connection/web/Content.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/connection/web/Form.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/connection/web/FormGenerator.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/connection/web/Page.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/connection/web/PageField.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/connection/web/PageFieldProperties.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/connection/web/PageProperties.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/connection/web/ReasonableStatus.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/interfaces/event/Cancellable.class\\E"
     }, 
     {
@@ -155,10 +185,16 @@
       "pattern":"\\Qcom/cobnet/interfaces/security/annotation/AccessSecured.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/interfaces/spring/repository/AddressRepository.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/interfaces/spring/repository/ExternalUserRepository.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/interfaces/spring/repository/JPABaseRepository.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/spring/repository/PersistentLoginsRepository.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/interfaces/spring/repository/UserRepository.class\\E"
@@ -176,10 +212,19 @@
       "pattern":"\\Qcom/cobnet/spring/boot/aspect/EventHandlerAspect.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/spring/boot/aspect/JPARepositorySaveMethodAspect.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/spring/boot/configuration/CacheConfiguration.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/configuration/DatasourceConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/GoogleConsoleConfiguration$GoogleMapConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/GoogleConsoleConfiguration.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/configuration/ProjectConfiguration$InformationConfiguration.class\\E"
@@ -218,6 +263,9 @@
       "pattern":"\\Qcom/cobnet/spring/boot/configuration/TwilioConfiguration.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/WebMvcConfiguration.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/spring/boot/configuration/\\E"
     }, 
     {
@@ -239,13 +287,28 @@
       "pattern":"\\Qcom/cobnet/spring/boot/controller/handler/http/HttpAuthenticationFailureHandler.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/spring/boot/controller/handler/http/HttpAuthenticationLogoutHandler.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/spring/boot/controller/handler/http/HttpAuthenticationSuccessHandler.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/controller/handler/http/HttpSessionEventHandler.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/controller/restful/AuthenticationController.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/spring/boot/controller/restful/OAuth2Controller.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/spring/boot/controller/restful/TwilioController.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/controller/restful/UserController.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/controller/restful/VisitorController.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/core/ProjectBeanHolder$AutowireLoader.class\\E"
@@ -257,7 +320,13 @@
       "pattern":"\\Qcom/cobnet/spring/boot/core/ScriptEngineManager$PolyglotContextCloseEventListener.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/spring/boot/dto/FormBase.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/spring/boot/dto/support/HttpMapTransmission.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/entity/Address.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/entity/EntityBase.class\\E"
@@ -266,10 +335,16 @@
       "pattern":"\\Qcom/cobnet/spring/boot/entity/ExternalUser.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/spring/boot/entity/PersistentLogins.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/spring/boot/entity/User.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/entity/UserRole.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/entity/support/AddressKey.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/entity/support/JsonMapConverter.class\\E"
@@ -281,13 +356,40 @@
       "pattern":"\\Qcom/cobnet/spring/boot/entity/support/JsonSetConverter.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/spring/boot/service/AccountService.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/service/CacheService.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/service/GoogleMapService.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/service/HumanValidatorService.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/service/PhoneNumberSmsVerifyService.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/service/RedisCacheKeyGenerator.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/spring/boot/service/RedisMessageListener.class\\E"
     }, 
     {
       "pattern":"\\Qcom/fasterxml/jackson/core/type/TypeReference.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/google/api/client/googleapis/google-api-client.properties\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/google/api/client/http/google-http-client.properties\\E"
+    }, 
+    {
       "pattern":"\\Qcom/mysql/cj/TlsSettings.properties\\E"
+    }, 
+    {
+      "pattern":"\\Qdependencies.properties\\E"
     }, 
     {
       "pattern":"\\Qio/netty/channel/Channel.class\\E"
@@ -347,6 +449,12 @@
       "pattern":"\\Qio/netty/util/AttributeMap.class\\E"
     }, 
     {
+      "pattern":"\\Qio/swagger/v3/oas/annotations/Hidden.class\\E"
+    }, 
+    {
+      "pattern":"\\Qio/swagger/v3/oas/annotations/tags/Tag.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/apache/catalina/core/RestrictedFilters.properties\\E"
     }, 
     {
@@ -369,6 +477,30 @@
     }, 
     {
       "pattern":"\\Qorg/graalvm/nativeimage/hosted/Feature.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/hibernate/engine/spi/CompositeTracker.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/hibernate/engine/spi/ExtendedSelfDirtinessTracker.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/hibernate/engine/spi/Managed.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/hibernate/engine/spi/ManagedComposite.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/hibernate/engine/spi/ManagedEntity.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/hibernate/engine/spi/ManagedMappedSuperclass.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/hibernate/engine/spi/PersistentAttributeInterceptable.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/hibernate/engine/spi/SelfDirtinessTracker.class\\E"
     }, 
     {
       "pattern":"\\Qorg/hibernate/hibernate-configuration-3.0.dtd\\E"
@@ -399,6 +531,135 @@
     }, 
     {
       "pattern":"\\Qorg/slf4j/impl/StaticLoggerBinder.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/AbstractSwaggerUiConfigProperties$Direction.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/AbstractSwaggerUiConfigProperties$SwaggerUrl.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/AbstractSwaggerUiConfigProperties.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/CacheOrGroupedOpenApiCondition$OnCacheDisabled.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/CacheOrGroupedOpenApiCondition$OnMultipleOpenApiSupportCondition.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/CacheOrGroupedOpenApiCondition.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/MultipleOpenApiGroupsCondition$OnGroupConfigProperty.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/MultipleOpenApiGroupsCondition$OnGroupedOpenApiBean.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/MultipleOpenApiGroupsCondition.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/MultipleOpenApiSupportCondition$OnActuatorDifferentPort.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/MultipleOpenApiSupportCondition$OnMultipleOpenApiSupportCondition.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/MultipleOpenApiSupportCondition.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/SpringDocConfigProperties$ApiDocs.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/SpringDocConfigProperties$Cache.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/SpringDocConfigProperties$GroupConfig.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/SpringDocConfigProperties$Groups.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/SpringDocConfigProperties$ModelConverters.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/SpringDocConfigProperties$Webjars.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/SpringDocConfigProperties.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/SpringDocConfiguration$OpenApiResourceAdvice.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/SpringDocConfiguration$SpringDocActuatorConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/SpringDocConfiguration$SpringDocFunctionCatalogConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/SpringDocConfiguration$SpringDocPageableConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/SpringDocConfiguration$SpringDocRepositoryRestConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/SpringDocConfiguration$SpringDocSpringDataWebPropertiesProvider.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/SpringDocConfiguration$WebConversionServiceConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/SpringDocConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/SwaggerUiConfigParameters.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/SwaggerUiConfigProperties$Csrf.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/SwaggerUiConfigProperties$SyntaxHighlight.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/SwaggerUiConfigProperties.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/core/SwaggerUiOAuthProperties.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/nativex/core/SpringDocHints.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/security/SpringDocSecurityConfiguration$SpringSecurityLoginEndpointConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/security/SpringDocSecurityConfiguration$SpringSecurityOAuth2ProviderConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/security/SpringDocSecurityConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/webmvc/core/MultipleOpenApiSupportConfiguration$SpringDocWebMvcActuatorDifferentConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/webmvc/core/MultipleOpenApiSupportConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/webmvc/core/SpringDocWebMvcConfiguration$SpringDocWebMvcActuatorConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/webmvc/core/SpringDocWebMvcConfiguration$SpringDocWebMvcRouterConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/webmvc/core/SpringDocWebMvcConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/webmvc/ui/SwaggerConfig$SwaggerActuatorWelcomeConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/webmvc/ui/SwaggerConfig.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/aop/aspectj/annotation/AnnotationAwareAspectJAutoProxyCreator.class\\E"
@@ -992,6 +1253,9 @@
       "pattern":"\\Qorg/springframework/boot/autoconfigure/transaction/jta/JtaAutoConfiguration.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/validation/ValidationAutoConfiguration.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/web/ConditionalOnEnabledResourceChain.class\\E"
     }, 
     {
@@ -1143,6 +1407,9 @@
     }, 
     {
       "pattern":"\\Qorg/springframework/cache/interceptor/CacheErrorHandler.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/cache/interceptor/KeyGenerator.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/cloud/autoconfigure/ConfigurationPropertiesRebinderAutoConfiguration.class\\E"
@@ -1373,6 +1640,12 @@
       "pattern":"\\Qorg/springframework/context/EnvironmentAware.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/context/HierarchicalMessageSource.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/context/MessageSource.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/context/MessageSourceAware.class\\E"
     }, 
     {
@@ -1406,7 +1679,22 @@
       "pattern":"\\Qorg/springframework/context/annotation/ImportBeanDefinitionRegistrar.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/context/annotation/Lazy.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/context/annotation/Role.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/context/support/AbstractMessageSource.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/context/support/AbstractResourceBasedMessageSource.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/context/support/MessageSourceSupport.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/context/support/ResourceBundleMessageSource.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/core/Ordered.class\\E"
@@ -1497,6 +1785,15 @@
     }, 
     {
       "pattern":"\\Qorg/springframework/mail/javamail/mime.types\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/nativex/hint/JdkProxyHints.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/nativex/hint/ResourcesHints.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/nativex/hint/TypeHints.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/scheduling/annotation/EnableScheduling.class\\E"
@@ -1640,6 +1937,15 @@
       "pattern":"\\Qorg/springframework/security/web/authentication/AuthenticationSuccessHandler.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/security/web/authentication/logout/LogoutHandler.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/security/web/authentication/rememberme/PersistentTokenRepository.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/security/web/session/HttpSessionEventPublisher.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/session/config/annotation/web/http/SpringHttpSessionConfiguration.class\\E"
     }, 
     {
@@ -1664,10 +1970,16 @@
       "pattern":"\\Qorg/springframework/transaction/annotation/TransactionManagementConfigurationSelector.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/web/bind/annotation/ControllerAdvice.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/web/bind/annotation/ResponseBody.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/web/bind/annotation/RestController.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/web/bind/annotation/RestControllerAdvice.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/web/context/ServletContextAware.class\\E"
@@ -1691,6 +2003,9 @@
       "pattern":"\\Qreactor/core/Disposable.class\\E"
     }, 
     {
+      "pattern":"\\Qspringdoc.config.properties\\E"
+    }, 
+    {
       "pattern":"\\Qwebapp/WEB-INF/templates/\\E"
     }, 
     {
@@ -1710,6 +2025,13 @@
       "locales":[
         "", 
         "und"
+      ]
+    }, 
+    {
+      "name":"locale/messages",
+      "locales":[
+        "en-US", 
+        "zh-CN"
       ]
     }, 
     {

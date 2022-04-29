@@ -50,5 +50,9 @@
   {
     "name": "org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder",
     "allDeclaredFields": true
+  },
+  {
+    "name": "com.zaxxer.hikari.HikariDataSource",
+    "methods":[{"name":"<init>","parameterTypes":[] }]
   }
 ]
