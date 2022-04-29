@@ -115,9 +115,9 @@ public class StoreService {
 
     public ResponseResult<StoreCheckInPageDetailResultStatus> getStoreCheckInPageDetail(String storeId, Locale locale) throws IOException {
 
-        Store store = repository.getById(storeId);
+        Optional<Store> store = repository.findById(storeId);
 
-        if(store == null) {
+        if(store.isEmpty()) {
 
             return new ResponseResult<>(StoreCheckInPageDetailResultStatus.NO_EXIST);
         }
