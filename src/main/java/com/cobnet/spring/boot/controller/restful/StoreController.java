@@ -4,9 +4,9 @@ import com.cobnet.exception.ServiceDownException;
 import com.cobnet.interfaces.security.annotation.AccessSecured;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.*;
+import com.cobnet.spring.boot.dto.support.StoreCheckInPageDeatilResultStatus;
 import com.cobnet.spring.boot.dto.support.StoreCheckInResultStatus;
 import com.cobnet.spring.boot.dto.support.StoreRegisterResultStatus;
-import com.cobnet.spring.boot.entity.Work;
 import com.google.maps.errors.ApiException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,10 +40,14 @@ public class StoreController {
         return new ResponseResult(StoreCheckInResultStatus.SUCCESS);
     }
 
-    @GetMapping("/store/{storeId}/check-in-fields")
-    public List<CheckInFormField> checkInFields(@PathVariable String storeId, String country, String language) throws IOException, ServiceDownException {
+    @GetMapping("/store/{storeId}/check-in-page-details")
+    public ResponseResult<StoreCheckInPageDeatilResultStatus> checkInPageDetail(HttpServletResponse response, @PathVariable String storeId, String country, String language) throws IOException, ServiceDownException {
 
-        return ProjectBeanHolder.getStoreService().getStoreCheckInFormFields(storeId, new Locale(country, language));
+        ResponseResult<StoreCheckInPageDeatilResultStatus> result = ProjectBeanHolder.getStoreService().getStoreCheckInPageFields(storeId, new Locale(country, language));
+
+        response.setStatus(result.status().getCode());
+
+        return result;
     }
 
 

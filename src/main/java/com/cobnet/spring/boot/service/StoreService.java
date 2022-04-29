@@ -1,11 +1,14 @@
 package com.cobnet.spring.boot.service;
 
 import com.cobnet.exception.ServiceDownException;
+import com.cobnet.interfaces.connection.web.PageField;
 import com.cobnet.interfaces.spring.repository.StoreRepository;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.CheckInFormField;
+import com.cobnet.spring.boot.dto.DynamicPage;
 import com.cobnet.spring.boot.dto.ResponseResult;
 import com.cobnet.spring.boot.dto.StoreRegisterForm;
+import com.cobnet.spring.boot.dto.support.StoreCheckInPageDeatilResultStatus;
 import com.cobnet.spring.boot.dto.support.StoreRegisterResultStatus;
 import com.cobnet.spring.boot.dto.support.UIType;
 import com.cobnet.spring.boot.entity.Address;
@@ -112,9 +115,13 @@ public class StoreService {
         return new ResponseResult<>(StoreRegisterResultStatus.SUCCESS);
     }
 
-    public List<CheckInFormField> getStoreCheckInFormFields(String storeId, Locale locale) throws IOException, ServiceDownException {
+    public ResponseResult<StoreCheckInPageDeatilResultStatus> getStoreCheckInPageFields(String storeId, Locale locale) throws IOException, ServiceDownException {
 
-        List<CheckInFormField> fields = new ArrayList<>();
+        List<PageField> fields = new ArrayList<>();
+
+
+
+        DynamicPage page = new DynamicPage();
 
         fields.add(new CheckInFormField(0, "firstName", null, ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.first-name", locale), UIType.INPUT, null));
         fields.add(new CheckInFormField(1, "lastName", null, ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.last-name", locale), UIType.INPUT, null));
