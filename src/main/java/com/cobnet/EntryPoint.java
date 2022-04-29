@@ -106,7 +106,7 @@ public class EntryPoint {
 
 			clearCaches();
 		}
-
+		LOG.info("@@@@" + ProjectBeanHolder.getTranslatorMessageSource().getMessage("Hey"));
 		LOG.info(EntryPoint.getLogo());
 
 		System.out.println(ProjectBeanHolder.getStoreService().getStoreCheckInFormFields("aaa", Locale.SIMPLIFIED_CHINESE));

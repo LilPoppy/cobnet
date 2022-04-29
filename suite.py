@@ -18,13 +18,13 @@ suite = {
         "name": "Lilpoppy",
         "email": "lilpoppy96@gmail.com",
         "organization": "Graal",
-        "organizationUrl": "https://github.com/StorebeansDev",
+        "organizationUrl": "https://github.com/LilPoppy",
     },
 
     "scm": {
-        "url": "https://github.com/StorebeansDev/cobnet",
-        "read": "https://github.com/StorebeansDev/cobnet.git",
-        "write": "https://github.com/StorebeansDev/cobnet.git",
+        "url": "https://github.com/LilPoppy/cobnet",
+        "read": "https://github.com/LilPoppy/cobnet.git",
+        "write": "https://github.com/LilPoppy/cobnet.git",
     },
 
     # --------------------------------------------------------------------------------------------------------------
