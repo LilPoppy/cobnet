@@ -23,7 +23,7 @@ jobs:
       - uses: ayltai/setup-graalvm@v1
         with:
           java-version: 17
-          graalvm-version: 22.0.0.2
+          graalvm-version: 22.1.0
           native-image: true
       - run: gu install python
       - name: Setup Maven
@@ -54,7 +54,7 @@ jobs:
       - uses: ayltai/setup-graalvm@v1
         with:
           java-version: 17
-          graalvm-version: 22.0.0.2
+          graalvm-version: 22.1.0
           native-image: false
       - name: Setup Maven
         uses: stCarolas/setup-maven@v4.2
@@ -123,7 +123,7 @@ jobs:
       - uses: ayltai/setup-graalvm@v1
         with:
           java-version: 17
-          graalvm-version: 22.0.0.2
+          graalvm-version: 22.1.0
           native-image: true
       - run: gu install python
       - name: Setup Maven
