@@ -26,6 +26,11 @@ public class HumanValidatorService {
             return new ResponseResult<>(HumanValidationRequestStatus.REJECTED);
         }
 
+        if(this.isValidated(key)) {
+
+            return new ResponseResult<>(HumanValidationRequestStatus.VALIDATED);
+        }
+
         HumanValidationCache cache = this.getCache(key);
 
         if(cache != null) {
