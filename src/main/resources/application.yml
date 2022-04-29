@@ -125,8 +125,8 @@ spring:
          client:
             registration:
                google:
-                  clientId: "811637203260-c71hf4g335jiq50aas1e8o02tk15iq0s.apps.googleusercontent.com"
-                  clientSecret: "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"
+                  clientId: "551574670756-6ier4u8j1gts9mbh1u14ebl50enqtge6.apps.googleusercontent.com"
+                  clientSecret: "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"
                   client-authentication-method: basic
                   authorization-grant-type: authorization_code
                   redirect-uri-template: "{baseUrl}${spring.security.oauth2.redirect-uri}/{registrationId}"
@@ -179,8 +179,8 @@ twilio:
    numbers: +19108078297
 google:
    console:
-      api-key: "AIzaSyD392d2n4sjnKsekSGT2CcCzfgXjEFkJ_A"
-      credentials: ${PWD}/target/classes/keystore/storechain-integration-d27a5e6fca53.json
+      api-key: "AIzaSyD-HiZ_YWGYSb7GcTXu8T-TLTf_TCnT62U"
+      credentials: ${PWD}/target/classes/keystore/storebeans-348721-0491f83661e9.json
 netty:
    enable: true
    servers:
