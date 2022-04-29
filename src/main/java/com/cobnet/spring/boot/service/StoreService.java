@@ -1,18 +1,18 @@
 package com.cobnet.spring.boot.service;
 
+import com.cobnet.common.KeyValuePair;
 import com.cobnet.exception.ServiceDownException;
 import com.cobnet.interfaces.connection.web.PageField;
 import com.cobnet.interfaces.spring.repository.StoreRepository;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
-import com.cobnet.spring.boot.dto.CheckInFormField;
-import com.cobnet.spring.boot.dto.DynamicPage;
-import com.cobnet.spring.boot.dto.ResponseResult;
-import com.cobnet.spring.boot.dto.StoreRegisterForm;
+import com.cobnet.spring.boot.dto.*;
+import com.cobnet.spring.boot.dto.support.PageFieldType;
 import com.cobnet.spring.boot.dto.support.StoreCheckInPageDeatilResultStatus;
 import com.cobnet.spring.boot.dto.support.StoreRegisterResultStatus;
 import com.cobnet.spring.boot.dto.support.UIType;
 import com.cobnet.spring.boot.entity.Address;
 import com.cobnet.spring.boot.entity.Store;
+import com.cobnet.spring.boot.entity.support.Gender;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.AddressComponent;
 import com.google.maps.model.AddressComponentType;
@@ -115,20 +115,22 @@ public class StoreService {
         return new ResponseResult<>(StoreRegisterResultStatus.SUCCESS);
     }
 
-    public ResponseResult<StoreCheckInPageDeatilResultStatus> getStoreCheckInPageFields(String storeId, Locale locale) throws IOException, ServiceDownException {
+    public ResponseResult<StoreCheckInPageDeatilResultStatus> getStoreCheckInPageDetail(String storeId, Locale locale) throws IOException {
 
-        List<PageField> fields = new ArrayList<>();
+        try {
 
+            return new ResponseResult<>(StoreCheckInPageDeatilResultStatus.SUCCESS,
+                new StepContainerPageField(0, "firstName", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.first-name", locale), PageFieldType.INPUT, new DynamicPageFieldProperties()),
+                new StepContainerPageField(0, "lastName", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.last-name", locale), PageFieldType.INPUT, new DynamicPageFieldProperties()),
+                new StepContainerPageField(1, "gender", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.gender", locale), PageFieldType.RADIO, new DynamicPageFieldProperties(new KeyValuePair<>("list", Gender.values()))),
+                new StepContainerPageField(2, "phoneNumber", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.phone-number", locale), PageFieldType.INPUT, new DynamicPageFieldProperties()),
+                new StepContainerPageField(3, "referral", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.referral", locale), PageFieldType.INPUT, new DynamicPageFieldProperties())
+            );
 
+        } catch (ServiceDownException ex) {
 
-        DynamicPage page = new DynamicPage();
+            return new ResponseResult<>(StoreCheckInPageDeatilResultStatus.SERVICE_DOWN);
+        }
 
-        fields.add(new CheckInFormField(0, "firstName", null, ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.first-name", locale), UIType.INPUT, null));
-        fields.add(new CheckInFormField(1, "lastName", null, ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.last-name", locale), UIType.INPUT, null));
-        fields.add(new CheckInFormField(2,"gender", null, ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.gender", locale), UIType.SELECT, null));
-        fields.add(new CheckInFormField(3,"phoneNumber", null, ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.phone-number", locale), UIType.PHONE_INPUT, null));
-        fields.add(new CheckInFormField(4,"referral", null, ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.referral", locale), UIType.SELECT, null));
-
-        return fields;
     }
 }

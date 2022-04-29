@@ -43,7 +43,7 @@ public class StoreController {
     @GetMapping("/store/{storeId}/check-in-page-details")
     public ResponseResult<StoreCheckInPageDeatilResultStatus> checkInPageDetail(HttpServletResponse response, @PathVariable String storeId, String country, String language) throws IOException, ServiceDownException {
 
-        ResponseResult<StoreCheckInPageDeatilResultStatus> result = ProjectBeanHolder.getStoreService().getStoreCheckInPageFields(storeId, new Locale(country, language));
+        ResponseResult<StoreCheckInPageDeatilResultStatus> result = ProjectBeanHolder.getStoreService().getStoreCheckInPageDetail(storeId, new Locale(country, language));
 
         response.setStatus(result.status().getCode());
 

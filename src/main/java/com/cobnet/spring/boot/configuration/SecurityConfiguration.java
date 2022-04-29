@@ -52,7 +52,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public final static String CONNECTION_TOKEN = "CONNECTION_TOKEN";
 
-    final static String[] PERMITTED_MATCHERS = { "/visitor/**", "/swagger-ui", "/oauth2/**", "/sms/reply" };
+    final static String[] PERMITTED_MATCHERS = { "/visitor/**", "/swagger-ui", "/oauth2/**", "/sms/reply", "/store/*/check-in-page-details" };
 
     private boolean sessionLimitEnable;
 
