@@ -5,6 +5,7 @@ import com.cobnet.interfaces.spring.repository.*;
 import com.cobnet.spring.boot.configuration.*;
 import com.cobnet.spring.boot.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -790,6 +791,7 @@ public class ProjectBeanHolder {
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
+            mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
 
             return mapper;
         }
