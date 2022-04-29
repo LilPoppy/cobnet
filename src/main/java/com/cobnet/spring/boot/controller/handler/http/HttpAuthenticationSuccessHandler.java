@@ -3,8 +3,8 @@ package com.cobnet.spring.boot.controller.handler.http;
 import com.cobnet.security.AccountAuthenticationToken;
 import com.cobnet.spring.boot.core.HttpRequestUrlResolver;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
-import com.cobnet.spring.boot.dto.AuthenticationResult;
 import com.cobnet.spring.boot.dto.ConnectionToken;
+import com.cobnet.spring.boot.dto.ResponseResult;
 import com.cobnet.spring.boot.dto.support.AuthenticationStatus;
 import com.cobnet.spring.boot.entity.ExternalUser;
 import com.cobnet.spring.boot.entity.User;
@@ -89,7 +89,7 @@ public class HttpAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
             try (PrintWriter writer = response.getWriter()) {
 
-                writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new AuthenticationResult(AuthenticationStatus.SUCCESS, connectionToken)));
+                writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult<>(AuthenticationStatus.SUCCESS, connectionToken)));
                 writer.flush();
             }
 

@@ -164,7 +164,7 @@ public class AccountService {
         return authentication;
     }
 
-    public UserRegisterResult register(UserRegisterForm form, AddressForm address) {
+    public ResponseResult<UserRegisterResultStatus> register(UserRegisterForm form, AddressForm address) {
 
         if(ProjectBeanHolder.getSecurityConfiguration().isPhoneNumberVerifyEnable()) {
 
@@ -177,20 +177,21 @@ public class AccountService {
                     return register(form.getEntity(), address.getEntity());
                 }
 
-                return new UserRegisterResult(UserRegisterResultStatus.VERIFICATION_FAILED);
+                return new ResponseResult(UserRegisterResultStatus.VERIFICATION_FAILED);
             }
 
-            return new UserRegisterResult(UserRegisterResultStatus.REJECTED, new Object[]{ new KeyValuePair<>(HttpMethod.POST, "/visitor/sms/request"), new PhoneNumberSmsRequest(form.getUsername(), form.getPhoneNumber(), PhoneNumberSmsType.ACCOUNT_REGISTER)});
+
+            return new ResponseResult(UserRegisterResultStatus.REJECTED, new CommentWrapper("SMS request required.", new MethodHint(HttpMethod.POST, "/visitor/sms/request", new PhoneNumberSmsRequest(form.getUsername(), form.getPhoneNumber(), PhoneNumberSmsType.ACCOUNT_REGISTER))));
         }
 
         return register(form.getEntity(), address.getEntity());
     }
 
-    public UserRegisterResult register(User user, Address... addresses) {
+    public ResponseResult<UserRegisterResultStatus> register(User user, Address... addresses) {
 
         if(user == null) {
 
-            return new UserRegisterResult(UserRegisterResultStatus.UNACCEPTABLE_CONTENT);
+            return new ResponseResult<>(UserRegisterResultStatus.UNACCEPTABLE_CONTENT);
         }
 
         user.getAddresses().addAll(List.of(addresses));
@@ -235,14 +236,14 @@ public class AccountService {
 
         if(fields.size() > 0) {
 
-            return new UserRegisterResult(UserRegisterResultStatus.UNACCEPTABLE_CONTENT, fields);
+            return new ResponseResult(UserRegisterResultStatus.UNACCEPTABLE_CONTENT, fields);
         }
 
         repository.save(user);
 
         ProjectBeanHolder.getCacheService().evictIfPresent(AccountPhoneNumberVerifyCache.PhoneNumberSmsVerifyServiceKey, user.getUsername());
 
-        return new UserRegisterResult(UserRegisterResultStatus.SUCCESS);
+        return new ResponseResult(UserRegisterResultStatus.SUCCESS);
     }
 
 }

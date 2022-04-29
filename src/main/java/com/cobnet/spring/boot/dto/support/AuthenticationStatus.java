@@ -1,6 +1,8 @@
 package com.cobnet.spring.boot.dto.support;
 
-public enum AuthenticationStatus {
+import com.cobnet.interfaces.connection.web.ReasonableStatus;
+
+public enum AuthenticationStatus implements ReasonableStatus {
 
     SUCCESS(200),
     USER_NOT_FOUND(401),
@@ -17,6 +19,7 @@ public enum AuthenticationStatus {
         this.code = status;
     }
 
+    @Override
     public int getCode() {
 
         return this.code;

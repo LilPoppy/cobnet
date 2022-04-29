@@ -21,18 +21,18 @@ import java.util.Random;
 @Service
 public class PhoneNumberSmsVerifyService {
 
-    public PhoneNumberSmsRequestResult request(PhoneNumberSmsRequest request) throws IOException {
+    public ResponseResult<PhoneNumberSmsRequestResultStatus> request(PhoneNumberSmsRequest request) throws IOException {
 
         HttpSession session = Objects.requireNonNull(ProjectBeanHolder.getCurrentHttpRequest()).getSession(true);
 
         if(ProjectBeanHolder.getSecurityConfiguration().isHumanValidationEnable() && !ProjectBeanHolder.getHumanValidator().isValidated(session.getId())) {
 
-            return new PhoneNumberSmsRequestResult(PhoneNumberSmsRequestResultStatus.HUMAN_VALIDATION_REQUEST);
+            return new ResponseResult<>(PhoneNumberSmsRequestResultStatus.HUMAN_VALIDATION_REQUEST);
         }
 
         if(!ProjectBeanHolder.getSecurityConfiguration().isSessionLimitEnable() || ProjectBeanHolder.getSecurityConfiguration().getSessionCreatedTimeRequire().compareTo(DateUtils.getInterval(new Date(session.getCreationTime()), DateUtils.now())) > 0) {
 
-            return new PhoneNumberSmsRequestResult(PhoneNumberSmsRequestResultStatus.REJECTED);
+            return new ResponseResult<>(PhoneNumberSmsRequestResultStatus.REJECTED);
         }
 
         if(request.type() == PhoneNumberSmsType.ACCOUNT_REGISTER) {
@@ -41,7 +41,7 @@ public class PhoneNumberSmsVerifyService {
 
             if(count > ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberMaxUse()) {
 
-                return new PhoneNumberSmsRequestResult(PhoneNumberSmsRequestResultStatus.NUMBER_OVERUSED);
+                return new ResponseResult<>(PhoneNumberSmsRequestResultStatus.NUMBER_OVERUSED);
             }
         }
 
@@ -53,19 +53,19 @@ public class PhoneNumberSmsVerifyService {
 
                 if(cache.times() >= ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsVerifyTimes()) {
 
-                    return new PhoneNumberSmsRequestResult(PhoneNumberSmsRequestResultStatus.EXHAUSTED);
+                    return new ResponseResult<>(PhoneNumberSmsRequestResultStatus.EXHAUSTED);
                 }
 
                 return send(request);
             }
 
-            return new PhoneNumberSmsRequestResult(PhoneNumberSmsRequestResultStatus.INTERVAL_LIMITED, ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsGenerateInterval().minus(DateUtils.getInterval(DateUtils.now(), cache.createdTime())));
+            return new ResponseResult<>(PhoneNumberSmsRequestResultStatus.INTERVAL_LIMITED, new ObjectWrapper<>(ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsGenerateInterval().minus(DateUtils.getInterval(DateUtils.now(), cache.createdTime()))));
         }
 
         return send(request);
     }
 
-    private PhoneNumberSmsRequestResult send(PhoneNumberSmsRequest request) {
+    private ResponseResult<PhoneNumberSmsRequestResultStatus> send(PhoneNumberSmsRequest request) {
 
         Random random = new Random();
 
@@ -81,13 +81,13 @@ public class PhoneNumberSmsVerifyService {
 
         } catch (Exception ex) {
 
-            return new PhoneNumberSmsRequestResult(PhoneNumberSmsRequestResultStatus.SERVICE_DOWN);
+            return new ResponseResult<>(PhoneNumberSmsRequestResultStatus.SERVICE_DOWN);
         }
 
-        return new PhoneNumberSmsRequestResult(PhoneNumberSmsRequestResultStatus.SUCCESS);
+        return new ResponseResult<>(PhoneNumberSmsRequestResultStatus.SUCCESS);
     }
 
-    public PhoneNumberSmsVerifyResult verify(PhoneNumberSmsVerify verify) {
+    public ResponseResult<PhoneNumberSmsVerifyResultStatus> verify(PhoneNumberSmsVerify verify) {
 
         AccountPhoneNumberVerifyCache cache = getCache(verify.username());
 
@@ -95,10 +95,10 @@ public class PhoneNumberSmsVerifyService {
 
             ProjectBeanHolder.getCacheService().set(AccountPhoneNumberVerifyCache.PhoneNumberSmsVerifyServiceKey, verify.username(), new AccountPhoneNumberVerifyCache(verify.code(), DateUtils.now(), verify.type(), cache.times(),true), ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsCodeExpire());
 
-            return new PhoneNumberSmsVerifyResult(PhoneNumberSmsVerifyResultStatus.SUCCESS);
+            return new ResponseResult<>(PhoneNumberSmsVerifyResultStatus.SUCCESS);
         }
 
-        return new PhoneNumberSmsVerifyResult(PhoneNumberSmsVerifyResultStatus.FAILED);
+        return new ResponseResult<>(PhoneNumberSmsVerifyResultStatus.FAILED);
     }
 
     public AccountPhoneNumberVerifyCache getCache(String key) {
