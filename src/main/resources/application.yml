@@ -175,7 +175,7 @@ management:
          enable: true
 twilio:
    account-sid: ACaa871dd615aca9c8d798ec44aaeed2f5
-   authentication-token: a4432efb86248b3392669ede7ace9c06
+   authentication-token: 8dbbb78af76fecda8859fec5d69b21aa
    numbers: +19108078297
 google:
    console:
