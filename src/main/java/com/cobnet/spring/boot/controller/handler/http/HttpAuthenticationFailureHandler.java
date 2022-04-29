@@ -6,12 +6,14 @@ import com.cobnet.exception.AuthenticationSecurityException;
 import com.cobnet.spring.boot.core.HttpRequestUrlResolver;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.CommentWrapper;
+import com.cobnet.spring.boot.dto.MethodHint;
 import com.cobnet.spring.boot.dto.ObjectWrapper;
 import com.cobnet.spring.boot.dto.ResponseResult;
 import com.cobnet.spring.boot.dto.support.AuthenticationStatus;
 import com.cobnet.spring.boot.entity.User;
 import com.cobnet.spring.boot.service.support.AttemptLoginCache;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -102,8 +104,8 @@ public class HttpAuthenticationFailureHandler implements AuthenticationFailureHa
                     response.setStatus(ex.getStatus().getCode());
 
                     switch (ex.getStatus()) {
-
-                        case HUMAN_VALIDATION_REQUEST, REACHED_MAXIMUM_ATTEMPT, REJECTED -> writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult<>(ex.getStatus())));
+                        case HUMAN_VALIDATION_REQUEST -> writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult<>(ex.getStatus(), new CommentWrapper<>("Human validation required.", new MethodHint(HttpMethod.GET, "/visitor/human-validate")))));
+                        case REACHED_MAXIMUM_ATTEMPT, REJECTED -> writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult<>(ex.getStatus())));
                     }
                 }
 
