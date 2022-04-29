@@ -32,8 +32,9 @@ public class DynamicPageFieldProperties implements PageFieldProperties {
     }
 
     @Override
-    public Set<Map.Entry<String, Object>> properties() {
-        return map.entrySet();
+    public Map<String, Object> properties() {
+        return this.map;
     }
+
 
 }
