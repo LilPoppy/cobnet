@@ -1,7 +1,7 @@
 Cobnet
 ============
 
-[![CI](https://github.com/LilPoppy/cobnet/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/LilPoppy/cobnet/actions/workflows/main.yml)
+[![CI](https://github.com/StorebeansDev/cobnet/actions/workflows/main.yml/badge.svg)](https://github.com/StorebeansDev/cobnet/actions/workflows/main.yml)
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![versionjava](https://img.shields.io/badge/dynamic/xml?color=brightgreen&url=https://raw.githubusercontent.com/LilPoppy/cobnet/master/pom.xml&query=%2F%2F%2A%5Blocal-name%28%29%3D%27java.version%27%5D&label=java)](https://github.com/openjdk/jdk)
 [![versionspringboot](https://img.shields.io/badge/dynamic/xml?color=brightgreen&url=https://raw.githubusercontent.com/LilPoppy/cobnet/master/pom.xml&query=%2F%2A%5Blocal-name%28%29%3D%27project%27%5D%2F%2A%5Blocal-name%28%29%3D%27parent%27%5D%2F%2A%5Blocal-name%28%29%3D%27version%27%5D&label=spring-boot)](https://github.com/spring-projects/spring-boot)
