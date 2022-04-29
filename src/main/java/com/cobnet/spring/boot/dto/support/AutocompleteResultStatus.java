@@ -1,6 +1,8 @@
 package com.cobnet.spring.boot.dto.support;
 
-public enum AutocompleteResultStatus {
+import com.cobnet.interfaces.connection.web.ReasonableStatus;
+
+public enum AutocompleteResultStatus implements ReasonableStatus {
 
     SUCCESS(200),
     EXHAUSTED(400),

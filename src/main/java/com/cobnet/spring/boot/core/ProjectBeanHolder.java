@@ -41,7 +41,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 import java.io.IOException;
-import java.util.Locale;
 
 public class ProjectBeanHolder {
 
@@ -63,7 +62,7 @@ public class ProjectBeanHolder {
 
     private static CacheService CACHE_SERVICE;
 
-    private static HumanValidator HUMAN_VALIDATOR;
+    private static HumanValidatorService HUMAN_VALIDATOR;
 
     private static RandomImageProvider RANDOM_IMAGE_PROVIDER;
 
@@ -166,7 +165,7 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.CACHE_SERVICE;
     }
 
-    public static HumanValidator getHumanValidator() {
+    public static HumanValidatorService getHumanValidator() {
 
         return ProjectBeanHolder.HUMAN_VALIDATOR;
     }
@@ -557,7 +556,7 @@ public class ProjectBeanHolder {
         }
 
         @Autowired
-        public void setHumanValidator(HumanValidator validator) {
+        public void setHumanValidator(HumanValidatorService validator) {
 
             ProjectBeanHolder.HUMAN_VALIDATOR = validator;
         }

@@ -5,7 +5,9 @@ import com.cobnet.exception.AuthenticationCancelledException;
 import com.cobnet.exception.AuthenticationSecurityException;
 import com.cobnet.spring.boot.core.HttpRequestUrlResolver;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
-import com.cobnet.spring.boot.dto.AuthenticationResult;
+import com.cobnet.spring.boot.dto.CommentWrapper;
+import com.cobnet.spring.boot.dto.ObjectWrapper;
+import com.cobnet.spring.boot.dto.ResponseResult;
 import com.cobnet.spring.boot.dto.support.AuthenticationStatus;
 import com.cobnet.spring.boot.entity.User;
 import com.cobnet.spring.boot.service.support.AttemptLoginCache;
@@ -68,22 +70,22 @@ public class HttpAuthenticationFailureHandler implements AuthenticationFailureHa
 
                     if(cache.times() >= ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin()) {
 
-                        writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new AuthenticationResult(AuthenticationStatus.REACHED_MAXIMUM_ATTEMPT,null)));
+                        writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult<>(AuthenticationStatus.REACHED_MAXIMUM_ATTEMPT)));
 
                     } else {
 
-                        writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new AuthenticationResult(AuthenticationStatus.PASSWORD_NOT_MATCH,null, ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin() - ProjectBeanHolder.getCacheService().get(AttemptLoginCache.AccountServiceName, request.getSession().getId(), AttemptLoginCache.class).times())));
+                        writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult(AuthenticationStatus.PASSWORD_NOT_MATCH, new CommentWrapper<>("Login attempt time left.", new ObjectWrapper<>(ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin() - ProjectBeanHolder.getCacheService().get(AttemptLoginCache.AccountServiceName, request.getSession().getId(), AttemptLoginCache.class).times())))));
                     }
 
                 } else if(exception instanceof BadCredentialsException) {
 
                     response.setStatus(AuthenticationStatus.PASSWORD_NOT_MATCH.getCode());
-                    writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new AuthenticationResult(AuthenticationStatus.PASSWORD_NOT_MATCH, null, ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin() - ProjectBeanHolder.getCacheService().get(AttemptLoginCache.AccountServiceName, request.getSession().getId(), AttemptLoginCache.class).times())));
+                    writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult(AuthenticationStatus.PASSWORD_NOT_MATCH, new CommentWrapper<>("Login attempt time left.", new ObjectWrapper<>(ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin() - ProjectBeanHolder.getCacheService().get(AttemptLoginCache.AccountServiceName, request.getSession().getId(), AttemptLoginCache.class).times())))));
 
                 } else if(exception instanceof AuthenticationCancelledException) {
 
                     response.setStatus(AuthenticationStatus.REJECTED.getCode());
-                    writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new AuthenticationResult(AuthenticationStatus.REJECTED, null)));
+                    writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult<>(AuthenticationStatus.REJECTED)));
 
                 } else if(exception instanceof LockedException) {
 
@@ -92,7 +94,7 @@ public class HttpAuthenticationFailureHandler implements AuthenticationFailureHa
                     if(userDetailsService.loadUserByUsername(username) instanceof User user) {
 
                         response.setStatus(AuthenticationStatus.LOCKED.getCode());
-                        writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new AuthenticationResult(AuthenticationStatus.LOCKED, null, user.getLockTime())));
+                        writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult<>(AuthenticationStatus.LOCKED, new CommentWrapper<>("", new ObjectWrapper<>(user.getLockTime())))));
                     }
 
                 } else if(exception instanceof AuthenticationSecurityException ex) {
@@ -101,7 +103,7 @@ public class HttpAuthenticationFailureHandler implements AuthenticationFailureHa
 
                     switch (ex.getStatus()) {
 
-                        case HUMAN_VALIDATION_REQUEST, REACHED_MAXIMUM_ATTEMPT, REJECTED -> writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new AuthenticationResult(ex.getStatus(), null)));
+                        case HUMAN_VALIDATION_REQUEST, REACHED_MAXIMUM_ATTEMPT, REJECTED -> writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult<>(ex.getStatus())));
                     }
                 }
 

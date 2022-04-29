@@ -1,6 +1,8 @@
 package com.cobnet.spring.boot.dto.support;
 
-public enum HumanValidationValidateStatus {
+import com.cobnet.interfaces.connection.web.ReasonableStatus;
+
+public enum HumanValidationValidateStatus implements ReasonableStatus {
 
     SUCCESS(201),
     TIMEOUT(408),

@@ -2,6 +2,7 @@ package com.cobnet.spring.boot.controller.restful;
 
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.*;
+import com.cobnet.spring.boot.dto.support.*;
 import com.google.maps.errors.ApiException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.transaction.NotSupportedException;
 import java.io.IOException;
 
 @Tag(name = "Visitor")
@@ -26,16 +28,16 @@ public class VisitorController {
 
     @Operation(summary = "Login in default way.", description = "")
     @PostMapping("/visitor/login")
-    public AuthenticationResult login(String username, String password, @RequestParam(name = "remember-me") boolean rememberme) {
+    public ResponseResult<AuthenticationStatus> login(String username, String password, @RequestParam(name = "remember-me") boolean rememberMe) throws NotSupportedException {
 
-        throw new RuntimeException("apidoc");
+        throw new NotSupportedException();
     }
 
     @Operation(summary = "Validate is human operation.")
     @PostMapping("/visitor/human-validate")
-    public HumanValidationValidate humanValidate(HttpServletRequest http, HttpServletResponse response, int position) {
+    public ResponseResult<HumanValidationValidateStatus> humanValidate(HttpServletRequest http, HttpServletResponse response, int position) {
 
-        HumanValidationValidate result = ProjectBeanHolder.getHumanValidator().validate(http.getSession(true).getId(), position);
+        ResponseResult<HumanValidationValidateStatus> result = ProjectBeanHolder.getHumanValidator().validate(http.getSession(true).getId(), position);
 
         response.setStatus(result.status().getCode());
 
@@ -51,9 +53,9 @@ public class VisitorController {
 
     @Operation(summary = "Request new resources to verify is human operating.")
     @RequestMapping(method = RequestMethod.PATCH,value = "/visitor/human-validate")
-    public HumanValidationRequestResult humanValidate(HttpServletRequest http, HttpServletResponse response) throws IOException {
+    public ResponseResult<HumanValidationRequestStatus> humanValidate(HttpServletRequest http, HttpServletResponse response) throws IOException {
 
-        HumanValidationRequestResult result = ProjectBeanHolder.getHumanValidator().create(http.getSession(true).getId());
+        ResponseResult<HumanValidationRequestStatus> result = ProjectBeanHolder.getHumanValidator().create(http.getSession(true).getId());
 
         response.setStatus(result.status().getCode());
 
@@ -62,9 +64,9 @@ public class VisitorController {
 
     @Operation(summary = "Request sms verify for provided phone number.")
     @PostMapping("/visitor/sms/request")
-    public PhoneNumberSmsRequestResult phoneNumberSmsRequest(HttpServletResponse response, PhoneNumberSmsRequest request) throws IOException {
+    public ResponseResult<PhoneNumberSmsRequestResultStatus> phoneNumberSmsRequest(HttpServletResponse response, PhoneNumberSmsRequest request) throws IOException {
 
-        PhoneNumberSmsRequestResult result = ProjectBeanHolder.getPhoneNumberSmsVerifyService().request(request);
+        ResponseResult<PhoneNumberSmsRequestResultStatus> result = ProjectBeanHolder.getPhoneNumberSmsVerifyService().request(request);
 
         response.setStatus(result.status().getCode());
 
@@ -73,9 +75,9 @@ public class VisitorController {
 
     @Operation(summary = "Verify sms code from record.")
     @PostMapping("/visitor/sms/verify")
-    public PhoneNumberSmsVerifyResult phoneNumberSmsVerify(HttpServletResponse response, PhoneNumberSmsVerify verify) {
+    public ResponseResult<PhoneNumberSmsVerifyResultStatus> phoneNumberSmsVerify(HttpServletResponse response, PhoneNumberSmsVerify verify) {
 
-        PhoneNumberSmsVerifyResult result = ProjectBeanHolder.getPhoneNumberSmsVerifyService().verify(verify);
+        ResponseResult<PhoneNumberSmsVerifyResultStatus> result = ProjectBeanHolder.getPhoneNumberSmsVerifyService().verify(verify);
 
         response.setStatus(result.status().getCode());
 
@@ -85,9 +87,9 @@ public class VisitorController {
 
     @Operation(summary = "Register an new account.", description = "")
     @PostMapping("/visitor/register")
-    public UserRegisterResult register(HttpServletResponse response, UserRegisterForm form, AddressForm address) {
+    public ResponseResult<UserRegisterResultStatus> register(HttpServletResponse response, UserRegisterForm form, AddressForm address) {
 
-        UserRegisterResult result = ProjectBeanHolder.getAccountService().register(form, address);
+        ResponseResult<UserRegisterResultStatus> result = ProjectBeanHolder.getAccountService().register(form, address);
 
         response.setStatus(result.status().getCode());
 
@@ -96,9 +98,9 @@ public class VisitorController {
 
     @Operation(summary = "auto complete given address.")
     @PostMapping("/visitor/autocomplete/address")
-    public AutocompleteResult autocompleteAddress(HttpServletRequest request, HttpServletResponse response, AddressForm addressRequest) throws IOException, InterruptedException, ApiException {
+    public ResponseResult<AutocompleteResultStatus> autocompleteAddress(HttpServletRequest request, HttpServletResponse response, AddressForm addressRequest) throws IOException, InterruptedException, ApiException {
 
-        AutocompleteResult result =  ProjectBeanHolder.getGoogleMapService().autocompleteRequest(request, addressRequest);
+        ResponseResult<AutocompleteResultStatus> result =  ProjectBeanHolder.getGoogleMapService().autocompleteRequest(request, addressRequest);
 
         response.setStatus(result.status().getCode());
 

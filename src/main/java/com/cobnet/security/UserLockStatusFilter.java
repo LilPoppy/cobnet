@@ -2,12 +2,9 @@ package com.cobnet.security;
 
 import com.cobnet.common.DateUtils;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
-import com.cobnet.spring.boot.dto.AuthenticationResult;
-import com.cobnet.spring.boot.dto.support.AuthenticationStatus;
 import com.cobnet.spring.boot.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.log.LogMessage;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -18,9 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 
 public class UserLockStatusFilter extends GenericFilterBean {
 

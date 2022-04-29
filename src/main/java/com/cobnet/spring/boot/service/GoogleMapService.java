@@ -3,7 +3,8 @@ package com.cobnet.spring.boot.service;
 import com.cobnet.common.DateUtils;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.AddressForm;
-import com.cobnet.spring.boot.dto.AutocompleteResult;
+import com.cobnet.spring.boot.dto.GoogleAutocompletePredicted;
+import com.cobnet.spring.boot.dto.ResponseResult;
 import com.cobnet.spring.boot.dto.support.AutocompleteResultStatus;
 import com.cobnet.spring.boot.service.support.AutocompleteRequestCache;
 import com.google.maps.errors.ApiException;
@@ -17,7 +18,6 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 @Service
 public class GoogleMapService {
@@ -42,25 +42,25 @@ public class GoogleMapService {
         return ProjectBeanHolder.getGoogleMap().placeAutocompleteRequest(Arrays.toString(params), token).await();
     }
 
-    public AutocompleteResult autocompleteRequest(HttpServletRequest request, AddressForm form) {
+    public ResponseResult<AutocompleteResultStatus> autocompleteRequest(HttpServletRequest request, AddressForm form) {
 
         HttpSession session = request.getSession(true);
 
         if(ProjectBeanHolder.getSecurityConfiguration().isHumanValidationEnable() && !ProjectBeanHolder.getHumanValidator().isValidated(session.getId())) {
 
-            return new AutocompleteResult(AutocompleteResultStatus.HUMAN_VALIDATION_REQUEST);
+            return new ResponseResult<>(AutocompleteResultStatus.HUMAN_VALIDATION_REQUEST);
         }
 
         if(!ProjectBeanHolder.getSecurityConfiguration().isSessionLimitEnable() || ProjectBeanHolder.getSecurityConfiguration().getSessionCreatedTimeRequire().compareTo(DateUtils.getInterval(new Date(session.getCreationTime()), DateUtils.now())) > 0) {
 
-            return new AutocompleteResult(AutocompleteResultStatus.REJECTED);
+            return new ResponseResult<>(AutocompleteResultStatus.REJECTED);
         }
 
         AutocompleteRequestCache cache = this.getAutocompleteRequestCache(session.getId());
 
         ProjectBeanHolder.getCacheService().set(AutocompleteRequestCache.GoogleMapServiceKey, request.getSession().getId(), new AutocompleteRequestCache(cache != null ? cache.createdTime() : DateUtils.now(), cache != null ? cache.times() + 1 : 0), cache != null ? ProjectBeanHolder.getSecurityConfiguration().getGoogleMapAutoCompleteLimitDuration().minus(DateUtils.getInterval(DateUtils.now(), cache.createdTime())) : ProjectBeanHolder.getSecurityConfiguration().getGoogleMapAutoCompleteLimitDuration());
 
-        List<AutocompletePrediction> result = null;
+        GoogleAutocompletePredicted result = null;
 
         if(cache != null) {
 
@@ -68,7 +68,7 @@ public class GoogleMapService {
 
                 try {
 
-                    result = Arrays.stream(autocomplete(session.getId(), form.address())).toList();
+                    result = new GoogleAutocompletePredicted(Arrays.stream(autocomplete(session.getId(), form.address())).toList());
 
                 } catch (IOException | ApiException | InterruptedException e) {
 
@@ -77,18 +77,18 @@ public class GoogleMapService {
 
                 if(result == null) {
 
-                    return new AutocompleteResult(AutocompleteResultStatus.SERVICE_DOWN);
+                    return new ResponseResult<>(AutocompleteResultStatus.SERVICE_DOWN);
                 }
 
-                return new AutocompleteResult(AutocompleteResultStatus.SUCCESS, result);
+                return new ResponseResult(AutocompleteResultStatus.SUCCESS, result);
             }
 
-            return new AutocompleteResult(AutocompleteResultStatus.EXHAUSTED);
+            return new ResponseResult<>(AutocompleteResultStatus.EXHAUSTED);
         }
 
         try {
 
-            result = Arrays.stream(autocomplete(request.getSession(), form.address())).toList();
+            result = new GoogleAutocompletePredicted(Arrays.stream(autocomplete(request.getSession(), form.address())).toList());
 
         } catch (IOException | ApiException | InterruptedException e) {
 
@@ -97,10 +97,10 @@ public class GoogleMapService {
 
         if(result == null) {
 
-            return new AutocompleteResult(AutocompleteResultStatus.SERVICE_DOWN);
+            return new ResponseResult<>(AutocompleteResultStatus.SERVICE_DOWN);
         }
 
-        return new AutocompleteResult(AutocompleteResultStatus.SUCCESS, result);
+        return new ResponseResult<>(AutocompleteResultStatus.SUCCESS, result);
     }
 
     public AutocompleteRequestCache getAutocompleteRequestCache(String key) {

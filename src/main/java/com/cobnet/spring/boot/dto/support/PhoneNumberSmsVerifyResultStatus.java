@@ -1,6 +1,8 @@
 package com.cobnet.spring.boot.dto.support;
 
-public enum PhoneNumberSmsVerifyResultStatus {
+import com.cobnet.interfaces.connection.web.ReasonableStatus;
+
+public enum PhoneNumberSmsVerifyResultStatus implements ReasonableStatus {
 
     SUCCESS(200),
     FAILED(403);

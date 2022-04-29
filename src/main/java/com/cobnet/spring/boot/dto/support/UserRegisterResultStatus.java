@@ -1,6 +1,8 @@
 package com.cobnet.spring.boot.dto.support;
 
-public enum UserRegisterResultStatus {
+import com.cobnet.interfaces.connection.web.ReasonableStatus;
+
+public enum UserRegisterResultStatus implements ReasonableStatus {
 
     SUCCESS(201),
     UNACCEPTABLE_CONTENT(400),
