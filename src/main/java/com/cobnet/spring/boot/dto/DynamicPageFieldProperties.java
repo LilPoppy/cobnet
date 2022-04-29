@@ -3,6 +3,7 @@ package com.cobnet.spring.boot.dto;
 import com.cobnet.common.KeyValuePair;
 import com.cobnet.interfaces.connection.web.PageFieldProperties;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,4 +35,5 @@ public class DynamicPageFieldProperties implements PageFieldProperties {
     public Set<Map.Entry<String, Object>> properties() {
         return map.entrySet();
     }
+
 }
