@@ -20,6 +20,6 @@ public interface Properties<T> extends Serializable {
     public T remove(String key);
 
     @JsonAnyGetter
-    Set<Map.Entry<String, T>> properties();
+    Map<String, Object> properties();
 
 }

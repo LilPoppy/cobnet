@@ -4,7 +4,6 @@ import com.cobnet.interfaces.connection.web.PageProperties;
 
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DynamicPageProperties implements PageProperties {
@@ -29,7 +28,9 @@ public class DynamicPageProperties implements PageProperties {
     }
 
     @Override
-    public Set<Map.Entry<String, Object>> properties() {
-        return map.entrySet();
+    public Map<String, Object> properties() {
+        return this.map;
     }
+
+
 }
