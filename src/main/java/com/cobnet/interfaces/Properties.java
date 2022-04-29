@@ -1,6 +1,7 @@
 package com.cobnet.interfaces;
 
 import com.cobnet.common.KeyValuePair;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.databind.annotation.JsonAppend;
 import net.minidev.json.annotate.JsonIgnore;
@@ -18,7 +19,7 @@ public interface Properties<T> extends Serializable {
     @JsonIgnore
     public T remove(String key);
 
-    @JsonGetter
+    @JsonAnyGetter
     Set<Map.Entry<String, T>> properties();
 
 }
