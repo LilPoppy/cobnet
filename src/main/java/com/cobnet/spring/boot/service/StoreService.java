@@ -2,14 +2,13 @@ package com.cobnet.spring.boot.service;
 
 import com.cobnet.common.KeyValuePair;
 import com.cobnet.exception.ServiceDownException;
-import com.cobnet.interfaces.connection.web.PageField;
 import com.cobnet.interfaces.spring.repository.StoreRepository;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.*;
 import com.cobnet.spring.boot.dto.support.PageFieldType;
-import com.cobnet.spring.boot.dto.support.StoreCheckInPageDeatilResultStatus;
+import com.cobnet.spring.boot.dto.support.StoreCheckInPageDetailResultStatus;
 import com.cobnet.spring.boot.dto.support.StoreRegisterResultStatus;
-import com.cobnet.spring.boot.dto.support.UIType;
+import com.cobnet.spring.boot.dto.support.SurveyReferralOption;
 import com.cobnet.spring.boot.entity.Address;
 import com.cobnet.spring.boot.entity.Store;
 import com.cobnet.spring.boot.entity.support.Gender;
@@ -31,7 +30,6 @@ public class StoreService {
 
     public ResponseResult<StoreRegisterResultStatus> register(StoreRegisterForm storeForm) {
 
-        //ChIJKZHAALQtMYYRnE0zrKPsS8I
         Store store = storeForm.getEntity();
 
         try {
@@ -115,21 +113,35 @@ public class StoreService {
         return new ResponseResult<>(StoreRegisterResultStatus.SUCCESS);
     }
 
-    public ResponseResult<StoreCheckInPageDeatilResultStatus> getStoreCheckInPageDetail(String storeId, Locale locale) throws IOException {
+    public ResponseResult<StoreCheckInPageDetailResultStatus> getStoreCheckInPageDetail(String storeId, Locale locale) throws IOException {
+
+        Store store = repository.getById(storeId);
+
+        if(store == null) {
+
+            return new ResponseResult<>(StoreCheckInPageDetailResultStatus.NO_EXIST);
+        }
 
         try {
 
-            return new ResponseResult<>(StoreCheckInPageDeatilResultStatus.SUCCESS,
+            List<String> referralOptions = new ArrayList<>();
+
+            for(SurveyReferralOption option : SurveyReferralOption.values()) {
+
+                referralOptions.add(ProjectBeanHolder.getTranslatorMessageSource().getMessage(option.getKey(), locale));
+            }
+
+            return new ResponseResult<>(StoreCheckInPageDetailResultStatus.SUCCESS, new DynamicPage(new DynamicPageProperties(),
                 new StepContainerPageField(0, "firstName", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.first-name", locale), PageFieldType.INPUT, new DynamicPageFieldProperties()),
                 new StepContainerPageField(0, "lastName", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.last-name", locale), PageFieldType.INPUT, new DynamicPageFieldProperties()),
                 new StepContainerPageField(1, "gender", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.gender", locale), PageFieldType.RADIO, new DynamicPageFieldProperties(new KeyValuePair<>("list", Gender.values()))),
                 new StepContainerPageField(2, "phoneNumber", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.phone-number", locale), PageFieldType.INPUT, new DynamicPageFieldProperties()),
-                new StepContainerPageField(3, "referral", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.referral", locale), PageFieldType.INPUT, new DynamicPageFieldProperties())
-            );
+                new StepContainerPageField(3, "referral", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.referral", locale), PageFieldType.RADIO, new DynamicPageFieldProperties(new KeyValuePair<>("list", referralOptions)))
+            ));
 
         } catch (ServiceDownException ex) {
 
-            return new ResponseResult<>(StoreCheckInPageDeatilResultStatus.SERVICE_DOWN);
+            return new ResponseResult<>(StoreCheckInPageDetailResultStatus.SERVICE_DOWN);
         }
 
     }

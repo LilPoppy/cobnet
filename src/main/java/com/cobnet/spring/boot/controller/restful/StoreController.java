@@ -4,7 +4,7 @@ import com.cobnet.exception.ServiceDownException;
 import com.cobnet.interfaces.security.annotation.AccessSecured;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.*;
-import com.cobnet.spring.boot.dto.support.StoreCheckInPageDeatilResultStatus;
+import com.cobnet.spring.boot.dto.support.StoreCheckInPageDetailResultStatus;
 import com.cobnet.spring.boot.dto.support.StoreCheckInResultStatus;
 import com.cobnet.spring.boot.dto.support.StoreRegisterResultStatus;
 import com.google.maps.errors.ApiException;
@@ -41,9 +41,9 @@ public class StoreController {
     }
 
     @GetMapping("/store/{storeId}/check-in-page-details")
-    public ResponseResult<StoreCheckInPageDeatilResultStatus> checkInPageDetail(HttpServletResponse response, @PathVariable String storeId, String country, String language) throws IOException, ServiceDownException {
+    public ResponseResult<StoreCheckInPageDetailResultStatus> checkInPageDetail(HttpServletResponse response, @PathVariable String storeId, String country, String language) throws IOException, ServiceDownException {
 
-        ResponseResult<StoreCheckInPageDeatilResultStatus> result = ProjectBeanHolder.getStoreService().getStoreCheckInPageDetail(storeId, new Locale(country, language));
+        ResponseResult<StoreCheckInPageDetailResultStatus> result = ProjectBeanHolder.getStoreService().getStoreCheckInPageDetail(storeId, new Locale(country, language));
 
         response.setStatus(result.status().getCode());
 
