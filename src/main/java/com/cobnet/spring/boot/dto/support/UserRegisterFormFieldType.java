@@ -1,6 +1,6 @@
 package com.cobnet.spring.boot.dto.support;
 
-public enum UserRegisterFormField {
+public enum UserRegisterFormFieldType {
 
     USERNAME,
     PASSWORD,
