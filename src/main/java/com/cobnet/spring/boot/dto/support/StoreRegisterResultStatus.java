@@ -1,6 +1,8 @@
 package com.cobnet.spring.boot.dto.support;
 
-public enum StoreRegisterResultStatus {
+import com.cobnet.interfaces.connection.web.ReasonableStatus;
+
+public enum StoreRegisterResultStatus implements ReasonableStatus {
 
     SUCCESS(201),
     STORE_NONEXISTENT(400),

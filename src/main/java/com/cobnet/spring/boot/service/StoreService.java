@@ -4,8 +4,8 @@ import com.cobnet.exception.ServiceDownException;
 import com.cobnet.interfaces.spring.repository.StoreRepository;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.CheckInFormField;
+import com.cobnet.spring.boot.dto.ResponseResult;
 import com.cobnet.spring.boot.dto.StoreRegisterForm;
-import com.cobnet.spring.boot.dto.StoreRegisterResult;
 import com.cobnet.spring.boot.dto.support.StoreRegisterResultStatus;
 import com.cobnet.spring.boot.dto.support.UIType;
 import com.cobnet.spring.boot.entity.Address;
@@ -26,7 +26,7 @@ public class StoreService {
     @Autowired
     private StoreRepository repository;
 
-    public StoreRegisterResult register(StoreRegisterForm storeForm) throws IOException, InterruptedException, ApiException {
+    public ResponseResult<StoreRegisterResultStatus> register(StoreRegisterForm storeForm) {
 
         //ChIJKZHAALQtMYYRnE0zrKPsS8I
         Store store = storeForm.getEntity();
@@ -37,12 +37,12 @@ public class StoreService {
 
             if(details == null) {
 
-                return new StoreRegisterResult(StoreRegisterResultStatus.STORE_NONEXISTENT);
+                return new ResponseResult<>(StoreRegisterResultStatus.STORE_NONEXISTENT);
             }
 
             if(details.permanentlyClosed) {
 
-                return new StoreRegisterResult(StoreRegisterResultStatus.STORE_PERMANENTLY_CLOSED);
+                return new ResponseResult<>(StoreRegisterResultStatus.STORE_PERMANENTLY_CLOSED);
             }
 
             store.setName(details.name);
@@ -97,19 +97,19 @@ public class StoreService {
 
             ex.printStackTrace();
 
-            return new StoreRegisterResult(StoreRegisterResultStatus.SERVICE_DOWN);
+            return new ResponseResult<>(StoreRegisterResultStatus.SERVICE_DOWN);
         }
 
         Optional<Store> existent = repository.findById(store.getId());
 
         if(existent.isPresent()) {
 
-            return new StoreRegisterResult(StoreRegisterResultStatus.STORE_EXISTED);
+            return new ResponseResult<>(StoreRegisterResultStatus.STORE_EXISTED);
         }
 
         repository.save(store);
 
-        return new StoreRegisterResult(StoreRegisterResultStatus.SUCCESS);
+        return new ResponseResult<>(StoreRegisterResultStatus.SUCCESS);
     }
 
     public List<CheckInFormField> getStoreCheckInFormFields(String storeId, Locale locale) throws IOException, ServiceDownException {

@@ -5,6 +5,7 @@ import com.cobnet.interfaces.security.annotation.AccessSecured;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.*;
 import com.cobnet.spring.boot.dto.support.StoreCheckInResultStatus;
+import com.cobnet.spring.boot.dto.support.StoreRegisterResultStatus;
 import com.cobnet.spring.boot.entity.Work;
 import com.google.maps.errors.ApiException;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -24,9 +25,9 @@ public class StoreController {
 
     @AccessSecured(roles = "USER")
     @PostMapping("/store/create")
-    public StoreRegisterResult create(HttpServletResponse response, StoreRegisterForm store) throws IOException, InterruptedException, ApiException {
+    public ResponseResult<StoreRegisterResultStatus> create(HttpServletResponse response, StoreRegisterForm store) throws IOException, InterruptedException, ApiException {
 
-        StoreRegisterResult result = ProjectBeanHolder.getStoreService().register(store);
+        ResponseResult<StoreRegisterResultStatus> result = ProjectBeanHolder.getStoreService().register(store);
 
         response.setStatus(result.status().getCode());
 
@@ -34,9 +35,9 @@ public class StoreController {
     }
 
     @PostMapping("/store/{storeId}/check-in")
-    public StoreCheckInResult checkIn(@PathVariable String storeId, CustomerInfoForm info, List<WorkInfoForm> services) {
+    public ResponseResult<StoreCheckInResultStatus> checkIn(@PathVariable String storeId, CustomerInfoForm info, List<WorkInfoForm> services) {
 
-        return new StoreCheckInResult(StoreCheckInResultStatus.SUCCESS);
+        return new ResponseResult(StoreCheckInResultStatus.SUCCESS);
     }
 
     @GetMapping("/store/{storeId}/check-in-fields")
