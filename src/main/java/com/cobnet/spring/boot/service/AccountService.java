@@ -1,7 +1,6 @@
 package com.cobnet.spring.boot.service;
 
 import com.cobnet.common.DateUtils;
-import com.cobnet.common.KeyValuePair;
 import com.cobnet.event.account.AccountLoginEvent;
 import com.cobnet.event.account.AccountPasswordEncodingEvent;
 import com.cobnet.exception.AuthenticationCancelledException;
@@ -200,38 +199,38 @@ public class AccountService {
 
         SecurityConfiguration configuration = ProjectBeanHolder.getSecurityConfiguration();
 
-        List<UserRegisterFormField> fields = new ArrayList<>();
+        List<UserRegisterFormFieldType> fields = new ArrayList<>();
 
         if(!user.getUsername().matches(configuration.getUsernameFormatRegex()) || repository.existsById(user.getUsername())) {
 
-            fields.add(UserRegisterFormField.USERNAME);
+            fields.add(UserRegisterFormFieldType.USERNAME);
         }
 
         if(!user.getPassword().matches(configuration.getPasswordFormatRegex())) {
 
-            fields.add(UserRegisterFormField.PASSWORD);
+            fields.add(UserRegisterFormFieldType.PASSWORD);
         }
 
         String emailRegex = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
 
         if(!user.getEmail().matches(emailRegex) || repository.countByEmailEquals(user.getEmail()) >= configuration.getEmailMaxUse()) {
 
-            fields.add(UserRegisterFormField.EMAIL);
+            fields.add(UserRegisterFormFieldType.EMAIL);
         }
 
         if(user.getPhoneNumber() == null || repository.countByPhoneNumberContaining(user.getPhoneNumber()) >= configuration.getPhoneNumberMaxUse()) {
 
-            fields.add(UserRegisterFormField.PHONE_NUMBER);
+            fields.add(UserRegisterFormFieldType.PHONE_NUMBER);
         }
 
         if(user.getFirstName() == null || user.getFirstName().length() < 1) {
 
-            fields.add(UserRegisterFormField.FIRST_NAME);
+            fields.add(UserRegisterFormFieldType.FIRST_NAME);
         }
 
         if(user.getLastName() == null || user.getLastName().length() < 1) {
 
-            fields.add(UserRegisterFormField.LAST_NAME);
+            fields.add(UserRegisterFormFieldType.LAST_NAME);
         }
 
         if(fields.size() > 0) {
