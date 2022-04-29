@@ -6,6 +6,7 @@ public enum HumanValidationRequestStatus implements ReasonableStatus {
 
     SUCCESS(201),
     INTERVAL_LIMITED(400),
+    VALIDATED(400),
     REJECTED(400);
 
 
