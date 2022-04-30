@@ -5,10 +5,7 @@ import com.cobnet.exception.ServiceDownException;
 import com.cobnet.interfaces.spring.repository.StoreRepository;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.*;
-import com.cobnet.spring.boot.dto.support.PageFieldType;
-import com.cobnet.spring.boot.dto.support.StoreCheckInPageDetailResultStatus;
-import com.cobnet.spring.boot.dto.support.StoreRegisterResultStatus;
-import com.cobnet.spring.boot.dto.support.SurveyReferralOption;
+import com.cobnet.spring.boot.dto.support.*;
 import com.cobnet.spring.boot.entity.Address;
 import com.cobnet.spring.boot.entity.Store;
 import com.cobnet.spring.boot.entity.support.Gender;
@@ -27,6 +24,11 @@ public class StoreService {
 
     @Autowired
     private StoreRepository repository;
+
+    public ResponseResult<StoreSearchResultStatus> search(String name, AddressForm addressForm) {
+
+        ProjectBeanHolder.getGoogleMapService().autocompleteRequest()
+    }
 
     public ResponseResult<StoreRegisterResultStatus> register(StoreRegisterForm storeForm) {
 

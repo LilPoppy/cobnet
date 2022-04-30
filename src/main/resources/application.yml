@@ -182,7 +182,7 @@ twilio:
 google:
    console:
       api-key: "AIzaSyD-HiZ_YWGYSb7GcTXu8T-TLTf_TCnT62U"
-      credentials: ${PWD}/target/classes/keystore/storebeans-348721-0491f83661e9.json
+      credentials: ${PWD}/target/classes/keystore/storebeans-348721-abf3282acdd2.json
 netty:
    enable: true
    servers:
