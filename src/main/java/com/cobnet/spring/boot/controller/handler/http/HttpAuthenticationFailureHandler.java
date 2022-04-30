@@ -104,7 +104,7 @@ public class HttpAuthenticationFailureHandler implements AuthenticationFailureHa
                     response.setStatus(ex.getStatus().getCode());
 
                     switch (ex.getStatus()) {
-                        case HUMAN_VALIDATION_REQUEST -> writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult<>(ex.getStatus(), new CommentWrapper<>("Human validation required.", new MethodHint(HttpMethod.GET, "/visitor/human-validate")))));
+                        case HUMAN_VALIDATION_REQUEST -> writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult<>(ex.getStatus(), new CommentWrapper<>("Human validation required.", new MethodHint(HttpMethod.PATCH, "/visitor/human-validate")))));
                         case REACHED_MAXIMUM_ATTEMPT, REJECTED -> writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult<>(ex.getStatus())));
                     }
                 }
