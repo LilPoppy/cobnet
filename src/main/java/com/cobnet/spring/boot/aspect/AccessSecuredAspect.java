@@ -59,7 +59,7 @@ public class AccessSecuredAspect {
 
             } else {
 
-                throw new MethodArgumentTypeMismatchException(joinPoint.getArgs()[0], AuthenticatableChannel.class, "AuthenticatableChannel", new MethodParameter(method, 0), new AccessDeniedException("An exception occurred when getting access denied response."));
+                throw new MethodArgumentTypeMismatchException(joinPoint.getArgs()[0], AuthenticatableChannel.class, "AuthenticateChannel", new MethodParameter(method, 0), new AccessDeniedException("An exception occurred when getting access denied response."));
             }
         }
 
@@ -74,7 +74,7 @@ public class AccessSecuredAspect {
                 } else {
 
                     accessDenied();
-                    return false;
+                    return null;
                 }
             }
 
@@ -87,14 +87,14 @@ public class AccessSecuredAspect {
                 } else {
 
                     accessDenied();
-                    return false;
+                    return null;
                 }
             }
 
         } else if(roles.length > 0 || permissions.length > 0) {
 
             accessDenied();
-            return false;
+            return null;
         }
 
         return joinPoint.proceed();

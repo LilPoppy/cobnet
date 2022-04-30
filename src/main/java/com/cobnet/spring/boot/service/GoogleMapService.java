@@ -69,7 +69,7 @@ public class GoogleMapService {
 
                 try {
 
-                    result = new GoogleAutocompletePredicted(Arrays.stream(autocomplete(session.getId(), Stream.of(form.address(), params).toArray(String[]::new))).toList());
+                    result = new GoogleAutocompletePredicted(Arrays.stream(autocomplete(session.getId(), Stream.concat(Stream.of(form.address()), Stream.of(params)).toArray(String[]::new))).toList());
 
                 } catch (IOException | ApiException | InterruptedException e) {
 
@@ -89,7 +89,7 @@ public class GoogleMapService {
 
         try {
 
-            result = new GoogleAutocompletePredicted(Arrays.stream(autocomplete(request.getSession(), Stream.of(form.address(), params).toArray(String[]::new))).toList());
+            result = new GoogleAutocompletePredicted(Arrays.stream(autocomplete(request.getSession(), Stream.concat(Stream.of(form.address()), Stream.of(params)).toArray(String[]::new))).toList());
 
         } catch (IOException | ApiException | InterruptedException e) {
 
