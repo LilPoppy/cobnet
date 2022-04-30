@@ -165,18 +165,27 @@ public class AccountService {
 
     public ResponseResult<UserRegisterResultStatus> register(UserRegisterForm form, AddressForm address) {
 
-        if(ProjectBeanHolder.getSecurityConfiguration().isPhoneNumberVerifyEnable()) {
+        if (ProjectBeanHolder.getSecurityConfiguration().isPhoneNumberVerifyEnable()) {
 
-            AccountPhoneNumberVerifyCache cache = ProjectBeanHolder.getCacheService().get(AccountPhoneNumberVerifyCache.PhoneNumberSmsVerifyServiceKey, form.getUsername(), AccountPhoneNumberVerifyCache.class);
+            AccountPhoneNumberVerifyCache cache = ProjectBeanHolder.getPhoneNumberSmsVerifyService().getCache(form.getUsername());
 
             if (cache != null) {
 
-                if (cache.type() == PhoneNumberSmsType.ACCOUNT_REGISTER && cache.verified()) {
+                ResponseResult<UserRegisterResultStatus> result = register(form.getEntity(), address.getEntity());
 
-                    return register(form.getEntity(), address.getEntity());
+                if (result.status() == UserRegisterResultStatus.SUCCESS) {
+
+                    if (cache.type() == PhoneNumberSmsType.ACCOUNT_REGISTER && cache.verified()) {
+
+                        ProjectBeanHolder.getPhoneNumberSmsVerifyService().delete(form.getUsername());
+
+                        return result;
+                    }
+
+                    return new ResponseResult(UserRegisterResultStatus.VERIFICATION_FAILED);
                 }
 
-                return new ResponseResult(UserRegisterResultStatus.VERIFICATION_FAILED);
+                return result;
             }
 
 
