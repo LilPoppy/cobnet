@@ -106,6 +106,11 @@ public class PhoneNumberSmsVerifyService {
         return ProjectBeanHolder.getCacheService().get(AccountPhoneNumberVerifyCache.PhoneNumberSmsVerifyServiceKey, key, AccountPhoneNumberVerifyCache.class);
     }
 
+    public boolean delete(String key) {
+
+        return ProjectBeanHolder.getCacheService().evictIfPresent(AccountPhoneNumberVerifyCache.PhoneNumberSmsVerifyServiceKey, key);
+    }
+
     public int getCode(String key, PhoneNumberSmsType type) {
 
         AccountPhoneNumberVerifyCache cache = getCache(key);
