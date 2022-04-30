@@ -129,6 +129,8 @@ spring:
                   clientSecret: "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"
                   client-authentication-method: basic
                   authorization-grant-type: authorization_code
+#      set this to google oauth console
+#      https://www.storebeans.com/api/login/oauth2/code/google
                   redirect-uri-template: "{baseUrl}${spring.security.oauth2.redirect-uri}/{registrationId}"
                   scope: openid, profile, email, address, phone
                   client-name: Google Login
