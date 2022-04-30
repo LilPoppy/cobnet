@@ -91,9 +91,15 @@ public class GoogleMapService {
 
             result = new GoogleAutocompletePredicted(Arrays.stream(autocomplete(request.getSession(), Stream.concat(Stream.of(form.address()), Stream.of(params)).toArray(String[]::new))).toList());
 
-        } catch (IOException | ApiException | InterruptedException e) {
+        } catch (IOException | InterruptedException e) {
 
             e.printStackTrace();
+
+        } catch (ApiException e) {
+
+            e.printStackTrace();
+
+            return new ResponseResult<>(AutocompleteResultStatus.SERVICE_DOWN);
         }
 
         if(result == null) {
