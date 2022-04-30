@@ -127,4 +127,9 @@ public class PhoneNumberSmsVerifyService {
 
         return 0;
     }
+
+    public boolean delete(String key) {
+
+        return ProjectBeanHolder.getCacheService().evictIfPresent(AccountPhoneNumberVerifyCache.PhoneNumberSmsVerifyServiceKey, key);
+    }
 }
