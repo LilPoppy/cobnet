@@ -16,6 +16,7 @@ import com.google.maps.model.PlaceDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.*;
 
@@ -25,9 +26,9 @@ public class StoreService {
     @Autowired
     private StoreRepository repository;
 
-    public ResponseResult<StoreSearchResultStatus> search(String name, AddressForm addressForm) {
+    public ResponseResult<AutocompleteResultStatus> search(HttpServletRequest request, String name, AddressForm form) {
 
-        ProjectBeanHolder.getGoogleMapService().autocompleteRequest()
+        return ProjectBeanHolder.getGoogleMapService().autocompleteRequest(request, form, name);
     }
 
     public ResponseResult<StoreRegisterResultStatus> register(StoreRegisterForm storeForm) {
