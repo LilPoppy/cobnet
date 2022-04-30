@@ -89,7 +89,7 @@ public class HumanValidatorService {
 
         ProjectBeanHolder.getCacheService().set(HumanValidationCache.HumanValidatorKey, key, new HumanValidationCache(image, DateUtils.now(), false), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire());
 
-        return new ResponseResult<>(HumanValidationRequestStatus.SUCCESS, new ObjectWrapper<>(image.getJigsawY()), new Base64Image(image.getImage(), "png"), new Base64Image(image.getJigsawImage(), "png"));
+        return new ResponseResult<>(HumanValidationRequestStatus.SUCCESS, new ObjectWrapper<>("y-axis", image.getJigsawY()), new Base64Image(image.getImage(), "png"), new Base64Image(image.getJigsawImage(), "png"));
     }
 
     public <T extends Serializable> HumanValidationCache getCache(T key) {

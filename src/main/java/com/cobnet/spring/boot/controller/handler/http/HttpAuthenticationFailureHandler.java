@@ -76,13 +76,13 @@ public class HttpAuthenticationFailureHandler implements AuthenticationFailureHa
 
                     } else {
 
-                        writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult(AuthenticationStatus.PASSWORD_NOT_MATCH, new CommentWrapper<>("Login attempt time left.", new ObjectWrapper<>(ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin() - ProjectBeanHolder.getCacheService().get(AttemptLoginCache.AccountServiceName, request.getSession().getId(), AttemptLoginCache.class).times())))));
+                        writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult(AuthenticationStatus.PASSWORD_NOT_MATCH, new CommentWrapper<>("Login attempt time left.", new ObjectWrapper<>("attempt-remain", ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin() - ProjectBeanHolder.getCacheService().get(AttemptLoginCache.AccountServiceName, request.getSession().getId(), AttemptLoginCache.class).times())))));
                     }
 
                 } else if(exception instanceof BadCredentialsException) {
 
                     response.setStatus(AuthenticationStatus.PASSWORD_NOT_MATCH.getCode());
-                    writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult(AuthenticationStatus.PASSWORD_NOT_MATCH, new CommentWrapper<>("Login attempt time left.", new ObjectWrapper<>(ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin() - ProjectBeanHolder.getCacheService().get(AttemptLoginCache.AccountServiceName, request.getSession().getId(), AttemptLoginCache.class).times())))));
+                    writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult(AuthenticationStatus.PASSWORD_NOT_MATCH, new CommentWrapper<>("Login attempt time left.", new ObjectWrapper<>("attempt-remain",ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin() - ProjectBeanHolder.getCacheService().get(AttemptLoginCache.AccountServiceName, request.getSession().getId(), AttemptLoginCache.class).times())))));
 
                 } else if(exception instanceof AuthenticationCancelledException) {
 
@@ -96,7 +96,7 @@ public class HttpAuthenticationFailureHandler implements AuthenticationFailureHa
                     if(userDetailsService.loadUserByUsername(username) instanceof User user) {
 
                         response.setStatus(AuthenticationStatus.LOCKED.getCode());
-                        writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult<>(AuthenticationStatus.LOCKED, new CommentWrapper<>("", new ObjectWrapper<>(user.getLockTime())))));
+                        writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult<>(AuthenticationStatus.LOCKED, new CommentWrapper<>("", new ObjectWrapper<>("lock-until", user.getLockTime())))));
                     }
 
                 } else if(exception instanceof AuthenticationSecurityException ex) {

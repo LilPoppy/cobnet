@@ -59,7 +59,7 @@ public class PhoneNumberSmsVerifyService {
                 return send(request);
             }
 
-            return new ResponseResult<>(PhoneNumberSmsRequestResultStatus.INTERVAL_LIMITED, new ObjectWrapper<>(ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsGenerateInterval().minus(DateUtils.getInterval(DateUtils.now(), cache.createdTime()))));
+            return new ResponseResult<>(PhoneNumberSmsRequestResultStatus.INTERVAL_LIMITED, new ObjectWrapper<>("time-remain", ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsGenerateInterval().minus(DateUtils.getInterval(DateUtils.now(), cache.createdTime()))));
         }
 
         return send(request);

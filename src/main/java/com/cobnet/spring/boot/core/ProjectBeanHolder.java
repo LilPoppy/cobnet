@@ -3,6 +3,7 @@ package com.cobnet.spring.boot.core;
 import com.cobnet.interfaces.security.Account;
 import com.cobnet.interfaces.spring.repository.*;
 import com.cobnet.spring.boot.configuration.*;
+import com.cobnet.spring.boot.dto.support.DTOModule;
 import com.cobnet.spring.boot.service.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -791,7 +792,9 @@ public class ProjectBeanHolder {
 
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
+            mapper.registerModule(new DTOModule());
             mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+
 
             return mapper;
         }

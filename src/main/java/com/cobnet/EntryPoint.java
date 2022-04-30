@@ -1,14 +1,18 @@
 package com.cobnet;
 
+import com.cobnet.common.DateUtils;
+import com.cobnet.common.Endian;
 import com.cobnet.connection.websocket.WebSocketServer;
 import com.cobnet.exception.ServiceDownException;
 import com.cobnet.security.RoleRule;
 import com.cobnet.security.permission.UserPermission;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
+import com.cobnet.spring.boot.dto.ObjectWrapper;
 import com.cobnet.spring.boot.entity.Address;
 import com.cobnet.spring.boot.entity.User;
 import com.cobnet.spring.boot.entity.UserRole;
 import com.cobnet.spring.boot.entity.support.Gender;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.maps.errors.ApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,7 +101,6 @@ public class EntryPoint {
 			clearCaches();
 		}
 
-		LOG.info("@@@@" + ProjectBeanHolder.getTranslatorMessageSource().getMessage("Hey"));
 		LOG.info(EntryPoint.getLogo());
 
 		User user = new User("admin", "123456", "Bob", "Smith", Gender.MALE, new Address.Builder().setStreet("1 Heaven Ave").build(), new UserRole("admin", RoleRule.ADMIN, false, new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")));
