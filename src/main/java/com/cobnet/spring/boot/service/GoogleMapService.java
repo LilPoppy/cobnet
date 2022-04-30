@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.stream.Stream;
 
 @Service
 public class GoogleMapService {
@@ -42,7 +43,7 @@ public class GoogleMapService {
         return ProjectBeanHolder.getGoogleMap().placeAutocompleteRequest(Arrays.toString(params), token).await();
     }
 
-    public ResponseResult<AutocompleteResultStatus> autocompleteRequest(HttpServletRequest request, AddressForm form) {
+    public ResponseResult<AutocompleteResultStatus> autocompleteRequest(HttpServletRequest request, AddressForm form, String... params) {
 
         HttpSession session = request.getSession(true);
 
@@ -68,7 +69,7 @@ public class GoogleMapService {
 
                 try {
 
-                    result = new GoogleAutocompletePredicted(Arrays.stream(autocomplete(session.getId(), form.address())).toList());
+                    result = new GoogleAutocompletePredicted(Arrays.stream(autocomplete(session.getId(), Stream.of(form.address(), params).toArray(String[]::new))).toList());
 
                 } catch (IOException | ApiException | InterruptedException e) {
 
@@ -88,7 +89,7 @@ public class GoogleMapService {
 
         try {
 
-            result = new GoogleAutocompletePredicted(Arrays.stream(autocomplete(request.getSession(), form.address())).toList());
+            result = new GoogleAutocompletePredicted(Arrays.stream(autocomplete(request.getSession(), Stream.of(form.address(), params).toArray(String[]::new))).toList());
 
         } catch (IOException | ApiException | InterruptedException e) {
 
