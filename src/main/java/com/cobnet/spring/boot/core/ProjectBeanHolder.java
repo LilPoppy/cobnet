@@ -1,5 +1,6 @@
 package com.cobnet.spring.boot.core;
 
+import com.cobnet.interfaces.FileSource;
 import com.cobnet.interfaces.security.Account;
 import com.cobnet.interfaces.spring.repository.*;
 import com.cobnet.spring.boot.configuration.*;
@@ -294,11 +295,6 @@ public class ProjectBeanHolder {
     public static MessageSource getMessageSource() {
 
         return ProjectBeanHolder.MESSAGE_SOURCE;
-    }
-
-    public static GoogleTranslatorBundleMessageSource getTranslatorMessageSource() {
-
-        return (GoogleTranslatorBundleMessageSource) ProjectBeanHolder.MESSAGE_SOURCE;
     }
 
     public static ObjectMapper getObjectMapper() {
