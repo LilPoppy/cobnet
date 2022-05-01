@@ -51,7 +51,12 @@ public class StoreController {
 
         response.setStatus(result.status().getCode());
 
-        return new ResponseResult<>(result.status(), result.contents()[1]);
+        if(result.contents().length > 1) {
+
+            return new ResponseResult<>(result.status(), result.contents()[1]);
+        }
+
+        return new ResponseResult<>(result.status());
     }
 
     @PostMapping("/store/{storeId}/check-in")
