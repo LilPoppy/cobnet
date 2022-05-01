@@ -183,7 +183,7 @@ public class ProjectBeanHolder {
 
     public static Account getCurrentAccount() {
 
-        if(SecurityContextHolder.getContext().getAuthentication() instanceof Account account) {
+        if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof Account account) {
 
             return account;
         }
