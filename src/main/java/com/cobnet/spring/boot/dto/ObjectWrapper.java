@@ -1,8 +1,11 @@
 package com.cobnet.spring.boot.dto;
 
 import com.cobnet.interfaces.connection.web.ApplicationJson;
+import com.cobnet.interfaces.connection.web.NamedContent;
 
-public final class ObjectWrapper<T> implements ApplicationJson {
+import java.util.Map;
+
+public final class ObjectWrapper<T> implements ApplicationJson, NamedContent<Map<String, Object>> {
 
     private final String name;
 
