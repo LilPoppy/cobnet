@@ -28,7 +28,16 @@ public class LocalFileSource implements FileSource {
 
         Files.createDirectories(path);
 
-        Files.copy(stream, path.resolve(info.getHash()));
+        path = path.resolve(info.getHash());
+
+        File file = path.toFile();
+
+        if(file.exists()) {
+
+            file.delete();
+        }
+
+        Files.copy(stream, path);
     }
 
     @Override

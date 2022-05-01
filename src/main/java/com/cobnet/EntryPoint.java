@@ -113,6 +113,8 @@ public class EntryPoint {
 
 			System.exit(0);
 		}
+
+		ProjectBeanHolder.getTranslatorMessageSource().writeToFile(Locale.SIMPLIFIED_CHINESE);
 	}
 
 	@Bean
