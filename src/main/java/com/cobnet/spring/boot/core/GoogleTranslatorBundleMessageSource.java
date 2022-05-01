@@ -84,7 +84,7 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
 
         if(message == null) {
 
-            message = super.getMessage(key, args, locale);
+            message = super.getMessage(key, args, this.getDefaultLocale());
         }
 
         if (message == null) {
