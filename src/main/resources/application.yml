@@ -35,6 +35,9 @@ spring:
          enabled: false
       compatibility-verifier:
          enabled: false
+   h2:
+      console:
+         enabled: true
    datasource:
       driver-class-name: com.mysql.cj.jdbc.Driver
       url: jdbc:mysql://@db-host@:@db-port@/@db-database@
@@ -94,7 +97,7 @@ spring:
       max-attempt-login-reset: 10m
       max-attempt-login-account-locks: true
       max-attempt-login-account-locks-duration: 30m
-      human-validation-enable: true
+      human-validation-enable: false
       human-validation-create-interval: 30s
       human-validation-expire: 10m
       phone-number-verify-enable: true
@@ -203,6 +206,8 @@ netty:
          log-banned-ip-active: true
          allow-unauthorized: false
          allow-unknown-packet: false
+file-source:
+   url: file:${PWD}/resource/files
 springdoc:
    api-docs:
       enable: true

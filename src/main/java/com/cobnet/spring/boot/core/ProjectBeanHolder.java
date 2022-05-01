@@ -1,5 +1,6 @@
 package com.cobnet.spring.boot.core;
 
+import com.cobnet.interfaces.FileSource;
 import com.cobnet.interfaces.security.Account;
 import com.cobnet.interfaces.spring.repository.*;
 import com.cobnet.spring.boot.configuration.*;
@@ -46,6 +47,11 @@ import java.io.IOException;
 
 public class ProjectBeanHolder {
 
+    private static FileSource FILE_SOURCE;
+
+    private static FileInfoRepository FILE_INFO_REPOSITORY;
+
+    private static FileSourceConfiguration FILE_SOURCE_CONFIGURATION;
     private static MessageSource MESSAGE_SOURCE;
 
     private static AddressRepository ADDRESS_REPOSITORY;
@@ -151,6 +157,21 @@ public class ProjectBeanHolder {
     private static RedisCacheKeyGenerator REDIS_CACHE_KEY_GENERATOR;
 
     private static ModelMapper MODEL_MAPPER;
+
+    public static FileInfoRepository getFileInfoRepository() {
+
+        return ProjectBeanHolder.FILE_INFO_REPOSITORY;
+    }
+
+    public static FileSource getFileSource() {
+
+        return ProjectBeanHolder.FILE_SOURCE;
+    }
+
+    public static FileSourceConfiguration getFileSourceConfiguration() {
+
+        return ProjectBeanHolder.FILE_SOURCE_CONFIGURATION;
+    }
 
     public static RandomImageProvider getRandomImageProvider() {
 
@@ -644,6 +665,24 @@ public class ProjectBeanHolder {
         }
 
         @Autowired
+        public void setFileSourceConfiguration(FileSourceConfiguration configuration) {
+
+            ProjectBeanHolder.FILE_SOURCE_CONFIGURATION = configuration;
+        }
+
+        @Autowired
+        public void setFileSource(FileSource source) {
+
+            ProjectBeanHolder.FILE_SOURCE = source;
+        }
+
+        @Autowired
+        public void setFileInfoRepository(FileInfoRepository repository) {
+
+            ProjectBeanHolder.FILE_INFO_REPOSITORY = repository;
+        }
+
+        @Autowired
         public void setClientRegistrationRepository(ClientRegistrationRepository repository) {
 
             ProjectBeanHolder.CLIENT_REGISTRATION_REPOSITORY = repository;
@@ -861,9 +900,15 @@ public class ProjectBeanHolder {
 
         @Bean
         @Primary
-        public MessageSource messageSourceBean (GoogleConsoleConfiguration configuration) throws IOException {
+        public MessageSource messageSourceBean(@Autowired FileInfoRepository repository, @Autowired FileSource source, @Autowired CacheService service, @Autowired GoogleConsoleConfiguration configuration) throws IOException {
 
-            return new GoogleTranslatorBundleMessageSource(configuration);
+            return new GoogleTranslatorBundleMessageSource(repository, source, service, configuration);
+        }
+
+        @Bean
+        public FileSource fileSourceBean(FileSourceConfiguration configuration) {
+
+            return new LocalFileSource(configuration);
         }
 
     }

@@ -1,8 +1,11 @@
 package com.cobnet.spring.boot.core;
 
 import com.cobnet.exception.ServiceDownException;
+import com.cobnet.interfaces.FileSource;
+import com.cobnet.interfaces.spring.repository.FileInfoRepository;
 import com.cobnet.spring.boot.configuration.GoogleConsoleConfiguration;
-import com.google.api.client.http.HttpResponseException;
+import com.cobnet.spring.boot.entity.FileInfo;
+import com.cobnet.spring.boot.service.CacheService;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.TranslateException;
@@ -13,27 +16,42 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ResourceBundleMessageSource;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.lang.Nullable;
 import org.springframework.util.DefaultPropertiesPersister;
 
 import java.io.*;
-import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Locale;
-import java.util.Properties;
-import java.util.ResourceBundle;
+import java.text.MessageFormat;
+import java.time.Duration;
+import java.util.*;
 
 public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSource {
 
     private static final Logger LOG = LoggerFactory.getLogger(GoogleTranslatorBundleMessageSource.class);
-    public static final String DEFAULT_BASENAME = "locale/messages";
+    private static final String DEFAULT_BASENAME = "locale/messages";
+
+    private static final String DEFAULT_MEME_TYPE = ".properties";
+
+    private static final String DEFAULT_COMMENT = "Google Translated.";
+
+    public static final String CACHE_NAMESPACE = GoogleTranslatorBundleMessageSource.class.getSimpleName();
+
+    private final FileInfoRepository repository;
+
+    private final FileSource source;
+
+    private final CacheService service;
 
     private final Translate translate;
 
-    GoogleTranslatorBundleMessageSource(@Autowired GoogleConsoleConfiguration configuration) throws IOException {
+    GoogleTranslatorBundleMessageSource(FileInfoRepository repository, FileSource source, CacheService service, GoogleConsoleConfiguration configuration) throws IOException {
 
         super();
+
+        this.repository = repository;
+        this.source = source;
+        this.service = service;
 
         RemoteTranslateHelper helper = RemoteTranslateHelper.create();
 
@@ -43,16 +61,60 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
         this.setBasename(DEFAULT_BASENAME);
         this.setUseCodeAsDefaultMessage(true);
         this.setDefaultLocale(new Locale("en", "US"));
+
+        for(Locale locale : Locale.getAvailableLocales()) {
+
+            String name = this.getBaseName(locale);
+
+            Optional<FileInfo> info = repository.findFileInfoByName(name);
+
+            if(info.isPresent()) {
+
+                Properties properties = this.readFromCache(locale);
+
+                if(properties != null) {
+
+                    properties.putAll(this.readFromFile(locale));
+
+                } else {
+
+                    properties = this.readFromFile(locale);
+                }
+
+                if(properties != null) {
+
+                    this.writeToCache(locale, properties);
+                }
+            }
+        }
     }
 
-    public boolean hasKey(String key, Locale locale) {
+    private boolean hasKeyInBundle(String key, Locale locale) {
 
         return this.getBasenameSet().stream().anyMatch(basename -> {
 
             ResourceBundle bundle = this.getResourceBundle(basename, locale);
 
             return bundle != null && bundle.getLocale().equals(locale) && bundle.containsKey(key);
+
         });
+    }
+
+    private boolean hasKeyInCache(String key, Locale locale) {
+
+        Properties properties = this.readFromCache(locale);
+
+        if(properties == null) {
+
+            return false;
+        }
+
+        return properties.containsKey(key);
+    }
+
+    public boolean hasKey(String key, Locale locale) {
+
+        return hasKeyInBundle(key, locale) || hasKeyInCache(key, locale);
     }
 
     public String getMessage(String key, Object... args) throws IOException, ServiceDownException {
@@ -63,6 +125,77 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
     public String getMessage(String key, Locale locale, Object... args) throws IOException, ServiceDownException {
 
         return this.getMessage(key, null, locale, args);
+    }
+
+    @Nullable
+    protected String getMessageInternal(@Nullable String code, @Nullable Object[] args, @Nullable Locale locale) {
+
+        if(hasKeyInBundle(code, locale)) {
+
+            return super.getMessageInternal(code, args, locale);
+        }
+
+        Properties properties = this.readFromCache(locale);
+
+        if(properties != null) {
+
+            String result = properties.getProperty(code);
+
+            if(result != null) {
+
+                return new MessageFormat(result).format(args);
+            }
+
+            try {
+
+                properties.putAll(this.readFromFile(locale));
+
+                result = properties.getProperty(code);
+
+                if(result != null) {
+
+                    this.writeToCache(locale, properties);
+                    this.writeToFile(locale, properties);
+
+                    return new MessageFormat(result).format(args);
+                }
+
+            } catch (IOException e) {
+
+                throw new RuntimeException(e);
+            }
+
+        } else {
+
+            try {
+
+                properties = this.readFromFile(locale);
+
+                if(properties != null) {
+
+                    String result = properties.getProperty(code);
+
+                    if (result != null) {
+
+                        this.writeToCache(locale, properties);
+                    }
+
+                    return new MessageFormat(result).format(args);
+                }
+
+            } catch (IOException e) {
+
+                throw new RuntimeException(e);
+            }
+
+        }
+
+        if(locale != this.getDefaultLocale()) {
+
+            return this.getMessageInternal(code, args, this.getDefaultLocale());
+        }
+
+        return super.getMessageInternal(code, args, locale);
     }
 
     public String getMessage(String key, String defaultValue, Locale locale, Object... args) throws IOException, ServiceDownException {
@@ -98,7 +231,10 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
 
             Translation translation = this.translate.translate(message, Translate.TranslateOption.targetLanguage(locale.getLanguage()));
 
-            this.add(DEFAULT_BASENAME, key, translation.getTranslatedText(), locale);
+            Properties properties = this.readFromCache(locale);
+            properties.put(key, translation.getTranslatedText());
+
+            this.writeToCache(locale, properties);
 
             return String.format(translation.getTranslatedText(), args);
 
@@ -114,32 +250,78 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
         }
     }
 
-    public void add(String basename, String key, String value, Locale locale) throws IOException {
+    protected void writeToFile(Locale locale, Properties properties) throws IOException {
+
+        try(ByteArrayOutputStream output = new ByteArrayOutputStream()) {
+
+            properties.store(output, GoogleTranslatorBundleMessageSource.DEFAULT_COMMENT);
+
+            byte[] bs = output.toByteArray();
+
+            try(ByteArrayInputStream input = new ByteArrayInputStream(bs)) {
+
+                source.write(input, getFileInfo(locale, bs.length));
+            }
+        }
+    }
+
+    public void writeToFile(Locale locale) throws IOException {
+
+        this.writeToFile(locale, this.readFromCache(locale));
+    }
+
+    public Properties readFromFile(Locale locale) throws IOException {
 
         Properties properties = new Properties();
 
-        Path classpath = Paths.get(this.getClass().getResource("/").getPath());
+        try(InputStream stream = source.read(getFileInfo(locale, -1))) {
 
-        Path path = Paths.get(classpath.toAbsolutePath() + "/" + basename + "_" + locale.getLanguage() + "_" + locale.getCountry() + ".properties");
+            if(stream == null) {
 
-        File file = path.toFile();
-
-        if(file.exists() || file.createNewFile()) {
-
-            try(InputStream stream = new FileInputStream(file)) {
-
-                properties.load(stream);
+                return null;
             }
 
-            properties.setProperty(key, value);
-
-            DefaultPropertiesPersister persister = new DefaultPropertiesPersister();
-
-            try(OutputStream stream = new FileOutputStream(file)) {
-
-                persister.store(properties, stream, "Google Translated.");
-            }
+            properties.load(stream);
         }
+
+        return properties;
+    }
+
+    protected boolean writeToCache(Locale locale, Properties properties) {
+
+        return service.set(GoogleTranslatorBundleMessageSource.CACHE_NAMESPACE, locale, properties, Duration.ofMillis(this.getCacheMillis()));
+    }
+
+    protected Properties readFromCache(Locale locale) {
+
+        return service.get(GoogleTranslatorBundleMessageSource.CACHE_NAMESPACE, locale, Properties.class);
+    }
+
+    private FileInfo getFileInfo(Locale locale, long size) {
+
+        Optional<FileInfo> optional = repository.findFileInfoByName(this.getBaseName(locale));
+
+        FileInfo info = optional.orElseGet(() -> {
+
+            FileInfo temp = new FileInfo();
+            temp.setName(this.getBaseName(locale));
+            temp.setMemeType(GoogleTranslatorBundleMessageSource.DEFAULT_MEME_TYPE);
+            return temp;
+        });
+
+        if(size > -1) {
+
+            info.setSize(size);
+        }
+
+        repository.save(info);
+
+        return info;
+    }
+
+    private String getBaseName(Locale locale) {
+
+        return GoogleTranslatorBundleMessageSource.DEFAULT_BASENAME + "_" + locale.getLanguage() + "_" + locale.getCountry() + GoogleTranslatorBundleMessageSource.DEFAULT_MEME_TYPE;
     }
 
 }
