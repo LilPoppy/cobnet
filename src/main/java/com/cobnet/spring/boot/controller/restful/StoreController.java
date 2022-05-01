@@ -9,6 +9,7 @@ import com.cobnet.spring.boot.dto.support.StoreCheckInPageDetailResultStatus;
 import com.cobnet.spring.boot.dto.support.StoreCheckInResultStatus;
 import com.cobnet.spring.boot.dto.support.StoreRegisterResultStatus;
 import com.google.maps.errors.ApiException;
+import com.google.maps.model.AutocompletePrediction;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,10 +38,10 @@ public class StoreController {
     }
 
     //@AccessSecured(roles = "USER")
-    @PostMapping("/store/search")
-    public ResponseResult<AutocompleteResultStatus> search(HttpServletRequest request, HttpServletResponse response, String name, AddressForm form) {
+    @PostMapping("/store/find")
+    public ResponseResult<AutocompleteResultStatus> find(HttpServletRequest request, HttpServletResponse response, String name, AddressForm form) {
 
-        ResponseResult<AutocompleteResultStatus> result = ProjectBeanHolder.getStoreService().search(request, name, form);
+        ResponseResult<AutocompleteResultStatus> result = ProjectBeanHolder.getStoreService().find(request, name, form);
 
         response.setStatus(result.status().getCode());
 

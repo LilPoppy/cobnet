@@ -27,9 +27,29 @@ public class StoreService {
     @Autowired
     private StoreRepository repository;
 
-    public ResponseResult<AutocompleteResultStatus> search(HttpServletRequest request, String name, AddressForm form) {
+    public ResponseResult<AutocompleteResultStatus> find(HttpServletRequest request, String name, AddressForm form) {
 
         return ProjectBeanHolder.getGoogleMapService().autocompleteRequest(request, PlaceAutocompleteType.ESTABLISHMENT, form, name);
+    }
+
+    public ResponseResult<AutocompleteResultStatus> address(String storeId) {
+
+        try {
+
+            PlaceDetails details = ProjectBeanHolder.getGoogleMapService().search(storeId);
+
+            if(details == null) {
+
+                return new ResponseResult<>(AutocompleteResultStatus.);
+            }
+
+        } catch (IOException | InterruptedException | ApiException e) {
+
+            e.printStackTrace();
+
+            return new ResponseResult<>(AutocompleteResultStatus.SERVICE_DOWN);
+        }
+
     }
 
     public ResponseResult<StoreRegisterResultStatus> register(StoreRegisterForm storeForm) {
@@ -121,10 +141,10 @@ public class StoreService {
 
         Optional<Store> store = repository.findById(storeId);
 
-        if(store.isEmpty()) {
-
-            return new ResponseResult<>(StoreCheckInPageDetailResultStatus.NO_EXIST);
-        }
+//        if(store.isEmpty()) {
+//
+//            return new ResponseResult<>(StoreCheckInPageDetailResultStatus.NO_EXIST);
+//        }
 
         try {
 
