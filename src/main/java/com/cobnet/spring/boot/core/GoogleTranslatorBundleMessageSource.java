@@ -18,6 +18,8 @@ import org.springframework.util.DefaultPropertiesPersister;
 
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.ResourceBundle;
@@ -116,11 +118,11 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
 
         Properties properties = new Properties();
 
-        URL url = this.getClass().getResource( "/" + basename + "_" + locale.getLanguage() + "_" + locale.getCountry() + ".properties");
+        Path classpath = Paths.get(this.getClass().getResource("/").getPath());
 
-        assert url != null;
+        Path path = Paths.get(classpath.toAbsolutePath() + "/" + basename + "_" + locale.getLanguage() + "_" + locale.getCountry() + ".properties");
 
-        File file = new File(url.getFile());
+        File file = path.toFile();
 
         if(file.exists() || file.createNewFile()) {
 
