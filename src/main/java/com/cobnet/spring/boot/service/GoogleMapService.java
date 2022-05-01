@@ -10,7 +10,6 @@ import com.cobnet.spring.boot.entity.Store;
 import com.cobnet.spring.boot.service.support.AutocompleteRequestCache;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.AutocompletePrediction;
-import com.google.maps.model.PlaceDetails;
 import com.google.maps.model.PlacesSearchResult;
 import org.springframework.session.Session;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,7 @@ public class GoogleMapService {
 
     public PlacesSearchResult[] search(String... params) throws IOException, InterruptedException, ApiException {
 
-        return ProjectBeanHolder.getGoogleMap().textSearchRequest().query(String.join(" ", params)).await().results;
+        return ProjectBeanHolder.getGoogleMap().textSearchRequest().query(Arrays.toString(params)).await().results;
     }
 
     public AutocompletePrediction[] autocomplete(HttpSession session, String... params) throws IOException, InterruptedException, ApiException {
