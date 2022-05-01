@@ -19,6 +19,7 @@ import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.lang.Nullable;
 import org.springframework.util.DefaultPropertiesPersister;
 
+import javax.validation.constraints.NotNull;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -153,7 +154,12 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
 
             try {
 
-                properties.putAll(this.readFromFile(locale));
+                Properties temp = this.readFromFile(locale);
+
+                if(temp != null) {
+
+                    properties.putAll(temp);
+                }
 
                 result = properties.getProperty(code);
 
@@ -261,7 +267,12 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
         }
     }
 
-    protected void writeToFile(Locale locale, Properties properties) throws IOException {
+    protected void writeToFile(@NotNull Locale locale, @NotNull Properties properties) throws IOException {
+
+        if(properties == null) {
+
+            throw new NullPointerException();
+        }
 
         try(ByteArrayOutputStream output = new ByteArrayOutputStream()) {
 
@@ -276,12 +287,22 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
         }
     }
 
-    public void writeToFile(Locale locale) throws IOException {
+    public void writeToFile(@NotNull Locale locale) throws IOException {
+
+        if(locale == null) {
+
+            return;
+        }
 
         this.writeToFile(locale, this.readFromCache(locale));
     }
 
-    public Properties readFromFile(Locale locale) throws IOException {
+    public Properties readFromFile(@NotNull Locale locale) throws IOException {
+
+        if(locale == null) {
+
+            return null;
+        }
 
         Properties properties = new Properties();
 
@@ -298,12 +319,22 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
         return properties;
     }
 
-    protected boolean writeToCache(Locale locale, Properties properties) {
+    protected boolean writeToCache(@NotNull Locale locale, @NotNull Properties properties) {
+
+        if(locale == null || properties == null) {
+
+            return false;
+        }
 
         return service.set(GoogleTranslatorBundleMessageSource.CACHE_NAMESPACE, locale, properties, this.getCacheMillis() > -1 ? Duration.ofMillis(this.getCacheMillis()) : Duration.ofDays(360));
     }
 
-    protected Properties readFromCache(Locale locale) {
+    protected Properties readFromCache(@NotNull Locale locale) {
+
+        if(locale == null) {
+
+            return null;
+        }
 
         return service.get(GoogleTranslatorBundleMessageSource.CACHE_NAMESPACE, locale, Properties.class);
     }
