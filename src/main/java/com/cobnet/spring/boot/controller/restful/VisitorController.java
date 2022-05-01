@@ -98,9 +98,9 @@ public class VisitorController {
 
     @Operation(summary = "auto complete given address.")
     @PostMapping("/visitor/autocomplete/address")
-    public ResponseResult<AutocompleteResultStatus> autocompleteAddress(HttpServletRequest request, HttpServletResponse response, AddressForm addressRequest) throws IOException, InterruptedException, ApiException {
+    public ResponseResult<GoogleApiRequestResultStatus> autocompleteAddress(HttpServletRequest request, HttpServletResponse response, AddressForm addressRequest) throws IOException, InterruptedException, ApiException {
 
-        ResponseResult<AutocompleteResultStatus> result =  ProjectBeanHolder.getGoogleMapService().autocompleteRequest(request, null, addressRequest);
+        ResponseResult<GoogleApiRequestResultStatus> result =  ProjectBeanHolder.getGoogleMapService().autocompleteRequest(request, null, addressRequest);
 
         response.setStatus(result.status().getCode());
 
