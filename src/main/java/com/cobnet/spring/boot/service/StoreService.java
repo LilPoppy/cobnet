@@ -6,7 +6,6 @@ import com.cobnet.interfaces.spring.repository.StoreRepository;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.*;
 import com.cobnet.spring.boot.dto.support.*;
-import com.cobnet.spring.boot.entity.Address;
 import com.cobnet.spring.boot.entity.Store;
 import com.cobnet.spring.boot.entity.support.Gender;
 import com.google.maps.errors.ApiException;
@@ -32,7 +31,7 @@ public class StoreService {
         return ProjectBeanHolder.getGoogleMapService().autocompleteRequest(request, PlaceAutocompleteType.ESTABLISHMENT, form, name);
     }
 
-    public ResponseResult<GoogleApiRequestResultStatus> address(String storeId) {
+    public ResponseResult<GoogleApiRequestResultStatus> details(String storeId) {
 
         try {
 
@@ -42,39 +41,6 @@ public class StoreService {
 
                 return new ResponseResult<>(GoogleApiRequestResultStatus.FAILED);
             }
-
-
-
-        } catch (IOException | InterruptedException | ApiException e) {
-
-            e.printStackTrace();
-
-            return new ResponseResult<>(GoogleApiRequestResultStatus.SERVICE_DOWN);
-        }
-
-    }
-
-    public ResponseResult<StoreRegisterResultStatus> register(StoreRegisterForm storeForm) {
-
-        Store store = storeForm.getEntity();
-
-        try {
-
-            PlaceDetails details = ProjectBeanHolder.getGoogleMapService().search(store.getId());
-
-            if(details == null) {
-
-                return new ResponseResult<>(StoreRegisterResultStatus.STORE_NONEXISTENT);
-            }
-
-            if(details.permanentlyClosed) {
-
-                return new ResponseResult<>(StoreRegisterResultStatus.STORE_PERMANENTLY_CLOSED);
-            }
-
-            store.setName(details.name);
-
-            store.setPhone(details.internationalPhoneNumber);
 
             List<AddressComponent> components = Arrays.stream(ProjectBeanHolder.getGoogleMap().geocodingApiRequest().address(details.formattedAddress).await()).map(result -> result.addressComponents).flatMap(Arrays::stream).toList();
 
@@ -118,25 +84,61 @@ public class StoreService {
                 }
             }
 
-            store.setLocation(new Address.Builder().setStreet(street.toString()).setUnit(unit.toString()).setCity(city.toString()).setState(state.toString()).setCountry(country.toString()).setZipCode(Integer.parseInt(postalCode.toString())).build());
+            return new ResponseResult<>(GoogleApiRequestResultStatus.SUCCESS,
+                    new ObjectWrapper<>("name", details.name),
+                    new AddressForm(street.toString(), unit.toString(), city.toString(), state.toString(), country.toString(), Integer.parseInt(postalCode.toString())),
+                    new ObjectWrapper<>("is-permanently-closed", details.permanentlyClosed),
+                    new ObjectWrapper<>("phone-number", details.internationalPhoneNumber),
+                    new ObjectWrapper<>("rating", details.rating));
 
-        } catch (IOException | InterruptedException | ApiException ex) {
+        } catch (IOException | InterruptedException | ApiException e) {
 
-            ex.printStackTrace();
+            e.printStackTrace();
 
-            return new ResponseResult<>(StoreRegisterResultStatus.SERVICE_DOWN);
+            return new ResponseResult<>(GoogleApiRequestResultStatus.SERVICE_DOWN);
         }
+    }
+
+    public ResponseResult<StoreRegisterResultStatus> register(StoreRegisterForm storeForm) {
+
+        Store store = storeForm.getEntity();
 
         Optional<Store> existent = repository.findById(store.getId());
 
         if(existent.isPresent()) {
 
-            return new ResponseResult<>(StoreRegisterResultStatus.STORE_EXISTED);
+            return new ResponseResult<>(StoreRegisterResultStatus.STORE_REGISTERED);
         }
 
-        repository.save(store);
+        ResponseResult<GoogleApiRequestResultStatus> details = this.details(store.getId());
 
-        return new ResponseResult<>(StoreRegisterResultStatus.SUCCESS);
+        if(((ObjectWrapper<Boolean>)details.contents()[2]).getValue()) {
+
+            return new ResponseResult<>(StoreRegisterResultStatus.STORE_PERMANENTLY_CLOSED);
+        }
+
+        if(details.status() == GoogleApiRequestResultStatus.SERVICE_DOWN) {
+
+            return new ResponseResult<>(StoreRegisterResultStatus.SERVICE_DOWN);
+        }
+
+        if(details.contents().length == 0) {
+
+            return new ResponseResult<>(StoreRegisterResultStatus.STORE_NONEXISTENT);
+        }
+
+        if(details.status() == GoogleApiRequestResultStatus.SUCCESS) {
+
+            store.setName(((ObjectWrapper<String>) (details.contents()[0])).getValue());
+            store.setLocation(((AddressForm) details.contents()[1]).getEntity());
+            store.setPhone(((ObjectWrapper<String>) details.contents()[3]).getValue());
+
+            repository.save(store);
+
+            return new ResponseResult<>(StoreRegisterResultStatus.SUCCESS);
+        }
+
+        return new ResponseResult<>(StoreRegisterResultStatus.SERVICE_DOWN);
     }
 
     public ResponseResult<StoreCheckInPageDetailResultStatus> getStoreCheckInPageDetail(String storeId, Locale locale) throws IOException {

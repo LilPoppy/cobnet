@@ -4,17 +4,13 @@ import com.cobnet.exception.ServiceDownException;
 import com.cobnet.interfaces.security.annotation.AccessSecured;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.*;
-import com.cobnet.spring.boot.dto.support.AutocompleteResultStatus;
+import com.cobnet.spring.boot.dto.support.GoogleApiRequestResultStatus;
 import com.cobnet.spring.boot.dto.support.StoreCheckInPageDetailResultStatus;
 import com.cobnet.spring.boot.dto.support.StoreCheckInResultStatus;
 import com.cobnet.spring.boot.dto.support.StoreRegisterResultStatus;
 import com.google.maps.errors.ApiException;
-import com.google.maps.model.AutocompletePrediction;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,13 +35,23 @@ public class StoreController {
 
     //@AccessSecured(roles = "USER")
     @PostMapping("/store/find")
-    public ResponseResult<AutocompleteResultStatus> find(HttpServletRequest request, HttpServletResponse response, String name, AddressForm form) {
+    public ResponseResult<GoogleApiRequestResultStatus> find(HttpServletRequest request, HttpServletResponse response, String name, AddressForm form) {
 
-        ResponseResult<AutocompleteResultStatus> result = ProjectBeanHolder.getStoreService().find(request, name, form);
+        ResponseResult<GoogleApiRequestResultStatus> result = ProjectBeanHolder.getStoreService().find(request, name, form);
 
         response.setStatus(result.status().getCode());
 
         return result;
+    }
+
+    @PostMapping("/store/autocomplete-address")
+    public ResponseResult<GoogleApiRequestResultStatus> address(HttpServletResponse response, String storeId) {
+
+        ResponseResult<GoogleApiRequestResultStatus> result = ProjectBeanHolder.getStoreService().details(storeId);
+
+        response.setStatus(result.status().getCode());
+
+        return new ResponseResult<>(result.status(), result.contents()[1]);
     }
 
     @PostMapping("/store/{storeId}/check-in")

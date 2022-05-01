@@ -7,7 +7,7 @@ public enum StoreRegisterResultStatus implements ReasonableStatus {
     SUCCESS(201),
     STORE_NONEXISTENT(400),
     STORE_PERMANENTLY_CLOSED(400),
-    STORE_EXISTED(400),
+    STORE_REGISTERED(400),
     SERVICE_DOWN(502);
 
     private final int code;
