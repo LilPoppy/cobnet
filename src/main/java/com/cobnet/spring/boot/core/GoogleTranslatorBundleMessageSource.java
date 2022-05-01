@@ -39,7 +39,7 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
 
         this.translate = helper.getOptions().toBuilder().setCredentials(credentials).build().getService();
         this.setBasename(DEFAULT_BASENAME);
-        //this.setUseCodeAsDefaultMessage(true);
+        this.setUseCodeAsDefaultMessage(true);
         this.setDefaultLocale(new Locale("en", "US"));
     }
 
@@ -80,6 +80,11 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
         if (message == null) {
 
             message = defaultValue;
+        }
+
+        if(message == null) {
+
+            message = super.getMessage(key, args, locale);
         }
 
         if (message == null) {
