@@ -10,6 +10,7 @@ public enum GoogleApiRequestResultStatus implements ReasonableStatus {
     REJECTED(400),
 
     HUMAN_VALIDATION_REQUEST(400),
+    BAD_REQUEST(400),
     SERVICE_DOWN(502);
 
     private final int code;
