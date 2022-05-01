@@ -9,6 +9,7 @@ import com.cobnet.spring.boot.dto.support.*;
 import com.cobnet.spring.boot.entity.Store;
 import com.cobnet.spring.boot.entity.support.Gender;
 import com.google.maps.errors.ApiException;
+import com.google.maps.errors.InvalidRequestException;
 import com.google.maps.model.AddressComponent;
 import com.google.maps.model.AddressComponentType;
 import com.google.maps.model.PlaceAutocompleteType;
@@ -95,6 +96,10 @@ public class StoreService {
 
             e.printStackTrace();
 
+            if(e.getCause() instanceof InvalidRequestException) {
+
+            }
+
             return new ResponseResult<>(GoogleApiRequestResultStatus.SERVICE_DOWN);
         }
     }
@@ -137,7 +142,7 @@ public class StoreService {
 
             return new ResponseResult<>(StoreRegisterResultStatus.SUCCESS);
         }
-
+System.out.println(details.status());
         return new ResponseResult<>(StoreRegisterResultStatus.SERVICE_DOWN);
     }
 
