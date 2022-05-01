@@ -47,6 +47,11 @@ import java.io.IOException;
 
 public class ProjectBeanHolder {
 
+    private static FileSource FILE_SOURCE;
+
+    private static FileInfoRepository FILE_INFO_REPOSITORY;
+
+    private static FileSourceConfiguration FILE_SOURCE_CONFIGURATION;
     private static MessageSource MESSAGE_SOURCE;
 
     private static StoreService STORE_SERVICE;
@@ -160,6 +165,21 @@ public class ProjectBeanHolder {
     private static RedisCacheKeyGenerator REDIS_CACHE_KEY_GENERATOR;
 
     private static ModelMapper MODEL_MAPPER;
+
+    public static FileInfoRepository getFileInfoRepository() {
+
+        return ProjectBeanHolder.FILE_INFO_REPOSITORY;
+    }
+
+    public static FileSource getFileSource() {
+
+        return ProjectBeanHolder.FILE_SOURCE;
+    }
+
+    public static FileSourceConfiguration getFileSourceConfiguration() {
+
+        return ProjectBeanHolder.FILE_SOURCE_CONFIGURATION;
+    }
 
     public static RandomImageProvider getRandomImageProvider() {
 
@@ -276,6 +296,11 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.MESSAGE_SOURCE;
     }
 
+    public static GoogleTranslatorBundleMessageSource getTranslatorMessageSource() {
+
+        return (GoogleTranslatorBundleMessageSource) ProjectBeanHolder.MESSAGE_SOURCE;
+    }
+
     public static ObjectMapper getObjectMapper() {
 
         return ProjectBeanHolder.OBJECT_MAPPER;
@@ -349,21 +374,6 @@ public class ProjectBeanHolder {
     public static ZSetOperations<String, Object> getRedisZSetOperations() {
 
         return  ProjectBeanHolder.REDIS_Z_SET_OPERATIONS;
-    }
-
-    public static StoreRepository getStoreRepository() {
-
-        return ProjectBeanHolder.STORE_REPOSITORY;
-    }
-
-    public static StoreOrderRepository getStoreOrderRepository() {
-
-        return ProjectBeanHolder.STORE_ORDER_REPOSITORY;
-    }
-
-    public static WorkRepository getWorkRepository() {
-
-        return ProjectBeanHolder.WORK_REPOSITORY;
     }
 
     public static PlatformTransactionManager getPlatformTransactionManager() {
@@ -697,6 +707,24 @@ public class ProjectBeanHolder {
         }
 
         @Autowired
+        public void setFileSourceConfiguration(FileSourceConfiguration configuration) {
+
+            ProjectBeanHolder.FILE_SOURCE_CONFIGURATION = configuration;
+        }
+
+        @Autowired
+        public void setFileSource(FileSource source) {
+
+            ProjectBeanHolder.FILE_SOURCE = source;
+        }
+
+        @Autowired
+        public void setFileInfoRepository(FileInfoRepository repository) {
+
+            ProjectBeanHolder.FILE_INFO_REPOSITORY = repository;
+        }
+
+        @Autowired
         public void setClientRegistrationRepository(ClientRegistrationRepository repository) {
 
             ProjectBeanHolder.CLIENT_REGISTRATION_REPOSITORY = repository;
@@ -914,12 +942,15 @@ public class ProjectBeanHolder {
 
         @Bean
         @Primary
-        public MessageSource messageSourceBean (@Autowired GoogleConsoleConfiguration configuration) throws IOException {
-            GoogleTranslatorBundleMessageSource source = new GoogleTranslatorBundleMessageSource(configuration);
-            source.setBasename("locale/messages");
-            source.setUseCodeAsDefaultMessage(true);
+        public MessageSource messageSourceBean(@Autowired FileInfoRepository repository, @Autowired FileSource source, @Autowired CacheService service, @Autowired GoogleConsoleConfiguration configuration) throws IOException {
 
-            return source;
+            return new GoogleTranslatorBundleMessageSource(repository, source, service, configuration);
+        }
+
+        @Bean
+        public FileSource fileSourceBean(FileSourceConfiguration configuration) {
+
+            return new LocalFileSource(configuration);
         }
 
     }

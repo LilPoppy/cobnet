@@ -35,6 +35,9 @@ spring:
          enabled: false
       compatibility-verifier:
          enabled: false
+   h2:
+      console:
+         enabled: true
    datasource:
       initialize: false
       driver-class-name: com.mysql.cj.jdbc.Driver
@@ -206,6 +209,8 @@ netty:
          log-banned-ip-active: true
          allow-unauthorized: false
          allow-unknown-packet: false
+file-source:
+   url: file:${PWD}/resource/files
 springdoc:
    api-docs:
       enable: true

@@ -11,4 +11,5 @@ fi
 
 mvn clean package;
 docker cp target/${APP_ID}.jar ${APP_ID}:/cobnet/target/${APP_ID}.jar
+docker stop ${APP_ID}
 docker start -a ${APP_ID}

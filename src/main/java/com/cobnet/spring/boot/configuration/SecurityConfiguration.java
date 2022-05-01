@@ -180,7 +180,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity security) throws Exception {
 
-        security.csrf().disable()
+        security.csrf().disable().headers().frameOptions().disable().and()
                 //authorize config
                 .authorizeRequests().antMatchers(this.getPermittedMatchers()).permitAll().anyRequest().authenticated().and()
                 //form login
