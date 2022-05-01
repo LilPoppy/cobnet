@@ -295,7 +295,7 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
 
     protected boolean writeToCache(Locale locale, Properties properties) {
 
-        return service.set(GoogleTranslatorBundleMessageSource.CACHE_NAMESPACE, locale, properties, Duration.ofMillis(this.getCacheMillis()));
+        return service.set(GoogleTranslatorBundleMessageSource.CACHE_NAMESPACE, locale, properties, this.getCacheMillis() > -1 ? Duration.ofMillis(this.getCacheMillis()) : Duration.ofDays(360));
     }
 
     protected Properties readFromCache(Locale locale) {
