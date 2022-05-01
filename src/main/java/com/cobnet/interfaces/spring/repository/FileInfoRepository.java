@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface FileInfoRepository extends JPABaseRepository<FileInfo, Long> {
 
-    @Cacheable("FileInfos")
+    @Cacheable(value = "FileInfos", unless="#result == null")
     public Optional<FileInfo> findFileInfoByName(String name);
 
     @CacheEvict(cacheNames = "FileInfos", key = "#info.getName()")
