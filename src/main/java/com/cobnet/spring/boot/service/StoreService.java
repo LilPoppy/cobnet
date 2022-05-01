@@ -27,12 +27,12 @@ public class StoreService {
     @Autowired
     private StoreRepository repository;
 
-    public ResponseResult<AutocompleteResultStatus> find(HttpServletRequest request, String name, AddressForm form) {
+    public ResponseResult<GoogleApiRequestResultStatus> find(HttpServletRequest request, String name, AddressForm form) {
 
         return ProjectBeanHolder.getGoogleMapService().autocompleteRequest(request, PlaceAutocompleteType.ESTABLISHMENT, form, name);
     }
 
-    public ResponseResult<AutocompleteResultStatus> address(String storeId) {
+    public ResponseResult<GoogleApiRequestResultStatus> address(String storeId) {
 
         try {
 
@@ -40,14 +40,16 @@ public class StoreService {
 
             if(details == null) {
 
-                return new ResponseResult<>(AutocompleteResultStatus.);
+                return new ResponseResult<>(GoogleApiRequestResultStatus.FAILED);
             }
+
+
 
         } catch (IOException | InterruptedException | ApiException e) {
 
             e.printStackTrace();
 
-            return new ResponseResult<>(AutocompleteResultStatus.SERVICE_DOWN);
+            return new ResponseResult<>(GoogleApiRequestResultStatus.SERVICE_DOWN);
         }
 
     }

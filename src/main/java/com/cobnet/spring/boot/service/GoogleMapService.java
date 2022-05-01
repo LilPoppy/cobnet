@@ -6,6 +6,7 @@ import com.cobnet.spring.boot.dto.AddressForm;
 import com.cobnet.spring.boot.dto.GoogleAutocompletePredicted;
 import com.cobnet.spring.boot.dto.ResponseResult;
 import com.cobnet.spring.boot.dto.support.AutocompleteResultStatus;
+import com.cobnet.spring.boot.dto.support.GoogleApiRequestResultStatus;
 import com.cobnet.spring.boot.entity.Store;
 import com.cobnet.spring.boot.service.support.AutocompleteRequestCache;
 import com.google.maps.errors.ApiException;
@@ -31,18 +32,18 @@ public class GoogleMapService {
     }
 
 
-    public ResponseResult<AutocompleteResultStatus> autocompleteRequest(HttpServletRequest request, PlaceAutocompleteType type, AddressForm form, String... params) {
+    public ResponseResult<GoogleApiRequestResultStatus> autocompleteRequest(HttpServletRequest request, PlaceAutocompleteType type, AddressForm form, String... params) {
 
         HttpSession session = request.getSession(true);
 
         if(ProjectBeanHolder.getSecurityConfiguration().isHumanValidationEnable() && !ProjectBeanHolder.getHumanValidator().isValidated(session.getId())) {
 
-            return new ResponseResult<>(AutocompleteResultStatus.HUMAN_VALIDATION_REQUEST);
+            return new ResponseResult<>(GoogleApiRequestResultStatus.HUMAN_VALIDATION_REQUEST);
         }
 
         if(!ProjectBeanHolder.getSecurityConfiguration().isSessionLimitEnable() || ProjectBeanHolder.getSecurityConfiguration().getSessionCreatedTimeRequire().compareTo(DateUtils.getInterval(new Date(session.getCreationTime()), DateUtils.now())) > 0) {
 
-            return new ResponseResult<>(AutocompleteResultStatus.REJECTED);
+            return new ResponseResult<>(GoogleApiRequestResultStatus.REJECTED);
         }
 
         AutocompleteRequestCache cache = this.getAutocompleteRequestCache(session.getId());
@@ -76,10 +77,10 @@ public class GoogleMapService {
                     return new ResponseResult<>(GoogleApiRequestResultStatus.SERVICE_DOWN);
                 }
 
-                return new ResponseResult(AutocompleteResultStatus.SUCCESS, result);
+                return new ResponseResult(GoogleApiRequestResultStatus.SUCCESS, result);
             }
 
-            return new ResponseResult<>(AutocompleteResultStatus.EXHAUSTED);
+            return new ResponseResult<>(GoogleApiRequestResultStatus.EXHAUSTED);
         }
 
         try {
@@ -99,10 +100,10 @@ public class GoogleMapService {
 
         if(result == null) {
 
-            return new ResponseResult<>(AutocompleteResultStatus.SERVICE_DOWN);
+            return new ResponseResult<>(GoogleApiRequestResultStatus.SERVICE_DOWN);
         }
 
-        return new ResponseResult<>(AutocompleteResultStatus.SUCCESS, result);
+        return new ResponseResult<>(GoogleApiRequestResultStatus.SUCCESS, result);
     }
 
     public AutocompleteRequestCache getAutocompleteRequestCache(String key) {
