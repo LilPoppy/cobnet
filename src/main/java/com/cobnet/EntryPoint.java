@@ -103,7 +103,7 @@ public class EntryPoint {
 
 		LOG.info(EntryPoint.getLogo());
 
-		User user = new User("admin", "123456", "Bob", "Smith", Gender.MALE, new Address.Builder().setStreet("1 Heaven Ave").build(), new UserRole("admin", RoleRule.ADMIN, false, new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")));
+		User user = new User("admin", "123456", "Bob", "Smith", Gender.MALE, new Address.Builder().setStreet("1 Heaven Ave").build(), new UserRole("admin", RoleRule.ADMIN, false, new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")).addAlias("user"));
 
 		ProjectBeanHolder.getUserRepository().save(user);
 
