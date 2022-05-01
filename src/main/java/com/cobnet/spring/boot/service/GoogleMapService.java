@@ -11,7 +11,6 @@ import com.cobnet.spring.boot.service.support.AutocompleteRequestCache;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.AutocompletePrediction;
 import com.google.maps.model.PlaceAutocompleteType;
-import com.google.maps.model.PlaceDetails;
 import com.google.maps.model.PlacesSearchResult;
 import org.springframework.session.Session;
 import org.springframework.stereotype.Service;
@@ -74,7 +73,7 @@ public class GoogleMapService {
 
                 if(result == null) {
 
-                    return new ResponseResult<>(AutocompleteResultStatus.SERVICE_DOWN);
+                    return new ResponseResult<>(GoogleApiRequestResultStatus.SERVICE_DOWN);
                 }
 
                 return new ResponseResult(AutocompleteResultStatus.SUCCESS, result);
@@ -110,12 +109,5 @@ public class GoogleMapService {
 
         return ProjectBeanHolder.getCacheService().get(AutocompleteRequestCache.GoogleMapServiceKey, key, AutocompleteRequestCache.class);
     }
-
-    public PlaceDetails search(String placeId) throws IOException, InterruptedException, ApiException {
-
-        return ProjectBeanHolder.getGoogleMap().placeDetailsRequest().placeId(placeId).await();
-    }
-
-
 
 }
