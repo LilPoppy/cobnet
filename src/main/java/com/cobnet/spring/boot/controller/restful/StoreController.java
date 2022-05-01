@@ -22,7 +22,7 @@ import java.util.Locale;
 @RestController
 public class StoreController {
 
-    @AccessSecured(roles = "USER")
+    //@AccessSecured(roles = "USER")
     @PostMapping("/store/create")
     public ResponseResult<StoreRegisterResultStatus> create(HttpServletResponse response, StoreRegisterForm store) throws IOException, InterruptedException, ApiException {
 
@@ -34,8 +34,8 @@ public class StoreController {
     }
 
     //@AccessSecured(roles = "USER")
-    @PostMapping("/store/find")
-    public ResponseResult<GoogleApiRequestResultStatus> find(HttpServletRequest request, HttpServletResponse response, String name, AddressForm form) {
+    @PostMapping("/store/find-place")
+    public ResponseResult<GoogleApiRequestResultStatus> findPlace(HttpServletRequest request, HttpServletResponse response, String name, AddressForm form) {
 
         ResponseResult<GoogleApiRequestResultStatus> result = ProjectBeanHolder.getStoreService().find(request, name, form);
 
@@ -44,7 +44,7 @@ public class StoreController {
         return result;
     }
 
-    @PostMapping("/store/autocomplete-address")
+    @PostMapping("/store/find-address")
     public ResponseResult<GoogleApiRequestResultStatus> address(HttpServletResponse response, String storeId) {
 
         ResponseResult<GoogleApiRequestResultStatus> result = ProjectBeanHolder.getStoreService().details(storeId);
@@ -53,7 +53,7 @@ public class StoreController {
 
         if(result.contents().length > 1) {
 
-            return new ResponseResult<>(result.status(), result.contents()[1]);
+            return new ResponseResult<>(result.status(), result.get(AddressForm.class));
         }
 
         return new ResponseResult<>(result.status());

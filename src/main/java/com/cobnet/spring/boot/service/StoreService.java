@@ -94,11 +94,12 @@ public class StoreService {
 
         } catch (IOException | InterruptedException | ApiException e) {
 
-            e.printStackTrace();
+            if(e.fillInStackTrace() instanceof InvalidRequestException) {
 
-            if(e.getCause() instanceof InvalidRequestException) {
-
+                return new ResponseResult<>(GoogleApiRequestResultStatus.BAD_REQUEST);
             }
+
+            e.printStackTrace();
 
             return new ResponseResult<>(GoogleApiRequestResultStatus.SERVICE_DOWN);
         }
@@ -117,7 +118,7 @@ public class StoreService {
 
         ResponseResult<GoogleApiRequestResultStatus> details = this.details(store.getId());
 
-        if(((ObjectWrapper<Boolean>)details.contents()[2]).getValue()) {
+        if((boolean)details.get(ObjectWrapper.class, "is-permanently-closed").getValue()) {
 
             return new ResponseResult<>(StoreRegisterResultStatus.STORE_PERMANENTLY_CLOSED);
         }
@@ -134,15 +135,15 @@ public class StoreService {
 
         if(details.status() == GoogleApiRequestResultStatus.SUCCESS) {
 
-            store.setName(((ObjectWrapper<String>) (details.contents()[0])).getValue());
-            store.setLocation(((AddressForm) details.contents()[1]).getEntity());
-            store.setPhone(((ObjectWrapper<String>) details.contents()[3]).getValue());
+            store.setName((String) details.get(ObjectWrapper.class, "name").getValue());
+            store.setLocation(details.get(AddressForm.class).getEntity());
+            store.setPhone((String) details.get(ObjectWrapper.class, "phone-number").getValue());
 
             repository.save(store);
 
             return new ResponseResult<>(StoreRegisterResultStatus.SUCCESS);
         }
-System.out.println(details.status());
+
         return new ResponseResult<>(StoreRegisterResultStatus.SERVICE_DOWN);
     }
 
