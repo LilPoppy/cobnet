@@ -12,6 +12,7 @@ import com.cobnet.spring.boot.entity.support.Gender;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.AddressComponent;
 import com.google.maps.model.AddressComponentType;
+import com.google.maps.model.PlaceAutocompleteType;
 import com.google.maps.model.PlaceDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class StoreService {
 
     public ResponseResult<AutocompleteResultStatus> search(HttpServletRequest request, String name, AddressForm form) {
 
-        return ProjectBeanHolder.getGoogleMapService().autocompleteRequest(request, form, name);
+        return ProjectBeanHolder.getGoogleMapService().autocompleteRequest(request, PlaceAutocompleteType.ESTABLISHMENT, form, name);
     }
 
     public ResponseResult<StoreRegisterResultStatus> register(StoreRegisterForm storeForm) {
