@@ -24,11 +24,11 @@ public class LocalFileSource implements FileSource {
     @Override
     public void write(InputStream stream, FileInfo info) throws IOException {
 
-        Path path = Paths.get(configuration.getUrl().getPath()).resolve(info.getHash());
+        Path path = Paths.get(configuration.getUrl().getPath());
 
         Files.createDirectories(path);
 
-        Files.copy(stream, path);
+        Files.copy(stream, path.resolve(info.getHash()));
     }
 
     @Override
