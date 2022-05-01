@@ -22,7 +22,7 @@ import java.util.Locale;
 @RestController
 public class StoreController {
 
-    //@AccessSecured(roles = "USER")
+    @AccessSecured(roles = "USER")
     @PostMapping("/store/create")
     public ResponseResult<StoreRegisterResultStatus> create(HttpServletResponse response, StoreRegisterForm store) throws IOException, InterruptedException, ApiException {
 
@@ -33,7 +33,7 @@ public class StoreController {
         return result;
     }
 
-    //@AccessSecured(roles = "USER")
+    @AccessSecured(roles = "USER")
     @PostMapping("/store/find-place")
     public ResponseResult<GoogleApiRequestResultStatus> findPlace(HttpServletRequest request, HttpServletResponse response, String name, AddressForm form) {
 
