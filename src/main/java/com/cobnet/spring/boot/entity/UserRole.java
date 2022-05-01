@@ -5,13 +5,14 @@ import com.cobnet.interfaces.security.Permission;
 import com.cobnet.security.RoleRule;
 import com.cobnet.security.permission.PermissionValidator;
 import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
+import com.cobnet.spring.boot.entity.support.JsonStringSetConverter;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.lang.NonNull;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 public class UserRole extends EntityBase implements Permissible, Serializable {
@@ -21,6 +22,10 @@ public class UserRole extends EntityBase implements Permissible, Serializable {
     private String role;
 
     private RoleRule rule;
+
+    @Convert(converter = JsonStringSetConverter.class)
+    @Column(columnDefinition = "json")
+    private Set<String> alias = new HashSet<>();
 
     private boolean isDefault;
 
@@ -74,9 +79,20 @@ public class UserRole extends EntityBase implements Permissible, Serializable {
         return this.permissions;
     }
 
+    public Set<String> getAlias() {
+        return alias;
+    }
+
     public String getRole() {
 
         return role;
+    }
+
+    public UserRole addAlias(String... alias) {
+
+        this.alias.addAll(Arrays.stream(alias).toList());
+
+        return this;
     }
 
     public boolean isDefault() {

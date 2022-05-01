@@ -317,7 +317,7 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
     public boolean isRole(String name) {
 
-        return this.roles.stream().anyMatch(role -> role.getName().equalsIgnoreCase(name));
+        return this.roles.stream().anyMatch(role -> role.getName().equalsIgnoreCase(name) || role.getAlias().stream().anyMatch(alia -> alia.equalsIgnoreCase(name)));
     }
 
     public Gender getGender() {
