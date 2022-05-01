@@ -35,9 +35,9 @@ public class StoreController {
 
     @AccessSecured(roles = "USER")
     @PostMapping("/store/find-place")
-    public ResponseResult<GoogleApiRequestResultStatus> findPlace(HttpServletRequest request, HttpServletResponse response, String name, AddressForm form) {
+    public ResponseResult<GoogleApiRequestResultStatus> findPlace(HttpServletRequest request, HttpServletResponse response, String name, @RequestParam(name = "postal-code") int postalCode) {
 
-        ResponseResult<GoogleApiRequestResultStatus> result = ProjectBeanHolder.getStoreService().find(request, name, form);
+        ResponseResult<GoogleApiRequestResultStatus> result = ProjectBeanHolder.getStoreService().find(request, name, postalCode);
 
         response.setStatus(result.status().getCode());
 
@@ -45,7 +45,7 @@ public class StoreController {
     }
 
     @PostMapping("/store/find-address")
-    public ResponseResult<GoogleApiRequestResultStatus> address(HttpServletResponse response, String storeId) {
+    public ResponseResult<GoogleApiRequestResultStatus> address(HttpServletResponse response, @RequestParam(name = "store-id") String storeId) {
 
         ResponseResult<GoogleApiRequestResultStatus> result = ProjectBeanHolder.getStoreService().details(storeId);
 
@@ -59,14 +59,14 @@ public class StoreController {
         return new ResponseResult<>(result.status());
     }
 
-    @PostMapping("/store/{storeId}/check-in")
-    public ResponseResult<StoreCheckInResultStatus> checkIn(@PathVariable String storeId, CustomerInfoForm info, List<WorkInfoForm> services) {
+    @PostMapping("/store/{store-id}/check-in")
+    public ResponseResult<StoreCheckInResultStatus> checkIn(@PathVariable(name = "store-id") String storeId, CustomerInfoForm info, List<WorkInfoForm> services) {
 
         return new ResponseResult(StoreCheckInResultStatus.SUCCESS);
     }
 
-    @GetMapping("/store/{storeId}/check-in-page-details")
-    public ResponseResult<StoreCheckInPageDetailResultStatus> checkInPageDetail(HttpServletResponse response, @PathVariable String storeId, String country, String language) throws IOException, ServiceDownException {
+    @GetMapping("/store/{store-id}/check-in-page-details")
+    public ResponseResult<StoreCheckInPageDetailResultStatus> checkInPageDetail(HttpServletResponse response, @PathVariable(name = "store-id") String storeId, String country, String language) throws IOException, ServiceDownException {
 
         ResponseResult<StoreCheckInPageDetailResultStatus> result = ProjectBeanHolder.getStoreService().getStoreCheckInPageDetail(storeId, new Locale(country, language));
 

@@ -27,7 +27,10 @@ public class StoreService {
     @Autowired
     private StoreRepository repository;
 
-    public ResponseResult<GoogleApiRequestResultStatus> find(HttpServletRequest request, String name, AddressForm form) {
+    public ResponseResult<GoogleApiRequestResultStatus> find(HttpServletRequest request, String name, int postalCode) {
+
+        AddressForm form = new AddressForm();
+        form.setZipCode(postalCode);
 
         return ProjectBeanHolder.getGoogleMapService().autocompleteRequest(request, PlaceAutocompleteType.ESTABLISHMENT, form, name);
     }
