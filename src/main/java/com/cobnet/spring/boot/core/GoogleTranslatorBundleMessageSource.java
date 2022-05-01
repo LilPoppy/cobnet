@@ -74,7 +74,12 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
 
                 if(properties != null) {
 
-                    properties.putAll(this.readFromFile(locale));
+                    Properties temp = this.readFromFile(locale);
+
+                    if(temp != null) {
+
+                        properties.putAll(temp);
+                    }
 
                 } else {
 
