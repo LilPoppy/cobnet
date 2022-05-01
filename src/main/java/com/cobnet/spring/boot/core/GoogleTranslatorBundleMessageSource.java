@@ -232,6 +232,12 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
             Translation translation = this.translate.translate(message, Translate.TranslateOption.targetLanguage(locale.getLanguage()));
 
             Properties properties = this.readFromCache(locale);
+
+            if(properties == null) {
+
+                properties = new Properties();
+            }
+
             properties.put(key, translation.getTranslatedText());
 
             this.writeToCache(locale, properties);
