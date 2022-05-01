@@ -9,10 +9,12 @@ import com.cobnet.spring.boot.dto.support.AutocompleteResultStatus;
 import com.cobnet.spring.boot.service.support.AutocompleteRequestCache;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.AutocompletePrediction;
+import com.google.maps.model.PlaceAutocompleteType;
 import com.google.maps.model.PlacesSearchResult;
 import org.springframework.session.Session;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
@@ -28,22 +30,7 @@ public class GoogleMapService {
         return ProjectBeanHolder.getGoogleMap().textSearchRequest().query(Arrays.toString(params)).await().results;
     }
 
-    public AutocompletePrediction[] autocomplete(HttpSession session, String... params) throws IOException, InterruptedException, ApiException {
-
-        return autocomplete(session.getId(), params);
-    }
-
-    public AutocompletePrediction[] autocomplete(Session session, String... params) throws IOException, InterruptedException, ApiException {
-
-        return autocomplete(session.getId(), params);
-    }
-
-    public AutocompletePrediction[] autocomplete(String token, String... params) throws IOException, InterruptedException, ApiException {
-
-        return ProjectBeanHolder.getGoogleMap().placeAutocompleteRequest(Arrays.toString(params), token).await();
-    }
-
-    public ResponseResult<AutocompleteResultStatus> autocompleteRequest(HttpServletRequest request, AddressForm form, String... params) {
+    public ResponseResult<AutocompleteResultStatus> autocompleteRequest(HttpServletRequest request, @Nullable PlaceAutocompleteType type, AddressForm form, String... params) {
 
         HttpSession session = request.getSession(true);
 
@@ -69,7 +56,14 @@ public class GoogleMapService {
 
                 try {
 
-                    result = new GoogleAutocompletePredicted(Arrays.stream(autocomplete(session.getId(), Stream.concat(Stream.of(form.address()), Stream.of(params)).toArray(String[]::new))).toList());
+                    if(type == null) {
+
+                        result = new GoogleAutocompletePredicted(Arrays.stream(ProjectBeanHolder.getGoogleMap().placeAutocompleteRequest(Arrays.toString(Stream.concat(Stream.of(params), Stream.of(form.address())).toArray(String[]::new)), session.getId()).await()).toList());
+
+                    } else {
+
+                        result = new GoogleAutocompletePredicted(Arrays.stream(ProjectBeanHolder.getGoogleMap().placeAutocompleteRequest(Arrays.toString(Stream.concat(Stream.of(params), Stream.of(form.address())).toArray(String[]::new)), session.getId()).types(type).await()).toList());
+                    }
 
                 } catch (IOException | ApiException | InterruptedException e) {
 
@@ -89,7 +83,14 @@ public class GoogleMapService {
 
         try {
 
-            result = new GoogleAutocompletePredicted(Arrays.stream(autocomplete(request.getSession(), Stream.concat(Stream.of(form.address()), Stream.of(params)).toArray(String[]::new))).toList());
+            if(type == null) {
+
+                result = new GoogleAutocompletePredicted(Arrays.stream(ProjectBeanHolder.getGoogleMap().placeAutocompleteRequest(Arrays.toString(Stream.concat(Stream.of(params), Stream.of(form.address())).toArray(String[]::new)), session.getId()).await()).toList());
+
+            } else {
+
+                result = new GoogleAutocompletePredicted(Arrays.stream(ProjectBeanHolder.getGoogleMap().placeAutocompleteRequest(Arrays.toString(Stream.concat(Stream.of(params), Stream.of(form.address())).toArray(String[]::new)), session.getId()).types(type).await()).toList());
+            }
 
         } catch (IOException | ApiException | InterruptedException e) {
 
