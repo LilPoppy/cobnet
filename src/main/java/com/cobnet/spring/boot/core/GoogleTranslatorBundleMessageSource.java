@@ -35,7 +35,7 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
     private static final String DEFAULT_MEME_TYPE = ".properties";
 
     private static final String DEFAULT_COMMENT = """
-            ======={0}=======
+            =****={0}=****=
             Google Translated.""";
 
     public static final String CACHE_NAMESPACE = GoogleTranslatorBundleMessageSource.class.getSimpleName();
@@ -65,6 +65,7 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
         this.setUseCodeAsDefaultMessage(true);
         this.setDefaultLocale(new Locale("en", "US"));
         this.setAlwaysUseMessageFormat(true);
+
         for(Locale locale : Locale.getAvailableLocales()) {
 
             String name = this.getBaseName(locale);

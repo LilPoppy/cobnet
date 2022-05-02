@@ -28,6 +28,20 @@ public class LocalFileSource implements FileSource {
 
         Files.createDirectories(path);
 
+        if(info.getOldHash() != null && info.getOldHash().length() > 0) {
+
+            File file = path.resolve(info.getOldHash()).toFile();
+
+            if(file.exists()) {
+
+                file.delete();
+            }
+
+            info.setOldHash(info.getHash());
+        }
+
+        info.setHash(info.generateHash());
+
         path = path.resolve(info.getHash());
 
         File file = path.toFile();

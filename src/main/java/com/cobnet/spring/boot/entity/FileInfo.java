@@ -27,6 +27,8 @@ public class FileInfo extends EntityBase implements Serializable {
 
     private String hash;
 
+    private String oldHash;
+
     public FileInfo() {}
 
     public FileInfo(String name, String memeType, long size) {
@@ -71,22 +73,31 @@ public class FileInfo extends EntityBase implements Serializable {
         return hash;
     }
 
+    public String getOldHash() {
+        return oldHash;
+    }
+
     public void setName(String name) {
         this.name = name;
-        this.hash = generateHash();
     }
 
     public void setMemeType(String memeType) {
         this.memeType = memeType;
-        this.hash = generateHash();
     }
 
     public void setSize(long size) {
         this.size = size;
-        this.hash = generateHash();
     }
 
-    private String generateHash() {
+    public void setHash(String hash) {
+        this.hash = hash;
+    }
+
+    public void setOldHash(String oldHash) {
+        this.oldHash = oldHash;
+    }
+
+    public String generateHash() {
 
         try {
 
@@ -98,5 +109,17 @@ public class FileInfo extends EntityBase implements Serializable {
 
             return null;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "FileInfo{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", memeType='" + memeType + '\'' +
+                ", size=" + size +
+                ", hash='" + hash + '\'' +
+                ", oldHash='" + oldHash + '\'' +
+                '}';
     }
 }
