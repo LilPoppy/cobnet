@@ -2,11 +2,13 @@ package com.cobnet.interfaces.connection.web;
 
 import com.cobnet.spring.boot.dto.support.PageFieldType;
 
+import java.util.Properties;
+
 public interface PageField extends ApplicationJson {
 
-    public PageFieldType type();
+    public PageFieldType getType();
 
-    public PageField[] children();
+    public PageField[] getChildren();
 
-    public PageFieldProperties properties();
+    public Properties getProperties();
 }
