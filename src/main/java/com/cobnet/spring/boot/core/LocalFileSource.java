@@ -15,13 +15,10 @@ import java.nio.file.Paths;
 
 public class LocalFileSource implements FileSource {
 
-    private final FileInfoRepository repository;
-
     private final FileSourceConfiguration configuration;
 
-    LocalFileSource(FileInfoRepository repository, FileSourceConfiguration configuration) {
+    LocalFileSource(FileSourceConfiguration configuration) {
 
-        this.repository = repository;
         this.configuration = configuration;
     }
 
@@ -31,20 +28,6 @@ public class LocalFileSource implements FileSource {
         Path path = Paths.get(configuration.getUrl().getPath());
 
         Files.createDirectories(path);
-
-        if(info.getOldHash() != null && info.getOldHash().length() > 0) {
-
-            File file = path.resolve(info.getOldHash()).toFile();
-
-            if(file.exists()) {
-
-                file.delete();
-            }
-
-            info.setOldHash(info.getHash());
-        }
-
-        info.setHash(info.generateHash());
 
         path = path.resolve(info.getHash());
 
@@ -56,19 +39,10 @@ public class LocalFileSource implements FileSource {
         }
 
         Files.copy(stream, path);
-
-        repository.save(info);
     }
 
     @Override
     public @Nullable InputStream read(FileInfo info) throws IOException {
-
-        if(info.getHash() == null) {
-
-            info.setHash(info.generateHash());
-        }
-
-        repository.save(info);
 
         Path path = Paths.get(configuration.getUrl().getPath()).resolve(info.getHash());
 

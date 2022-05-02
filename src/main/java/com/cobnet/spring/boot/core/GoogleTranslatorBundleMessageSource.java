@@ -371,6 +371,8 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
             info.setSize(size);
         }
 
+        repository.save(info);
+
         return info;
     }
 
