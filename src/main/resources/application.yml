@@ -38,6 +38,8 @@ spring:
    h2:
       console:
          enabled: true
+         settings:
+            web-allow-others: true
    datasource:
       initialize: false
       driver-class-name: com.mysql.cj.jdbc.Driver
