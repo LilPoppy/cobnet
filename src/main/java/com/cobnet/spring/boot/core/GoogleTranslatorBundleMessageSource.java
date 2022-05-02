@@ -219,7 +219,7 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
             locale = this.getDefaultLocale();
         }
 
-        if(hasKeyInBundle(key, locale)) {
+        if(hasKey(key, locale)) {
 
             return super.getMessage(key, args, locale);
         }
