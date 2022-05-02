@@ -47,7 +47,7 @@ public class LocalFileSource implements FileSource {
 
         File file = path.toFile();
 
-        if(file.exists()) {
+        if(file.exists() && !file.isDirectory()) {
 
             return Files.newInputStream(path);
         }

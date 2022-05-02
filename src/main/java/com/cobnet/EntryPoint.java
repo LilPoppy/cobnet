@@ -109,16 +109,14 @@ public class EntryPoint {
 
 		ProjectBeanHolder.getUserRoleRepository().save(new UserRole("user", RoleRule.USER, true));
 
-		System.out.println(ProjectBeanHolder.getTranslatorMessageSource().getMessage("sss", Locale.SIMPLIFIED_CHINESE, "Tommy"));
-
-		System.out.println(ProjectBeanHolder.getTranslatorMessageSource().getMessage("zzz", Locale.SIMPLIFIED_CHINESE));
-
 		if(Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("agent"))) {
 
 			System.exit(0);
 		}
 
-		ProjectBeanHolder.getTranslatorMessageSource().writeToFile(Locale.SIMPLIFIED_CHINESE);
+		System.out.println(ProjectBeanHolder.getTranslatorMessageSource().getMessage("Hi it''s me {0}!","Jason"));
+
+		ProjectBeanHolder.getTranslatorMessageSource().writeToFile(new Locale("en", "US"));
 	}
 
 	@Bean
