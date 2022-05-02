@@ -34,7 +34,9 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
 
     private static final String DEFAULT_MEME_TYPE = ".properties";
 
-    private static final String DEFAULT_COMMENT = "Google Translated.";
+    private static final String DEFAULT_COMMENT = """
+            ======={0}=======
+            Google Translated.""";
 
     public static final String CACHE_NAMESPACE = GoogleTranslatorBundleMessageSource.class.getSimpleName();
 
@@ -62,7 +64,7 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
         this.setBasename(DEFAULT_BASENAME);
         this.setUseCodeAsDefaultMessage(true);
         this.setDefaultLocale(new Locale("en", "US"));
-
+        this.setAlwaysUseMessageFormat(true);
         for(Locale locale : Locale.getAvailableLocales()) {
 
             String name = this.getBaseName(locale);
@@ -123,14 +125,14 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
         return hasKeyInBundle(key, locale) || hasKeyInCache(key, locale);
     }
 
-    public String getMessage(String key, Object... args) throws IOException, ServiceDownException {
+    public String getMessage(String message, Object... args) throws IOException, ServiceDownException {
 
-        return this.getMessage(key, (String) null, null);
+        return this.getMessage(message, message, null, args);
     }
 
-    public String getMessage(String key, Locale locale, Object... args) throws IOException, ServiceDownException {
+    public String getMessage(String message, Locale locale, Object... args) throws IOException, ServiceDownException {
 
-        return this.getMessage(key, null, locale, args);
+        return this.getMessage(message, message, locale, args);
     }
 
     @Nullable
@@ -216,7 +218,7 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
             locale = this.getDefaultLocale();
         }
 
-        if(hasKey(key, locale)) {
+        if(hasKeyInBundle(key, locale)) {
 
             return super.getMessage(key, args, locale);
         }
@@ -230,7 +232,7 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
 
         if(message == null) {
 
-            message = super.getMessage(key, args, this.getDefaultLocale());
+            message = super.getMessageInternal(key, args, this.getDefaultLocale());
         }
 
         if (message == null) {
@@ -253,7 +255,7 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
 
             this.writeToCache(locale, properties);
 
-            return String.format(translation.getTranslatedText(), args);
+            return new MessageFormat(translation.getTranslatedText()).format(args);
 
         } catch (TranslateException exception) {
 
@@ -267,11 +269,16 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
         }
     }
 
-    protected void writeToFile(@NotNull Locale locale, @NotNull Properties properties) throws IOException {
+    protected boolean writeToFile(@NotNull Locale locale, @NotNull Properties properties) throws IOException {
 
-        if(properties == null) {
+        if(locale == null || properties == null) {
 
-            throw new NullPointerException();
+            if(LOG.isDebugEnabled()) {
+
+                LOG.error("Locale or properties cannot be null!", new NullPointerException());
+            }
+
+            return false;
         }
 
         try(ByteArrayOutputStream output = new ByteArrayOutputStream()) {
@@ -285,16 +292,23 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
                 source.write(input, getFileInfo(locale, bs.length));
             }
         }
+
+        return true;
     }
 
-    public void writeToFile(@NotNull Locale locale) throws IOException {
+    public boolean writeToFile(@NotNull Locale locale) throws IOException {
 
         if(locale == null) {
 
-            return;
+            if(LOG.isDebugEnabled()) {
+
+                LOG.error("Locale cannot be null!", new NullPointerException());
+            }
+
+            return false;
         }
 
-        this.writeToFile(locale, this.readFromCache(locale));
+        return this.writeToFile(locale, this.readFromCache(locale));
     }
 
     public Properties readFromFile(@NotNull Locale locale) throws IOException {
