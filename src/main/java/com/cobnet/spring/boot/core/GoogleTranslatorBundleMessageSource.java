@@ -283,7 +283,7 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
 
         try(ByteArrayOutputStream output = new ByteArrayOutputStream()) {
 
-            properties.store(output, GoogleTranslatorBundleMessageSource.DEFAULT_COMMENT);
+            properties.store(output, new MessageFormat(GoogleTranslatorBundleMessageSource.DEFAULT_COMMENT).format(new Object[]{ locale.getDisplayName() }));
 
             byte[] bs = output.toByteArray();
 
