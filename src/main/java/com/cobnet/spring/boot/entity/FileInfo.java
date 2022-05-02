@@ -27,8 +27,6 @@ public class FileInfo extends EntityBase implements Serializable {
 
     private String hash;
 
-    private String oldHash;
-
     public FileInfo() {}
 
     public FileInfo(String name, String memeType, long size) {
@@ -73,9 +71,6 @@ public class FileInfo extends EntityBase implements Serializable {
         return hash;
     }
 
-    public String getOldHash() {
-        return oldHash;
-    }
 
     public void setName(String name) {
         this.name = name;
@@ -85,23 +80,19 @@ public class FileInfo extends EntityBase implements Serializable {
         this.memeType = memeType;
     }
 
-    public void setSize(long size) {
-        this.size = size;
-    }
-
     public void setHash(String hash) {
         this.hash = hash;
     }
 
-    public void setOldHash(String oldHash) {
-        this.oldHash = oldHash;
+    public void setSize(long size) {
+        this.size = size;
     }
 
     public String generateHash() {
 
         try {
 
-            return new String(HashDigest.encrypt("MD5", new StringBuilder().append(this.name).append(this.memeType).append(this.size).toString()));
+            return new String(HashDigest.encrypt("MD5", new StringBuilder().append(this.name).append(this.memeType).append(this.hash).toString()));
 
         } catch (NoSuchAlgorithmException ex) {
 
@@ -119,7 +110,6 @@ public class FileInfo extends EntityBase implements Serializable {
                 ", memeType='" + memeType + '\'' +
                 ", size=" + size +
                 ", hash='" + hash + '\'' +
-                ", oldHash='" + oldHash + '\'' +
                 '}';
     }
 }
