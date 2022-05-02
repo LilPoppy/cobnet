@@ -154,10 +154,10 @@ public class StoreService {
 
         Optional<Store> store = repository.findById(storeId);
 
-//        if(store.isEmpty()) {
-//
-//            return new ResponseResult<>(StoreCheckInPageDetailResultStatus.NO_EXIST);
-//        }
+        if(store.isEmpty()) {
+
+            return new ResponseResult<>(StoreCheckInPageDetailResultStatus.NO_EXIST);
+        }
 
         try {
 
@@ -168,6 +168,12 @@ public class StoreService {
                 referralOptions.add(ProjectBeanHolder.getTranslatorMessageSource().getMessage(option.getKey(), locale));
             }
 
+            //显示所有可执行的服务项目
+            store.get().getServices().stream().forEach(service -> {
+
+            });
+            //再创建一个方法
+
             return new ResponseResult<>(StoreCheckInPageDetailResultStatus.SUCCESS, new DynamicPage(new DynamicPageProperties(),
                 new StepContainerPageField(0, "firstName", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.first-name", locale), PageFieldType.INPUT, new DynamicPageFieldProperties()),
                 new StepContainerPageField(0, "lastName", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.last-name", locale), PageFieldType.INPUT, new DynamicPageFieldProperties()),
@@ -176,10 +182,14 @@ public class StoreService {
                 new StepContainerPageField(3, "referral", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.referral", locale), PageFieldType.RADIO, new DynamicPageFieldProperties(new KeyValuePair<>("list", referralOptions)))
             ));
 
+
+
         } catch (ServiceDownException ex) {
 
             return new ResponseResult<>(StoreCheckInPageDetailResultStatus.SERVICE_DOWN);
         }
+
+
 
     }
 }
