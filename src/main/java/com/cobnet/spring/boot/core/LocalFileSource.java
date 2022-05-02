@@ -15,15 +15,22 @@ import java.nio.file.Paths;
 
 public class LocalFileSource implements FileSource {
 
+    private final FileInfoRepository repository;
     private final FileSourceConfiguration configuration;
 
-    LocalFileSource(FileSourceConfiguration configuration) {
+    LocalFileSource(FileInfoRepository repository, FileSourceConfiguration configuration) {
 
+        this.repository = repository;
         this.configuration = configuration;
     }
 
     @Override
     public void write(InputStream stream, FileInfo info) throws IOException {
+
+        if(info.getHash() == null) {
+
+            info.setHash(info.generateHash());
+        }
 
         Path path = Paths.get(configuration.getUrl().getPath());
 
@@ -38,11 +45,22 @@ public class LocalFileSource implements FileSource {
             file.delete();
         }
 
+        info.setHash(info.generateHash());
+
+        path = path.resolve(info.getHash());
+
         Files.copy(stream, path);
+
+        repository.save(info);
     }
 
     @Override
     public @Nullable InputStream read(FileInfo info) throws IOException {
+
+        if(info.getHash() == null) {
+
+            info.setHash(info.generateHash());
+        }
 
         Path path = Paths.get(configuration.getUrl().getPath()).resolve(info.getHash());
 
