@@ -1,5 +1,6 @@
 package com.cobnet.spring.boot.entity;
 
+import com.cobnet.spring.boot.dto.AddressForm;
 import com.cobnet.spring.boot.entity.support.AddressKey;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.Hibernate;
@@ -20,8 +21,8 @@ public class Address extends EntityBase implements Serializable {
 
     private String country;
 
-    public Address(String street, String unit, String city, String state, String country, int zipCode) {
-        this.id = new AddressKey(street, unit, zipCode);
+    public Address(String street, String unit, String city, String state, String country, String postalCode) {
+        this.id = new AddressKey(street, unit, postalCode);
         this.city = city;
         this.state = state;
         this.country = country;
@@ -29,7 +30,7 @@ public class Address extends EntityBase implements Serializable {
 
     public Address(String street, String unit, String city, String state, String country) {
 
-        this(street, unit, city, state, country, 0);
+        this(street, unit, city, state, country, null);
     }
 
     public Address(String street, String unit, String city, String state) {
@@ -80,8 +81,8 @@ public class Address extends EntityBase implements Serializable {
         return country;
     }
 
-    public int getZipCode() {
-        return id.getZipCode();
+    public String getPostalCode() {
+        return id.getPostalCode();
     }
 
     @JsonIgnore
@@ -109,52 +110,19 @@ public class Address extends EntityBase implements Serializable {
         this.country = country;
     }
 
-    public void setZipCode(int zipCode) {
-        this.id.setZipCode(zipCode);
+    public void setPostalCode(String code) {
+        this.id.setPostalCode(code);
     }
 
     public String address() {
 
-        StringBuilder sb = new StringBuilder();
-
-        if(this.getStreet() != null && this.getStreet().length() > 0) {
-
-            sb.append(this.getStreet());
-        }
-
-        if(this.getUnit() != null && this.getUnit().length() > 0) {
-
-            sb.append(" ").append(this.getUnit());
-        }
-
-        if(this.getCity() != null && this.getCity().length() > 0) {
-
-            sb.append(" ").append(this.getCity());
-        }
-
-        if(this.getState() != null && this.getState().length() > 0) {
-
-            sb.append(", ").append(this.getState());
-        }
-
-        if(this.getZipCode() > 0) {
-
-            sb.append(" ").append(this.getZipCode());
-        }
-
-        if(this.getCountry() != null && this.getCountry().length() > 0) {
-
-            sb.append(" ").append(this.getCountry());
-        }
-
-        return sb.toString();
+        return new AddressForm.Builder().setStreet(this.getStreet()).setUnit(this.getUnit()).setCity(this.getCity()).setState(this.getState()).setCountry(this.getCountry()).setPostalCode(this.getPostalCode()).build().address();
     }
 
     @Override
     public String toString() {
         return this.address();
     }
-
 
 
     public static class Builder {
@@ -169,7 +137,7 @@ public class Address extends EntityBase implements Serializable {
 
         private String country;
 
-        private int zipCode;
+        private String postalCode;
 
         public Builder setStreet(String street) {
 
@@ -206,16 +174,16 @@ public class Address extends EntityBase implements Serializable {
             return this;
         }
 
-        public Builder setZipCode(int zipCode) {
+        public Builder setPostalCode(String code) {
 
-            this.zipCode = zipCode;
+            this.postalCode = code;
 
             return this;
         }
 
         public Address build() {
 
-            return new Address(this.street, this.unit, this.city, this.state, this.country, this.zipCode);
+            return new Address(this.street, this.unit, this.city, this.state, this.country, this.postalCode);
         }
     }
 

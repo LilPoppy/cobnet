@@ -57,7 +57,8 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
             inverseJoinColumns = {
                     @JoinColumn(name = "STREET", referencedColumnName = "STREET"),
                     @JoinColumn(name = "UNIT", referencedColumnName = "UNIT"),
-                    @JoinColumn(name = "ZIPCODE", referencedColumnName = "ZIPCODE")})
+                    @JoinColumn(name = "POSTAL_CODE", referencedColumnName = "POSTALCODE")})
+
     private Set<Address> addresses = new HashSet<>();
 
     @ManyToMany(cascade = CascadeType.ALL)

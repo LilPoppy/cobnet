@@ -13,45 +13,19 @@ public class AddressForm extends FormBase<AddressForm, Address> {
     private String city;
     private String state;
     private String country;
-    private Integer zipCode;
 
-    public AddressForm(String street, String unit, String city, String state, String country, Integer zipCode) {
+    private String postalCode;
+
+    public AddressForm(String street, String unit, String city, String state, String country, String postalCode) {
         this.street = street;
         this.unit = unit;
         this.city = city;
         this.state = state;
         this.country = country;
-        this.zipCode = zipCode;
+        this.postalCode = postalCode;
     }
 
-    public AddressForm(String street, String unit, String city, String state, String country) {
-
-        this(street, unit, city, state, country, null);
-    }
-
-    public AddressForm(String street, String unit, String city, String state) {
-
-        this(street, unit, city, state, null);
-    }
-
-    public AddressForm(String street, String unit, String city) {
-
-        this(street, unit, city, null);
-    }
-
-    public AddressForm(String street, String unit) {
-
-        this(street, unit, null);
-    }
-
-    public AddressForm(String street) {
-
-        this(street, null);
-    }
-
-    public AddressForm() {
-        this(null);
-    }
+    public AddressForm() {}
 
     public String getStreet() {
         return street;
@@ -73,8 +47,8 @@ public class AddressForm extends FormBase<AddressForm, Address> {
         return country;
     }
 
-    public Integer getZipCode() {
-        return zipCode;
+    public String getPostalCode() {
+        return postalCode;
     }
 
     public void setStreet(String street) {
@@ -97,8 +71,8 @@ public class AddressForm extends FormBase<AddressForm, Address> {
         this.country = country;
     }
 
-    public void setZipCode(Integer zipCode) {
-        this.zipCode = zipCode;
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
     }
 
     public String address() {
@@ -125,9 +99,9 @@ public class AddressForm extends FormBase<AddressForm, Address> {
             sb.append(", ").append(this.getState());
         }
 
-        if(this.getZipCode() != null && this.getZipCode() > 0) {
+        if(this.getPostalCode() != null && this.getPostalCode().length() > 0) {
 
-            sb.append(" ").append(this.getZipCode());
+            sb.append(" ").append(this.getPostalCode());
         }
 
         if(this.getCountry() != null && this.getCountry().length() > 0) {
@@ -153,7 +127,7 @@ public class AddressForm extends FormBase<AddressForm, Address> {
     @Override
     public Address getEntity() {
 
-        return new Address.Builder().setStreet(this.street).setUnit(this.unit).setCity(this.city).setState(this.state).setZipCode(this.zipCode).setCountry(this.country).build();
+        return new Address.Builder().setStreet(this.street).setUnit(this.unit).setCity(this.city).setState(this.state).setPostalCode(this.postalCode).setCountry(this.country).build();
     }
 
     public static class AddressFormGenerator implements FormGenerator<AddressForm> {
@@ -162,6 +136,57 @@ public class AddressForm extends FormBase<AddressForm, Address> {
         public AddressForm generate(Map<String, ?> options) {
 
             return ProjectBeanHolder.getObjectMapper().convertValue(options, AddressForm.class);
+        }
+    }
+
+    public static final class Builder {
+
+        private String street;
+        private String unit;
+        private String city;
+        private String state;
+        private String country;
+        private String postalCode;
+
+        public Builder setStreet(String street) {
+
+            this.street = street;
+            return this;
+        }
+
+        public Builder setUnit(String unit) {
+
+            this.unit = unit;
+            return this;
+        }
+
+        public Builder setCity(String city) {
+
+            this.city = city;
+            return this;
+        }
+
+        public Builder setState(String state) {
+
+            this.state = state;
+            return this;
+        }
+
+        public Builder setCountry(String country) {
+
+            this.country = country;
+            return this;
+        }
+
+        public Builder setPostalCode(String postalCode) {
+
+            this.postalCode = postalCode;
+            return this;
+        }
+
+        public AddressForm build() {
+
+            return new AddressForm(this.street, this.unit, this.city, this.state, this.country, this.postalCode);
         }
     }
 }

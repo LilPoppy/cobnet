@@ -47,6 +47,13 @@ public class LocalFileSource implements FileSource {
 
         path = path.resolve(info.getHash());
 
+        file = path.toFile();
+
+        if(file.exists()) {
+
+            file.delete();
+        }
+
         Files.copy(stream, path);
 
         repository.save(info);
