@@ -12,15 +12,16 @@ public class AddressKey implements Serializable {
 
     private String street = "";
 
-    @Column(nullable = true)
+    @Column(nullable = true, length = 16)
     private String unit = "";
 
-    private int zipCode;
+    @Column(nullable = false, length = 32)
+    private String postalCode = "";
 
-    public AddressKey(String street, String unit, int zipCode) {
+    public AddressKey(String street, String unit, String postalCode) {
         this.street = street;
         this.unit = unit;
-        this.zipCode = zipCode;
+        this.postalCode = postalCode;
     }
 
     public AddressKey() {}
@@ -33,8 +34,8 @@ public class AddressKey implements Serializable {
         return unit;
     }
 
-    public int getZipCode() {
-        return zipCode;
+    public String getPostalCode() {
+        return postalCode;
     }
 
     public void setStreet(String street) {
@@ -45,9 +46,10 @@ public class AddressKey implements Serializable {
         this.unit = unit;
     }
 
-    public void setZipCode(int zipCode) {
-        this.zipCode = zipCode;
+    public void setPostalCode(String code) {
+        this.postalCode = code;
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -56,11 +58,11 @@ public class AddressKey implements Serializable {
         AddressKey that = (AddressKey) o;
         return street != null && Objects.equals(street, that.street)
                 && unit != null && Objects.equals(unit, that.unit)
-                && Objects.equals(zipCode, that.zipCode);
+                && postalCode != null && Objects.equals(postalCode, that.postalCode);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(street, unit, zipCode);
+        return Objects.hash(street, unit, postalCode);
     }
 }

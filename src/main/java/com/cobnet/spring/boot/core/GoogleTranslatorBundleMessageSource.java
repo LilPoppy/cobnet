@@ -169,7 +169,6 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
                 if(result != null) {
 
                     this.writeToCache(locale, properties);
-                    this.writeToFile(locale, properties);
 
                     return new MessageFormat(result).format(args);
                 }
