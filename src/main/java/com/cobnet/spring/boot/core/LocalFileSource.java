@@ -36,9 +36,7 @@ public class LocalFileSource implements FileSource {
 
         Files.createDirectories(path);
 
-        path = path.resolve(info.getHash());
-
-        File file = path.toFile();
+        File file = path.resolve(info.getHash()).toFile();
 
         if(file.exists()) {
 
@@ -60,6 +58,8 @@ public class LocalFileSource implements FileSource {
         if(info.getHash() == null) {
 
             info.setHash(info.generateHash());
+
+            repository.save(info);
         }
 
         Path path = Paths.get(configuration.getUrl().getPath()).resolve(info.getHash());
