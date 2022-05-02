@@ -172,6 +172,7 @@ public class StoreService {
             store.get().getServices().stream().forEach(service -> {
 
             });
+
             //再创建一个方法
 
             return new ResponseResult<>(StoreCheckInPageDetailResultStatus.SUCCESS, new DynamicPage(new DynamicPageProperties(),
