@@ -52,10 +52,19 @@ public class LocalFileSource implements FileSource {
         }
 
         Files.copy(stream, path);
+
+        ProjectBeanHolder.getFileInfoRepository().save(info);
     }
 
     @Override
     public @Nullable InputStream read(FileInfo info) throws IOException {
+
+        if(info.getHash() == null) {
+
+            info.setHash(info.generateHash());
+        }
+
+        ProjectBeanHolder.getFileInfoRepository().save(info);
 
         Path path = Paths.get(configuration.getUrl().getPath()).resolve(info.getHash());
 
