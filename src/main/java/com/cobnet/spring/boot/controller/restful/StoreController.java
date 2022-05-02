@@ -24,9 +24,9 @@ public class StoreController {
 
     @AccessSecured(roles = "USER")
     @PostMapping("/store/create")
-    public ResponseResult<StoreRegisterResultStatus> create(HttpServletResponse response, StoreRegisterForm store) throws IOException, InterruptedException, ApiException {
+    public ResponseResult<StoreRegisterResultStatus> create(HttpServletResponse response, @RequestParam("store-id") String storeId) throws IOException, InterruptedException, ApiException {
 
-        ResponseResult<StoreRegisterResultStatus> result = ProjectBeanHolder.getStoreService().register(store);
+        ResponseResult<StoreRegisterResultStatus> result = ProjectBeanHolder.getStoreService().register(storeId);
 
         response.setStatus(result.status().getCode());
 

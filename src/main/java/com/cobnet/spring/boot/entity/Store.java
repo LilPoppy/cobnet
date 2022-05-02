@@ -31,6 +31,10 @@ public class Store implements Serializable {
 
     private String phone;
 
+    private boolean permanentlyClosed;
+
+    private int rating;
+
     //TODO verify information
     private boolean verified;
 
@@ -99,6 +103,14 @@ public class Store implements Serializable {
 
     public String getPhone() {
         return phone;
+    }
+
+    public boolean isPermanentlyClosed() {
+        return permanentlyClosed;
+    }
+
+    public int getRating() {
+        return rating;
     }
 
     public boolean isVerified() {
@@ -177,6 +189,14 @@ public class Store implements Serializable {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public void setPermanentlyClosed(boolean permanentlyClosed) {
+        this.permanentlyClosed = permanentlyClosed;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
     }
 
     public Optional<Position> getDefaultPosition() {
@@ -357,6 +377,8 @@ public class Store implements Serializable {
                 "location = " + location + ", " +
                 "name = " + name + ", " +
                 "phone = " + phone + ", " +
+                "permanentlyClosed = " + permanentlyClosed + ", " +
+                "rating = " + rating + ", " +
                 "verified = " + verified + ")";
     }
 }

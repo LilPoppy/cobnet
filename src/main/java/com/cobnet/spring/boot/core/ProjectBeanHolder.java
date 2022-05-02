@@ -172,6 +172,21 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.FILE_INFO_REPOSITORY;
     }
 
+    public static StoreRepository getStoreRepository() {
+
+        return ProjectBeanHolder.STORE_REPOSITORY;
+    }
+
+    public static StoreOrderRepository getStoreOrderRepository() {
+
+        return ProjectBeanHolder.STORE_ORDER_REPOSITORY;
+    }
+
+    public static WorkRepository getWorkRepository() {
+
+        return ProjectBeanHolder.WORK_REPOSITORY;
+    }
+
     public static FileSource getFileSource() {
 
         return ProjectBeanHolder.FILE_SOURCE;

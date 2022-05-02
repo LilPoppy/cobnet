@@ -1,13 +1,12 @@
 package com.cobnet.spring.boot.service;
 
-import com.cobnet.common.KeyValuePair;
+import com.cobnet.common.Delegate;
 import com.cobnet.exception.ServiceDownException;
 import com.cobnet.interfaces.spring.repository.StoreRepository;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.*;
 import com.cobnet.spring.boot.dto.support.*;
 import com.cobnet.spring.boot.entity.Store;
-import com.cobnet.spring.boot.entity.support.Gender;
 import com.google.maps.errors.ApiException;
 import com.google.maps.errors.InvalidRequestException;
 import com.google.maps.model.AddressComponent;
@@ -36,6 +35,36 @@ public class StoreService {
     }
 
     public ResponseResult<GoogleApiRequestResultStatus> details(String storeId) {
+
+        Optional<Store> store = repository.findById(storeId);
+
+        if(store.isPresent()) {
+
+            return new ResponseResult<>(GoogleApiRequestResultStatus.SUCCESS,
+                    new ObjectWrapper<>("name", store.get().getName()),
+                    new AddressForm(store.get().getLocation().getStreet(), store.get().getLocation().getUnit(), store.get().getLocation().getCity(), store.get().getLocation().getState(), store.get().getLocation().getCountry(), store.get().getLocation().getZipCode()),
+                    new ObjectWrapper<>("is-permanently-closed", store.get().isPermanentlyClosed()),
+                    new ObjectWrapper<>("phone-number", store.get().getPhone()),
+                    new ObjectWrapper<>("rating", store.get().getRating()),
+                    new ObjectWrapper<>("created", true));
+        }
+
+        return googleDetails(storeId);
+    }
+
+    public Store fetch(Store store) {
+
+        ResponseResult<GoogleApiRequestResultStatus> result = googleDetails(store.getId());
+
+        if(result.status() == GoogleApiRequestResultStatus.SUCCESS) {
+
+            return store;
+        }
+
+        throw new
+    }
+
+    public ResponseResult<GoogleApiRequestResultStatus> googleDetails(String storeId) {
 
         try {
 
@@ -108,18 +137,16 @@ public class StoreService {
         }
     }
 
-    public ResponseResult<StoreRegisterResultStatus> register(StoreRegisterForm storeForm) {
+    public ResponseResult<StoreRegisterResultStatus> register(String storeId) {
 
-        Store store = storeForm.getEntity();
+        ResponseResult<GoogleApiRequestResultStatus> details = this.details(storeId);
 
-        Optional<Store> existent = repository.findById(store.getId());
+        ObjectWrapper createdWrapper = details.get(ObjectWrapper.class, "created");
 
-        if(existent.isPresent()) {
+        if(createdWrapper != null && (boolean)createdWrapper.getValue()) {
 
-            return new ResponseResult<>(StoreRegisterResultStatus.STORE_REGISTERED);
+            return new ResponseResult<>(StoreRegisterResultStatus.STORE_ALREADY_REGISTERED);
         }
-
-        ResponseResult<GoogleApiRequestResultStatus> details = this.details(store.getId());
 
         if((boolean)details.get(ObjectWrapper.class, "is-permanently-closed").getValue()) {
 
@@ -138,11 +165,7 @@ public class StoreService {
 
         if(details.status() == GoogleApiRequestResultStatus.SUCCESS) {
 
-            store.setName((String) details.get(ObjectWrapper.class, "name").getValue());
-            store.setLocation(details.get(AddressForm.class).getEntity());
-            store.setPhone((String) details.get(ObjectWrapper.class, "phone-number").getValue());
-
-            repository.save(store);
+            repository.save(new Store.Builder().setPlaceId(storeId).setName((String) details.get(ObjectWrapper.class, "name").getValue()).setLocation(details.get(AddressForm.class).getEntity()).setPhone((String) details.get(ObjectWrapper.class, "phone-number").getValue()).build());
 
             return new ResponseResult<>(StoreRegisterResultStatus.SUCCESS);
         }
@@ -161,6 +184,9 @@ public class StoreService {
 
         try {
 
+            final String textMale = ProjectBeanHolder.getTranslatorMessageSource().getMessage("gender.male", locale);
+            final String textFemale = ProjectBeanHolder.getTranslatorMessageSource().getMessage("gender.female", locale);
+
             List<String> referralOptions = new ArrayList<>();
 
             for(SurveyReferralOption option : SurveyReferralOption.values()) {
@@ -168,22 +194,54 @@ public class StoreService {
                 referralOptions.add(ProjectBeanHolder.getTranslatorMessageSource().getMessage(option.getKey(), locale));
             }
 
-            //显示所有可执行的服务项目
-            store.get().getServices().stream().forEach(service -> {
+            List<com.cobnet.spring.boot.entity.Service> services = new ArrayList<>();
 
-            });
+            for(com.cobnet.spring.boot.entity.Service service : store.get().getServices()) {
+
+                service.setName(ProjectBeanHolder.getTranslatorMessageSource().getMessage(service.getName(), locale));
+            }
+
+            //显示所有可执行的服务项目
+//            store.get().getServices().stream().forEach(service -> {
+//
+//            });
 
             //再创建一个方法
 
-            return new ResponseResult<>(StoreCheckInPageDetailResultStatus.SUCCESS, new DynamicPage(new DynamicPageProperties(),
-                new StepContainerPageField(0, "firstName", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.first-name", locale), PageFieldType.INPUT, new DynamicPageFieldProperties()),
-                new StepContainerPageField(0, "lastName", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.last-name", locale), PageFieldType.INPUT, new DynamicPageFieldProperties()),
-                new StepContainerPageField(1, "gender", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.gender", locale), PageFieldType.RADIO, new DynamicPageFieldProperties(new KeyValuePair<>("list", Gender.values()))),
-                new StepContainerPageField(2, "phoneNumber", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.phone-number", locale), PageFieldType.INPUT, new DynamicPageFieldProperties()),
-                new StepContainerPageField(3, "referral", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.referral", locale), PageFieldType.RADIO, new DynamicPageFieldProperties(new KeyValuePair<>("list", referralOptions)))
+            return new ResponseResult<>(StoreCheckInPageDetailResultStatus.SUCCESS, new DynamicPage(new Properties(),
+                new StepContainerPageField(0, "firstName", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.first-name", locale), PageFieldType.INPUT, new Properties()),
+                new StepContainerPageField(0, "lastName", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.last-name", locale), PageFieldType.INPUT, new Properties()),
+                new StepContainerPageField(1, "gender", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.gender", locale), new DynamicPageField(PageFieldType.RADIO, new Delegate<>(new Properties()).invoke(delegator -> {
+
+                    delegator.put("data-score", "gender");
+                    delegator.put("label", textMale);
+
+                    return delegator;
+
+                })), new DynamicPageField(PageFieldType.RADIO, new Delegate<>(new Properties()).invoke(delegator -> {
+
+                    delegator.put("data-score", "gender");
+                    delegator.put("label", textFemale);
+
+                    return delegator;
+
+                }))),
+                new StepContainerPageField(2, "phoneNumber", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.phone-number", locale), PageFieldType.INPUT, new Properties()),
+                new StepContainerPageField(3, "referral", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.referral", locale), referralOptions.stream().map(option -> new DynamicPageField(PageFieldType.RADIO, new Delegate<>(new Properties()).invoke(delegator -> {
+
+                    delegator.put("label", option);
+
+                    return  delegator;
+
+                }))).toArray(DynamicPageField[]::new)),
+                new StepContainerPageField(4, "services", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.service-select", locale, services.stream().map(service -> new DynamicPageField(PageFieldType.CHECK_BOX, new Delegate<>(new Properties()).invoke(delegator -> {
+
+                    delegator.put("label", service.getName());
+
+                    return delegator;
+
+                })))))
             ));
-
-
 
         } catch (ServiceDownException ex) {
 
