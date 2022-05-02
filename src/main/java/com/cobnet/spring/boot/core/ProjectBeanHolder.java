@@ -906,9 +906,9 @@ public class ProjectBeanHolder {
         }
 
         @Bean
-        public FileSource fileSourceBean(FileSourceConfiguration configuration) {
+        public FileSource fileSourceBean(FileInfoRepository repository, FileSourceConfiguration configuration) {
 
-            return new LocalFileSource(configuration);
+            return new LocalFileSource(repository, configuration);
         }
 
     }

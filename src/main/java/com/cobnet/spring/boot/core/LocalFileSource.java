@@ -1,6 +1,7 @@
 package com.cobnet.spring.boot.core;
 
 import com.cobnet.interfaces.FileSource;
+import com.cobnet.interfaces.spring.repository.FileInfoRepository;
 import com.cobnet.spring.boot.configuration.FileSourceConfiguration;
 import com.cobnet.spring.boot.entity.FileInfo;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -14,10 +15,13 @@ import java.nio.file.Paths;
 
 public class LocalFileSource implements FileSource {
 
+    private final FileInfoRepository repository;
+
     private final FileSourceConfiguration configuration;
 
-    LocalFileSource(FileSourceConfiguration configuration) {
+    LocalFileSource(FileInfoRepository repository, FileSourceConfiguration configuration) {
 
+        this.repository = repository;
         this.configuration = configuration;
     }
 
@@ -53,7 +57,7 @@ public class LocalFileSource implements FileSource {
 
         Files.copy(stream, path);
 
-        ProjectBeanHolder.getFileInfoRepository().save(info);
+        repository.save(info);
     }
 
     @Override
@@ -64,7 +68,7 @@ public class LocalFileSource implements FileSource {
             info.setHash(info.generateHash());
         }
 
-        ProjectBeanHolder.getFileInfoRepository().save(info);
+        repository.save(info);
 
         Path path = Paths.get(configuration.getUrl().getPath()).resolve(info.getHash());
 
