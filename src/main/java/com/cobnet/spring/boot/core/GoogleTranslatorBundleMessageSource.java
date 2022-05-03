@@ -128,12 +128,12 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
 
     public String getMessage(String message, Object... args) throws IOException, ServiceDownException {
 
-        return this.getMessage(message, message, null, args);
+        return this.getMessage(message, null, null, args);
     }
 
     public String getMessage(String message, Locale locale, Object... args) throws IOException, ServiceDownException {
 
-        return this.getMessage(message, message, locale, args);
+        return this.getMessage(message, null, locale, args);
     }
 
     @Nullable
