@@ -1,7 +1,8 @@
 package com.cobnet.spring.boot.entity;
 
 import com.cobnet.interfaces.spring.dto.ServiceOption;
-import com.cobnet.spring.boot.entity.support.JsonServiceAttributeConverter;
+import com.cobnet.spring.boot.entity.support.JsonServiceAttributesConverter;
+import com.cobnet.spring.boot.entity.support.JsonWorkAttributesConverter;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -31,9 +32,9 @@ public class Service implements Serializable {
     private long price;
 
     @SuppressWarnings("JpaAttributeTypeInspection")
-    @Convert(converter = JsonServiceAttributeConverter.class)
+    @Convert(converter = JsonServiceAttributesConverter.class)
     @Column(columnDefinition = "json")
-    private Map<? extends ServiceOption<?>, ?> attribute = new HashMap<>();
+    private Set<? extends ServiceOption<?>> attributes = new HashSet<>();
 
     @LazyCollection(LazyCollectionOption.FALSE)
     @OneToMany(mappedBy = "service")
@@ -47,11 +48,11 @@ public class Service implements Serializable {
         this.name = name;
     }
 
-    public Service(String name, long price, Map.Entry<ServiceOption<?>, Object>... attributes) {
+    public Service(String name, long price, ServiceOption<?>... attributes) {
 
         this.name = name;
         this.price = price;
-        this.attribute = Arrays.stream(attributes).collect(Collectors.toMap(Map.Entry<ServiceOption<?>, Object>::getKey, Map.Entry<ServiceOption<?>, Object>::getValue));
+        this.attributes = Arrays.stream(attributes).collect(Collectors.toSet());
     }
 
     public String getName() {
@@ -70,8 +71,8 @@ public class Service implements Serializable {
         return price;
     }
 
-    public Map<? extends ServiceOption<?>, ?> getAttribute() {
-        return attribute;
+    public Set<? extends ServiceOption<?>> getAttributes() {
+        return attributes;
     }
 
     public void setName(String name) {
@@ -105,6 +106,6 @@ public class Service implements Serializable {
                 "store = " + store.getName() + ", " +
                 "name = " + name + ", " +
                 "price = " + price + ", " +
-                "attribute = " + attribute + ")";
+                "attribute = " + attributes + ")";
     }
 }

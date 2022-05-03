@@ -35,7 +35,7 @@ public class StoreController {
 
     @AccessSecured(roles = "USER")
     @PostMapping("/store/find-place")
-    public ResponseResult<GoogleApiRequestResultStatus> findPlace(HttpServletRequest request, HttpServletResponse response, String name, @RequestParam(name = "postal-code") int postalCode) {
+    public ResponseResult<GoogleApiRequestResultStatus> findPlace(HttpServletRequest request, HttpServletResponse response, String name, @RequestParam(name = "postal-code") String postalCode) {
 
         ResponseResult<GoogleApiRequestResultStatus> result = ProjectBeanHolder.getStoreService().find(request, name, postalCode);
 

@@ -1,6 +1,7 @@
 package com.cobnet.spring.boot.service;
 
 import com.cobnet.common.Delegate;
+import com.cobnet.exception.ResponseFailureStatusException;
 import com.cobnet.exception.ServiceDownException;
 import com.cobnet.interfaces.spring.repository.StoreRepository;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
@@ -26,10 +27,10 @@ public class StoreService {
     @Autowired
     private StoreRepository repository;
 
-    public ResponseResult<GoogleApiRequestResultStatus> find(HttpServletRequest request, String name, int postalCode) {
+    public ResponseResult<GoogleApiRequestResultStatus> find(HttpServletRequest request, String name, String postalCode) {
 
         AddressForm form = new AddressForm();
-        form.setZipCode(postalCode);
+        form.setPostalCode(postalCode);
 
         return ProjectBeanHolder.getGoogleMapService().autocompleteRequest(request, PlaceAutocompleteType.ESTABLISHMENT, form, name);
     }
@@ -42,7 +43,7 @@ public class StoreService {
 
             return new ResponseResult<>(GoogleApiRequestResultStatus.SUCCESS,
                     new ObjectWrapper<>("name", store.get().getName()),
-                    new AddressForm(store.get().getLocation().getStreet(), store.get().getLocation().getUnit(), store.get().getLocation().getCity(), store.get().getLocation().getState(), store.get().getLocation().getCountry(), store.get().getLocation().getZipCode()),
+                    new AddressForm(store.get().getLocation().getStreet(), store.get().getLocation().getUnit(), store.get().getLocation().getCity(), store.get().getLocation().getState(), store.get().getLocation().getCountry(), store.get().getLocation().getPostalCode()),
                     new ObjectWrapper<>("is-permanently-closed", store.get().isPermanentlyClosed()),
                     new ObjectWrapper<>("phone-number", store.get().getPhone()),
                     new ObjectWrapper<>("rating", store.get().getRating()),
@@ -52,16 +53,22 @@ public class StoreService {
         return googleDetails(storeId);
     }
 
-    public Store fetch(Store store) {
+    public Store fetch(Store store) throws ResponseFailureStatusException {
 
         ResponseResult<GoogleApiRequestResultStatus> result = googleDetails(store.getId());
 
-        if(result.status() == GoogleApiRequestResultStatus.SUCCESS) {
+        if(result.status() == GoogleApiRequestResultStatus.SUCCESS && result.contents().length > 0) {
+
+            store.setName((String) result.get(ObjectWrapper.class, "name").getValue());
+            store.setLocation(result.get(AddressForm.class).getEntity());
+            store.setPhone((String) result.get(ObjectWrapper.class, "phone-number").getValue());
+            store.setPermanentlyClosed((Boolean) result.get(ObjectWrapper.class, "is-permanently-closed").getValue());
+            store.setRating((Float) result.get(ObjectWrapper.class, "rating").getValue());
 
             return store;
         }
 
-        throw new
+        throw new ResponseFailureStatusException(result.status());
     }
 
     public ResponseResult<GoogleApiRequestResultStatus> googleDetails(String storeId) {
@@ -119,7 +126,7 @@ public class StoreService {
 
             return new ResponseResult<>(GoogleApiRequestResultStatus.SUCCESS,
                     new ObjectWrapper<>("name", details.name),
-                    new AddressForm(street.toString(), unit.toString(), city.toString(), state.toString(), country.toString(), Integer.parseInt(postalCode.toString())),
+                    new AddressForm(street.toString(), unit.toString(), city.toString(), state.toString(), country.toString(), postalCode.toString()),
                     new ObjectWrapper<>("is-permanently-closed", details.permanentlyClosed),
                     new ObjectWrapper<>("phone-number", details.internationalPhoneNumber),
                     new ObjectWrapper<>("rating", details.rating));
@@ -139,38 +146,37 @@ public class StoreService {
 
     public ResponseResult<StoreRegisterResultStatus> register(String storeId) {
 
-        ResponseResult<GoogleApiRequestResultStatus> details = this.details(storeId);
-
-        ObjectWrapper createdWrapper = details.get(ObjectWrapper.class, "created");
-
-        if(createdWrapper != null && (boolean)createdWrapper.getValue()) {
+        if(repository.findById(storeId).isPresent()) {
 
             return new ResponseResult<>(StoreRegisterResultStatus.STORE_ALREADY_REGISTERED);
         }
 
-        if((boolean)details.get(ObjectWrapper.class, "is-permanently-closed").getValue()) {
+        try {
 
-            return new ResponseResult<>(StoreRegisterResultStatus.STORE_PERMANENTLY_CLOSED);
-        }
+            Store store = this.fetch(new Store.Builder().setPlaceId(storeId).build());
 
-        if(details.status() == GoogleApiRequestResultStatus.SERVICE_DOWN) {
+            if(store.isPermanentlyClosed()) {
 
-            return new ResponseResult<>(StoreRegisterResultStatus.SERVICE_DOWN);
-        }
+                return new ResponseResult<>(StoreRegisterResultStatus.STORE_PERMANENTLY_CLOSED);
+            }
 
-        if(details.contents().length == 0) {
-
-            return new ResponseResult<>(StoreRegisterResultStatus.STORE_NONEXISTENT);
-        }
-
-        if(details.status() == GoogleApiRequestResultStatus.SUCCESS) {
-
-            repository.save(new Store.Builder().setPlaceId(storeId).setName((String) details.get(ObjectWrapper.class, "name").getValue()).setLocation(details.get(AddressForm.class).getEntity()).setPhone((String) details.get(ObjectWrapper.class, "phone-number").getValue()).build());
+            repository.save(store);
 
             return new ResponseResult<>(StoreRegisterResultStatus.SUCCESS);
-        }
 
-        return new ResponseResult<>(StoreRegisterResultStatus.SERVICE_DOWN);
+        } catch (ResponseFailureStatusException ex) {
+
+            GoogleApiRequestResultStatus status = (GoogleApiRequestResultStatus) ex.getStatus();
+
+            return switch (status) {
+
+                case SUCCESS, BAD_REQUEST -> new ResponseResult<>(StoreRegisterResultStatus.STORE_NONEXISTENT);
+                case FAILED, SERVICE_DOWN -> new ResponseResult<>(StoreRegisterResultStatus.SERVICE_DOWN);
+                case EXHAUSTED -> new ResponseResult<>(StoreRegisterResultStatus.EXHAUSTED);
+                case HUMAN_VALIDATION_REQUEST -> new ResponseResult<>(StoreRegisterResultStatus.HUMAN_VALIDATION_REQUEST);
+                case REJECTED -> new ResponseResult<>(StoreRegisterResultStatus.SECURITY_CHECK);
+            };
+        }
     }
 
     public ResponseResult<StoreCheckInPageDetailResultStatus> getStoreCheckInPageDetail(String storeId, Locale locale) throws IOException {
@@ -208,6 +214,8 @@ public class StoreService {
 
             //再创建一个方法
 
+            var aaa = new StaffRequiredServiceOption(null, 1);
+
             return new ResponseResult<>(StoreCheckInPageDetailResultStatus.SUCCESS, new DynamicPage(new Properties(),
                 new StepContainerPageField(0, "firstName", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.first-name", locale), PageFieldType.INPUT, new Properties()),
                 new StepContainerPageField(0, "lastName", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.last-name", locale), PageFieldType.INPUT, new Properties()),
@@ -240,15 +248,14 @@ public class StoreService {
 
                     return delegator;
 
-                })))))
+                }))))),
+                new StepContainerPageField(5, aaa.name(), aaa.getDisplayDescription(locale), aaa.getFields(locale))
             ));
 
         } catch (ServiceDownException ex) {
 
             return new ResponseResult<>(StoreCheckInPageDetailResultStatus.SERVICE_DOWN);
         }
-
-
 
     }
 }

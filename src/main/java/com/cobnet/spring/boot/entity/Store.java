@@ -24,7 +24,7 @@ public class Store implements Serializable {
             inverseJoinColumns = {
                     @JoinColumn(name = "STREET", referencedColumnName = "STREET"),
                     @JoinColumn(name = "UNIT", referencedColumnName = "UNIT"),
-                    @JoinColumn(name = "ZIPCODE", referencedColumnName = "ZIPCODE")})
+                    @JoinColumn(name = "POSTAL_CODE", referencedColumnName = "POSTALCODE")})
     private Address location;
 
     private String name;
@@ -33,7 +33,7 @@ public class Store implements Serializable {
 
     private boolean permanentlyClosed;
 
-    private int rating;
+    private float rating;
 
     //TODO verify information
     private boolean verified;
@@ -109,7 +109,7 @@ public class Store implements Serializable {
         return permanentlyClosed;
     }
 
-    public int getRating() {
+    public float getRating() {
         return rating;
     }
 
@@ -195,7 +195,7 @@ public class Store implements Serializable {
         this.permanentlyClosed = permanentlyClosed;
     }
 
-    public void setRating(int rating) {
+    public void setRating(float rating) {
         this.rating = rating;
     }
 
@@ -213,6 +213,10 @@ public class Store implements Serializable {
         private String name;
 
         private String phone;
+
+        private boolean permanentlyClosed;
+
+        private float rating;
 
         private Set<Object> services = new HashSet<>();
 
@@ -244,6 +248,20 @@ public class Store implements Serializable {
         public Builder setPhone(String phone) {
 
             this.phone = phone;
+
+            return this;
+        }
+
+        public Builder setPermanentlyClosed(boolean permanentlyClosed) {
+
+            this.permanentlyClosed = permanentlyClosed;
+
+            return this;
+        }
+
+        public Builder setRating(float rating) {
+
+            this.rating = rating;
 
             return this;
         }
@@ -309,6 +327,8 @@ public class Store implements Serializable {
         public Store build() {
 
             Store store = new Store(this.placeId, this.location, this.name, this.phone, new HashSet<>(), new HashSet<>());
+            store.setPermanentlyClosed(this.permanentlyClosed);
+            store.setRating(this.rating);
 
             store.services = this.services.stream().map(service -> {
 

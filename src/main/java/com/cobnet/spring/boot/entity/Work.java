@@ -2,7 +2,7 @@ package com.cobnet.spring.boot.entity;
 
 import com.cobnet.interfaces.spring.dto.ServiceOption;
 import com.cobnet.spring.boot.dto.support.WorkStatus;
-import com.cobnet.spring.boot.entity.support.JsonServiceAttributeConverter;
+import com.cobnet.spring.boot.entity.support.JsonWorkAttributesConverter;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Entity
 public class Work extends EntityBase implements Serializable {
@@ -40,9 +41,9 @@ public class Work extends EntityBase implements Serializable {
     private Service service;
 
     @SuppressWarnings("JpaAttributeTypeInspection")
-    @Convert(converter = JsonServiceAttributeConverter.class)
+    @Convert(converter = JsonWorkAttributesConverter.class)
     @Column(columnDefinition = "json")
-    private Map<? extends ServiceOption<?>, ?> attribute = new HashMap<>();
+    private Map<String, ? extends ServiceOption<?>> attributes = new HashMap<>();
 
     @Enumerated
     @Column(name = "status")
@@ -57,7 +58,7 @@ public class Work extends EntityBase implements Serializable {
         this.order = order;
         this.workers = workers;
         this.service = service;
-        this.attribute = new HashMap<>(this.service.getAttribute());
+        this.attributes = this.service.getAttributes().stream().map(option -> Map.entry(option.name(), option)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         this.status = status;
     }
 
@@ -91,7 +92,8 @@ public class Work extends EntityBase implements Serializable {
         this.status = status;
     }
 
-    public Map<? extends ServiceOption<?>, ?> getAttribute() {
-        return attribute;
+    public Map<String, ? extends ServiceOption<?>> getAttributes() {
+        return attributes;
     }
+
 }

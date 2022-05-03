@@ -1,26 +1,40 @@
 package com.cobnet.interfaces.spring.dto;
 
+import com.cobnet.exception.ServiceDownException;
+import com.cobnet.interfaces.connection.web.ApplicationJson;
+import com.cobnet.interfaces.connection.web.PageField;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
+import com.cobnet.spring.boot.entity.Work;
 
-import java.io.Serializable;
+import java.io.IOException;
+import java.util.Locale;
 
-public interface ServiceOption<T> extends Serializable {
+public interface ServiceOption<T> extends ApplicationJson {
 
-    String name();
+    public String name();
 
-    Class<T> type();
+    public String description();
 
-    public static ServiceOption<?> generate(String name) {
+    public default String getDisplayName(Locale locale) throws IOException, ServiceDownException {
 
-        String[] beans = ProjectBeanHolder.getSpringContext().getBeanNamesForType(ServiceOptionGenerator.class);
-
-        for(String bean : beans) {
-
-            return ProjectBeanHolder.getSpringContext().getBean(bean, ServiceOptionGenerator.class).generate(name);
-        }
-
-        return null;
+        return ProjectBeanHolder.getTranslatorMessageSource().getMessage(name(), locale, value());
     }
 
-    public ServiceOptionGenerator<? extends ServiceOption<T>, T> getGenerator();
+    public default String getDisplayDescription(Locale locale) throws IOException, ServiceDownException {
+
+        return ProjectBeanHolder.getTranslatorMessageSource().getMessage(description(), locale, value());
+    }
+
+    public T value();
+
+    public void setValue(T value);
+
+    public PageField[] fields();
+
+    public PageField[] getFields(Locale locale);
+
+    public boolean isModifiable();
+
+    public boolean received(Work work, T value);
+
 }

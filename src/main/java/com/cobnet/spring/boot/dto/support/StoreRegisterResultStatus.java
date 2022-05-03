@@ -6,9 +6,11 @@ public enum StoreRegisterResultStatus implements ReasonableStatus {
 
     SUCCESS(201),
     STORE_NONEXISTENT(400),
-    UNMATCHED_PHONE_NUMBER(400),
+    EXHAUSTED(400),
     STORE_PERMANENTLY_CLOSED(400),
     STORE_ALREADY_REGISTERED(400),
+    SECURITY_CHECK(403),
+    HUMAN_VALIDATION_REQUEST(400),
     SERVICE_DOWN(502);
 
     private final int code;
