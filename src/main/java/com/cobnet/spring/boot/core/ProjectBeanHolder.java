@@ -22,6 +22,7 @@ import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.hash.Jackson2HashMapper;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -880,9 +881,9 @@ public class ProjectBeanHolder {
         }
 
         @Bean
-        public ObjectMapper objectMapperBean() {
+        public ObjectMapper objectMapperBean(Jackson2ObjectMapperBuilder builder) {
 
-            ObjectMapper mapper = new ObjectMapper();
+            ObjectMapper mapper = builder.build();
             mapper.registerModule(new JavaTimeModule());
             mapper.registerModule(new DTOModule());
             mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
