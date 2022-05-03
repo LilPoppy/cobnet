@@ -62,7 +62,7 @@ public class AccountService {
                 throw new AuthenticationSecurityException(AuthenticationStatus.HUMAN_VALIDATION_REQUEST);
             }
 
-            if(!ProjectBeanHolder.getSecurityConfiguration().isSessionLimitEnable() || ProjectBeanHolder.getSecurityConfiguration().getSessionCreatedTimeRequire().compareTo(DateUtils.getInterval(new Date(session.getCreationTime()), DateUtils.now())) > 0) {
+            if(ProjectBeanHolder.getSecurityConfiguration().isSessionLimitEnable() && ProjectBeanHolder.getSecurityConfiguration().getSessionCreatedTimeRequire().compareTo(DateUtils.getInterval(new Date(session.getCreationTime()), DateUtils.now())) > 0) {
 
                 throw new AuthenticationSecurityException(AuthenticationStatus.REJECTED, "Session is too new.");
             }

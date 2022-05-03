@@ -21,7 +21,7 @@ public class HumanValidatorService {
 
     public <T extends Serializable> ResponseResult<HumanValidationRequestStatus> create(T key) throws IOException {
 
-        if(!ProjectBeanHolder.getSecurityConfiguration().isSessionLimitEnable() || (ProjectBeanHolder.getCurrentHttpRequest() == null || ProjectBeanHolder.getSecurityConfiguration().getSessionCreatedTimeRequire().compareTo(DateUtils.getInterval(new Date(ProjectBeanHolder.getCurrentHttpRequest().getSession(true).getCreationTime()), DateUtils.now())) > 0)) {
+        if(ProjectBeanHolder.getSecurityConfiguration().isSessionLimitEnable() && (ProjectBeanHolder.getCurrentHttpRequest() == null || ProjectBeanHolder.getSecurityConfiguration().getSessionCreatedTimeRequire().compareTo(DateUtils.getInterval(new Date(ProjectBeanHolder.getCurrentHttpRequest().getSession(true).getCreationTime()), DateUtils.now())) > 0)) {
 
             return new ResponseResult<>(HumanValidationRequestStatus.REJECTED);
         }
