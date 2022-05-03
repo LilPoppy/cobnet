@@ -10,13 +10,7 @@ public class StepContainerPageField extends DynamicPageField {
 
     public StepContainerPageField(int groupId, String key, String label, PageFieldType type, Properties properties, PageField... children) {
 
-        this(groupId, key, null, new DynamicPageField(type, new Delegate<>(properties).invoke(delegator -> {
-
-            delegator.put("label", label);
-
-            return delegator;
-
-        }), children));
+        this(groupId, key, label, new DynamicPageField(type, properties, children));
     }
 
     public StepContainerPageField(int groupId, String key, String label, PageField... children) {

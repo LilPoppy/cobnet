@@ -3,6 +3,7 @@ package com.cobnet.spring.boot.service;
 import com.cobnet.common.Delegate;
 import com.cobnet.exception.ResponseFailureStatusException;
 import com.cobnet.exception.ServiceDownException;
+import com.cobnet.interfaces.spring.dto.ServiceOption;
 import com.cobnet.interfaces.spring.repository.StoreRepository;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.*;
@@ -144,6 +145,10 @@ public class StoreService {
         }
     }
 
+//    public ResponseResult<StoreServiceModifyResultStatus> save(String storeId, Set<ServiceOption> options) {
+//
+//    }
+
     public ResponseResult<StoreRegisterResultStatus> register(String storeId) {
 
         if(repository.findById(storeId).isPresent()) {
@@ -214,7 +219,7 @@ public class StoreService {
 
             //再创建一个方法
 
-            var aaa = new StaffRequiredServiceOption(null, 1);
+            var aaa = new StaffRequiredServiceOption(null, 1, new HashMap<>());
 
             return new ResponseResult<>(StoreCheckInPageDetailResultStatus.SUCCESS, new DynamicPage(new Properties(),
                 new StepContainerPageField(0, "firstName", ProjectBeanHolder.getTranslatorMessageSource().getMessage("label.first-name", locale), PageFieldType.INPUT, new Properties()),

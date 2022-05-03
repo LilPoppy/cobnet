@@ -21,6 +21,7 @@ public class Work extends EntityBase implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    public long price;
 
     @ManyToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -60,12 +61,17 @@ public class Work extends EntityBase implements Serializable {
         this.service = service;
         this.attributes = this.service.getAttributes().stream().map(option -> Map.entry(option.name(), option)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         this.status = status;
+        this.price = service.getPrice();
     }
 
     public Work() {}
 
     public long getId() {
         return id;
+    }
+
+    public long getPrice() {
+        return price;
     }
 
     public StoreOrder getOrder() {
@@ -86,6 +92,10 @@ public class Work extends EntityBase implements Serializable {
 
     public void setOrder(StoreOrder order) {
         this.order = order;
+    }
+
+    public void setPrice(long price) {
+        this.price = price;
     }
 
     public void setStatus(WorkStatus status) {
