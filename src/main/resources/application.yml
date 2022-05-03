@@ -91,7 +91,7 @@ spring:
                ssl:
                   enable: true
    security:
-      session-limit-enable: true
+      session-limit-enable: false
       session-created-time-require: 5s
       username-format-regex: ^[a-zA-Z0-9]{6,16}$
       password-format-regex: ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$

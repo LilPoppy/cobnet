@@ -38,7 +38,7 @@ public class GoogleMapService {
             return new ResponseResult<>(GoogleApiRequestResultStatus.HUMAN_VALIDATION_REQUEST);
         }
 
-        if(!ProjectBeanHolder.getSecurityConfiguration().isSessionLimitEnable() || ProjectBeanHolder.getSecurityConfiguration().getSessionCreatedTimeRequire().compareTo(DateUtils.getInterval(new Date(session.getCreationTime()), DateUtils.now())) > 0) {
+        if(ProjectBeanHolder.getSecurityConfiguration().isSessionLimitEnable() && ProjectBeanHolder.getSecurityConfiguration().getSessionCreatedTimeRequire().compareTo(DateUtils.getInterval(new Date(session.getCreationTime()), DateUtils.now())) > 0) {
 
             return new ResponseResult<>(GoogleApiRequestResultStatus.REJECTED);
         }
