@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 
 public class LocalFileSource implements FileSource {
 
@@ -32,7 +33,14 @@ public class LocalFileSource implements FileSource {
             info.setHash(info.generateHash());
         }
 
+        String[] nodes = info.getName().split("/");
+
         Path path = Paths.get(configuration.getUrl().getPath());
+
+        if(nodes.length > 1) {
+
+            path = path.resolve(String.join("/", Arrays.copyOfRange(nodes, 0, nodes.length - 1)));
+        }
 
         Files.createDirectories(path);
 
@@ -69,7 +77,16 @@ public class LocalFileSource implements FileSource {
             repository.save(info);
         }
 
-        Path path = Paths.get(configuration.getUrl().getPath()).resolve(info.getHash());
+        String[] nodes = info.getName().split("/");
+
+        Path path = Paths.get(configuration.getUrl().getPath());
+
+        if(nodes.length > 1) {
+
+            path = path.resolve(String.join("/", Arrays.copyOfRange(nodes,0,nodes.length - 1)));
+        }
+
+        path = path.resolve(info.getHash());
 
         File file = path.toFile();
 

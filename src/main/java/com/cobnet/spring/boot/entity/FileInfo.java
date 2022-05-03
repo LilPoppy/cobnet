@@ -1,6 +1,7 @@
 package com.cobnet.spring.boot.entity;
 
 import com.cobnet.common.cipher.HashDigest;
+import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -92,7 +93,7 @@ public class FileInfo extends EntityBase implements Serializable {
 
         try {
 
-            return new String(HashDigest.encrypt("MD5", new StringBuilder().append(this.name).append(this.memeType).append(this.hash).toString()));
+            return Hex.encodeHexString(HashDigest.encrypt("MD5", new StringBuilder().append(this.name).append(this.memeType).append(this.hash).toString()));
 
         } catch (NoSuchAlgorithmException ex) {
 
