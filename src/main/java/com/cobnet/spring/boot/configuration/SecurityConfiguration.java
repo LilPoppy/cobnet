@@ -536,6 +536,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         private String redirectUrl;
 
+        private String loginSuccessUrl;
+
         private String loginFailureUrl;
 
         public String getAuthenticationUrl() {
@@ -544,6 +546,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         public String getRedirectUrl() {
             return redirectUrl;
+        }
+
+        public String getLoginSuccessUrl() {
+            return loginSuccessUrl;
         }
 
         public String getLoginFailureUrl() {
@@ -556,6 +562,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         public void setRedirectUrl(String redirectUrl) {
             this.redirectUrl = redirectUrl;
+        }
+
+        public void setLoginSuccessUrl(String loginSuccessUrl) {
+            this.loginSuccessUrl = loginSuccessUrl;
         }
 
         public void setLoginFailureUrl(String loginFailureUrl) {

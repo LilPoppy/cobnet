@@ -125,8 +125,9 @@ spring:
       remember-me-parameter: "remember-me"
       oauth2:
          authentication-url: "/oauth2/login/authorization"
-         redirect-url: "/oauth2/login/code"
-#         login-failure-url: "/login?oauth2Failure=true"
+         redirect-url: "/login/oauth2/code"
+         login-success-url: "/tabPage"
+         login-failure-url: "/"
          client:
             registration:
                google:
