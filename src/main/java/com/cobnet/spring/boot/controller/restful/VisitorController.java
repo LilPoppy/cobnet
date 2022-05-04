@@ -1,11 +1,17 @@
 package com.cobnet.spring.boot.controller.restful;
 
+import com.cobnet.interfaces.security.Account;
+import com.cobnet.security.AccountAuthenticationToken;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.*;
 import com.cobnet.spring.boot.dto.support.*;
+import com.cobnet.spring.boot.entity.User;
 import com.google.maps.errors.ApiException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,6 +22,15 @@ import java.io.IOException;
 @Tag(name = "Visitor")
 @RestController
 public class VisitorController {
+
+    @Operation(summary = "Check this session is has been authenticated.")
+    @GetMapping("/visitor/is-authenticated")
+    public boolean isAuthenticated() {
+
+        SecurityContext context = SecurityContextHolder.getContext();
+
+        return context != null && ((context.getAuthentication() instanceof AccountAuthenticationToken account && account.isAuthenticated()) || (context.getAuthentication() instanceof OAuth2AuthenticationToken oauth2 && oauth2.isAuthenticated()));
+    }
 
     @Operation(summary = "Create session for visitor.")
     @RequestMapping(value = "/visitor/check-in", method = RequestMethod.OPTIONS)
