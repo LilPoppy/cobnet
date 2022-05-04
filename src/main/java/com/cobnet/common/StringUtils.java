@@ -7,6 +7,6 @@ public class StringUtils {
 
     public static Map.Entry<String, String> keyValuePair(String str, String open, String close) {
 
-        return new KeyValuePair<>(str.replaceAll("\\[.*?\\]", ""), org.apache.commons.lang.StringUtils.substringBetween(str, open, close));
+        return new KeyValuePair<>(str.replaceAll(open + ".*?" + close, ""), org.apache.commons.lang.StringUtils.substringBetween(str, open, close));
     }
 }
