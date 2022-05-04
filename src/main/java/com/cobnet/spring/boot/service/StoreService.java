@@ -213,7 +213,7 @@ public class StoreService {
             }
 
             //显示所有可执行的服务项目
-//            store.get().getServices().stream().forEach(service -> {
+//            store.get().getServices().encoded().forEach(service -> {
 //
 //            });
 

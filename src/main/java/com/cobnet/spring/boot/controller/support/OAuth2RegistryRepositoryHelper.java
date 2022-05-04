@@ -1,15 +1,16 @@
 package com.cobnet.spring.boot.controller.support;
 
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
+import com.cobnet.spring.boot.dto.Base64File;
 import com.cobnet.spring.boot.dto.OAuth2Registration;
 import org.springframework.core.ResolvableType;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class OAuth2RegistryRepositoryHelper {
 
@@ -31,7 +32,18 @@ public class OAuth2RegistryRepositoryHelper {
         }
 
         assert registrations != null;
-        registrations.forEach(registration -> urls.add(new OAuth2Registration(registration.getClientName(), baseUrl + "/" + registration.getRegistrationId())));
+        registrations.forEach(registration -> {
+
+            String format = ".svg";
+
+            try(InputStream stream = OAuth2RegistryRepositoryHelper.class.getResourceAsStream("/third-party/" + registration.getRegistrationId() + format)) {
+
+                urls.add(new OAuth2Registration(registration.getClientName(), baseUrl + "/" + registration.getRegistrationId(), new Base64File(stream, format)));
+
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         return urls;
     }

@@ -22,7 +22,7 @@ public class ServiceRegisterForm extends FormBase<ServiceRegisterForm, Service> 
 
         this.name = name;
         this.price = price;
-        //this.options = options != null ? options.entrySet().stream().map(option -> new KeyValuePair<>(ServiceOption.generate(option.getKey()), option.getValue())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)) : new HashMap<>();
+        //this.options = options != null ? options.entrySet().encoded().map(option -> new KeyValuePair<>(ServiceOption.generate(option.getKey()), option.getValue())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)) : new HashMap<>();
     }
 
     public String getName() {
