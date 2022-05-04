@@ -29,7 +29,7 @@ public class WorkInfoForm extends FormBase<WorkInfoForm, Work> {
         this.orderId = orderId;
         this.staffIds = staffIds;
         this.serviceId = serviceId;
-        //this.options = options != null ? options.entrySet().encoded().map(option -> new KeyValuePair<>(ServiceOption.generate(option.getKey()), option.getValue())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)) : new HashMap<>();;
+        //this.options = options != null ? options.entrySet().encode().map(option -> new KeyValuePair<>(ServiceOption.generate(option.getKey()), option.getValue())).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)) : new HashMap<>();;
     }
 
     @Override
