@@ -1,5 +1,6 @@
 package com.cobnet;
 
+import com.cobnet.common.StringUtils;
 import com.cobnet.connection.websocket.WebSocketServer;
 import com.cobnet.exception.ServiceDownException;
 import com.cobnet.security.RoleRule;
