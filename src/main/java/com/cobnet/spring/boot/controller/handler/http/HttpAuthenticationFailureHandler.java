@@ -14,6 +14,7 @@ import com.cobnet.spring.boot.entity.User;
 import com.cobnet.spring.boot.service.support.AttemptLoginCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -114,6 +115,7 @@ public class HttpAuthenticationFailureHandler implements AuthenticationFailureHa
 
         } else {
 
+            response.setStatus(HttpStatus.FOUND.value());
             ProjectBeanHolder.getRedirectStrategy().sendRedirect(request, response, url);
         }
     }
