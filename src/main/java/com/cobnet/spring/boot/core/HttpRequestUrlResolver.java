@@ -9,12 +9,12 @@ public class HttpRequestUrlResolver {
 
     public static String getSuccessRedirectUrl(HttpServletRequest request) {
 
-        return getResolvedUrl(request, request.getRequestURI().startsWith(ProjectBeanHolder.getSecurityConfiguration().getOauth2().getRedirectUrl()) ? ProjectBeanHolder.getSecurityConfiguration().getOauth2().getLoginSuccessUrl() : ProjectBeanHolder.getSecurityConfiguration().getLoginSuccessUrl());
+        return getResolvedUrl(request, request.getRequestURI().contains(ProjectBeanHolder.getSecurityConfiguration().getOauth2().getRedirectUrl()) ? ProjectBeanHolder.getSecurityConfiguration().getOauth2().getLoginSuccessUrl() : ProjectBeanHolder.getSecurityConfiguration().getLoginSuccessUrl());
     }
 
     public static String getFailureRedirectUrl(HttpServletRequest request) {
 
-        return getResolvedUrl(request, request.getRequestURI().startsWith(ProjectBeanHolder.getSecurityConfiguration().getOauth2().getRedirectUrl()) ? ProjectBeanHolder.getSecurityConfiguration().getOauth2().getLoginFailureUrl() : ProjectBeanHolder.getSecurityConfiguration().getLoginFailureUrl());
+        return getResolvedUrl(request, request.getRequestURI().contains(ProjectBeanHolder.getSecurityConfiguration().getOauth2().getRedirectUrl()) ? ProjectBeanHolder.getSecurityConfiguration().getOauth2().getLoginFailureUrl() : ProjectBeanHolder.getSecurityConfiguration().getLoginFailureUrl());
     }
 
     public static String getLogoutRedirectUrl(HttpServletRequest request) {
