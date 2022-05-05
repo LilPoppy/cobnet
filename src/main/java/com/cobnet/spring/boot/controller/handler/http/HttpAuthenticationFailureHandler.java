@@ -116,7 +116,7 @@ public class HttpAuthenticationFailureHandler implements AuthenticationFailureHa
         } else {
 
             response.setStatus(HttpStatus.FOUND.value());
-            ProjectBeanHolder.getRedirectStrategy().sendRedirect(request, response, url);
+            response.sendRedirect(url);
         }
     }
 }

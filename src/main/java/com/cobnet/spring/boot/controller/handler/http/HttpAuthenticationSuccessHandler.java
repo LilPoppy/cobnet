@@ -95,7 +95,7 @@ public class HttpAuthenticationSuccessHandler implements AuthenticationSuccessHa
 
         } else {
             response.setStatus(HttpStatus.FOUND.value());
-            ProjectBeanHolder.getRedirectStrategy().sendRedirect(request, response, url);
+            response.sendRedirect(url);
         }
     }
 }
