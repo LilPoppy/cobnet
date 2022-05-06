@@ -26,7 +26,10 @@ public interface FileSource {
 
     public default void write(@NotNull ByteArrayOutputStream stream, @NotNull FileInfo info) throws IOException {
 
-        this.write(new ByteArrayInputStream(stream.toByteArray()), info);
+        try (ByteArrayInputStream in = new ByteArrayInputStream(stream.toByteArray())) {
+
+            this.write(in, info);
+        }
     }
 
     public @Nullable InputStream read(@NotNull FileInfo info) throws IOException;
