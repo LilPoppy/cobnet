@@ -35,7 +35,7 @@ public class HumanValidatorService {
 
         if(cache != null) {
 
-            if(cache.getTimes() < ProjectBeanHolder.getSecurityConfiguration().getHumanValidationCreateIntervalLimitedTime() && DateUtils.addDuration(cache.getCreatedTime(), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationCreateInterval()).before(DateUtils.now())) {
+            if(cache.getTimes() < ProjectBeanHolder.getSecurityConfiguration().getHumanValidationCreateIntervalLimitedTime() || DateUtils.addDuration(cache.getCreatedTime(), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationCreateInterval()).before(DateUtils.now())) {
 
                 return generateImage(key);
             }

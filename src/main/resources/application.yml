@@ -101,7 +101,7 @@ spring:
       max-attempt-login-account-locks: true
       max-attempt-login-account-locks-duration: 30m
       human-validation-enable: false
-      human-validation-create-interval-limited-time: 3
+      human-validation-create-interval-limited-time: 5
       human-validation-create-interval: 30s
       human-validation-expire: 10m
       phone-number-verify-enable: true

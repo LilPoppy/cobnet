@@ -31,6 +31,12 @@ public class PuzzledImage implements Serializable {
 
     private final int jigsawY;
 
+    private static final int EMPTY = 0;
+
+    private static final int COLORED = 1;
+
+    private static final int FRAME = 2;
+
     public PuzzledImage(BufferedImage image, int jigsawWidth, int jigsawHeight, int circleR, int padding) throws IOException {
 
         this.jigsawWidth = jigsawWidth;
@@ -107,14 +113,17 @@ public class PuzzledImage implements Serializable {
 
                 if ((j <= y && d2 < circle) || (i >= x && d3 > circle)) {
 
-                    if((j == y || i == x)) {
-                        key[i][j] = 2;
-                    } else {
-                        key[i][j] = 0;
-                    }
-                }  else {
-                    key[i][j] = 1;
+                    key[i][j] = PuzzledImage.EMPTY;
+
+                }  else if((((j == 0 || i == 0 || j == jigsawHeight - 1 || i + 1 == x) && (d3 > circle || d2 < circle))) || (i >= x && (Math.pow(i - x2, 2) + Math.pow(j - 1 - location, 2)) > circle) || (j <= y && (Math.pow(j - 2, 2) + Math.pow(i + 1 - location, 2) < circle))) {
+
+                    key[i][j] = PuzzledImage.FRAME;
+
+                } else {
+
+                    key[i][j] = PuzzledImage.COLORED;
                 }
+
             }
         }
 
@@ -134,17 +143,21 @@ public class PuzzledImage implements Serializable {
 
                 int rgb_ori = image.getRGB(jigsawX + i, jigsawY + j);
 
-                if (rgb == 1) {
+                if (rgb == PuzzledImage.COLORED) {
 
                     jigsawImage.setRGB(i, j, rgb_ori);
                     readPixel(jigsawX + i, jigsawY + j, values);
                     fillMatrix(martrix, values);
                     image.setRGB(jigsawX + i, jigsawY + j, avgMatrix(martrix));
+
                 } else {
 
-                    if(rgb == 2) {
-                        jigsawImage.setRGB(i, j, Color.RED.getRGB());
+                    if(rgb == PuzzledImage.FRAME) {
+
+                        jigsawImage.setRGB(i, j, Color.lightGray.getRGB());
+
                     } else {
+
                         jigsawImage.setRGB(i, j, rgb_ori & 0x00ffffff);
                     }
                 }
