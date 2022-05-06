@@ -106,7 +106,12 @@ public class PuzzledImage implements Serializable {
                 double d3 = Math.pow(i - x2, 2) + Math.pow(j - location, 2);
 
                 if ((j <= y && d2 < circle) || (i >= x && d3 > circle)) {
-                    key[i][j] = 0;
+
+                    if((j == y || i == x)) {
+                        key[i][j] = 2;
+                    } else {
+                        key[i][j] = 0;
+                    }
                 }  else {
                     key[i][j] = 1;
                 }
@@ -135,9 +140,13 @@ public class PuzzledImage implements Serializable {
                     readPixel(jigsawX + i, jigsawY + j, values);
                     fillMatrix(martrix, values);
                     image.setRGB(jigsawX + i, jigsawY + j, avgMatrix(martrix));
-
                 } else {
-                    jigsawImage.setRGB(i, j, rgb_ori & 0x00ffffff);
+
+                    if(rgb == 2) {
+                        jigsawImage.setRGB(i, j, Color.RED.getRGB());
+                    } else {
+                        jigsawImage.setRGB(i, j, rgb_ori & 0x00ffffff);
+                    }
                 }
             }
         }

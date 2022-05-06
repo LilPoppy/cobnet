@@ -14,12 +14,15 @@ public class HumanValidationCache implements Serializable {
 
     private Date createdTime;
 
+    private int times;
+
     private boolean validated;
 
-    public HumanValidationCache(PuzzledImage image, Date createdTime, boolean validated) {
+    public HumanValidationCache(PuzzledImage image, Date createdTime, int times, boolean validated) {
 
         this.image = image;
         this.createdTime = createdTime;
+        this.times = times;
         this.validated = validated;
     }
 
@@ -31,6 +34,10 @@ public class HumanValidationCache implements Serializable {
         return createdTime;
     }
 
+    public int getTimes() {
+        return times;
+    }
+
     public boolean isValidated() {
         return validated;
     }
@@ -38,6 +45,13 @@ public class HumanValidationCache implements Serializable {
     public HumanValidationCache setCreatedTime(Date createdTime) {
 
         this.createdTime = createdTime;
+
+        return this;
+    }
+
+    public HumanValidationCache setTimes(int times) {
+
+        this.times = times;
 
         return this;
     }

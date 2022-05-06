@@ -74,6 +74,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private boolean humanValidationEnable;
 
+    private int humanValidationCreateIntervalLimitedTime;
+
     private Duration humanValidationCreateInterval;
 
     private Duration humanValidationExpire;
@@ -104,11 +106,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private String authenticationUrl;
 
+    private boolean loginSuccessRedirectUseXForwardedPrefix;
     private String loginSuccessUrl;
+
+    private boolean loginFailureRedirectUseXForwardedPrefix;
 
     private String loginFailureUrl;
 
     private String logoutUrl;
+
+    private boolean logoutSuccessRedirectUseXForwardedPrefix;
 
     private String logoutSuccessUrl;
 
@@ -346,8 +353,24 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return usernameFormatRegex;
     }
 
+    public boolean isLoginSuccessRedirectUseXForwardedPrefix() {
+        return loginSuccessRedirectUseXForwardedPrefix;
+    }
+
+    public boolean isLoginFailureRedirectUseXForwardedPrefix() {
+        return loginFailureRedirectUseXForwardedPrefix;
+    }
+
+    public boolean isLogoutSuccessRedirectUseXForwardedPrefix() {
+        return logoutSuccessRedirectUseXForwardedPrefix;
+    }
+
     public String getPasswordFormatRegex() {
         return passwordFormatRegex;
+    }
+
+    public int getHumanValidationCreateIntervalLimitedTime() {
+        return humanValidationCreateIntervalLimitedTime;
     }
 
     public Duration getHumanValidationCreateInterval() {
@@ -452,6 +475,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public void setHumanValidationEnable(boolean humanValidationEnable) {
         this.humanValidationEnable = humanValidationEnable;
+    }
+
+    public void setLoginSuccessRedirectUseXForwardedPrefix(boolean loginSuccessRedirectUseXForwardedPrefix) {
+        this.loginSuccessRedirectUseXForwardedPrefix = loginSuccessRedirectUseXForwardedPrefix;
+    }
+
+    public void setLoginFailureRedirectUseXForwardedPrefix(boolean loginFailureRedirectUseXForwardedPrefix) {
+        this.loginFailureRedirectUseXForwardedPrefix = loginFailureRedirectUseXForwardedPrefix;
+    }
+
+    public void setLogoutSuccessRedirectUseXForwardedPrefix(boolean logoutSuccessRedirectUseXForwardedPrefix) {
+        this.logoutSuccessRedirectUseXForwardedPrefix = logoutSuccessRedirectUseXForwardedPrefix;
+    }
+
+    public void setHumanValidationCreateIntervalLimitedTime(int humanValidationCreateIntervalLimitedTime) {
+        this.humanValidationCreateIntervalLimitedTime = humanValidationCreateIntervalLimitedTime;
     }
 
     public void setHumanValidationCreateInterval(Duration humanValidationCreateInterval) {

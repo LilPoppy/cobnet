@@ -116,7 +116,15 @@ public class HttpAuthenticationFailureHandler implements AuthenticationFailureHa
         } else {
 
             response.setStatus(HttpStatus.FOUND.value());
-            response.sendRedirect(url);
+
+            if(ProjectBeanHolder.getSecurityConfiguration().isLoginFailureRedirectUseXForwardedPrefix()) {
+
+                ProjectBeanHolder.getRedirectStrategy().sendRedirect(request, response, url);
+
+            } else {
+
+                response.sendRedirect(url);
+            }
         }
     }
 }

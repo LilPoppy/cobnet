@@ -35,7 +35,7 @@ public class HumanValidatorService {
 
         if(cache != null) {
 
-            if(DateUtils.addDuration(cache.getCreatedTime(), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationCreateInterval()).before(DateUtils.now())) {
+            if(cache.getTimes() < ProjectBeanHolder.getSecurityConfiguration().getHumanValidationCreateIntervalLimitedTime() && DateUtils.addDuration(cache.getCreatedTime(), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationCreateInterval()).before(DateUtils.now())) {
 
                 return generateImage(key);
             }
@@ -87,7 +87,9 @@ public class HumanValidatorService {
             return generateImage(key);
         }
 
-        ProjectBeanHolder.getCacheService().set(HumanValidationCache.HumanValidatorKey, key, new HumanValidationCache(image, DateUtils.now(), false), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire());
+        HumanValidationCache cache = this.getCache(key);
+
+        ProjectBeanHolder.getCacheService().set(HumanValidationCache.HumanValidatorKey, key, new HumanValidationCache(image, DateUtils.now(),cache != null ? cache.getTimes() + 1 : 1, false), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire());
 
         return new ResponseResult<>(HumanValidationRequestStatus.SUCCESS, new ObjectWrapper<>("y-axis", image.getJigsawY()), new Base64Image(image.getImage(), "png"), new Base64Image(image.getJigsawImage(), "png"));
     }

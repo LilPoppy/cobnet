@@ -94,8 +94,17 @@ public class HttpAuthenticationSuccessHandler implements AuthenticationSuccessHa
             }
 
         } else {
+
             response.setStatus(HttpStatus.FOUND.value());
-            response.sendRedirect(url);
+
+            if(ProjectBeanHolder.getSecurityConfiguration().isLoginSuccessRedirectUseXForwardedPrefix()) {
+
+                ProjectBeanHolder.getRedirectStrategy().sendRedirect(request, response, url);
+
+            } else {
+
+                response.sendRedirect(url);
+            }
         }
     }
 }

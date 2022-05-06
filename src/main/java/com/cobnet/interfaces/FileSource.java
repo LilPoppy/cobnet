@@ -5,9 +5,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 public interface FileSource {
 
@@ -24,6 +22,11 @@ public interface FileSource {
 
             this.write(stream, new FileInfo(file));
         }
+    }
+
+    public default void write(@NotNull ByteArrayOutputStream stream, @NotNull FileInfo info) throws IOException {
+
+        this.write(new ByteArrayInputStream(stream.toByteArray()), info);
     }
 
     public @Nullable InputStream read(@NotNull FileInfo info) throws IOException;
