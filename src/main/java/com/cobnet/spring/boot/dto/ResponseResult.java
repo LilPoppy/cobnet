@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public record ResponseResult<T extends Enum<T> & ReasonableStatus>(T status, Content<?>... contents) implements ApplicationJson {
 
-    public ResponseResult(T status, Collection<Content<?>> contents) {
+    public ResponseResult(T status, Collection<? extends Content<?>> contents) {
 
         this(status, contents.stream().toArray(Content[]::new));
     }
