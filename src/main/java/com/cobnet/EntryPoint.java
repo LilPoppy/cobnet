@@ -103,8 +103,6 @@ public class EntryPoint {
 		LOG.info("@@@@" + ProjectBeanHolder.getTranslatorMessageSource().getMessage("Hey"));
 		LOG.info(EntryPoint.getLogo());
 
-		System.out.println(ProjectBeanHolder.getStoreService().getStoreCheckInPageDetail("aaa", Locale.SIMPLIFIED_CHINESE));
-
 		User user = new User("admin", "123456", "Bob", "Smith", Gender.MALE, new Address.Builder().setStreet("1 Heaven Street").setPostalCode("007").build(), new UserRole("admin", RoleRule.ADMIN, false, new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")).addAlias("user"));
 
 		ProjectBeanHolder.getUserRoleRepository().save(new UserRole("user", RoleRule.USER, true));

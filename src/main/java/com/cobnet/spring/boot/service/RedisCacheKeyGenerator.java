@@ -1,8 +1,6 @@
 package com.cobnet.spring.boot.service;
 
 import com.cobnet.interfaces.spring.repository.ExternalUserRepository;
-import com.cobnet.interfaces.spring.repository.StoreRepository;
-import com.cobnet.spring.boot.entity.Store;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;

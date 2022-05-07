@@ -56,8 +56,6 @@ public class ProjectBeanHolder {
     private static FileSourceConfiguration FILE_SOURCE_CONFIGURATION;
     private static MessageSource MESSAGE_SOURCE;
 
-    private static StoreService STORE_SERVICE;
-
     private static AddressRepository ADDRESS_REPOSITORY;
 
     private static PhoneNumberSmsVerifyService PHONE_NUMBER_SMS_VERIFY_SERVICE;
@@ -138,12 +136,6 @@ public class ProjectBeanHolder {
 
     private static AuthenticationManager AUTHENTICATION_MANAGER;
 
-    private static StoreRepository STORE_REPOSITORY;
-
-    private static StoreOrderRepository STORE_ORDER_REPOSITORY;
-
-    private static WorkRepository WORK_REPOSITORY;
-
     private static UserRepository USER_REPOSITORY;
 
     private static UserRoleRepository USER_ROLE_REPOSITORY;
@@ -171,21 +163,6 @@ public class ProjectBeanHolder {
     public static FileInfoRepository getFileInfoRepository() {
 
         return ProjectBeanHolder.FILE_INFO_REPOSITORY;
-    }
-
-    public static StoreRepository getStoreRepository() {
-
-        return ProjectBeanHolder.STORE_REPOSITORY;
-    }
-
-    public static StoreOrderRepository getStoreOrderRepository() {
-
-        return ProjectBeanHolder.STORE_ORDER_REPOSITORY;
-    }
-
-    public static WorkRepository getWorkRepository() {
-
-        return ProjectBeanHolder.WORK_REPOSITORY;
     }
 
     public static FileSource getFileSource() {
@@ -413,11 +390,6 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.OAUTH2_AUTHORIZED_CLIENT_SERVICE;
     }
 
-    public static StoreService getStoreService() {
-
-        return ProjectBeanHolder.STORE_SERVICE;
-    }
-
     public static SessionRegistry getSessionRegistry() {
 
         return ProjectBeanHolder.SESSION_REGISTRY;
@@ -543,12 +515,6 @@ public class ProjectBeanHolder {
         }
 
         @Autowired
-        public void setStoreService(StoreService service) {
-
-            ProjectBeanHolder.STORE_SERVICE = service;
-        }
-
-        @Autowired
         public void setCacheConfiguration(CacheConfiguration config) {
 
             ProjectBeanHolder.CACHE_CONFIGURATION = config;
@@ -645,33 +611,9 @@ public class ProjectBeanHolder {
         }
 
         @Autowired
-        public void setStoreRepository(StoreRepository repository) {
-
-            ProjectBeanHolder.STORE_REPOSITORY = repository;
-        }
-
-        @Autowired
-        public void setStoreOrderRepository(StoreOrderRepository repository) {
-
-            ProjectBeanHolder.STORE_ORDER_REPOSITORY = repository;
-        }
-
-        @Autowired
-        public void setWorkRepository(WorkRepository repository) {
-
-            ProjectBeanHolder.WORK_REPOSITORY = repository;
-        }
-
-        @Autowired
         public void setMessageListenerAdapter(MessageListenerAdapter adapter) {
 
             ProjectBeanHolder.MESSAGE_LISTENER_ADAPTER = adapter;
-        }
-
-        @Autowired
-        public void setRedisMessageListenerContainer(RedisMessageListenerContainer container) {
-
-            ProjectBeanHolder.REDIS_MESSAGE_LISTENER_CONTAINER = container;
         }
 
         @Autowired

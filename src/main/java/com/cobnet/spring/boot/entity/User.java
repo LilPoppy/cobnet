@@ -85,10 +85,6 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
     @OneToMany(mappedBy="user", cascade = CascadeType.ALL)
     private Set<ExternalUser> externalUsers = new HashSet<>();
 
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Set<Staff> associated = new HashSet<>();
-
     @Transient
     private transient PermissionValidator permissionValidator;
 
@@ -294,21 +290,6 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
     public Collection<? extends Permission> getPermissions() {
 
         return Stream.of(roles.stream().map(UserRole::getPermissions).flatMap(Collection::stream).collect(Collectors.toList()), permissions).flatMap(Collection::stream).collect(Collectors.toUnmodifiableList());
-    }
-
-    public Collection<Staff> getAssociated() {
-
-        return associated.stream().collect(Collectors.toUnmodifiableList());
-    }
-
-    public void addStore(Store store) {
-
-        this.associated.add(new Staff(store, this, store.getDefaultPosition().get()));
-    }
-
-    public Collection<Store> getStores() {
-
-        return associated.stream().map(Staff::getStore).collect(Collectors.toUnmodifiableList());
     }
 
     public boolean hasRole(String... roles) {
