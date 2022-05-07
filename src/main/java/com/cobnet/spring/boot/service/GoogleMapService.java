@@ -1,6 +1,7 @@
 package com.cobnet.spring.boot.service;
 
 import com.cobnet.common.DateUtils;
+import com.cobnet.exception.ResponseFailureStatusException;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.AddressForm;
 import com.cobnet.spring.boot.dto.GoogleAutocompletePredicted;
@@ -29,78 +30,54 @@ public class GoogleMapService {
     }
 
 
-    public ResponseResult<GoogleApiRequestResultStatus> autocompleteRequest(HttpServletRequest request, PlaceAutocompleteType type, AddressForm form, String... params) {
+    public GoogleAutocompletePredicted autocompleteRequest(HttpServletRequest request, PlaceAutocompleteType type, AddressForm form, String... params) throws ResponseFailureStatusException {
 
         HttpSession session = request.getSession(true);
 
         if(ProjectBeanHolder.getSecurityConfiguration().isHumanValidationEnable() && !ProjectBeanHolder.getHumanValidator().isValidated(session.getId())) {
 
-            return new ResponseResult<>(GoogleApiRequestResultStatus.HUMAN_VALIDATION_REQUEST);
+            throw new ResponseFailureStatusException(GoogleApiRequestResultStatus.HUMAN_VALIDATION_REQUEST);
         }
 
         if(ProjectBeanHolder.getSecurityConfiguration().isSessionLimitEnable() && ProjectBeanHolder.getSecurityConfiguration().getSessionCreatedTimeRequire().compareTo(DateUtils.getInterval(new Date(session.getCreationTime()), DateUtils.now())) > 0) {
 
-            return new ResponseResult<>(GoogleApiRequestResultStatus.REJECTED);
+            throw new ResponseFailureStatusException(GoogleApiRequestResultStatus.REJECTED);
         }
 
         AutocompleteRequestCache cache = this.getAutocompleteRequestCache(session.getId());
 
         ProjectBeanHolder.getCacheService().set(AutocompleteRequestCache.GoogleMapServiceKey, request.getSession().getId(), new AutocompleteRequestCache(cache != null ? cache.createdTime() : DateUtils.now(), cache != null ? cache.times() + 1 : 0), cache != null ? ProjectBeanHolder.getSecurityConfiguration().getGoogleMapAutoCompleteLimitDuration().minus(DateUtils.getInterval(DateUtils.now(), cache.createdTime())) : ProjectBeanHolder.getSecurityConfiguration().getGoogleMapAutoCompleteLimitDuration());
 
-        GoogleAutocompletePredicted result = null;
-
         if(cache != null) {
 
             if(cache.times() <= ProjectBeanHolder.getSecurityConfiguration().getGoogleMapAutoCompleteLimit()) {
 
-                try {
-
-                    if(type == null) {
-
-                        result = new GoogleAutocompletePredicted(Arrays.stream(ProjectBeanHolder.getGoogleMap().placeAutocompleteRequest(Arrays.toString(Stream.concat(Stream.of(params), Stream.of(form.address())).toArray(String[]::new)), session.getId()).await()).toList());
-
-                    } else {
-
-                        result = new GoogleAutocompletePredicted(Arrays.stream(ProjectBeanHolder.getGoogleMap().placeAutocompleteRequest(Arrays.toString(Stream.concat(Stream.of(params), Stream.of(form.address())).toArray(String[]::new)), session.getId()).types(type).await()).toList());
-                    }
-
-                } catch (IOException | ApiException | InterruptedException e) {
-
-                    e.printStackTrace();
-                }
-
-                if(result == null) {
-
-                    return new ResponseResult<>(GoogleApiRequestResultStatus.SERVICE_DOWN);
-                }
-
-                return new ResponseResult(GoogleApiRequestResultStatus.SUCCESS, result);
+                return getGoogleAutocompletePredicted(type, form, session, Stream.of(params), params);
             }
 
-            return new ResponseResult<>(GoogleApiRequestResultStatus.EXHAUSTED);
+            throw new ResponseFailureStatusException(GoogleApiRequestResultStatus.EXHAUSTED);
         }
+
+        return getGoogleAutocompletePredicted(type, form, session, Stream.of(params), params);
+    }
+
+    private GoogleAutocompletePredicted getGoogleAutocompletePredicted(PlaceAutocompleteType type, AddressForm form, HttpSession session, Stream<String> params2, String[] params) throws ResponseFailureStatusException {
 
         try {
 
             if(type == null) {
 
-                result = new GoogleAutocompletePredicted(Arrays.stream(ProjectBeanHolder.getGoogleMap().placeAutocompleteRequest(Arrays.toString(Stream.concat(Stream.of(params), Stream.of(form.address())).toArray(String[]::new)), session.getId()).await()).toList());
+                return new GoogleAutocompletePredicted(Arrays.stream(ProjectBeanHolder.getGoogleMap().placeAutocompleteRequest(Arrays.toString(Stream.concat(Stream.of(params), Stream.of(form.address())).toArray(String[]::new)), session.getId()).await()).toList());
 
             } else {
 
-                result = new GoogleAutocompletePredicted(Arrays.stream(ProjectBeanHolder.getGoogleMap().placeAutocompleteRequest(Arrays.toString(Stream.concat(Stream.of(params), Stream.of(form.address())).toArray(String[]::new)), session.getId()).types(type).await()).toList());
+                return new GoogleAutocompletePredicted(Arrays.stream(ProjectBeanHolder.getGoogleMap().placeAutocompleteRequest(Arrays.toString(Stream.concat(params2, Stream.of(form.address())).toArray(String[]::new)), session.getId()).types(type).await()).toList());
             }
+
         } catch (IOException | ApiException | InterruptedException e) {
 
-            e.printStackTrace();
+            throw new ResponseFailureStatusException(GoogleApiRequestResultStatus.SERVICE_DOWN);
         }
-
-        if(result == null) {
-
-            return new ResponseResult<>(GoogleApiRequestResultStatus.SERVICE_DOWN);
-        }
-
-        return new ResponseResult<>(GoogleApiRequestResultStatus.SUCCESS, result);
     }
 
     public AutocompleteRequestCache getAutocompleteRequestCache(String key) {

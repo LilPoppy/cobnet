@@ -3,6 +3,7 @@ package com.cobnet.spring.boot.service;
 import com.cobnet.common.DateUtils;
 import com.cobnet.common.ImageUtils;
 import com.cobnet.common.PuzzledImage;
+import com.cobnet.exception.ResponseFailureStatusException;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.*;
 import com.cobnet.spring.boot.dto.support.HumanValidationRequestStatus;
@@ -19,16 +20,16 @@ import java.util.Date;
 @Service
 public class HumanValidatorService {
 
-    public <T extends Serializable> ResponseResult<HumanValidationRequestStatus> create(T key) throws IOException {
+    public <T extends Serializable> PuzzledImage create(T key) throws IOException, ResponseFailureStatusException {
 
         if(ProjectBeanHolder.getSecurityConfiguration().isSessionLimitEnable() && (ProjectBeanHolder.getCurrentHttpRequest() == null || ProjectBeanHolder.getSecurityConfiguration().getSessionCreatedTimeRequire().compareTo(DateUtils.getInterval(new Date(ProjectBeanHolder.getCurrentHttpRequest().getSession(true).getCreationTime()), DateUtils.now())) > 0)) {
 
-            return new ResponseResult<>(HumanValidationRequestStatus.REJECTED);
+            throw new ResponseFailureStatusException(HumanValidationRequestStatus.REJECTED);
         }
 
         if(this.isValidated(key)) {
 
-            return new ResponseResult<>(HumanValidationRequestStatus.VALIDATED);
+            throw new ResponseFailureStatusException(HumanValidationRequestStatus.VALIDATED);
         }
 
         HumanValidationCache cache = this.getCache(key);
@@ -40,7 +41,7 @@ public class HumanValidatorService {
                 return generateImage(key);
             }
 
-            return new ResponseResult<>(HumanValidationRequestStatus.INTERVAL_LIMITED);
+            throw new ResponseFailureStatusException(HumanValidationRequestStatus.INTERVAL_LIMITED, new ObjectWrapper<>("time-remain", ProjectBeanHolder.getSecurityConfiguration().getHumanValidationCreateInterval().minus(DateUtils.getInterval(DateUtils.now(), cache.getCreatedTime()))));
         }
 
         return generateImage(key);
@@ -69,7 +70,7 @@ public class HumanValidatorService {
         return !isExpired(key) && cache.isValidated();
     }
 
-    private <T extends Serializable> ResponseResult<HumanValidationRequestStatus> generateImage(T key) throws IOException {
+    private <T extends Serializable> PuzzledImage generateImage(T key) throws IOException {
 
         //TODO create image provider upstream pool
 
@@ -91,7 +92,7 @@ public class HumanValidatorService {
 
         ProjectBeanHolder.getCacheService().set(HumanValidationCache.HumanValidatorKey, key, new HumanValidationCache(image, DateUtils.now(),cache != null ? cache.getTimes() + 1 : 1, false), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire());
 
-        return new ResponseResult<>(HumanValidationRequestStatus.SUCCESS, new ObjectWrapper<>("y-axis", image.getJigsawY()), new Base64Image(image.getImage(), "png"), new Base64Image(image.getJigsawImage(), "png"));
+        return image;
     }
 
     public <T extends Serializable> HumanValidationCache getCache(T key) {
@@ -99,7 +100,7 @@ public class HumanValidatorService {
         return ProjectBeanHolder.getCacheService().get(HumanValidationCache.HumanValidatorKey, key, HumanValidationCache.class);
     }
 
-    public <T extends Serializable> ResponseResult<HumanValidationValidateStatus> validate(T key, double position) {
+    public <T extends Serializable> boolean validate(T key, double position) throws ResponseFailureStatusException {
 
         //TODO more advance to check is human operating
 
@@ -115,10 +116,10 @@ public class HumanValidatorService {
 
                     cache.setValidated(true);
 
-                    return new ResponseResult<>(HumanValidationValidateStatus.SUCCESS);
+                    return true;
                 }
 
-                return new ResponseResult<>(HumanValidationValidateStatus.WRONG_POSITION);
+                throw new ResponseFailureStatusException(HumanValidationValidateStatus.WRONG_POSITION);
 
             } finally {
 
@@ -126,6 +127,6 @@ public class HumanValidatorService {
             }
         }
 
-        return new ResponseResult<>(HumanValidationValidateStatus.TIMEOUT);
+        throw new ResponseFailureStatusException(HumanValidationValidateStatus.TIMEOUT);
     }
 }

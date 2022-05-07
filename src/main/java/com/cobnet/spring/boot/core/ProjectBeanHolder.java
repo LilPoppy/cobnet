@@ -823,13 +823,13 @@ public class ProjectBeanHolder {
         }
 
         @Bean
-        public ObjectMapper objectMapperBean(Jackson2ObjectMapperBuilder builder) {
+        public ObjectMapper objectMapperBean() {
 
-            ObjectMapper mapper = builder.build();
+            ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new JavaTimeModule());
             mapper.registerModule(new DTOModule());
             mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-
+            mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
             return mapper;
         }

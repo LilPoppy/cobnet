@@ -1,13 +1,9 @@
 package com.cobnet.spring.boot.dto;
 
-import com.cobnet.interfaces.connection.web.ApplicationJson;
-import com.cobnet.interfaces.connection.web.Form;
 import com.cobnet.interfaces.connection.web.FormGenerator;
-import com.cobnet.interfaces.connection.web.annotation.FormParam;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.User;
 import com.cobnet.spring.boot.entity.support.Gender;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Map;
 
@@ -27,7 +23,9 @@ public class UserRegisterForm extends FormBase<UserRegisterForm, User> {
 
     private String lastName;
 
-    public UserRegisterForm(String username, String password, Gender gender, String email, String phoneNumber, String firstName, String lastName) {
+    private AddressForm addressForm;
+
+    public UserRegisterForm(String username, String password, Gender gender, String email, String phoneNumber, String firstName, String lastName, AddressForm form) {
         this.username = username;
         this.password = password;
         this.gender = gender;
@@ -35,6 +33,7 @@ public class UserRegisterForm extends FormBase<UserRegisterForm, User> {
         this.phoneNumber = phoneNumber;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.addressForm = form;
     }
 
     public String getUsername() {
@@ -65,6 +64,10 @@ public class UserRegisterForm extends FormBase<UserRegisterForm, User> {
         return lastName;
     }
 
+    public AddressForm getAddressForm() {
+        return addressForm;
+    }
+
     public void setUsername(String username) {
         this.username = username;
     }
@@ -91,6 +94,10 @@ public class UserRegisterForm extends FormBase<UserRegisterForm, User> {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    public void setAddressForm(AddressForm addressForm) {
+        this.addressForm = addressForm;
     }
 
     @Override
