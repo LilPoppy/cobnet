@@ -1,19 +1,21 @@
 package com.cobnet.spring.boot.dto.support;
 
 import com.cobnet.interfaces.connection.web.ReasonableStatus;
+import org.springframework.http.HttpStatus;
 
 public enum StoreCheckInResultStatus implements ReasonableStatus {
 
-    SUCCESS(200);
+    SUCCESS(HttpStatus.OK);
 
-    private int code;
+    private HttpStatus status;
 
-    private StoreCheckInResultStatus(int code) {
+    private StoreCheckInResultStatus(HttpStatus status) {
 
-        this.code = code;
+        this.status = status;
     }
 
-    public int getCode() {
-        return code;
+    @Override
+    public HttpStatus getStatus() {
+        return this.status;
     }
 }

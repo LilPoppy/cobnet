@@ -1,27 +1,27 @@
 package com.cobnet.spring.boot.dto.support;
 
 import com.cobnet.interfaces.connection.web.ReasonableStatus;
+import org.springframework.http.HttpStatus;
 
 public enum AuthenticationStatus implements ReasonableStatus {
 
-    SUCCESS(200),
-    USER_NOT_FOUND(401),
-    PASSWORD_NOT_MATCH(401),
-    HUMAN_VALIDATION_REQUEST(400),
-    REACHED_MAXIMUM_ATTEMPT(400),
-    LOCKED(400),
-    REJECTED(400);
+    SUCCESS(HttpStatus.OK),
+    USER_NOT_FOUND(HttpStatus.UNAUTHORIZED),
+    PASSWORD_NOT_MATCH(HttpStatus.UNAUTHORIZED),
+    HUMAN_VALIDATION_REQUEST(HttpStatus.BAD_REQUEST),
+    REACHED_MAXIMUM_ATTEMPT(HttpStatus.BAD_REQUEST),
+    LOCKED(HttpStatus.BAD_REQUEST),
+    REJECTED(HttpStatus.BAD_REQUEST);
 
-    private final int code;
+    private final HttpStatus status;
 
-    private AuthenticationStatus(int status) {
+    private AuthenticationStatus(HttpStatus status) {
 
-        this.code = status;
+        this.status = status;
     }
 
     @Override
-    public int getCode() {
-
-        return this.code;
+    public HttpStatus getStatus() {
+        return this.status;
     }
 }

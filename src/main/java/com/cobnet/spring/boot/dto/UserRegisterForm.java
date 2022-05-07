@@ -94,13 +94,7 @@ public class UserRegisterForm extends FormBase<UserRegisterForm, User> {
     }
 
     @Override
-    public FormGenerator<UserRegisterForm> getGenerator() {
-
-        return new RegisterFormGenerator();
-    }
-
-    @Override
-    public User getEntity() {
+    public User getEntity(Object... args) {
 
         return new User.Builder().setUsername(this.username).setPassword(this.password).setFirstName(this.firstName).setLastName(this.lastName).setGender(this.gender).setPhoneNumber(this.phoneNumber).setEmail(this.email).setRoles(ProjectBeanHolder.getUserRoleRepository().getDefaultRole().get()).build();
     }

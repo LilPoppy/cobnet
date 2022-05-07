@@ -1,24 +1,26 @@
 package com.cobnet.spring.boot.dto.support;
 
 import com.cobnet.interfaces.connection.web.ReasonableStatus;
+import org.springframework.http.HttpStatus;
 
 public enum PhoneNumberSmsRequestResultStatus implements ReasonableStatus {
 
-    SUCCESS(201),
-    INTERVAL_LIMITED(400),
-    EXHAUSTED(400),
-    HUMAN_VALIDATION_REQUEST(400),
-    NUMBER_OVERUSED(409),
-    SERVICE_DOWN(503),
-    REJECTED(400);
+    SUCCESS(HttpStatus.CREATED),
+    INTERVAL_LIMITED(HttpStatus.BAD_REQUEST),
+    EXHAUSTED(HttpStatus.BAD_REQUEST),
+    HUMAN_VALIDATION_REQUEST(HttpStatus.BAD_REQUEST),
+    NUMBER_OVERUSED(HttpStatus.CONFLICT),
+    SERVICE_DOWN(HttpStatus.SERVICE_UNAVAILABLE),
+    REJECTED(HttpStatus.BAD_REQUEST);
 
-    private final int code;
+    private final HttpStatus status;
 
-    private PhoneNumberSmsRequestResultStatus(int code) {
-        this.code = code;
+    private PhoneNumberSmsRequestResultStatus(HttpStatus status) {
+        this.status = status;
     }
 
-    public int getCode() {
-        return code;
+    @Override
+    public HttpStatus getStatus() {
+        return this.status;
     }
 }

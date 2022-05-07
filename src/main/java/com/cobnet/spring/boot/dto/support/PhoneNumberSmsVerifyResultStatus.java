@@ -1,19 +1,22 @@
 package com.cobnet.spring.boot.dto.support;
 
 import com.cobnet.interfaces.connection.web.ReasonableStatus;
+import org.springframework.http.HttpStatus;
 
 public enum PhoneNumberSmsVerifyResultStatus implements ReasonableStatus {
 
-    SUCCESS(200),
-    FAILED(403);
+    SUCCESS(HttpStatus.OK),
+    FAILED(HttpStatus.FORBIDDEN);
 
-    private final int code;
+    private final HttpStatus status;
 
-    private PhoneNumberSmsVerifyResultStatus(int code) {
-        this.code = code;
+    private PhoneNumberSmsVerifyResultStatus(HttpStatus status) {
+        this.status = status;
     }
 
-    public int getCode() {
-        return code;
+
+    @Override
+    public HttpStatus getStatus() {
+        return this.status;
     }
 }

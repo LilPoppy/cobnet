@@ -10,10 +10,7 @@ import java.util.Map;
 public abstract class FormBase<T extends Form, E> implements Form, ApplicationJson {
 
     @JsonIgnore
-    public abstract FormGenerator<T> getGenerator();
-
-    @JsonIgnore
-    public abstract E getEntity();
+    public abstract E getEntity(Object... args);
 
     @Override
     @JsonIgnore

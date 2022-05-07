@@ -52,11 +52,7 @@ public class VisitorController {
     @PostMapping("/visitor/human-validate")
     public ResponseResult<HumanValidationValidateStatus> humanValidate(HttpServletRequest http, HttpServletResponse response, int position) {
 
-        ResponseResult<HumanValidationValidateStatus> result = ProjectBeanHolder.getHumanValidator().validate(http.getSession(true).getId(), position);
-
-        response.setStatus(result.status().getCode());
-
-        return result;
+        return ProjectBeanHolder.getHumanValidator().validate(http.getSession(true).getId(), position);
     }
 
     @Operation(summary = "Check is cache human validated.")
@@ -70,56 +66,35 @@ public class VisitorController {
     @RequestMapping(method = RequestMethod.PATCH,value = "/visitor/human-validate")
     public ResponseResult<HumanValidationRequestStatus> humanValidate(HttpServletRequest http, HttpServletResponse response) throws IOException {
 
-        ResponseResult<HumanValidationRequestStatus> result = ProjectBeanHolder.getHumanValidator().create(http.getSession(true).getId());
-
-        response.setStatus(result.status().getCode());
-
-        return result;
+        return ProjectBeanHolder.getHumanValidator().create(http.getSession(true).getId());
     }
 
     @Operation(summary = "Request sms verify for provided phone number.")
     @PostMapping("/visitor/sms/request")
     public ResponseResult<PhoneNumberSmsRequestResultStatus> phoneNumberSmsRequest(HttpServletResponse response, PhoneNumberSmsRequest request) throws IOException {
 
-        ResponseResult<PhoneNumberSmsRequestResultStatus> result = ProjectBeanHolder.getPhoneNumberSmsVerifyService().request(request);
-
-        response.setStatus(result.status().getCode());
-
-        return result;
+        return ProjectBeanHolder.getPhoneNumberSmsVerifyService().request(request);
     }
 
     @Operation(summary = "Verify sms code from record.")
     @PostMapping("/visitor/sms/verify")
     public ResponseResult<PhoneNumberSmsVerifyResultStatus> phoneNumberSmsVerify(HttpServletResponse response, PhoneNumberSmsVerify verify) {
 
-        ResponseResult<PhoneNumberSmsVerifyResultStatus> result = ProjectBeanHolder.getPhoneNumberSmsVerifyService().verify(verify);
-
-        response.setStatus(result.status().getCode());
-
-        return result;
-
+        return ProjectBeanHolder.getPhoneNumberSmsVerifyService().verify(verify);
     }
 
     @Operation(summary = "Register an new account.", description = "")
     @PostMapping("/visitor/register")
     public ResponseResult<UserRegisterResultStatus> register(HttpServletResponse response, UserRegisterForm form, AddressForm address) {
 
-        ResponseResult<UserRegisterResultStatus> result = ProjectBeanHolder.getAccountService().register(form, address);
-
-        response.setStatus(result.status().getCode());
-
-        return result;
+        return ProjectBeanHolder.getAccountService().register(form, address);
     }
 
     @Operation(summary = "auto complete given address.")
     @PostMapping("/visitor/autocomplete/address")
     public ResponseResult<GoogleApiRequestResultStatus> autocompleteAddress(HttpServletRequest request, HttpServletResponse response, AddressForm addressRequest) throws IOException, InterruptedException, ApiException {
 
-        ResponseResult<GoogleApiRequestResultStatus> result =  ProjectBeanHolder.getGoogleMapService().autocompleteRequest(request, null, addressRequest);
-
-        response.setStatus(result.status().getCode());
-
-        return result;
+        return ProjectBeanHolder.getGoogleMapService().autocompleteRequest(request, null, addressRequest);
     }
 
 }

@@ -1,8 +1,15 @@
 package com.cobnet.interfaces.connection.web;
 
+import org.springframework.http.HttpStatus;
+
 public interface ReasonableStatus {
 
-    int getCode();
+    public default int getCode() {
+
+        return this.getStatus().value();
+    }
+
+    HttpStatus getStatus();
 
     String name();
 }

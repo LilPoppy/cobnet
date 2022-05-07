@@ -1,21 +1,23 @@
 package com.cobnet.spring.boot.dto.support;
 
 import com.cobnet.interfaces.connection.web.ReasonableStatus;
+import org.springframework.http.HttpStatus;
 
 public enum UserRegisterResultStatus implements ReasonableStatus {
 
-    SUCCESS(201),
-    UNACCEPTABLE_CONTENT(400),
-    VERIFICATION_FAILED(408),
-    REJECTED(400);
+    SUCCESS(HttpStatus.CREATED),
+    UNACCEPTABLE_CONTENT(HttpStatus.BAD_REQUEST),
+    VERIFICATION_FAILED(HttpStatus.REQUEST_TIMEOUT),
+    REJECTED(HttpStatus.BAD_REQUEST);
 
-    private final int code;
+    private final HttpStatus status;
 
-    private UserRegisterResultStatus(int code) {
-        this.code = code;
+    private UserRegisterResultStatus(HttpStatus status) {
+        this.status = status;
     }
 
-    public int getCode() {
-        return code;
+    @Override
+    public HttpStatus getStatus() {
+        return this.status;
     }
 }

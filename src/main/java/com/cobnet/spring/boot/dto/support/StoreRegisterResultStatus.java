@@ -1,25 +1,28 @@
 package com.cobnet.spring.boot.dto.support;
 
 import com.cobnet.interfaces.connection.web.ReasonableStatus;
+import org.springframework.http.HttpStatus;
 
 public enum StoreRegisterResultStatus implements ReasonableStatus {
 
-    SUCCESS(201),
-    STORE_NONEXISTENT(400),
-    EXHAUSTED(400),
-    STORE_PERMANENTLY_CLOSED(400),
-    STORE_ALREADY_REGISTERED(400),
-    SECURITY_CHECK(403),
-    HUMAN_VALIDATION_REQUEST(400),
-    SERVICE_DOWN(502);
+    SUCCESS(HttpStatus.CREATED),
+    STORE_NONEXISTENT(HttpStatus.BAD_REQUEST),
+    EXHAUSTED(HttpStatus.BAD_REQUEST),
+    STORE_PERMANENTLY_CLOSED(HttpStatus.BAD_REQUEST),
+    STORE_ALREADY_REGISTERED(HttpStatus.BAD_REQUEST),
+    SECURITY_CHECK(HttpStatus.FORBIDDEN),
+    HUMAN_VALIDATION_REQUEST(HttpStatus.BAD_REQUEST),
+    SERVICE_DOWN(HttpStatus.SERVICE_UNAVAILABLE);
 
-    private final int code;
+    private final HttpStatus status;
 
-    private StoreRegisterResultStatus(int code) {
-        this.code = code;
+    private StoreRegisterResultStatus(HttpStatus status) {
+        this.status = status;
     }
 
-    public int getCode() {
-        return code;
+
+    @Override
+    public HttpStatus getStatus() {
+        return this.status;
     }
 }
