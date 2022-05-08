@@ -56,7 +56,7 @@ public class HttpAuthenticationFailureHandler implements AuthenticationFailureHa
 
                     String key = request.getSession(true).getId();
 
-                    AttemptLoginCache cache = ProjectBeanHolder.getCacheService().get(AttemptLoginCache.AccountServiceName, key, AttemptLoginCache.class);
+                    AttemptLoginCache cache = ProjectBeanHolder.getCacheService().get(AttemptLoginCache.AccountServiceName, AttemptLoginCache.class, key);
 
                     if(cache == null) {
 
@@ -77,13 +77,13 @@ public class HttpAuthenticationFailureHandler implements AuthenticationFailureHa
 
                     } else {
 
-                        writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult(AuthenticationStatus.PASSWORD_NOT_MATCH, new CommentWrapper<>("Login attempt time left.", new ObjectWrapper<>("attempt-remain", ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin() - ProjectBeanHolder.getCacheService().get(AttemptLoginCache.AccountServiceName, request.getSession().getId(), AttemptLoginCache.class).count())))));
+                        writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult(AuthenticationStatus.PASSWORD_NOT_MATCH, new CommentWrapper<>("Login attempt time left.", new ObjectWrapper<>("attempt-remain", ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin() - cache.count())))));
                     }
 
                 } else if(exception instanceof BadCredentialsException) {
 
                     response.setStatus(AuthenticationStatus.PASSWORD_NOT_MATCH.getCode());
-                    writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult(AuthenticationStatus.PASSWORD_NOT_MATCH, new CommentWrapper<>("Login attempt time left.", new ObjectWrapper<>("attempt-remain",ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin() - ProjectBeanHolder.getCacheService().get(AttemptLoginCache.AccountServiceName, request.getSession().getId(), AttemptLoginCache.class).count())))));
+                    writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult(AuthenticationStatus.PASSWORD_NOT_MATCH, new CommentWrapper<>("Login attempt time left.", new ObjectWrapper<>("attempt-remain",ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin() - ProjectBeanHolder.getCacheService().get(AttemptLoginCache.AccountServiceName, AttemptLoginCache.class, request.getSession().getId()).count())))));
 
                 } else if(exception instanceof AuthenticationCancelledException) {
 

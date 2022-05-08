@@ -94,7 +94,7 @@ public class AccountService {
 
                     if(account instanceof User user) {
 
-                        AttemptLoginCache cache = ProjectBeanHolder.getCacheService().get(AttemptLoginCache.AccountServiceName, key, AttemptLoginCache.class);
+                        AttemptLoginCache cache = ProjectBeanHolder.getCacheService().get(AttemptLoginCache.AccountServiceName, AttemptLoginCache.class, key);
 
                         if(cache == null || !DateUtils.addDuration(cache.creationTime(), ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLoginReset()).after(DateUtils.now())) {
 

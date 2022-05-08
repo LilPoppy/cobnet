@@ -30,7 +30,7 @@ public class PhoneNumberSmsVerifyService {
             }
         }
 
-        AccountPhoneNumberVerifyCache cache = ProjectBeanHolder.getCacheService().get(AccountPhoneNumberVerifyCache.PhoneNumberSmsVerifyServiceKey, username, AccountPhoneNumberVerifyCache.class);
+        AccountPhoneNumberVerifyCache cache = this.getCache(username);
 
         if(cache != null) {
 
@@ -88,7 +88,7 @@ public class PhoneNumberSmsVerifyService {
 
     public AccountPhoneNumberVerifyCache getCache(String key) {
 
-        return ProjectBeanHolder.getCacheService().get(AccountPhoneNumberVerifyCache.PhoneNumberSmsVerifyServiceKey, key, AccountPhoneNumberVerifyCache.class);
+        return ProjectBeanHolder.getCacheService().get(AccountPhoneNumberVerifyCache.PhoneNumberSmsVerifyServiceKey, AccountPhoneNumberVerifyCache.class, key);
     }
 
     public int getCode(String key, PhoneNumberSmsType type) {

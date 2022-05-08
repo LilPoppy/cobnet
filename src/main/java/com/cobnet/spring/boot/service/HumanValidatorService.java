@@ -91,7 +91,7 @@ public class HumanValidatorService {
 
     public <T extends Serializable> HumanValidationCache getCache(T key) {
 
-        return ProjectBeanHolder.getCacheService().get(HumanValidationCache.HumanValidatorKey, key, HumanValidationCache.class);
+        return ProjectBeanHolder.getCacheService().get(HumanValidationCache.HumanValidatorKey, HumanValidationCache.class, key);
     }
 
     public <T extends Serializable> boolean validate(T key, double position) throws ResponseFailureStatusException {

@@ -70,7 +70,7 @@ public class GoogleMapService {
 
     public AutocompleteRequestCache getAutocompleteRequestCache(String key) {
 
-        return ProjectBeanHolder.getCacheService().get(AutocompleteRequestCache.GoogleMapServiceKey, key, AutocompleteRequestCache.class);
+        return ProjectBeanHolder.getCacheService().get(AutocompleteRequestCache.GoogleMapServiceKey, AutocompleteRequestCache.class, key);
     }
 
     public PlaceDetails search(String placeId) throws IOException, InterruptedException, ApiException {
