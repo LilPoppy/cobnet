@@ -56,7 +56,7 @@ public class HttpResponseResultControllerResponseHandler implements ResponseBody
             params.add(content);
         }
 
-        return new ResponseResult<>(body.status(), params);
+        return body.setContents(params);
     }
 
 }

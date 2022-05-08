@@ -22,4 +22,19 @@ public record ResponseResult<T extends Enum<T> & ReasonableStatus>(T status, Con
 
         this(status, holder.contents());
     }
+
+    public ResponseResult setContents(Content<?>... contents) {
+
+        return new ResponseResult(this.status, contents);
+    }
+
+    public ResponseResult setContents(Collection<? extends Content<?>> contents) {
+
+        return new ResponseResult(this.status, contents);
+    }
+
+    public ResponseResult setContents(ContentHolder holder) {
+
+        return new ResponseResult(this.status, holder);
+    }
 }
