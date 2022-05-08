@@ -1,5 +1,6 @@
 package com.cobnet.spring.boot.configuration;
 
+import com.cobnet.security.SecurityHandlerInterceptor;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.ResponseResult;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -42,6 +43,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
 
         registry.addInterceptor(localeChangeInterceptorBean());
+        registry.addInterceptor(securityHandlerInterceptorBean());
     }
 
     @Bean
@@ -49,5 +51,11 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
         interceptor.setParamName("lang");
         return interceptor;
+    }
+
+    @Bean
+    public SecurityHandlerInterceptor securityHandlerInterceptorBean() {
+
+        return new SecurityHandlerInterceptor();
     }
 }

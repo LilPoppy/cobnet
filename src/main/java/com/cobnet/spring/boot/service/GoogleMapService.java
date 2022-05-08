@@ -5,7 +5,6 @@ import com.cobnet.exception.ResponseFailureStatusException;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.AddressForm;
 import com.cobnet.spring.boot.dto.GoogleAutocompletePredicted;
-import com.cobnet.spring.boot.dto.ResponseResult;
 import com.cobnet.spring.boot.dto.support.GoogleApiRequestResultStatus;
 import com.cobnet.spring.boot.service.support.AutocompleteRequestCache;
 import com.google.maps.errors.ApiException;
@@ -18,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.stream.Stream;
 
 @Service
@@ -34,23 +32,13 @@ public class GoogleMapService {
 
         HttpSession session = request.getSession(true);
 
-        if(ProjectBeanHolder.getSecurityConfiguration().isHumanValidationEnable() && !ProjectBeanHolder.getHumanValidator().isValidated(session.getId())) {
-
-            throw new ResponseFailureStatusException(GoogleApiRequestResultStatus.HUMAN_VALIDATION_REQUEST);
-        }
-
-        if(ProjectBeanHolder.getSecurityConfiguration().isSessionLimitEnable() && ProjectBeanHolder.getSecurityConfiguration().getSessionCreatedTimeRequire().compareTo(DateUtils.getInterval(new Date(session.getCreationTime()), DateUtils.now())) > 0) {
-
-            throw new ResponseFailureStatusException(GoogleApiRequestResultStatus.REJECTED);
-        }
-
         AutocompleteRequestCache cache = this.getAutocompleteRequestCache(session.getId());
 
-        ProjectBeanHolder.getCacheService().set(AutocompleteRequestCache.GoogleMapServiceKey, request.getSession().getId(), new AutocompleteRequestCache(cache != null ? cache.createdTime() : DateUtils.now(), cache != null ? cache.times() + 1 : 0), cache != null ? ProjectBeanHolder.getSecurityConfiguration().getGoogleMapAutoCompleteLimitDuration().minus(DateUtils.getInterval(DateUtils.now(), cache.createdTime())) : ProjectBeanHolder.getSecurityConfiguration().getGoogleMapAutoCompleteLimitDuration());
+        ProjectBeanHolder.getCacheService().set(AutocompleteRequestCache.GoogleMapServiceKey, request.getSession().getId(), new AutocompleteRequestCache(cache != null ? cache.creationTime() : DateUtils.now(), cache != null ? cache.count() + 1 : 0), cache != null ? ProjectBeanHolder.getSecurityConfiguration().getGoogleMapAutoCompleteLimitDuration().minus(DateUtils.getInterval(DateUtils.now(), cache.creationTime())) : ProjectBeanHolder.getSecurityConfiguration().getGoogleMapAutoCompleteLimitDuration());
 
         if(cache != null) {
 
-            if(cache.times() <= ProjectBeanHolder.getSecurityConfiguration().getGoogleMapAutoCompleteLimit()) {
+            if(cache.count() <= ProjectBeanHolder.getSecurityConfiguration().getGoogleMapAutoCompleteLimit()) {
 
                 return getGoogleAutocompletePredicted(type, form, session, Stream.of(params), params);
             }

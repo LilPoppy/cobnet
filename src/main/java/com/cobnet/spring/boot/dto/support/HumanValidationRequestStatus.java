@@ -5,20 +5,30 @@ import org.springframework.http.HttpStatus;
 
 public enum HumanValidationRequestStatus implements ReasonableStatus {
 
-    SUCCESS(HttpStatus.CREATED),
-    INTERVAL_LIMITED(HttpStatus.BAD_REQUEST),
-    VALIDATED(HttpStatus.BAD_REQUEST),
-    REJECTED(HttpStatus.BAD_REQUEST);
+    SUCCESS(HttpStatus.CREATED, null),
+    INTERVAL_LIMITED(HttpStatus.BAD_REQUEST, null),
+    VALIDATED(HttpStatus.BAD_REQUEST, null),
+    REJECTED(HttpStatus.BAD_REQUEST, null);
 
 
     private final HttpStatus status;
 
-    private HumanValidationRequestStatus(HttpStatus status) {
+    private final String message;
+
+    private HumanValidationRequestStatus(HttpStatus status, String message) {
         this.status = status;
+        this.message = message;
     }
 
     @Override
     public HttpStatus getStatus() {
         return this.status;
     }
+
+    @Override
+    public String message() {
+        return null;
+    }
+
+
 }

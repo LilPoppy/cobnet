@@ -23,9 +23,11 @@ public class UserRegisterForm extends FormBase<UserRegisterForm, User> {
 
     private String lastName;
 
-    private AddressForm addressForm;
+    private AddressForm address;
 
-    public UserRegisterForm(String username, String password, Gender gender, String email, String phoneNumber, String firstName, String lastName, AddressForm form) {
+    public UserRegisterForm() {}
+
+    public UserRegisterForm(String username, String password, Gender gender, String email, String phoneNumber, String firstName, String lastName, AddressForm address) {
         this.username = username;
         this.password = password;
         this.gender = gender;
@@ -33,7 +35,7 @@ public class UserRegisterForm extends FormBase<UserRegisterForm, User> {
         this.phoneNumber = phoneNumber;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.addressForm = form;
+        this.address = address;
     }
 
     public String getUsername() {
@@ -64,8 +66,8 @@ public class UserRegisterForm extends FormBase<UserRegisterForm, User> {
         return lastName;
     }
 
-    public AddressForm getAddressForm() {
-        return addressForm;
+    public AddressForm getAddress() {
+        return address;
     }
 
     public void setUsername(String username) {
@@ -96,8 +98,8 @@ public class UserRegisterForm extends FormBase<UserRegisterForm, User> {
         this.lastName = lastName;
     }
 
-    public void setAddressForm(AddressForm addressForm) {
-        this.addressForm = addressForm;
+    public void setAddress(AddressForm address) {
+        this.address = address;
     }
 
     @Override

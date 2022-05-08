@@ -1,13 +1,13 @@
 package com.cobnet.spring.boot.service.support;
 
+import com.cobnet.interfaces.CacheValue;
 import com.cobnet.spring.boot.dto.support.PhoneNumberSmsType;
-import com.cobnet.spring.boot.service.AccountService;
 import com.cobnet.spring.boot.service.PhoneNumberSmsVerifyService;
 
 import java.io.Serializable;
 import java.util.Date;
 
-public record AccountPhoneNumberVerifyCache(int code, Date createdTime, PhoneNumberSmsType type, int times, boolean verified) implements Serializable {
+public record AccountPhoneNumberVerifyCache(int code, Date creationTime, PhoneNumberSmsType type, int count, boolean verified) implements CacheValue {
 
     public static final String PhoneNumberSmsVerifyServiceKey = PhoneNumberSmsVerifyService.class.getSimpleName();
 
@@ -16,15 +16,14 @@ public record AccountPhoneNumberVerifyCache(int code, Date createdTime, PhoneNum
         return code;
     }
 
-    @Override
-    public Date createdTime() {
-        return createdTime;
+    public Date creationTime() {
+        return creationTime;
     }
 
     public PhoneNumberSmsType type() { return type; }
 
-    public int times() {
-        return times;
+    public int count() {
+        return count;
     }
 
     @Override

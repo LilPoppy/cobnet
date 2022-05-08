@@ -2,6 +2,7 @@ package com.cobnet.spring.boot.controller.restful;
 
 import com.cobnet.common.PuzzledImage;
 import com.cobnet.exception.ResponseFailureStatusException;
+import com.cobnet.interfaces.security.annotation.HumanValidationRequired;
 import com.cobnet.security.AccountAuthenticationToken;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.*;
@@ -81,6 +82,7 @@ public class VisitorController {
         return null;
     }
 
+    @HumanValidationRequired
     @Operation(summary = "Request sms verify for provided phone number.")
     @PostMapping("/visitor/sms/request")
     public ResponseResult<PhoneNumberSmsRequestResultStatus> phoneNumberSmsRequest(PhoneNumberSmsRequest request) throws IOException, ResponseFailureStatusException {
@@ -117,6 +119,7 @@ public class VisitorController {
         return null;
     }
 
+    @HumanValidationRequired
     @Operation(summary = "auto complete given address.")
     @PostMapping("/visitor/autocomplete/address")
     public ResponseResult<GoogleApiRequestResultStatus> autocompleteAddress(HttpServletRequest request, @RequestBody AddressForm addressRequest) throws ResponseFailureStatusException {

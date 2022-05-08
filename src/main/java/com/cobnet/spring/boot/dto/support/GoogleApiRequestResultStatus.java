@@ -5,23 +5,29 @@ import org.springframework.http.HttpStatus;
 
 public enum GoogleApiRequestResultStatus implements ReasonableStatus {
 
-    SUCCESS(HttpStatus.OK),
-    FAILED(HttpStatus.BAD_REQUEST),
-    EXHAUSTED(HttpStatus.BAD_REQUEST),
-    REJECTED(HttpStatus.BAD_REQUEST),
-
-    HUMAN_VALIDATION_REQUEST(HttpStatus.BAD_REQUEST),
-    BAD_REQUEST(HttpStatus.BAD_REQUEST),
-    SERVICE_DOWN(HttpStatus.BAD_GATEWAY);
+    SUCCESS(HttpStatus.OK, null),
+    FAILED(HttpStatus.BAD_REQUEST, null),
+    EXHAUSTED(HttpStatus.BAD_REQUEST, null),
+    REJECTED(HttpStatus.BAD_REQUEST, null),
+    BAD_REQUEST(HttpStatus.BAD_REQUEST, null),
+    SERVICE_DOWN(HttpStatus.BAD_GATEWAY, null);
 
     private final HttpStatus status;
 
-    private GoogleApiRequestResultStatus(HttpStatus status) {
+    private final String message;
+
+    private GoogleApiRequestResultStatus(HttpStatus status, String message) {
         this.status = status;
+        this.message = message;
     }
 
     @Override
     public HttpStatus getStatus() {
         return this.status;
+    }
+
+    @Override
+    public String message() {
+        return message;
     }
 }

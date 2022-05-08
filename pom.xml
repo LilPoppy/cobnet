@@ -612,34 +612,34 @@
 								<buildArgs>-Dpython.StdLibHome=${env.JAVA_HOME}/languages/python/lib-python/3</buildArgs>
 								<!--suppress UnresolvedMavenProperty -->
 								<buildArgs>-Dpython.CoreHome=${env.JAVA_HOME}/languages/python/lib-graalpython</buildArgs>
-								<!--								<buildArgs>&#45;&#45;initialize-at-run-times=com.cobnet.utils.TaskProvider</buildArgs>-->
-								<!--								<buildArgs>&#45;&#45;initialize-at-run-times=org.apache.tomcat.jni.OS</buildArgs>-->
-								<!--								<buildArgs>&#45;&#45;initialize-at-run-times=org.apache.tomcat.jni.SSL</buildArgs>-->
-								<!--								<buildArgs>&#45;&#45;initialize-at-run-times=org.python.modules.posix.PosixModule</buildArgs>-->
-								<!--								<buildArgs>&#45;&#45;initialize-at-run-times=org.apache.tomcat.util.net.openssl.OpenSSLEngine</buildArgs>-->
-								<!--								<buildArgs>&#45;&#45;initialize-at-run-times=org.python.modules.Setup</buildArgs>-->
-								<!--								<buildArgs>&#45;&#45;initialize-at-run-times=org.springframework.core.io.VfsUtils</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-count=com.cobnet.utils.TaskProvider</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-count=org.apache.tomcat.jni.OS</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-count=org.apache.tomcat.jni.SSL</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-count=org.python.modules.posix.PosixModule</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-count=org.apache.tomcat.util.net.openssl.OpenSSLEngine</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-count=org.python.modules.Setup</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-count=org.springframework.core.io.VfsUtils</buildArgs>-->
 
-								<!--								<buildArgs>&#45;&#45;initialize-at-run-times=org.springframework.data.web.XmlBeamHttpMessageConverter</buildArgs>-->
-								<!--								<buildArgs>&#45;&#45;initialize-at-run-times=org.springframework.data.web.ProjectingJackson2HttpMessageConverter</buildArgs>-->
-								<!--								<buildArgs>&#45;&#45;initialize-at-run-times=org.springframework.boot.autoconfigure.neo4j.Neo4jAutoConfiguration</buildArgs>-->
-								<!--								<buildArgs>&#45;&#45;initialize-at-run-times=org.springframework.boot.logging.log4j2.Log4J2LoggingSystem</buildArgs>-->
-								<!--								<buildArgs>&#45;&#45;initialize-at-run-times=org.springframework.boot.liquibase.LiquibaseChangelogMissingFailureAnalyzer</buildArgs>-->
-								<!--								<buildArgs>&#45;&#45;initialize-at-run-times=org.springframework.web.multipart.commons.CommonsFileUploadSupport</buildArgs>-->
-								<!--								<buildArgs>&#45;&#45;initialize-at-run-times=org.springframework.http.converter.json.Jackson2ObjectMapperBuilder$XmlObjectMapperInitializer</buildArgs>-->
-								<!--								<buildArgs>&#45;&#45;initialize-at-run-times=org.springframework.boot.r2dbc.EmbeddedDatabaseConnection</buildArgs>-->
-								<!--								<buildArgs>&#45;&#45;initialize-at-run-times=io.netty.handler.ssl.ConscryptAlpnSslEngine</buildArgs>-->
-								<!--								<buildArgs>&#45;&#45;initialize-at-run-times=io.netty.util.internal.logging.Log4JLogger</buildArgs>-->
-								<!--								<buildArgs>&#45;&#45;initialize-at-run-times=reactor.core.publisher.Traces$SharedSecretsCallSiteSupplierFactory$TracingException</buildArgs>-->
-								<!--								<buildArgs>&#45;&#45;initialize-at-run-times=com.zaxxer.hikari.metrics.micrometer.MicrometerMetricsTracker</buildArgs>-->
-								<!--								<buildArgs>&#45;&#45;initialize-at-run-times=com.zaxxer.hikari.metrics.dropwizard.CodaHaleMetricsTracker</buildArgs>-->
-								<!--								<buildArgs>&#45;&#45;initialize-at-run-times=com.netflix.discovery.shared.transport.jersey.JerseyEurekaHttpClientFactory</buildArgs>-->
-								<!--								<buildArgs>&#45;&#45;initialize-at-run-times=org.hibernate.secure.internal.StandardJaccServiceImpl</buildArgs>-->
-								<!-- Incompatible at initialize at build times for graalvm version 22.0.0.2 -->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-count=org.springframework.data.web.XmlBeamHttpMessageConverter</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-count=org.springframework.data.web.ProjectingJackson2HttpMessageConverter</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-count=org.springframework.boot.autoconfigure.neo4j.Neo4jAutoConfiguration</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-count=org.springframework.boot.logging.log4j2.Log4J2LoggingSystem</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-count=org.springframework.boot.liquibase.LiquibaseChangelogMissingFailureAnalyzer</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-count=org.springframework.web.multipart.commons.CommonsFileUploadSupport</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-count=org.springframework.http.converter.json.Jackson2ObjectMapperBuilder$XmlObjectMapperInitializer</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-count=org.springframework.boot.r2dbc.EmbeddedDatabaseConnection</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-count=io.netty.handler.ssl.ConscryptAlpnSslEngine</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-count=io.netty.util.internal.logging.Log4JLogger</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-count=reactor.core.publisher.Traces$SharedSecretsCallSiteSupplierFactory$TracingException</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-count=com.zaxxer.hikari.metrics.micrometer.MicrometerMetricsTracker</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-count=com.zaxxer.hikari.metrics.dropwizard.CodaHaleMetricsTracker</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-count=com.netflix.discovery.shared.transport.jersey.JerseyEurekaHttpClientFactory</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-count=org.hibernate.secure.internal.StandardJaccServiceImpl</buildArgs>-->
+								<!-- Incompatible at initialize at build count for graalvm version 22.0.0.2 -->
 								<buildArgs>--initialize-at-run-time=io.netty.handler.ssl.util.ThreadLocalInsecureRandom,io.netty.channel.unix,io.netty.channel.epoll,io.netty.channel.kqueue</buildArgs>
 								<buildArgs>--initialize-at-run-time=io.netty.handler.ssl.JdkNpnApplicationProtocolNegotiator</buildArgs>
 								<buildArgs>--initialize-at-run-time=io.netty.handler.ssl.JettyNpnSslEngine</buildArgs>
-								<!--								<buildArgs>&#45;&#45;initialize-at-run-times=com.cobnet.EntryPoint</buildArgs>-->
+								<!--								<buildArgs>&#45;&#45;initialize-at-run-count=com.cobnet.EntryPoint</buildArgs>-->
 							</buildArgs>
 
 						</configuration>

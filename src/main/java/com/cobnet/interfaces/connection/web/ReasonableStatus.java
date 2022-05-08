@@ -11,5 +11,7 @@ public interface ReasonableStatus {
 
     HttpStatus getStatus();
 
+    String message();
+
     String name();
 }

@@ -66,24 +66,24 @@ public class HttpAuthenticationFailureHandler implements AuthenticationFailureHa
 
                     } else {
 
-                        cache = new AttemptLoginCache(cache.createdTime(), cache.times() + 1);
+                        cache = new AttemptLoginCache(cache.creationTime(), cache.count() + 1);
 
-                        ProjectBeanHolder.getCacheService().set(AttemptLoginCache.AccountServiceName, key, cache, ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLoginReset().minus(DateUtils.getInterval(DateUtils.now(), cache.createdTime())));
+                        ProjectBeanHolder.getCacheService().set(AttemptLoginCache.AccountServiceName, key, cache, ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLoginReset().minus(DateUtils.getInterval(DateUtils.now(), cache.creationTime())));
                     }
 
-                    if(cache.times() >= ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin()) {
+                    if(cache.count() >= ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin()) {
 
                         writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult<>(AuthenticationStatus.REACHED_MAXIMUM_ATTEMPT)));
 
                     } else {
 
-                        writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult(AuthenticationStatus.PASSWORD_NOT_MATCH, new CommentWrapper<>("Login attempt time left.", new ObjectWrapper<>("attempt-remain", ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin() - ProjectBeanHolder.getCacheService().get(AttemptLoginCache.AccountServiceName, request.getSession().getId(), AttemptLoginCache.class).times())))));
+                        writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult(AuthenticationStatus.PASSWORD_NOT_MATCH, new CommentWrapper<>("Login attempt time left.", new ObjectWrapper<>("attempt-remain", ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin() - ProjectBeanHolder.getCacheService().get(AttemptLoginCache.AccountServiceName, request.getSession().getId(), AttemptLoginCache.class).count())))));
                     }
 
                 } else if(exception instanceof BadCredentialsException) {
 
                     response.setStatus(AuthenticationStatus.PASSWORD_NOT_MATCH.getCode());
-                    writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult(AuthenticationStatus.PASSWORD_NOT_MATCH, new CommentWrapper<>("Login attempt time left.", new ObjectWrapper<>("attempt-remain",ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin() - ProjectBeanHolder.getCacheService().get(AttemptLoginCache.AccountServiceName, request.getSession().getId(), AttemptLoginCache.class).times())))));
+                    writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult(AuthenticationStatus.PASSWORD_NOT_MATCH, new CommentWrapper<>("Login attempt time left.", new ObjectWrapper<>("attempt-remain",ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin() - ProjectBeanHolder.getCacheService().get(AttemptLoginCache.AccountServiceName, request.getSession().getId(), AttemptLoginCache.class).count())))));
 
                 } else if(exception instanceof AuthenticationCancelledException) {
 
@@ -105,7 +105,7 @@ public class HttpAuthenticationFailureHandler implements AuthenticationFailureHa
                     response.setStatus(ex.getStatus().getCode());
 
                     switch (ex.getStatus()) {
-                        case HUMAN_VALIDATION_REQUEST -> writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult<>(ex.getStatus(), new CommentWrapper<>("Human validation required.", new MethodHint(HttpMethod.PATCH, "/visitor/human-validate")))));
+                        case HUMAN_VALIDATION_REQUIRED -> writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult<>(ex.getStatus(), new CommentWrapper<>("Human validation required.", new MethodHint(HttpMethod.PATCH, "/visitor/human-validate")))));
                         case REACHED_MAXIMUM_ATTEMPT, REJECTED -> writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult<>(ex.getStatus())));
                     }
                 }

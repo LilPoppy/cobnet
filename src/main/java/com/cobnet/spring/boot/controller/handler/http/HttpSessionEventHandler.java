@@ -40,7 +40,7 @@ public class HttpSessionEventHandler extends HttpSessionEventPublisher {
                 if(cache != null) {
 
                     ProjectBeanHolder.getCacheService().evictIfPresent(AutocompleteRequestCache.GoogleMapServiceKey, oldSessionId);
-                    ProjectBeanHolder.getCacheService().set(AutocompleteRequestCache.GoogleMapServiceKey, event.getSession().getId(), cache, ProjectBeanHolder.getSecurityConfiguration().getGoogleMapAutoCompleteLimitDuration().minus(DateUtils.getInterval(DateUtils.now(), cache.createdTime())));
+                    ProjectBeanHolder.getCacheService().set(AutocompleteRequestCache.GoogleMapServiceKey, event.getSession().getId(), cache, ProjectBeanHolder.getSecurityConfiguration().getGoogleMapAutoCompleteLimitDuration().minus(DateUtils.getInterval(DateUtils.now(), cache.creationTime())));
                     break;
                 }
             }

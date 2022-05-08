@@ -92,7 +92,9 @@ spring:
                   enable: true
    security:
       session-limit-enable: true
-      session-created-time-require: 3s
+      session-created-time-require: 60s
+      session-before-created-time-allow-request-count: 10
+      session-max-error-count-per-minute: 500
       username-format-regex: ^[a-zA-Z0-9]{6,16}$
       password-format-regex: ^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$
       permission-default-power: 3
@@ -100,8 +102,8 @@ spring:
       max-attempt-login-reset: 10m
       max-attempt-login-account-locks: true
       max-attempt-login-account-locks-duration: 30m
-      human-validation-enable: false
-      human-validation-create-interval-limited-time: 5
+      human-validation-enable: true
+      human-validation-create-interval-limited-count: 5
       human-validation-create-interval: 30s
       human-validation-expire: 10m
       phone-number-verify-enable: true

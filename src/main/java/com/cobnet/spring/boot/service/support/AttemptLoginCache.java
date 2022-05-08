@@ -1,20 +1,21 @@
 package com.cobnet.spring.boot.service.support;
 
+import com.cobnet.interfaces.CacheValue;
 import com.cobnet.spring.boot.service.AccountService;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public record AttemptLoginCache(Date createdTime, int times) implements Serializable {
+public record AttemptLoginCache(Date creationTime, int count) implements CacheValue {
 
     public static final String AccountServiceName = AccountService.class.getSimpleName();
 
     @Override
-    public Date createdTime() {
-        return createdTime;
+    public Date creationTime() {
+        return creationTime;
     }
 
-    public int times() {
-        return times;
+    public int count() {
+        return count;
     }
+
 }

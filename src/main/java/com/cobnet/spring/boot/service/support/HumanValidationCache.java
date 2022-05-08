@@ -1,28 +1,29 @@
 package com.cobnet.spring.boot.service.support;
 
 import com.cobnet.common.PuzzledImage;
+import com.cobnet.interfaces.CacheValue;
 import com.cobnet.spring.boot.service.HumanValidatorService;
 
 import java.io.Serializable;
 import java.util.Date;
 
-public class HumanValidationCache implements Serializable {
+public class HumanValidationCache implements CacheValue, Serializable {
 
     public static final String HumanValidatorKey = HumanValidatorService.class.getSimpleName();
 
     private final PuzzledImage image;
 
-    private Date createdTime;
+    private Date creationTime;
 
-    private int times;
+    private int count;
 
     private boolean validated;
 
-    public HumanValidationCache(PuzzledImage image, Date createdTime, int times, boolean validated) {
+    public HumanValidationCache(PuzzledImage image, Date creationTime, int count, boolean validated) {
 
         this.image = image;
-        this.createdTime = createdTime;
-        this.times = times;
+        this.creationTime = creationTime;
+        this.count = count;
         this.validated = validated;
     }
 
@@ -30,28 +31,30 @@ public class HumanValidationCache implements Serializable {
         return image;
     }
 
-    public Date getCreatedTime() {
-        return createdTime;
+    @Override
+    public int count() {
+        return count;
     }
 
-    public int getTimes() {
-        return times;
+    @Override
+    public Date creationTime() {
+        return creationTime;
     }
 
     public boolean isValidated() {
         return validated;
     }
 
-    public HumanValidationCache setCreatedTime(Date createdTime) {
+    public HumanValidationCache setCreationTime(Date creationTime) {
 
-        this.createdTime = createdTime;
+        this.creationTime = creationTime;
 
         return this;
     }
 
-    public HumanValidationCache setTimes(int times) {
+    public HumanValidationCache setCount(int count) {
 
-        this.times = times;
+        this.count = count;
 
         return this;
     }
@@ -62,4 +65,6 @@ public class HumanValidationCache implements Serializable {
 
         return this;
     }
+
+
 }

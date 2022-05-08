@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.Date;
 import java.util.Objects;
 import java.util.Random;
 
@@ -20,18 +19,6 @@ import java.util.Random;
 public class PhoneNumberSmsVerifyService {
 
     public boolean requestSms(String username, String phoneNumber, PhoneNumberSmsType type) throws IOException, ResponseFailureStatusException {
-
-        HttpSession session = Objects.requireNonNull(ProjectBeanHolder.getCurrentHttpRequest()).getSession(true);
-
-        if(ProjectBeanHolder.getSecurityConfiguration().isHumanValidationEnable() && !ProjectBeanHolder.getHumanValidator().isValidated(session.getId())) {
-
-            throw new ResponseFailureStatusException(PhoneNumberSmsRequestResultStatus.HUMAN_VALIDATION_REQUEST);
-        }
-
-        if(ProjectBeanHolder.getSecurityConfiguration().isSessionLimitEnable() && ProjectBeanHolder.getSecurityConfiguration().getSessionCreatedTimeRequire().compareTo(DateUtils.getInterval(new Date(session.getCreationTime()), DateUtils.now())) > 0) {
-
-            throw new ResponseFailureStatusException(PhoneNumberSmsRequestResultStatus.REJECTED);
-        }
 
         if(type == PhoneNumberSmsType.ACCOUNT_REGISTER) {
 
@@ -47,9 +34,9 @@ public class PhoneNumberSmsVerifyService {
 
         if(cache != null) {
 
-            if (DateUtils.addDuration(cache.createdTime(), ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsGenerateInterval()).before(DateUtils.now())) {
+            if (DateUtils.addDuration(cache.creationTime(), ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsGenerateInterval()).before(DateUtils.now())) {
 
-                if(cache.times() >= ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsVerifyTimes()) {
+                if(cache.count() >= ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsVerifyTimes()) {
 
                     throw  new ResponseFailureStatusException(PhoneNumberSmsRequestResultStatus.EXHAUSTED);
                 }
@@ -57,7 +44,7 @@ public class PhoneNumberSmsVerifyService {
                 return send(username, phoneNumber, type);
             }
 
-            throw new ResponseFailureStatusException(PhoneNumberSmsRequestResultStatus.INTERVAL_LIMITED, new ObjectWrapper<>("time-remain", ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsGenerateInterval().minus(DateUtils.getInterval(DateUtils.now(), cache.createdTime()))));
+            throw new ResponseFailureStatusException(PhoneNumberSmsRequestResultStatus.INTERVAL_LIMITED, new ObjectWrapper<>("time-remain", ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsGenerateInterval().minus(DateUtils.getInterval(DateUtils.now(), cache.creationTime()))));
         }
 
         return send(username, phoneNumber, type);
@@ -71,7 +58,7 @@ public class PhoneNumberSmsVerifyService {
 
         AccountPhoneNumberVerifyCache cache = this.getCache(username);
 
-        ProjectBeanHolder.getCacheService().set(AccountPhoneNumberVerifyCache.PhoneNumberSmsVerifyServiceKey, username, new AccountPhoneNumberVerifyCache(code, DateUtils.now(), type, cache != null ? cache.times() + 1 : 0, false), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire());
+        ProjectBeanHolder.getCacheService().set(AccountPhoneNumberVerifyCache.PhoneNumberSmsVerifyServiceKey, username, new AccountPhoneNumberVerifyCache(code, DateUtils.now(), type, cache != null ? cache.count() + 1 : 0, false), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire());
 
         try {
 
@@ -91,7 +78,7 @@ public class PhoneNumberSmsVerifyService {
 
         if(cache != null && cache.type() == verify.type() && cache.code() == verify.code()) {
 
-            ProjectBeanHolder.getCacheService().set(AccountPhoneNumberVerifyCache.PhoneNumberSmsVerifyServiceKey, verify.username(), new AccountPhoneNumberVerifyCache(verify.code(), DateUtils.now(), verify.type(), cache.times(),true), ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsCodeExpire());
+            ProjectBeanHolder.getCacheService().set(AccountPhoneNumberVerifyCache.PhoneNumberSmsVerifyServiceKey, verify.username(), new AccountPhoneNumberVerifyCache(verify.code(), DateUtils.now(), verify.type(), cache.count(),true), ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsCodeExpire());
 
             return true;
         }

@@ -56,6 +56,8 @@ public class ProjectBeanHolder {
     private static FileSourceConfiguration FILE_SOURCE_CONFIGURATION;
     private static MessageSource MESSAGE_SOURCE;
 
+    private static SecurityService SECURITY_SERVICE;
+
     private static AddressRepository ADDRESS_REPOSITORY;
 
     private static PhoneNumberSmsVerifyService PHONE_NUMBER_SMS_VERIFY_SERVICE;
@@ -203,6 +205,10 @@ public class ProjectBeanHolder {
         }
 
         return null;
+    }
+
+    public static SecurityService getSecurityService() {
+        return ProjectBeanHolder.SECURITY_SERVICE;
     }
 
     public static HttpServletRequest getCurrentHttpRequest() {
@@ -488,6 +494,12 @@ public class ProjectBeanHolder {
         public void setCacheService(CacheService service) {
 
             ProjectBeanHolder.CACHE_SERVICE = service;
+        }
+
+        @Autowired
+        public void setSecurityService(SecurityService service) {
+
+            ProjectBeanHolder.SECURITY_SERVICE = service;
         }
 
         @Autowired
@@ -896,7 +908,7 @@ public class ProjectBeanHolder {
 
         @Bean
         @Primary
-        public MessageSource messageSourceBean(@Autowired FileInfoRepository repository, @Autowired FileSource source, @Autowired CacheService service, @Autowired GoogleConsoleConfiguration configuration) throws IOException {
+        public MessageSource messageSourceBean(@Autowired ObjectMapper mapper, @Autowired FileInfoRepository repository, @Autowired FileSource source, @Autowired CacheService service, @Autowired GoogleConsoleConfiguration configuration) throws IOException {
 
             return new GoogleTranslatorBundleMessageSource(repository, source, service, configuration);
         }

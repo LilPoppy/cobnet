@@ -5,23 +5,33 @@ import org.springframework.http.HttpStatus;
 
 public enum AuthenticationStatus implements ReasonableStatus {
 
-    SUCCESS(HttpStatus.OK),
-    USER_NOT_FOUND(HttpStatus.UNAUTHORIZED),
-    PASSWORD_NOT_MATCH(HttpStatus.UNAUTHORIZED),
-    HUMAN_VALIDATION_REQUEST(HttpStatus.BAD_REQUEST),
-    REACHED_MAXIMUM_ATTEMPT(HttpStatus.BAD_REQUEST),
-    LOCKED(HttpStatus.BAD_REQUEST),
-    REJECTED(HttpStatus.BAD_REQUEST);
+    SUCCESS(HttpStatus.OK, null),
+    USER_NOT_FOUND(HttpStatus.UNAUTHORIZED, null),
+    HUMAN_VALIDATION_REQUIRED(HttpStatus.FORBIDDEN, null),
+    PASSWORD_NOT_MATCH(HttpStatus.UNAUTHORIZED, null),
+    REACHED_MAXIMUM_ATTEMPT(HttpStatus.BAD_REQUEST, null),
+    LOCKED(HttpStatus.BAD_REQUEST, null),
+    REJECTED(HttpStatus.BAD_REQUEST, null);
 
     private final HttpStatus status;
 
-    private AuthenticationStatus(HttpStatus status) {
+    private final String message;
+
+    private AuthenticationStatus(HttpStatus status, String message) {
 
         this.status = status;
+        this.message = message;
     }
 
     @Override
     public HttpStatus getStatus() {
         return this.status;
     }
+
+    @Override
+    public String message() {
+        return message;
+    }
+
+
 }

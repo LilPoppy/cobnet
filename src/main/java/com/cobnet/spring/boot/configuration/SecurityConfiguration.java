@@ -1,5 +1,6 @@
 package com.cobnet.spring.boot.configuration;
 
+import com.cobnet.security.IpAddressFilter;
 import com.cobnet.security.OAuth2LoginAccountAuthenticationFilter;
 import com.cobnet.security.UserAuthenticationProvider;
 import com.cobnet.security.UserLockStatusFilter;
@@ -25,6 +26,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.RememberMeServices;
@@ -48,6 +50,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final static Logger LOG = LoggerFactory.getLogger(SecurityConfiguration.class);
 
+    public final static String ERROR_MESSAGE_COUNT = "ERROR_MESSAGE_COUNT";
+
     public final static String PREVIOUS_URL = "PREVIOUS_URL";
 
     public final static String CONNECTION_TOKEN = "CONNECTION_TOKEN";
@@ -57,6 +61,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private boolean sessionLimitEnable;
 
     private Duration sessionCreatedTimeRequire;
+
+    private int sessionBeforeCreatedTimeAllowRequestCount;
+
+    private int sessionMaxErrorCountPerMinute;
 
     private String usernameFormatRegex;
 
@@ -74,7 +82,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private boolean humanValidationEnable;
 
-    private int humanValidationCreateIntervalLimitedTime;
+    private int humanValidationCreateIntervalLimitedCount;
 
     private Duration humanValidationCreateInterval;
 
@@ -97,8 +105,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private int googleMapAutoCompleteLimit;
 
     private Duration googleMapAutoCompleteLimitDuration;
-
-    private Duration googleMapAutocompleteSessionRequire;
 
     private String userDefaultRole;
 
@@ -158,7 +164,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     /**
-     *  Unable to pass in run times
+     *  Unable to pass in run count
      *     Caused by: java.lang.NullPointerException: null
      *      at org.springframework.util.ReflectionUtils.makeAccessible(ReflectionUtils.java:788) ~[na:na]
      *      at org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter$AuthenticationManagerDelegator.<init>(WebSecurityConfigurerAdapter.java:501) ~[na:na]
@@ -205,7 +211,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 //session
                 .sessionManagement().sessionAuthenticationStrategy(compositeSessionAuthenticationStrategyBean()).sessionCreationPolicy(getSessionCreationPolicy()).maximumSessions(1).sessionRegistry(sessionRegistryBean());
                 //filter
-                security.addFilterBefore(userDetailCheckFilterBean(), UsernamePasswordAuthenticationFilter.class)
+                security.addFilterBefore(ipAddressFilterBean(), FilterSecurityInterceptor.class)
+                        .addFilterBefore(userLockStatusFilterBean(), UsernamePasswordAuthenticationFilter.class)
                         .addFilterBefore(oAuth2LoginAccountAuthenticationFilterBean(), OAuth2LoginAuthenticationFilter.class);
     }
 
@@ -221,7 +228,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public UserLockStatusFilter userDetailCheckFilterBean() {
+    public IpAddressFilter ipAddressFilterBean() {
+
+        return new IpAddressFilter();
+    }
+
+    @Bean
+    public UserLockStatusFilter userLockStatusFilterBean() {
 
         return new UserLockStatusFilter(this.getAuthenticationUrl());
     }
@@ -329,6 +342,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return sessionLimitEnable;
     }
 
+    public int getSessionBeforeCreatedTimeAllowRequestCount() {
+        return sessionBeforeCreatedTimeAllowRequestCount;
+    }
+
+    public int getSessionMaxErrorCountPerMinute() {
+        return sessionMaxErrorCountPerMinute;
+    }
+
     public Duration getSessionCreatedTimeRequire() {
         return sessionCreatedTimeRequire;
     }
@@ -369,8 +390,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return passwordFormatRegex;
     }
 
-    public int getHumanValidationCreateIntervalLimitedTime() {
-        return humanValidationCreateIntervalLimitedTime;
+    public int getHumanValidationCreateIntervalLimitedCount() {
+        return humanValidationCreateIntervalLimitedCount;
     }
 
     public Duration getHumanValidationCreateInterval() {
@@ -481,6 +502,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.loginSuccessRedirectUseXForwardedPrefix = loginSuccessRedirectUseXForwardedPrefix;
     }
 
+    public void setSessionBeforeCreatedTimeAllowRequestCount(int sessionBeforeCreatedTimeAllowRequestCount) {
+        this.sessionBeforeCreatedTimeAllowRequestCount = sessionBeforeCreatedTimeAllowRequestCount;
+    }
+
+    public void setSessionMaxErrorCountPerMinute(int sessionMaxErrorCountPerMinute) {
+        this.sessionMaxErrorCountPerMinute = sessionMaxErrorCountPerMinute;
+    }
+
     public void setLoginFailureRedirectUseXForwardedPrefix(boolean loginFailureRedirectUseXForwardedPrefix) {
         this.loginFailureRedirectUseXForwardedPrefix = loginFailureRedirectUseXForwardedPrefix;
     }
@@ -489,8 +518,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.logoutSuccessRedirectUseXForwardedPrefix = logoutSuccessRedirectUseXForwardedPrefix;
     }
 
-    public void setHumanValidationCreateIntervalLimitedTime(int humanValidationCreateIntervalLimitedTime) {
-        this.humanValidationCreateIntervalLimitedTime = humanValidationCreateIntervalLimitedTime;
+    public void setHumanValidationCreateIntervalLimitedCount(int humanValidationCreateIntervalLimitedCount) {
+        this.humanValidationCreateIntervalLimitedCount = humanValidationCreateIntervalLimitedCount;
     }
 
     public void setHumanValidationCreateInterval(Duration humanValidationCreateInterval) {

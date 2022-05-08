@@ -34,7 +34,6 @@ import org.springframework.util.Assert;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -60,12 +59,7 @@ public class AccountService {
 
             if(ProjectBeanHolder.getSecurityConfiguration().isHumanValidationEnable() && !ProjectBeanHolder.getHumanValidator().isValidated(session.getId())) {
 
-                throw new AuthenticationSecurityException(AuthenticationStatus.HUMAN_VALIDATION_REQUEST);
-            }
-
-            if(ProjectBeanHolder.getSecurityConfiguration().isSessionLimitEnable() && ProjectBeanHolder.getSecurityConfiguration().getSessionCreatedTimeRequire().compareTo(DateUtils.getInterval(new Date(session.getCreationTime()), DateUtils.now())) > 0) {
-
-                throw new AuthenticationSecurityException(AuthenticationStatus.REJECTED, "Session is too new.");
+                throw new AuthenticationSecurityException(AuthenticationStatus.HUMAN_VALIDATION_REQUIRED);
             }
 
             String key = request.getSession(true).getId();
@@ -102,14 +96,14 @@ public class AccountService {
 
                         AttemptLoginCache cache = ProjectBeanHolder.getCacheService().get(AttemptLoginCache.AccountServiceName, key, AttemptLoginCache.class);
 
-                        if(cache == null || !DateUtils.addDuration(cache.createdTime(), ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLoginReset()).after(DateUtils.now())) {
+                        if(cache == null || !DateUtils.addDuration(cache.creationTime(), ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLoginReset()).after(DateUtils.now())) {
 
                             cache = new AttemptLoginCache(DateUtils.now(), 0);
 
                             ProjectBeanHolder.getCacheService().set(AttemptLoginCache.AccountServiceName, key, cache, ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLoginReset());
                         }
 
-                        if(cache.times() >= ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin()) {
+                        if(cache.count() >= ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin()) {
 
                             throw new AuthenticationSecurityException(AuthenticationStatus.REACHED_MAXIMUM_ATTEMPT, "Authenticate reached maximum tries.");
                         }
@@ -140,11 +134,11 @@ public class AccountService {
                             return new AccountAuthenticationToken(account, ((UserDetails) account).getPassword());
                         }
 
-                        cache = new AttemptLoginCache(cache.createdTime(), cache.times() + 1);
+                        cache = new AttemptLoginCache(cache.creationTime(), cache.count() + 1);
 
-                        ProjectBeanHolder.getCacheService().set(AttemptLoginCache.AccountServiceName, key, cache, ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLoginReset().minus(DateUtils.getInterval(DateUtils.now(), cache.createdTime())));
+                        ProjectBeanHolder.getCacheService().set(AttemptLoginCache.AccountServiceName, key, cache, ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLoginReset().minus(DateUtils.getInterval(DateUtils.now(), cache.creationTime())));
 
-                        if(ProjectBeanHolder.getSecurityConfiguration().isMaxAttemptLoginAccountLocks() && cache.times() >= ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin()) {
+                        if(ProjectBeanHolder.getSecurityConfiguration().isMaxAttemptLoginAccountLocks() && cache.count() >= ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin()) {
 
                             user.setLocked(true);
                             user.setLockTime(DateUtils.addDuration(DateUtils.now(), ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLoginAccountLocksDuration()));
@@ -174,7 +168,7 @@ public class AccountService {
 
                 try {
 
-                    return register(form.getEntity(), form.getAddressForm().getEntity());
+                    return register(form.getEntity(), form.getAddress().getEntity());
 
                 } finally {
 
@@ -190,7 +184,7 @@ public class AccountService {
             throw new ResponseFailureStatusException(UserRegisterResultStatus.REJECTED, new CommentWrapper("SMS request required.", new MethodHint(HttpMethod.POST, "/visitor/sms/request", new PhoneNumberSmsRequest(form.getUsername(), form.getPhoneNumber(), PhoneNumberSmsType.ACCOUNT_REGISTER))));
         }
 
-        return register(form.getEntity(), form.getAddressForm().getEntity());
+        return register(form.getEntity(), form.getAddress().getEntity());
     }
 
     public User register(User user, Address... addresses) throws ResponseFailureStatusException {
