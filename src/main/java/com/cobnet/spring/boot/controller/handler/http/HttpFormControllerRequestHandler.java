@@ -19,7 +19,12 @@ public class HttpFormControllerRequestHandler implements RequestBodyAdvice {
     @Override
     public boolean supports(MethodParameter methodParameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
 
-        return Form.class.isAssignableFrom((Class<?>) targetType);
+        if(targetType instanceof Class<?> type) {
+
+            return Form.class.isAssignableFrom(type);
+        }
+
+        return false;
     }
 
     @SneakyThrows
