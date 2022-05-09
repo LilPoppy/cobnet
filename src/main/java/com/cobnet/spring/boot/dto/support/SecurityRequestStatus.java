@@ -5,8 +5,8 @@ import org.springframework.http.HttpStatus;
 
 public enum SecurityRequestStatus implements ReasonableStatus {
 
-    SESSION_FORBIDDEN(HttpStatus.FORBIDDEN, null),
-    HUMAN_VALIDATION_REQUIRED(HttpStatus.FORBIDDEN, null);
+    SECURITY_FORBIDDEN_SESSION(HttpStatus.FORBIDDEN, null),
+    SECURITY_FORBIDDEN_HUMAN_VALIDATION(HttpStatus.FORBIDDEN, null);
 
     private HttpStatus status;
 

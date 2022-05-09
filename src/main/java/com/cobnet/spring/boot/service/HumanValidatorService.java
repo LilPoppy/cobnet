@@ -30,12 +30,12 @@ public class HumanValidatorService {
 
         if(cache != null) {
 
-            if(cache.count() < ProjectBeanHolder.getSecurityConfiguration().getHumanValidationCreateIntervalLimitedCount() || DateUtils.addDuration(cache.creationTime(), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationCreateInterval()).before(DateUtils.now())) {
+            if(cache.count() < ProjectBeanHolder.getSecurityConfiguration().getHumanValidation().getInitialCount() || DateUtils.addDuration(cache.creationTime(), ProjectBeanHolder.getSecurityConfiguration().getHumanValidation().getCreateInterval()).before(DateUtils.now())) {
 
                 return generateImage(key);
             }
 
-            throw new ResponseFailureStatusException(HumanValidationRequestStatus.INTERVAL_LIMITED, new ObjectWrapper<>("time-remain", ProjectBeanHolder.getSecurityConfiguration().getHumanValidationCreateInterval().minus(DateUtils.getInterval(DateUtils.now(), cache.creationTime()))));
+            throw new ResponseFailureStatusException(HumanValidationRequestStatus.INTERVAL_LIMITED, new ObjectWrapper<>("time-remain", ProjectBeanHolder.getSecurityConfiguration().getHumanValidation().getCreateInterval().minus(DateUtils.getInterval(DateUtils.now(), cache.creationTime()))));
         }
 
         return generateImage(key);
@@ -54,7 +54,7 @@ public class HumanValidatorService {
 
         HumanValidationCache cache = getCache(key);
 
-        return !(cache != null && !DateUtils.addDuration(cache.creationTime(), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire()).before(DateUtils.now()));
+        return !(cache != null && !DateUtils.addDuration(cache.creationTime(), ProjectBeanHolder.getSecurityConfiguration().getHumanValidation().getExpire()).before(DateUtils.now()));
     }
 
     public <T extends Serializable> boolean isValidated(T key) {
@@ -84,7 +84,7 @@ public class HumanValidatorService {
 
         HumanValidationCache cache = this.getCache(key);
 
-        ProjectBeanHolder.getCacheService().set(HumanValidationCache.HumanValidatorKey, key, new HumanValidationCache(image, DateUtils.now(),cache != null ? cache.count() + 1 : 1, false), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire());
+        ProjectBeanHolder.getCacheService().set(HumanValidationCache.HumanValidatorKey, key, new HumanValidationCache(image, DateUtils.now(),cache != null ? cache.count() + 1 : 1, false), ProjectBeanHolder.getSecurityConfiguration().getHumanValidation().getExpire());
 
         return image;
     }
@@ -117,7 +117,7 @@ public class HumanValidatorService {
 
             } finally {
 
-                ProjectBeanHolder.getCacheService().set(HumanValidationCache.HumanValidatorKey, key, cache, ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire());
+                ProjectBeanHolder.getCacheService().set(HumanValidationCache.HumanValidatorKey, key, cache, ProjectBeanHolder.getSecurityConfiguration().getHumanValidation().getExpire());
             }
         }
 

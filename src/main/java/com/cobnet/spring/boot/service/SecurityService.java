@@ -1,20 +1,21 @@
 package com.cobnet.spring.boot.service;
 
 import com.cobnet.common.DateUtils;
-import com.cobnet.exception.ResponseFailureStatusException;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
-import com.cobnet.spring.boot.dto.support.SecurityRequestStatus;
 import com.cobnet.spring.boot.service.support.BadMessageCache;
 import com.cobnet.spring.boot.service.support.MessageCallsCache;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.core.RedisOperations;
+import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import javax.validation.constraints.Null;
-import java.time.Duration;
 import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
 @Service
 public class SecurityService {
@@ -28,6 +29,7 @@ public class SecurityService {
 
         return ProjectBeanHolder.getCacheService().get(BadMessageCache.SecurityServiceKey, MessageCallsCache.class, request.getSession(true).getId());
     }
+
 
     public BadMessageCache addBadMessage(HttpServletRequest request) {
 
@@ -46,7 +48,7 @@ public class SecurityService {
             cache = (BadMessageCache) cache.add(method, path);
         }
 
-        ProjectBeanHolder.getCacheService().set(BadMessageCache.SecurityServiceKey, session.getId(), cache, Duration.ofDays(1));
+        ProjectBeanHolder.getCacheService().set(BadMessageCache.SecurityServiceKey, session.getId(), cache, ProjectBeanHolder.getSecurityConfiguration().getSession().getBadMessageLogCacheExpire());
 
         return cache;
     }
@@ -68,7 +70,7 @@ public class SecurityService {
             cache = (MessageCallsCache) cache.add(method, path);
         }
 
-        ProjectBeanHolder.getCacheService().set(MessageCallsCache.SecurityServiceKey, session.getId(), cache, Duration.ofDays(1));
+        ProjectBeanHolder.getCacheService().set(MessageCallsCache.SecurityServiceKey, session.getId(), cache, ProjectBeanHolder.getSecurityConfiguration().getSession().getMessageLogCacheExpire());
 
         return cache;
     }
@@ -85,14 +87,20 @@ public class SecurityService {
             cache = this.getMessageCallsCache(request);
         }
 
-        if(ProjectBeanHolder.getSecurityConfiguration().isSessionLimitEnable() && cache.count() >= ProjectBeanHolder.getSecurityConfiguration().getSessionBeforeCreatedTimeAllowRequestCount()) {
+        if(cache == null) {
 
-            HttpSession session = request.getSession(true);
+            return true;
+        }
 
-            if(ProjectBeanHolder.getSecurityConfiguration().getSessionCreatedTimeRequire().compareTo(DateUtils.getInterval(new Date(session.getCreationTime()), DateUtils.now())) > 0) {
+        HttpSession session = request.getSession(true);
+
+        if(ProjectBeanHolder.getSecurityConfiguration().getSession().isEnable() && ProjectBeanHolder.getSecurityConfiguration().getSession().getBypassCheckAfter().compareTo(DateUtils.getInterval(new Date(session.getCreationTime()), DateUtils.now())) > 0) {
+
+            if(cache.count() >= ProjectBeanHolder.getSecurityConfiguration().getSession().getBeforeCreatedTimeMaxMessageCount()) {
 
                 return false;
             }
+
         }
 
         return true;

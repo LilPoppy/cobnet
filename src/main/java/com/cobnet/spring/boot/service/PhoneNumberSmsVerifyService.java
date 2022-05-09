@@ -58,7 +58,7 @@ public class PhoneNumberSmsVerifyService {
 
         AccountPhoneNumberVerifyCache cache = this.getCache(username);
 
-        ProjectBeanHolder.getCacheService().set(AccountPhoneNumberVerifyCache.PhoneNumberSmsVerifyServiceKey, username, new AccountPhoneNumberVerifyCache(code, DateUtils.now(), type, cache != null ? cache.count() + 1 : 0, false), ProjectBeanHolder.getSecurityConfiguration().getHumanValidationExpire());
+        ProjectBeanHolder.getCacheService().set(AccountPhoneNumberVerifyCache.PhoneNumberSmsVerifyServiceKey, username, new AccountPhoneNumberVerifyCache(code, DateUtils.now(), type, cache != null ? cache.count() + 1 : 0, false), ProjectBeanHolder.getSecurityConfiguration().getHumanValidation().getExpire());
 
         try {
 

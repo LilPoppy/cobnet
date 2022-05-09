@@ -1,24 +1,23 @@
 package com.cobnet.spring.boot.service;
 
 import com.cobnet.interfaces.CacheValue;
-import com.cobnet.spring.boot.core.ProjectBeanHolder;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.Cache;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 
 import java.io.Serializable;
 import java.time.Duration;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
-public class CacheService {
+public class RedisCacheService {
 
     private static Map<Class<? extends CacheValue>, Map<String, String>> NAMESPACES = new HashMap<>();
 
@@ -27,6 +26,35 @@ public class CacheService {
 
     @Autowired
     private RedisTemplate<String, Object> template;
+
+    public <T extends Serializable, E extends CacheValue> E transfer(Class<?> namespace, Class<E> type, T oldKey, T newKey) {
+
+        return (E) this.transfer(this.getNameSpace(type, namespace), oldKey, newKey);
+    }
+
+    public <T extends Serializable, E extends CacheValue> E transfer(String namespace, Class<E> type, T oldKey, T newKey) {
+
+        return (E) this.transfer(this.getNameSpace(type, namespace), oldKey, newKey);
+    }
+
+    public <T extends Serializable> Object transfer(String namespace, T oldKey, T newKey) {
+
+        Object cache = this.get(namespace, oldKey);
+
+        if(cache == null) {
+
+            return null;
+        }
+
+        Duration timeout = Duration.ofMillis(template.getExpire(this.getKey(namespace, oldKey)));
+
+        if(this.evictIfPresent(namespace, oldKey) && this.set(namespace, newKey, cache, timeout)) {
+
+            return cache;
+        }
+
+        return null;
+    }
 
     public <T extends Serializable, E extends CacheValue> boolean set(Class<?> namespace, T key, E value, Duration timeout) {
 
@@ -62,7 +90,7 @@ public class CacheService {
 
     public Set<String> keys(String namespace) {
 
-        return Objects.requireNonNull(template.keys(getKey(namespace, "*"))).stream().map(key -> key.substring((namespace + "::").length())).collect(Collectors.toSet());
+        return Objects.requireNonNull(template.keys(getKey(namespace, "*"))).stream().map(key -> key.substring(namespace.length() + 2)).collect(Collectors.toSet());
     }
 
     public <T extends CacheValue> Cache get(Class<?> namespace, Class<T> type) {
@@ -144,7 +172,7 @@ public class CacheService {
 
     public <T extends Serializable> String getKey(String namespace, T key) {
 
-        return namespace + "::" + new String(Objects.requireNonNull(new GenericToStringSerializer<>((Class<T>)key.getClass()).serialize(key)));
+        return new StringBuilder(namespace).append("::").append(new String(Objects.requireNonNull(new GenericToStringSerializer<>((Class<T>)key.getClass()).serialize(key)))).toString();
     }
 
     public <T extends CacheValue> String getNameSpace(Class<T> type, Class<?> namespace) {
@@ -154,19 +182,19 @@ public class CacheService {
 
     public <T extends CacheValue> String getNameSpace(Class<T> type, String namespace) {
 
-        Map<String, String> namespaces = CacheService.NAMESPACES.get(type);
+        Map<String, String> namespaces = RedisCacheService.NAMESPACES.get(type);
 
         if(namespaces == null) {
 
             namespaces = new HashMap<>();
-            CacheService.NAMESPACES.put(type, namespaces);
+            RedisCacheService.NAMESPACES.put(type, namespaces);
         }
 
         String result = namespaces.get(namespace);
 
         if(result == null) {
 
-            result = type.getSimpleName() + "::" + namespace;
+            result = new StringBuilder(type.getSimpleName()).append(":").append(namespace).toString();
             namespaces.put(namespace, result);
         }
 

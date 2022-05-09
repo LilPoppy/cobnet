@@ -28,11 +28,6 @@ public class HttpResponseResultControllerResponseHandler implements ResponseBody
     @Override
     public ResponseResult<? extends ReasonableStatus> beforeBodyWrite(ResponseResult<? extends ReasonableStatus> body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, ServerHttpRequest request, ServerHttpResponse response) {
 
-        if(body.status().getStatus().isError()) {
-
-            ProjectBeanHolder.getSecurityService().addBadMessage(ProjectBeanHolder.getCurrentHttpRequest());
-        }
-
         response.setStatusCode(body.status().getStatus());
 
         String message = body.status().message();

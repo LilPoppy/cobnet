@@ -16,13 +16,11 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
-import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.core.*;
 import org.springframework.data.redis.hash.Jackson2HashMapper;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -49,11 +47,14 @@ import java.io.IOException;
 
 public class ProjectBeanHolder {
 
+    private static RedisSessionService REDIS_SESSION_SERVICE;
+
     private static FileSource FILE_SOURCE;
 
     private static FileInfoRepository FILE_INFO_REPOSITORY;
 
     private static FileSourceConfiguration FILE_SOURCE_CONFIGURATION;
+
     private static MessageSource MESSAGE_SOURCE;
 
     private static SecurityService SECURITY_SERVICE;
@@ -72,7 +73,7 @@ public class ProjectBeanHolder {
 
     private static AccountService ACCOUNT_SERVICE;
 
-    private static CacheService CACHE_SERVICE;
+    private static RedisCacheService CACHE_SERVICE;
 
     private static HumanValidatorService HUMAN_VALIDATOR;
 
@@ -187,7 +188,7 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.ACCOUNT_SERVICE;
     }
 
-    public static CacheService getCacheService() {
+    public static RedisCacheService getCacheService() {
 
         return ProjectBeanHolder.CACHE_SERVICE;
     }
@@ -274,6 +275,10 @@ public class ProjectBeanHolder {
     public static GoogleMap getGoogleMap() {
 
         return ProjectBeanHolder.GOOGLE_MAP;
+    }
+
+    public static RedisSessionService getRedisSessionService() {
+        return ProjectBeanHolder.REDIS_SESSION_SERVICE;
     }
 
     public static GoogleConsoleConfiguration getGoogleConsoleConfiguration() {
@@ -491,7 +496,7 @@ public class ProjectBeanHolder {
         }
 
         @Autowired
-        public void setCacheService(CacheService service) {
+        public void setCacheService(RedisCacheService service) {
 
             ProjectBeanHolder.CACHE_SERVICE = service;
         }
@@ -530,6 +535,12 @@ public class ProjectBeanHolder {
         public void setCacheConfiguration(CacheConfiguration config) {
 
             ProjectBeanHolder.CACHE_CONFIGURATION = config;
+        }
+
+        @Autowired
+        public void setRedisSessionService(RedisSessionService service) {
+
+            ProjectBeanHolder.REDIS_SESSION_SERVICE = service;
         }
 
         @Autowired
@@ -664,8 +675,6 @@ public class ProjectBeanHolder {
             ProjectBeanHolder.PLATFORM_TRANSACTION_MANAGER = manager;
         }
 
-
-        @Deprecated(since = "Until fix @EnableRedisHttpSession")
         @Autowired
         public void setRedisIndexedSessionRepository(RedisIndexedSessionRepository repository) {
 
@@ -908,7 +917,7 @@ public class ProjectBeanHolder {
 
         @Bean
         @Primary
-        public MessageSource messageSourceBean(@Autowired ObjectMapper mapper, @Autowired FileInfoRepository repository, @Autowired FileSource source, @Autowired CacheService service, @Autowired GoogleConsoleConfiguration configuration) throws IOException {
+        public MessageSource messageSourceBean(@Autowired ObjectMapper mapper, @Autowired FileInfoRepository repository, @Autowired FileSource source, @Autowired RedisCacheService service, @Autowired GoogleConsoleConfiguration configuration) throws IOException {
 
             return new GoogleTranslatorBundleMessageSource(repository, source, service, configuration);
         }

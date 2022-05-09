@@ -57,7 +57,7 @@ public class AccountService {
 
             HttpSession session = request.getSession(true);
 
-            if(ProjectBeanHolder.getSecurityConfiguration().isHumanValidationEnable() && !ProjectBeanHolder.getHumanValidator().isValidated(session.getId())) {
+            if(ProjectBeanHolder.getSecurityConfiguration().getHumanValidation().isEnable() && !ProjectBeanHolder.getHumanValidator().isValidated(session.getId())) {
 
                 throw new AuthenticationSecurityException(AuthenticationStatus.HUMAN_VALIDATION_REQUIRED);
             }
@@ -241,7 +241,7 @@ public class AccountService {
 
         repository.save(user);
 
-        ProjectBeanHolder.getCacheService().evictIfPresent(AccountPhoneNumberVerifyCache.PhoneNumberSmsVerifyServiceKey, user.getUsername());
+        ProjectBeanHolder.getCacheService().evictIfPresent(AccountPhoneNumberVerifyCache.PhoneNumberSmsVerifyServiceKey, AccountPhoneNumberVerifyCache.class, user.getUsername());
 
         return user;
     }

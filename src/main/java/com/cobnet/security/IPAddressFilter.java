@@ -9,7 +9,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
-public class IpAddressFilter extends GenericFilterBean {
+public class IPAddressFilter extends GenericFilterBean {
 
 
     @Override

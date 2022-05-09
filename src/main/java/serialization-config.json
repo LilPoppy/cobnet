@@ -46,13 +46,22 @@
       "name":"java.lang.Number"
     },
     {
+      "name":"java.lang.String"
+    },
+    {
       "name":"java.lang.String$CaseInsensitiveComparator"
     },
     {
       "name":"java.util.ArrayList"
     },
     {
+      "name":"java.util.Hashtable"
+    },
+    {
       "name":"java.util.Locale"
+    },
+    {
+      "name":"java.util.Properties"
     },
     {
       "name":"java.util.TreeMap"

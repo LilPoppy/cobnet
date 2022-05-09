@@ -9,6 +9,9 @@
     "interfaces":["com.cobnet.interfaces.spring.repository.ExternalUserRepository","org.springframework.data.repository.Repository","org.springframework.transaction.interceptor.TransactionalProxy","org.springframework.aop.framework.Advised","org.springframework.core.DecoratingProxy","java.io.Serializable"]}
   ,
   {
+    "interfaces":["com.cobnet.interfaces.spring.repository.FileInfoRepository","org.springframework.data.repository.Repository","org.springframework.transaction.interceptor.TransactionalProxy","org.springframework.aop.framework.Advised","org.springframework.core.DecoratingProxy"]}
+  ,
+  {
     "interfaces":["com.cobnet.interfaces.spring.repository.PersistentLoginsRepository","org.springframework.data.repository.Repository","org.springframework.transaction.interceptor.TransactionalProxy","org.springframework.aop.framework.Advised","org.springframework.core.DecoratingProxy"]}
   ,
   {

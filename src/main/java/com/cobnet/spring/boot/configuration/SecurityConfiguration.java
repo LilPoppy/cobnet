@@ -1,6 +1,6 @@
 package com.cobnet.spring.boot.configuration;
 
-import com.cobnet.security.IpAddressFilter;
+import com.cobnet.security.IPAddressFilter;
 import com.cobnet.security.OAuth2LoginAccountAuthenticationFilter;
 import com.cobnet.security.UserAuthenticationProvider;
 import com.cobnet.security.UserLockStatusFilter;
@@ -35,6 +35,7 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.authentication.session.*;
+import org.springframework.session.FindByIndexNameSessionRepository;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -50,21 +51,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final static Logger LOG = LoggerFactory.getLogger(SecurityConfiguration.class);
 
-    public final static String ERROR_MESSAGE_COUNT = "ERROR_MESSAGE_COUNT";
-
     public final static String PREVIOUS_URL = "PREVIOUS_URL";
 
     public final static String CONNECTION_TOKEN = "CONNECTION_TOKEN";
 
     final static String[] PERMITTED_MATCHERS = { "/visitor/**", "/swagger-ui", "/oauth2/**", "/sms/reply", "/store/*/check-in-page-details" };
-
-    private boolean sessionLimitEnable;
-
-    private Duration sessionCreatedTimeRequire;
-
-    private int sessionBeforeCreatedTimeAllowRequestCount;
-
-    private int sessionMaxErrorCountPerMinute;
 
     private String usernameFormatRegex;
 
@@ -79,14 +70,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private boolean maxAttemptLoginAccountLocks;
 
     private Duration maxAttemptLoginAccountLocksDuration;
-
-    private boolean humanValidationEnable;
-
-    private int humanValidationCreateIntervalLimitedCount;
-
-    private Duration humanValidationCreateInterval;
-
-    private Duration humanValidationExpire;
 
     private boolean phoneNumberVerifyEnable;
 
@@ -132,6 +115,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private String rememberMeParameter;
 
     private OAuth2Configuration oauth2;
+
+    private SessionConfiguration session;
+
+    private HumanValidationConfiguration humanValidation;
 
     @Autowired
     private AuthenticationSuccessHandler authenticationSuccessHandler;
@@ -228,9 +215,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public IpAddressFilter ipAddressFilterBean() {
+    public IPAddressFilter ipAddressFilterBean() {
 
-        return new IpAddressFilter();
+        return new IPAddressFilter();
     }
 
     @Bean
@@ -332,26 +319,25 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return this.oauth2;
     }
 
+    public SessionConfiguration getSession() {
+        return session;
+    }
+
+    public HumanValidationConfiguration getHumanValidation() {
+        return humanValidation;
+    }
+
     public void setOauth2(OAuth2Configuration oauth2) {
 
         this.oauth2 = oauth2;
     }
 
-    public boolean isSessionLimitEnable() {
-
-        return sessionLimitEnable;
+    public void setSession(SessionConfiguration session) {
+        this.session = session;
     }
 
-    public int getSessionBeforeCreatedTimeAllowRequestCount() {
-        return sessionBeforeCreatedTimeAllowRequestCount;
-    }
-
-    public int getSessionMaxErrorCountPerMinute() {
-        return sessionMaxErrorCountPerMinute;
-    }
-
-    public Duration getSessionCreatedTimeRequire() {
-        return sessionCreatedTimeRequire;
+    public void setHumanValidation(HumanValidationConfiguration humanValidation) {
+        this.humanValidation = humanValidation;
     }
 
     public int getMaxAttemptLogin() {
@@ -388,18 +374,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public String getPasswordFormatRegex() {
         return passwordFormatRegex;
-    }
-
-    public int getHumanValidationCreateIntervalLimitedCount() {
-        return humanValidationCreateIntervalLimitedCount;
-    }
-
-    public Duration getHumanValidationCreateInterval() {
-        return humanValidationCreateInterval;
-    }
-
-    public Duration getHumanValidationExpire() {
-        return humanValidationExpire;
     }
 
     public String getUserDefaultRole() {
@@ -474,18 +448,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return googleMapAutoCompleteLimitDuration;
     }
 
-    public boolean isHumanValidationEnable() {
-        return humanValidationEnable;
-    }
-
-    public void setSessionLimitEnable(boolean sessionLimitEnable) {
-        this.sessionLimitEnable = sessionLimitEnable;
-    }
-
-    public void setSessionCreatedTimeRequire(Duration sessionCreatedTimeRequire) {
-        this.sessionCreatedTimeRequire = sessionCreatedTimeRequire;
-    }
-
     public void setUsernameFormatRegex(String usernameFormatRegex) {
         this.usernameFormatRegex = usernameFormatRegex;
     }
@@ -494,21 +456,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.passwordFormatRegex = passwordFormatRegex;
     }
 
-    public void setHumanValidationEnable(boolean humanValidationEnable) {
-        this.humanValidationEnable = humanValidationEnable;
-    }
-
     public void setLoginSuccessRedirectUseXForwardedPrefix(boolean loginSuccessRedirectUseXForwardedPrefix) {
         this.loginSuccessRedirectUseXForwardedPrefix = loginSuccessRedirectUseXForwardedPrefix;
     }
 
-    public void setSessionBeforeCreatedTimeAllowRequestCount(int sessionBeforeCreatedTimeAllowRequestCount) {
-        this.sessionBeforeCreatedTimeAllowRequestCount = sessionBeforeCreatedTimeAllowRequestCount;
-    }
-
-    public void setSessionMaxErrorCountPerMinute(int sessionMaxErrorCountPerMinute) {
-        this.sessionMaxErrorCountPerMinute = sessionMaxErrorCountPerMinute;
-    }
 
     public void setLoginFailureRedirectUseXForwardedPrefix(boolean loginFailureRedirectUseXForwardedPrefix) {
         this.loginFailureRedirectUseXForwardedPrefix = loginFailureRedirectUseXForwardedPrefix;
@@ -516,18 +467,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public void setLogoutSuccessRedirectUseXForwardedPrefix(boolean logoutSuccessRedirectUseXForwardedPrefix) {
         this.logoutSuccessRedirectUseXForwardedPrefix = logoutSuccessRedirectUseXForwardedPrefix;
-    }
-
-    public void setHumanValidationCreateIntervalLimitedCount(int humanValidationCreateIntervalLimitedCount) {
-        this.humanValidationCreateIntervalLimitedCount = humanValidationCreateIntervalLimitedCount;
-    }
-
-    public void setHumanValidationCreateInterval(Duration humanValidationCreateInterval) {
-        this.humanValidationCreateInterval = humanValidationCreateInterval;
-    }
-
-    public void setHumanValidationExpire(Duration humanValidationExpire) {
-        this.humanValidationExpire = humanValidationExpire;
     }
 
     public void setPhoneNumberVerifyEnable(boolean phoneNumberVerifyEnable) {
@@ -596,6 +535,142 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public void setRememberMeParameter(String rememberMeParameter) {
         this.rememberMeParameter = rememberMeParameter;
+    }
+
+    public static class SessionConfiguration {
+
+        private boolean enable;
+
+        private Duration bypassCheckAfter;
+
+        private int beforeCreatedTimeMaxMessageCount;
+
+        private int maxIpCount;
+
+        private int maxErrorMessage;
+
+        private boolean badMessageLogCacheEnable;
+
+        private Duration badMessageLogCacheExpire;
+
+        private boolean messageLogCacheEnable;
+
+        private Duration messageLogCacheExpire;
+
+        public boolean isEnable() {
+            return enable;
+        }
+
+        public Duration getBypassCheckAfter() {
+            return bypassCheckAfter;
+        }
+
+        public int getBeforeCreatedTimeMaxMessageCount() {
+            return beforeCreatedTimeMaxMessageCount;
+        }
+
+        public int getMaxIpCount() {
+            return maxIpCount;
+        }
+
+        public int getMaxErrorMessage() {
+            return maxErrorMessage;
+        }
+
+        public boolean isBadMessageLogCacheEnable() {
+            return badMessageLogCacheEnable;
+        }
+
+        public Duration getBadMessageLogCacheExpire() {
+            return badMessageLogCacheExpire;
+        }
+
+        public boolean isMessageLogCacheEnable() {
+            return messageLogCacheEnable;
+        }
+
+        public Duration getMessageLogCacheExpire() {
+            return messageLogCacheExpire;
+        }
+
+        public void setEnable(boolean enable) {
+            this.enable = enable;
+        }
+
+        public void setBypassCheckAfter(Duration bypassCheckAfter) {
+            this.bypassCheckAfter = bypassCheckAfter;
+        }
+
+        public void setBeforeCreatedTimeMaxMessageCount(int beforeCreatedTimeMaxMessageCount) {
+            this.beforeCreatedTimeMaxMessageCount = beforeCreatedTimeMaxMessageCount;
+        }
+
+        public void setMaxIpCount(int maxIpCount) {
+            this.maxIpCount = maxIpCount;
+        }
+
+        public void setMaxErrorMessage(int maxErrorMessage) {
+            this.maxErrorMessage = maxErrorMessage;
+        }
+
+        public void setBadMessageLogCacheEnable(boolean badMessageLogCacheEnable) {
+            this.badMessageLogCacheEnable = badMessageLogCacheEnable;
+        }
+
+        public void setBadMessageLogCacheExpire(Duration badMessageLogCacheExpire) {
+            this.badMessageLogCacheExpire = badMessageLogCacheExpire;
+        }
+
+        public void setMessageLogCacheEnable(boolean messageLogCacheEnable) {
+            this.messageLogCacheEnable = messageLogCacheEnable;
+        }
+
+        public void setMessageLogCacheExpire(Duration messageLogCacheExpire) {
+            this.messageLogCacheExpire = messageLogCacheExpire;
+        }
+    }
+
+    public static class HumanValidationConfiguration {
+
+        private boolean enable;
+
+        private int initialCount;
+
+        private Duration createInterval;
+
+        private Duration expire;
+
+        public boolean isEnable() {
+            return enable;
+        }
+
+        public int getInitialCount() {
+            return initialCount;
+        }
+
+        public Duration getCreateInterval() {
+            return createInterval;
+        }
+
+        public Duration getExpire() {
+            return expire;
+        }
+
+        public void setEnable(boolean enable) {
+            this.enable = enable;
+        }
+
+        public void setInitialCount(int initialCount) {
+            this.initialCount = initialCount;
+        }
+
+        public void setCreateInterval(Duration createInterval) {
+            this.createInterval = createInterval;
+        }
+
+        public void setExpire(Duration expire) {
+            this.expire = expire;
+        }
     }
 
     public static class OAuth2Configuration {

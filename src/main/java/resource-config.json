@@ -104,6 +104,12 @@
       "pattern":"\\Qcom/cobnet/exception/NettyServerRuntimeException.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/interfaces/CacheValue.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/FileSource.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/interfaces/PolyglotContextGroup.class\\E"
     }, 
     {
@@ -155,6 +161,9 @@
       "pattern":"\\Qcom/cobnet/interfaces/connection/web/FormGenerator.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/interfaces/connection/web/NamedContent.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/interfaces/connection/web/Page.class\\E"
     }, 
     {
@@ -191,6 +200,9 @@
       "pattern":"\\Qcom/cobnet/interfaces/spring/repository/ExternalUserRepository.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/interfaces/spring/repository/FileInfoRepository.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/interfaces/spring/repository/JPABaseRepository.class\\E"
     }, 
     {
@@ -219,6 +231,9 @@
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/configuration/DatasourceConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/FileSourceConfiguration.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/configuration/GoogleConsoleConfiguration$GoogleMapConfiguration.class\\E"
@@ -251,7 +266,13 @@
       "pattern":"\\Qcom/cobnet/spring/boot/configuration/RedisConfiguration.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/SecurityConfiguration$HumanValidationConfiguration.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/spring/boot/configuration/SecurityConfiguration$OAuth2Configuration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/configuration/SecurityConfiguration$SessionConfiguration.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/configuration/SecurityConfiguration.class\\E"
@@ -293,6 +314,15 @@
       "pattern":"\\Qcom/cobnet/spring/boot/controller/handler/http/HttpAuthenticationSuccessHandler.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/spring/boot/controller/handler/http/HttpControllerExceptionHandler.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/controller/handler/http/HttpFormControllerRequestHandler.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/controller/handler/http/HttpResponseResultControllerResponseHandler.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/spring/boot/controller/handler/http/HttpSessionEventHandler.class\\E"
     }, 
     {
@@ -320,6 +350,9 @@
       "pattern":"\\Qcom/cobnet/spring/boot/core/ScriptEngineManager$PolyglotContextCloseEventListener.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/spring/boot/dto/DynamicPageField.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/spring/boot/dto/FormBase.class\\E"
     }, 
     {
@@ -333,6 +366,9 @@
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/entity/ExternalUser.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/entity/FileInfo.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/entity/PersistentLogins.class\\E"
@@ -356,6 +392,9 @@
       "pattern":"\\Qcom/cobnet/spring/boot/entity/support/JsonSetConverter.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/spring/boot/entity/support/JsonStringSetConverter.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/spring/boot/service/AccountService.class\\E"
     }, 
     {
@@ -377,7 +416,37 @@
       "pattern":"\\Qcom/cobnet/spring/boot/service/RedisMessageListener.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/spring/boot/service/SecurityService.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/service/support/AbstractMessageCache.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/fasterxml/jackson/core/Versioned.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/fasterxml/jackson/core/type/TypeReference.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/fasterxml/jackson/databind/JsonDeserializer.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/fasterxml/jackson/databind/JsonSerializer.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/fasterxml/jackson/databind/Module.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/fasterxml/jackson/databind/deser/ContextualDeserializer.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/fasterxml/jackson/databind/deser/NullValueProvider.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/fasterxml/jackson/databind/jsonFormatVisitors/JsonFormatVisitable.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/fasterxml/jackson/databind/module/SimpleModule.class\\E"
     }, 
     {
       "pattern":"\\Qcom/google/api/client/googleapis/google-api-client.properties\\E"
@@ -828,6 +897,9 @@
     }, 
     {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/gson/GsonAutoConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/h2/H2ConsoleAutoConfiguration.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/http/GsonHttpMessageConvertersConfiguration$GsonHttpMessageConverterConfiguration.class\\E"
@@ -1736,6 +1808,9 @@
       "pattern":"\\Qorg/springframework/data/redis/connection/MessageListener.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/data/redis/core/SessionCallback.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/data/redis/core/convert/ReferenceResolverImpl.class\\E"
     }, 
     {
@@ -1949,6 +2024,9 @@
       "pattern":"\\Qorg/springframework/session/config/annotation/web/http/SpringHttpSessionConfiguration.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/session/data/redis/config/annotation/web/http/EnableRedisHttpSession.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/session/data/redis/config/annotation/web/http/RedisHttpSessionConfiguration$EnableRedisKeyspaceNotificationsInitializer.class\\E"
     }, 
     {
@@ -1988,6 +2066,9 @@
       "pattern":"\\Qorg/springframework/web/filter/GenericFilterBean.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/web/servlet/HandlerInterceptor.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/web/servlet/config/annotation/DelegatingWebMvcConfiguration.class\\E"
     }, 
     {
@@ -1998,6 +2079,12 @@
     }, 
     {
       "pattern":"\\Qorg/springframework/web/servlet/config/annotation/WebMvcConfigurer.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/web/servlet/mvc/method/annotation/RequestBodyAdvice.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/web/servlet/mvc/method/annotation/ResponseBodyAdvice.class\\E"
     }, 
     {
       "pattern":"\\Qreactor/core/Disposable.class\\E"

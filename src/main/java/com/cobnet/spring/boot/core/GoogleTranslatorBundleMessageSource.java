@@ -5,7 +5,7 @@ import com.cobnet.interfaces.FileSource;
 import com.cobnet.interfaces.spring.repository.FileInfoRepository;
 import com.cobnet.spring.boot.configuration.GoogleConsoleConfiguration;
 import com.cobnet.spring.boot.entity.FileInfo;
-import com.cobnet.spring.boot.service.CacheService;
+import com.cobnet.spring.boot.service.RedisCacheService;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.TranslateException;
@@ -14,15 +14,11 @@ import com.google.cloud.translate.testing.RemoteTranslateHelper;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.lang.Nullable;
-import org.springframework.util.DefaultPropertiesPersister;
 
 import javax.validation.constraints.NotNull;
 import java.io.*;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.MessageFormat;
 import java.time.Duration;
 import java.util.*;
@@ -44,11 +40,11 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
 
     private final FileSource source;
 
-    private final CacheService service;
+    private final RedisCacheService service;
 
     private final Translate translate;
 
-    GoogleTranslatorBundleMessageSource(FileInfoRepository repository, FileSource source, CacheService service, GoogleConsoleConfiguration configuration) throws IOException {
+    GoogleTranslatorBundleMessageSource(FileInfoRepository repository, FileSource source, RedisCacheService service, GoogleConsoleConfiguration configuration) throws IOException {
 
         super();
 
