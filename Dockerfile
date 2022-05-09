@@ -45,7 +45,7 @@ RUN microdnf update -y $RPM_REPO \
     && microdnf clean all \
     && fc-cache -f -v
 
- ARG WORK_DIR
+ARG WORK_DIR
 
 ENV LANG=en_US.UTF-8 \
     JAVA_HOME=/opt/graalvm-ce-${JAVA_VERSION}-${GRAALVM_VERSION} \
@@ -90,9 +90,9 @@ RUN \
     mvn versions:set-property -Dproperty=redis-port -DnewVersion=${REDIS_PORT} -DgenerateBackupPoms=false; \
     mvn versions:set-property -Dproperty=redis-password -DnewVersion=${REDIS_PASSWORD} -DgenerateBackupPoms=false; \
     if [ "${TARGET_BUILD}" == "native" ]; then \
-    mvn -DskipTests -B clean package -Pnative; fi \
+    mvn package -Pnative; fi \
     && if [ "${TARGET_BUILD}" == "jvm" ]; then \
-    mvn -DskipTests clean package; fi
+    mvn package; fi
 
 RUN ls -1 | grep -E -iwv 'target|start.sh|docker-compose.yml' | xargs rm -f -r \
     && chmod +x ./start.sh
@@ -104,8 +104,6 @@ EXPOSE $WEBSOCKET_PORT
 
 MAINTAINER $AUTHORS
 
-CMD java -version
-# TODO CMD run target
 ENTRYPOINT [ "/bin/bash", "-c", "${TARGET}" ]
 
 RUN echo "All done!"

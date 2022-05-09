@@ -34,7 +34,7 @@
 		<spring-native.version>0.11.4</spring-native.version>
 		<native-build-tools.version>0.9.11</native-build-tools.version>
 		<graalvm.version>22.1.0</graalvm.version>
-		<dockerfile-maven.version>0.38.0</dockerfile-maven.version>
+		<dockerfile-maven.version>0.39.1</dockerfile-maven.version>
 		<google-zxing.version>3.4.1</google-zxing.version>
 		<docker-maintainer>LilPoppy</docker-maintainer>
 		<docker-image-name>${project.artifactId}:${project.version}</docker-image-name>
