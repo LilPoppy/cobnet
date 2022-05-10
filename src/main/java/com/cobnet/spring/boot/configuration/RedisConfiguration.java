@@ -1,5 +1,6 @@
 package com.cobnet.spring.boot.configuration;
 
+import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.service.RedisMessageListener;
 import com.cobnet.cache.redis.RedisMode;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -7,9 +8,25 @@ import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
+import org.redisson.config.TransportMode;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnJava;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.*;
@@ -23,7 +40,10 @@ import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.session.data.redis.RedisIndexedSessionRepository;
+import org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration;
 
+import javax.annotation.Resource;
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
@@ -33,6 +53,8 @@ import java.util.Objects;
 @EnableRedisRepositories
 //@EnableTransactionManagement
 public class RedisConfiguration {
+
+    private boolean enableRedisson;
 
     private MessageConfiguration message;
 
@@ -59,6 +81,7 @@ public class RedisConfiguration {
     private ClusterConfiguration cluster;
 
     private PoolConfiguration pool;
+
 
     @Bean
     public LettuceConnectionFactory connectionFactoryBean() {
@@ -114,6 +137,71 @@ public class RedisConfiguration {
     }
 
     @Bean
+    @ConditionalOnProperty(name="spring.redis.enable-redisson", havingValue="true")
+    public RedissonClient redissonClientBean() {
+
+        Config config = new Config();
+        config.setTransportMode(TransportMode.EPOLL);
+
+        switch (this.mode) {
+            case STAND_ALONE -> {
+                config.useSingleServer().setAddress(new StringBuilder("redis://").append(this.getHost()).append(":").append(this.getPort()).toString());
+                config.useSingleServer().setDatabase(this.getDatabase());
+                config.useSingleServer().setUsername(this.getUsername());
+                config.useSingleServer().setPassword(this.getPassword());
+                config.useSingleServer().setConnectionPoolSize(this.getPool().getMaxActive());
+                config.useSingleServer().setConnectionMinimumIdleSize(this.getPool().getMinIdle());
+                config.useSingleServer().setSubscriptionConnectionMinimumIdleSize(this.getPool().getMinIdle());
+                config.useSingleServer().setSubscriptionConnectionPoolSize(this.getPool().getMaxIdle());
+                config.useSingleServer().setIdleConnectionTimeout((int)this.getTimeout().toMillis());
+                config.useSingleServer().setTimeout((int)this.getTimeout().toMillis());
+                config.useSingleServer().setConnectTimeout((int)this.getTimeout().toMillis());
+            }
+            case CLUSTER -> {
+
+                for(String node : this.cluster.getNodes()) {
+
+                    config.useClusterServers().addNodeAddress(new StringBuilder("redis://").append(node).toString());
+                }
+                config.useClusterServers().setUsername(this.getUsername());
+                config.useClusterServers().setPassword(this.getPassword());
+                config.useClusterServers().setSlaveConnectionMinimumIdleSize(this.getPool().getMinIdle());
+                config.useClusterServers().setSubscriptionConnectionMinimumIdleSize(this.getPool().getMinIdle());
+                config.useClusterServers().setMasterConnectionMinimumIdleSize(this.getPool().getMinIdle());
+                config.useClusterServers().setTimeout((int)this.getTimeout().toMillis());
+                config.useClusterServers().setConnectTimeout((int)this.getTimeout().toMillis());
+                config.useClusterServers().setIdleConnectionTimeout((int)this.getTimeout().toMillis());
+                config.useClusterServers().setMasterConnectionPoolSize(this.getPool().getMaxActive());
+                config.useClusterServers().setSubscriptionConnectionPoolSize(this.getPool().getMaxActive());
+                config.useClusterServers().setSlaveConnectionPoolSize(this.getPool().getMaxActive());
+            }
+            case SENTINEL -> {
+
+                for(String node : this.sentinel.getNodes()) {
+
+                    config.useSentinelServers().addSentinelAddress(new StringBuilder("redis://").append(node).toString());
+                }
+                config.useSentinelServers().setDatabase(this.getDatabase());
+                config.useSentinelServers().setMasterName(this.getSentinel().getMaster());
+                config.useSentinelServers().setUsername(this.getUsername());
+                config.useSentinelServers().setPassword(this.getPassword());
+                config.useSentinelServers().setSentinelPassword(this.sentinel.getPassword());
+                config.useSentinelServers().setMasterConnectionMinimumIdleSize(this.getPool().getMinIdle());
+                config.useSentinelServers().setSlaveConnectionMinimumIdleSize(this.getPool().getMinIdle());
+                config.useSentinelServers().setSubscriptionConnectionMinimumIdleSize(this.getPool().getMinIdle());
+                config.useSentinelServers().setMasterConnectionPoolSize(this.getPool().getMaxActive());
+                config.useSentinelServers().setSlaveConnectionPoolSize(this.getPool().getMaxActive());
+                config.useSentinelServers().setSubscriptionConnectionPoolSize(this.getPool().getMaxActive());
+                config.useSentinelServers().setTimeout((int)this.getTimeout().toMillis());
+                config.useSentinelServers().setConnectTimeout((int)this.getTimeout().toMillis());
+                config.useSentinelServers().setIdleConnectionTimeout((int)this.getTimeout().toMillis());
+            }
+        }
+
+        return Redisson.create(config);
+    }
+
+    @Bean
     public RedisTemplate<String, Object> redisTemplateBean(RedisConnectionFactory factory) {
 
         RedisTemplate<String, Object> template = new RedisTemplate<>();
@@ -130,10 +218,10 @@ public class RedisConfiguration {
         valueSerializer.setObjectMapper(mapper);
 
         template.setKeySerializer(keySerializer);
-        template.setValueSerializer(valueSerializer);
+//        template.setValueSerializer(valueSerializer);     we keep the value as binary
         template.setHashKeySerializer(keySerializer);
         template.setEnableTransactionSupport(true);
-//        template.setHashValueSerializer(valueSerializer);     we keep the hash value as binary
+//        template.setHashValueSerializer(valueSerializer);     we keep the hash value as binary too
         template.afterPropertiesSet();
 
         return template;
@@ -189,6 +277,7 @@ public class RedisConfiguration {
     public ZSetOperations<String, Object> zSetOperationsBean(RedisTemplate<String, Object> redisTemplate) {
         return redisTemplate.opsForZSet();
     }
+
 
     public static class MessageConfiguration {
 
@@ -302,6 +391,10 @@ public class RedisConfiguration {
         }
     }
 
+    public boolean isEnableRedisson() {
+        return enableRedisson;
+    }
+
     public MessageConfiguration getMessage() {
         return message;
     }
@@ -337,6 +430,10 @@ public class RedisConfiguration {
 
     public int getDatabase() {
         return database;
+    }
+
+    public void setEnableRedisson(boolean enableRedisson) {
+        this.enableRedisson = enableRedisson;
     }
 
     public void setDatabase(int database) {

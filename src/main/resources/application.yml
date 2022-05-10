@@ -51,6 +51,7 @@ spring:
          ddl-auto: update
       show-sql: false
    redis:
+      enable-redisson: false #only support in linux
       message:
          topics: "chat"
       mode: stand-alone #cluster #sentinal
@@ -75,7 +76,7 @@ spring:
         min-idle: 0
    session:
       store-type: redis
-      namespace: spring
+      namespace: spring:session
    cache:
       start-clear: false
    mail:
@@ -173,7 +174,7 @@ server:
       relaxed-query-chars: '[,]'
    port: "@tomcat-port@"
    forward-headers-strategy: framework
-   session: 
+   session:
       cookie:
         http-only: false
         timeout: 1500
@@ -184,12 +185,13 @@ server:
 #      key-alias: 1
 eureka:
    instance:
-      hostname: localhost
+      hostname: "@eureka-instance-host@"
    client:
+      eureka-server-port: 8080
       registerWithEureka: false
       fetchRegistry: false
       service-url:
-         defaultZone: https://localhost:@tomcat-port@/eureka
+         defaultZone: http://${eureka.instance.hostname}:${eureka.client.eureka-server-port}/eureka
 management:
    server:
       ssl:

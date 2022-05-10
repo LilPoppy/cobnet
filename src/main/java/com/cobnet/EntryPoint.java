@@ -1,6 +1,5 @@
 package com.cobnet;
 
-import com.cobnet.common.StringUtils;
 import com.cobnet.connection.websocket.WebSocketServer;
 import com.cobnet.exception.ServiceDownException;
 import com.cobnet.security.RoleRule;
@@ -17,6 +16,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 import java.io.IOException;
 import java.util.Arrays;

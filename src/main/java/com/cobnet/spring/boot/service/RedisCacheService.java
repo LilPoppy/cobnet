@@ -46,13 +46,14 @@ public class RedisCacheService {
             return null;
         }
 
-        Duration timeout = Duration.ofMillis(template.getExpire(this.getKey(namespace, oldKey)));
+        Duration timeout = Duration.ofSeconds(template.getExpire(this.getKey(namespace, oldKey)));
 
-        if(this.evictIfPresent(namespace, oldKey) && this.set(namespace, newKey, cache, timeout)) {
+        boolean result = this.evictIfPresent(namespace, oldKey);
+
+        if(this.set(namespace, newKey, cache, timeout) && result) {
 
             return cache;
         }
-
         return null;
     }
 

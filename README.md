@@ -31,7 +31,7 @@ mvn clean package
 Then run the followings to start the server:
 
 ```
-sh ./start.sh
+sh ./bin/start.sh
 ```
 or
 
@@ -127,7 +127,7 @@ mvn clean package -Pnative
 Then, you can run the app as follows:
 
 ```
-sh ./start.sh
+sh ./bin/start.sh
 ```
 or
 

@@ -2,14 +2,12 @@ package com.cobnet.security;
 
 import com.cobnet.exception.ResponseFailureStatusException;
 import com.cobnet.interfaces.security.annotation.HumanValidationRequired;
-import com.cobnet.spring.boot.configuration.SecurityConfiguration;
+import com.cobnet.spring.boot.configuration.SessionConfiguration;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
-import com.cobnet.spring.boot.dto.support.GoogleApiRequestResultStatus;
 import com.cobnet.spring.boot.dto.support.SecurityRequestStatus;
+import com.cobnet.spring.boot.service.RedisSessionService;
 import com.cobnet.spring.boot.service.support.BadMessageCache;
 import com.cobnet.spring.boot.service.support.MessageCallsCache;
-import org.springframework.session.FindByIndexNameSessionRepository;
-import org.springframework.session.Session;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -26,7 +24,14 @@ public class SecurityHandlerInterceptor implements HandlerInterceptor {
 
             HttpSession session = request.getSession(true);
 
-            System.out.println(ProjectBeanHolder.getRedisSessionService().getIndexKeys(FindByIndexNameSessionRepository.PRINCIPAL_NAME_INDEX_NAME));
+            session.setAttribute(SessionConfiguration.IP_ADDRESS, request.getRemoteAddr());
+
+            ProjectBeanHolder.getRedisSessionService().add(RedisSessionService.IP_ADDRESS_INDEX_NAME, request.getRemoteAddr(), session.getId());
+
+            System.out.println("keys:" + ProjectBeanHolder.getRedisSessionService().getIndexKeys(RedisSessionService.IP_ADDRESS_INDEX_NAME));
+
+            System.out.println("members:" + ProjectBeanHolder.getRedisSessionService().getIndexMembers(RedisSessionService.IP_ADDRESS_INDEX_NAME, request.getRemoteAddr()));
+
             MessageCallsCache cache = null;
 
             if(ProjectBeanHolder.getSecurityConfiguration().getSession().isMessageLogCacheEnable()) {

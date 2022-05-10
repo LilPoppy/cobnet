@@ -1,6 +1,6 @@
 #! /bin/bash
 
-cd $(dirname "$0")
+cd $(dirname $(dirname "$0"))
 
 APP_ID=$1;
 

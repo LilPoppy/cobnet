@@ -8,6 +8,7 @@ import com.cobnet.interfaces.connection.EventListener;
 import com.cobnet.interfaces.connection.annotation.EventHandler;
 import com.cobnet.interfaces.security.Account;
 import com.cobnet.spring.boot.configuration.SecurityConfiguration;
+import com.cobnet.spring.boot.configuration.SessionConfiguration;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.ConnectionToken;
 import org.slf4j.Logger;
@@ -43,7 +44,7 @@ public class ChannelAuthenticationHandler implements EventListener {
 
 					for (String key : sessions.keySet()) {
 
-						if (((ConnectionToken)sessions.get(key).getAttribute(SecurityConfiguration.CONNECTION_TOKEN)).token().equals(token)) {
+						if (((ConnectionToken)sessions.get(key).getAttribute(SessionConfiguration.CONNECTION_TOKEN)).token().equals(token)) {
 
 							authentication.setAccount(account);
 							LOG.info(String.format("%s has logged in as '%s' successfully.", channel.getRemoteAddress(), account.getUsername()));

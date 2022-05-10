@@ -1,4 +1,4 @@
-cd $(dirname "$0")
+cd $(dirname $(dirname "$0"))
 
 echo "Make sure you have configured pom.xml for 'db-host=db' and 'redis-host=redis'"
 

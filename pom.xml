@@ -16,6 +16,8 @@
 	<description>Code being net written under spring-native, the convenient solution of native-cloud.</description>
 	<properties>
 		<java.version>17</java.version>
+		<eureka-client>${project.name}</eureka-client>
+		<eureka-instance-host>localhost</eureka-instance-host>
 		<db-database>testdb</db-database>
 		<db-auto-reconnect>true</db-auto-reconnect>
 		<db-use-ssl>false</db-use-ssl>
@@ -30,7 +32,7 @@
 		<tomcat-port>8089</tomcat-port>
 		<websocket-port>8090</websocket-port>
 		<repackage.classifier/>
-		<spring-cloud.version>2021.0.1</spring-cloud.version>
+		<spring-cloud.version>2021.0.2</spring-cloud.version>
 		<spring-native.version>0.11.4</spring-native.version>
 		<native-build-tools.version>0.9.11</native-build-tools.version>
 		<graalvm.version>22.1.0</graalvm.version>
@@ -82,6 +84,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-oauth2-client</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.redisson</groupId>
+			<artifactId>redisson</artifactId>
+			<version>3.17.1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
@@ -331,7 +338,7 @@
 							<executable>sh</executable>
 							<workingDirectory>${project.basedir}</workingDirectory>
 							<arguments>
-								<argument>${project.basedir}/random-password.sh</argument>
+								<argument>${project.basedir}/bin/random-password.sh</argument>
 								<argument>${db-password}</argument>
 								<argument>${db-root-password}</argument>
 								<argument>${redis-password}</argument>

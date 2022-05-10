@@ -1,9 +1,6 @@
 package com.cobnet.spring.boot.configuration;
 
-import com.cobnet.security.IPAddressFilter;
-import com.cobnet.security.OAuth2LoginAccountAuthenticationFilter;
-import com.cobnet.security.UserAuthenticationProvider;
-import com.cobnet.security.UserLockStatusFilter;
+import com.cobnet.security.*;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.UserRole;
 import org.slf4j.Logger;
@@ -53,9 +50,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     public final static String PREVIOUS_URL = "PREVIOUS_URL";
 
-    public final static String CONNECTION_TOKEN = "CONNECTION_TOKEN";
-
-    final static String[] PERMITTED_MATCHERS = { "/visitor/**", "/swagger-ui", "/oauth2/**", "/sms/reply", "/store/*/check-in-page-details" };
+    final static String[] PERMITTED_MATCHERS = { "/visitor/**", "/swagger-ui", "/oauth2/**", "/sms/reply", "/eureka", "/eureka/**" };
 
     private String usernameFormatRegex;
 
@@ -251,6 +246,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         strategies.add(new ConcurrentSessionControlAuthenticationStrategy(sessionRegistryBean()));
         strategies.add(new ChangeSessionIdAuthenticationStrategy());
+        strategies.add(new CacheTransferToNewSessionIdAuthenticationStrategy());
         strategies.add(new RegisterSessionAuthenticationStrategy(sessionRegistryBean()));
 
         return new CompositeSessionAuthenticationStrategy(strategies);

@@ -49,9 +49,9 @@ ARG WORK_DIR
 
 ENV LANG=en_US.UTF-8 \
     JAVA_HOME=/opt/graalvm-ce-${JAVA_VERSION}-${GRAALVM_VERSION} \
-    TARGET="./start.sh ${TARGET_BUILD} ${ARTIFACTID}"
+    TARGET="./bin/start.sh ${TARGET_BUILD} ${ARTIFACTID}"
 
-ADD gu-wrapper.sh /usr/local/bin/gu
+ADD bin/gu-wrapper.sh /usr/local/bin/gu
 
 ARG TARGETPLATFORM
 
@@ -94,8 +94,8 @@ RUN \
     && if [ "${TARGET_BUILD}" == "jvm" ]; then \
     mvn package; fi
 
-RUN ls -1 | grep -E -iwv 'target|start.sh|docker-compose.yml' | xargs rm -f -r \
-    && chmod +x ./start.sh
+RUN ls -1 | grep -E -iwv 'target|bin|docker-compose.yml' | xargs rm -f -r \
+    && chmod +x ./bin/start.sh
 
 RUN ls && pwd
 
