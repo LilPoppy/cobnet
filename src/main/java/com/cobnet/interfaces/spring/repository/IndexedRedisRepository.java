@@ -24,9 +24,12 @@ public interface IndexedRedisRepository<T extends IndexedCacheEntity<ID>, ID> ex
 
                 IndexedCacheEntity current = it.next();
 
-                if(current.isIndexed(index)) {
+                if(current != null) {
 
-                    callback.accept(repository, current);
+                    if (current.isIndexed(index)) {
+
+                        callback.accept(repository, current);
+                    }
                 }
             }
         }

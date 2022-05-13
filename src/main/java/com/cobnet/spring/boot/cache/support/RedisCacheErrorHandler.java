@@ -1,4 +1,4 @@
-package com.cobnet.cache.redis;
+package com.cobnet.spring.boot.cache.support;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

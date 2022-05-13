@@ -3,6 +3,7 @@ package com.cobnet.spring.boot.entity;
 import com.cobnet.spring.boot.dto.AddressForm;
 import com.cobnet.spring.boot.entity.support.AddressKey;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
+@NoArgsConstructor
 public class Address extends EntityBase implements Serializable {
 
     @EmbeddedId
@@ -50,10 +52,6 @@ public class Address extends EntityBase implements Serializable {
 
     public Address(String street) {
         this(street, null);
-    }
-
-    public Address() {
-        this(null);
     }
 
     @JsonIgnore

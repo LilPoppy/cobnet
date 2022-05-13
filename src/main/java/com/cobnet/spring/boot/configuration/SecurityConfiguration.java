@@ -32,7 +32,6 @@ import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
 import org.springframework.security.web.authentication.session.*;
-import org.springframework.session.FindByIndexNameSessionRepository;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -72,7 +71,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private Duration phoneNumberSmsCodeExpire;
 
-    private int phoneNumberSmsVerifyTimes;
+    private int phoneNumberSmsVerifyInitialCount;
+
+    private int phoneNumberSmsVerifyMaxCount;
 
     private String phoneNumberVerifySmsMessage;
 
@@ -424,8 +425,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         return phoneNumberVerifySmsMessage;
     }
 
-    public int getPhoneNumberSmsVerifyTimes() {
-        return phoneNumberSmsVerifyTimes;
+    public int getPhoneNumberSmsVerifyInitialCount() {
+        return phoneNumberSmsVerifyInitialCount;
+    }
+
+    public int getPhoneNumberSmsVerifyMaxCount() {
+        return phoneNumberSmsVerifyMaxCount;
     }
 
     public int getPhoneNumberMaxUse() {
@@ -477,8 +482,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         this.phoneNumberSmsCodeExpire = phoneNumberSmsCodeExpire;
     }
 
-    public void setPhoneNumberSmsVerifyTimes(int phoneNumberSmsVerifyTimes) {
-        this.phoneNumberSmsVerifyTimes = phoneNumberSmsVerifyTimes;
+    public void setPhoneNumberSmsVerifyInitialCount(int phoneNumberSmsVerifyInitialCount) {
+        this.phoneNumberSmsVerifyInitialCount = phoneNumberSmsVerifyInitialCount;
+    }
+
+    public void setPhoneNumberSmsVerifyMaxCount(int phoneNumberSmsVerifyMaxCount) {
+        this.phoneNumberSmsVerifyMaxCount = phoneNumberSmsVerifyMaxCount;
     }
 
     public void setPhoneNumberVerifySmsMessage(String phoneNumberVerifySmsMessage) {
@@ -539,6 +548,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         private Duration bypassCheckAfter;
 
+        private boolean bypassCheckAfterAuthenticated;
+
         private int beforeCreatedTimeMaxMessageCount;
 
         private int maxIpCount;
@@ -559,6 +570,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         public Duration getBypassCheckAfter() {
             return bypassCheckAfter;
+        }
+
+        public boolean isBypassCheckAfterAuthenticated() {
+            return bypassCheckAfterAuthenticated;
         }
 
         public int getBeforeCreatedTimeMaxMessageCount() {
@@ -595,6 +610,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
         public void setBypassCheckAfter(Duration bypassCheckAfter) {
             this.bypassCheckAfter = bypassCheckAfter;
+        }
+
+        public void setBypassCheckAfterAuthenticated(boolean bypassCheckAfterAuthenticated) {
+            this.bypassCheckAfterAuthenticated = bypassCheckAfterAuthenticated;
         }
 
         public void setBeforeCreatedTimeMaxMessageCount(int beforeCreatedTimeMaxMessageCount) {

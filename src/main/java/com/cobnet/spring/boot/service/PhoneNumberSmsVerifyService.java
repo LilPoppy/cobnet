@@ -38,17 +38,18 @@ public class PhoneNumberSmsVerifyService {
 
         if(cache != null) {
 
-            if (DateUtils.addDuration(cache.getCreationTime(), ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsGenerateInterval()).before(DateUtils.now())) {
+            if(cache.getCount() >= ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsVerifyInitialCount()) {
 
-                if(cache.getCount() >= ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsVerifyTimes()) {
+                if(cache.getCount() > ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsVerifyMaxCount()) {
 
-                    throw  new ResponseFailureStatusException(PhoneNumberSmsRequestResultStatus.EXHAUSTED);
+                    throw new ResponseFailureStatusException(PhoneNumberSmsRequestResultStatus.EXHAUSTED);
                 }
 
-                return send(username, phoneNumber, type);
-            }
+                if (DateUtils.addDuration(cache.getCreationTime(), ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsGenerateInterval()).before(DateUtils.now())) {
 
-            throw new ResponseFailureStatusException(PhoneNumberSmsRequestResultStatus.INTERVAL_LIMITED, new ObjectWrapper<>("time-remain", ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsGenerateInterval().minus(DateUtils.getInterval(DateUtils.now(), cache.getCreationTime()))));
+                    throw new ResponseFailureStatusException(PhoneNumberSmsRequestResultStatus.INTERVAL_LIMITED, new ObjectWrapper<>("time-remain", ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsGenerateInterval().minus(DateUtils.getInterval(DateUtils.now(), cache.getCreationTime()))));
+                }
+            }
         }
 
         return send(username, phoneNumber, type);

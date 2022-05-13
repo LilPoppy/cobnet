@@ -7,7 +7,7 @@ public enum SecurityRequestStatus implements ReasonableStatus {
 
     SECURITY_FORBIDDEN_SESSION(HttpStatus.FORBIDDEN, null),
     SECURITY_FORBIDDEN_HUMAN_VALIDATION(HttpStatus.FORBIDDEN, null),
-
+    SECURITY_MAX_MESSAGE(HttpStatus.FORBIDDEN, null),
     SECURITY_MAXIMUM_SESSION(HttpStatus.BAD_REQUEST, null);
 
     private HttpStatus status;

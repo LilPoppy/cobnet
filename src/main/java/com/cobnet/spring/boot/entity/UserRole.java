@@ -6,6 +6,7 @@ import com.cobnet.security.RoleRule;
 import com.cobnet.security.permission.PermissionValidator;
 import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
 import com.cobnet.spring.boot.entity.support.JsonStringSetConverter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.lang.NonNull;
@@ -15,6 +16,7 @@ import java.io.Serializable;
 import java.util.*;
 
 @Entity
+@NoArgsConstructor
 public class UserRole extends EntityBase implements Permissible, Serializable {
 
     @Id
@@ -35,8 +37,6 @@ public class UserRole extends EntityBase implements Permissible, Serializable {
 
     @Transient
     private transient PermissionValidator permissionCollection;
-
-    public UserRole() {}
 
     public UserRole(@NonNull String role, RoleRule rule, boolean isDefault) {
 

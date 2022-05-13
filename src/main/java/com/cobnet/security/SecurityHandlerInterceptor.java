@@ -3,13 +3,11 @@ package com.cobnet.security;
 import com.cobnet.exception.ResponseFailureStatusException;
 import com.cobnet.interfaces.security.annotation.HumanValidationRequired;
 import com.cobnet.spring.boot.cache.IPAddressCache;
-import com.cobnet.spring.boot.configuration.SessionConfiguration;
 import com.cobnet.spring.boot.controller.handler.http.HttpControllerExceptionHandler;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.support.SecurityRequestStatus;
 import com.cobnet.spring.boot.cache.BadMessageCache;
 import com.cobnet.spring.boot.cache.MessageCallsCache;
-import lombok.SneakyThrows;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -30,11 +28,6 @@ public class SecurityHandlerInterceptor implements HandlerInterceptor {
 
                 ProjectBeanHolder.getSecurityService().setIPAddressCache(new IPAddressCache(session.getId(), request.getRemoteAddr()));
 
-                if(ProjectBeanHolder.getSecurityService().getIPAddressCaches(request.getRemoteAddr()).size() >= ProjectBeanHolder.getSecurityConfiguration().getSession().getMaxIpCount()) {
-
-                    throw new ResponseFailureStatusException(SecurityRequestStatus.SECURITY_MAXIMUM_SESSION);
-                }
-
                 MessageCallsCache cache = null;
 
                 if(ProjectBeanHolder.getSecurityConfiguration().getSession().isMessageLogCacheEnable()) {
@@ -42,10 +35,7 @@ public class SecurityHandlerInterceptor implements HandlerInterceptor {
                     cache = ProjectBeanHolder.getSecurityService().addMessageCalls(request);
                 }
 
-                if(!ProjectBeanHolder.getSecurityService().isSessionAuthorized(request, cache)) {
-
-                    throw new ResponseFailureStatusException(SecurityRequestStatus.SECURITY_FORBIDDEN_SESSION);
-                }
+                ProjectBeanHolder.getSecurityService().securityCheck(request, cache);;
 
                 if(handler instanceof HandlerMethod method) {
 

@@ -2,7 +2,7 @@ package com.cobnet.spring.boot.configuration;
 
 import com.cobnet.spring.boot.cache.support.*;
 import com.cobnet.spring.boot.service.RedisMessageListener;
-import com.cobnet.cache.redis.RedisMode;
+import com.cobnet.spring.boot.cache.support.RedisMode;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;

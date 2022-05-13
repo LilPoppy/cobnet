@@ -95,6 +95,7 @@ spring:
       session:
          enable: true
          bypass-check-after: 60s
+         bypass-check-after-authenticated: true
          before-created-time-max-message-count: 5
          max-ip-count: 100
          max-error-message: 500
@@ -103,8 +104,8 @@ spring:
          message-log-cache-enable: true
          message-log-cache-expire: 5m
       human-validation:
-         enable: true
-         initial-count: 3
+         enable: false
+         initial-count: 5
          create-interval: 30s
          expire: 10m
       username-format-regex: ^[a-zA-Z0-9]{6,16}$
@@ -117,7 +118,8 @@ spring:
       phone-number-verify-enable: true
       phone-number-sms-generate-interval: 60s
       phone-number-sms-code-expire: 5m
-      phone-number-sms-verify-times: 3
+      phone-number-sms-verify-initial-count: 3
+      phone-number-sms-verify-max-count: 6
       phone-number-verify-sms-message: "$(code) is your ${project.information.name} verification code."
       phone-number-max-use: 10
       email-max-use: 10

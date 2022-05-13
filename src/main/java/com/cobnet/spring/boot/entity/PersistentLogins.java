@@ -1,6 +1,7 @@
 package com.cobnet.spring.boot.entity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -8,6 +9,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
+@NoArgsConstructor
 public class PersistentLogins implements Serializable {
 
     @Id
@@ -20,8 +22,6 @@ public class PersistentLogins implements Serializable {
     private String token;
 
     private Date lastUsed;
-
-    public PersistentLogins() {}
 
     public PersistentLogins(String username, String series, String token, Date lastUsed) {
         this.username = username;

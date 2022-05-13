@@ -7,6 +7,7 @@ import com.cobnet.security.RoleRule;
 import com.cobnet.security.permission.PermissionValidator;
 import com.cobnet.spring.boot.entity.support.JsonMapConverter;
 import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
+import lombok.NoArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.GrantedAuthority;
@@ -21,6 +22,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Entity
+@NoArgsConstructor
 public class ExternalUser extends EntityBase implements OidcUser, Serializable, Account, Permissible {
 
 	private static final long serialVersionUID = 73179483542138315L;
@@ -51,8 +53,6 @@ public class ExternalUser extends EntityBase implements OidcUser, Serializable, 
 
 	@Transient
 	private transient PermissionValidator permissionValidator;
-
-    public ExternalUser() {}
     
     public ExternalUser(@NonNull String identity, @NonNull String provider, @NonNull String idToken, @NonNull String accessToken , Set<? extends Permission> permissions, Map<String, Object> attributes) {
     	

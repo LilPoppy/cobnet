@@ -1,10 +1,9 @@
 package com.cobnet.spring.boot.configuration;
 
-import com.cobnet.cache.redis.RedisCacheErrorHandler;
+import com.cobnet.spring.boot.cache.support.RedisCacheErrorHandler;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.CacheErrorHandler;

@@ -1,21 +1,27 @@
 package com.cobnet.spring.boot.service;
 
 import com.cobnet.common.DateUtils;
+import com.cobnet.exception.ResponseFailureStatusException;
+import com.cobnet.interfaces.security.Account;
 import com.cobnet.interfaces.spring.repository.*;
 import com.cobnet.spring.boot.cache.AttemptLoginCache;
 import com.cobnet.spring.boot.cache.IPAddressCache;
+import com.cobnet.spring.boot.configuration.SecurityConfiguration;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.cache.BadMessageCache;
 import com.cobnet.spring.boot.cache.MessageCallsCache;
+import com.cobnet.spring.boot.dto.support.SecurityRequestStatus;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.core.session.SessionInformation;
+import org.springframework.session.Session;
+import org.springframework.session.data.redis.RedisIndexedSessionRepository;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.time.Duration;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -164,7 +170,7 @@ public class SecurityService {
         return cache;
     }
 
-    public boolean isSessionAuthorized(@Nullable HttpServletRequest request, @Nullable MessageCallsCache cache) {
+    public void securityCheck(@Nullable HttpServletRequest request, @Nullable MessageCallsCache cache) {
 
         if(request == null) {
 
@@ -176,22 +182,32 @@ public class SecurityService {
             cache = this.getMessageCallsCache(request);
         }
 
-        if(cache == null) {
+        if(cache != null) {
 
-            return true;
-        }
+            HttpSession session = request.getSession(true);
 
-        HttpSession session = request.getSession(true);
+            if(ProjectBeanHolder.getSecurityConfiguration().getSession().isEnable() && ProjectBeanHolder.getSecurityConfiguration().getSession().getBypassCheckAfter().compareTo(DateUtils.getInterval(new Date(session.getCreationTime()), DateUtils.now())) > 0) {
 
-        if(ProjectBeanHolder.getSecurityConfiguration().getSession().isEnable() && ProjectBeanHolder.getSecurityConfiguration().getSession().getBypassCheckAfter().compareTo(DateUtils.getInterval(new Date(session.getCreationTime()), DateUtils.now())) > 0) {
+                if(ProjectBeanHolder.getSecurityConfiguration().getSession().isBypassCheckAfterAuthenticated()) {
 
-            if(cache.getCount() >= ProjectBeanHolder.getSecurityConfiguration().getSession().getBeforeCreatedTimeMaxMessageCount()) {
+                    SessionInformation information = ProjectBeanHolder.getSessionRegistry().getSessionInformation(session.getId());
 
-                return false;
+                    if(information != null && information.getPrincipal() instanceof Account) {
+
+                        return;
+                    }
+                }
+
+                if(ProjectBeanHolder.getSecurityService().getIPAddressCaches(request.getRemoteAddr()).size() >= ProjectBeanHolder.getSecurityConfiguration().getSession().getMaxIpCount()) {
+
+                    throw new ResponseFailureStatusException(SecurityRequestStatus.SECURITY_MAXIMUM_SESSION);
+                }
+
+                if(cache.getCount() >= ProjectBeanHolder.getSecurityConfiguration().getSession().getBeforeCreatedTimeMaxMessageCount()) {
+
+                    throw new ResponseFailureStatusException(SecurityRequestStatus.SECURITY_MAX_MESSAGE);
+                }
             }
-
         }
-
-        return true;
     }
 }

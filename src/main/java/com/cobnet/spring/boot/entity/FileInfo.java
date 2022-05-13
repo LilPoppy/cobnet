@@ -1,6 +1,7 @@
 package com.cobnet.spring.boot.entity;
 
 import com.cobnet.common.cipher.HashDigest;
+import lombok.NoArgsConstructor;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -14,6 +15,7 @@ import java.io.Serializable;
 import java.security.NoSuchAlgorithmException;
 
 @Entity
+@NoArgsConstructor
 public class FileInfo extends EntityBase implements Serializable {
 
     @Id
@@ -27,8 +29,6 @@ public class FileInfo extends EntityBase implements Serializable {
     private long size;
 
     private String hash;
-
-    public FileInfo() {}
 
     public FileInfo(String name, String memeType, long size) {
 

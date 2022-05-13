@@ -8,6 +8,7 @@ import com.cobnet.security.permission.PermissionValidator;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.entity.support.Gender;
 import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
+import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Entity
+@NoArgsConstructor
 public class User extends EntityBase implements Permissible, Account, UserDetails, Serializable {
 
     private static final Logger LOG = LoggerFactory.getLogger(User.class);
@@ -87,8 +89,6 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
     @Transient
     private transient PermissionValidator permissionValidator;
-
-    public User() {}
 
     public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, @NonNull Gender gender, String phoneNumber, boolean phoneNumberVerified, String email, boolean emailVerified, @NonNull List<Address> addresses,  @NonNull List<UserRole> roles, boolean expired, boolean locked, boolean vaildPassword, boolean enabled) {
 
