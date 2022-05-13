@@ -1,13 +1,11 @@
 package com.cobnet.spring.boot.dto;
 
-import com.cobnet.interfaces.connection.web.FormGenerator;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
+import com.cobnet.exception.support.UserRegisterResultStatus;
 import com.cobnet.spring.boot.entity.User;
 import com.cobnet.spring.boot.entity.support.Gender;
 
-import java.util.Map;
-
-public class UserRegisterForm extends FormBase<UserRegisterForm, User> {
+public class UserRegisterForm extends FormBase<UserRegisterForm, ResponseResult<UserRegisterResultStatus>> {
 
     private String username;
 
@@ -23,11 +21,11 @@ public class UserRegisterForm extends FormBase<UserRegisterForm, User> {
 
     private String lastName;
 
-    private AddressForm address;
+    private Address address;
 
     public UserRegisterForm() {}
 
-    public UserRegisterForm(String username, String password, Gender gender, String email, String phoneNumber, String firstName, String lastName, AddressForm address) {
+    public UserRegisterForm(String username, String password, Gender gender, String email, String phoneNumber, String firstName, String lastName, Address address) {
         this.username = username;
         this.password = password;
         this.gender = gender;
@@ -66,7 +64,7 @@ public class UserRegisterForm extends FormBase<UserRegisterForm, User> {
         return lastName;
     }
 
-    public AddressForm getAddress() {
+    public Address getAddress() {
         return address;
     }
 
@@ -98,22 +96,21 @@ public class UserRegisterForm extends FormBase<UserRegisterForm, User> {
         this.lastName = lastName;
     }
 
-    public void setAddress(AddressForm address) {
+    public void setAddress(Address address) {
         this.address = address;
     }
 
+
     @Override
-    public User getEntity(Object... args) {
+    public ResponseResult<UserRegisterResultStatus> getResult(Object... args) {
 
-        return new User.Builder().setUsername(this.username).setPassword(this.password).setFirstName(this.firstName).setLastName(this.lastName).setGender(this.gender).setPhoneNumber(this.phoneNumber).setEmail(this.email).setRoles(ProjectBeanHolder.getUserRoleRepository().getDefaultRole().get()).build();
-    }
+        User user = ProjectBeanHolder.getAccountService().register(new User.Builder().setUsername(this.username).setPassword(this.password).setFirstName(this.firstName).setLastName(this.lastName).setGender(this.gender).setPhoneNumber(this.phoneNumber).setEmail(this.email).setRoles(ProjectBeanHolder.getUserRoleRepository().getDefaultRole().get()).build(), this.address.getEntity());
 
-    public static class RegisterFormGenerator implements FormGenerator<UserRegisterForm> {
+        if(user != null) {
 
-        @Override
-        public UserRegisterForm generate(Map<String, ?> fields) {
-
-            return ProjectBeanHolder.getObjectMapper().convertValue(fields, UserRegisterForm.class);
+            return new ResponseResult<>(UserRegisterResultStatus.SUCCESS);
         }
+
+        return null;
     }
 }

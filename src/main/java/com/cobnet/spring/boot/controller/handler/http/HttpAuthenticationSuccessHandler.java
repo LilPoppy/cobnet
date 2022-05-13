@@ -5,7 +5,7 @@ import com.cobnet.spring.boot.core.HttpRequestUrlResolver;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.ConnectionToken;
 import com.cobnet.spring.boot.dto.ResponseResult;
-import com.cobnet.spring.boot.dto.support.AuthenticationStatus;
+import com.cobnet.exception.support.AuthenticationStatus;
 import com.cobnet.spring.boot.entity.ExternalUser;
 import com.cobnet.spring.boot.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;

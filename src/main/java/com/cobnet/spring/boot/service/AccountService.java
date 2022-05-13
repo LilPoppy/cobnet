@@ -3,9 +3,10 @@ package com.cobnet.spring.boot.service;
 import com.cobnet.common.DateUtils;
 import com.cobnet.event.account.AccountLoginEvent;
 import com.cobnet.event.account.AccountPasswordEncodingEvent;
-import com.cobnet.exception.AuthenticationCancelledException;
-import com.cobnet.exception.AuthenticationSecurityException;
-import com.cobnet.exception.ResponseFailureStatusException;
+import com.cobnet.exception.*;
+import com.cobnet.exception.support.AuthenticationStatus;
+import com.cobnet.exception.support.SecurityRequestStatus;
+import com.cobnet.exception.support.UserRegisterResultStatus;
 import com.cobnet.interfaces.security.Account;
 import com.cobnet.interfaces.spring.repository.UserRepository;
 import com.cobnet.security.AccountAuthenticationToken;
@@ -158,40 +159,28 @@ public class AccountService {
         return authentication;
     }
 
-    public User register(UserRegisterForm form) throws ResponseFailureStatusException {
-
-        if(ProjectBeanHolder.getSecurityConfiguration().isPhoneNumberVerifyEnable()) {
-
-            AccountPhoneNumberVerifyCache cache = ProjectBeanHolder.getPhoneNumberSmsVerifyService().getCache(form.getUsername());
-
-            if (cache != null) {
-
-                try {
-
-                    return register(form.getEntity(), form.getAddress().getEntity());
-
-                } finally {
-
-                    if (cache.getType() == PhoneNumberSmsType.ACCOUNT_REGISTER && cache.isVerified())
-                    {
-                        ProjectBeanHolder.getPhoneNumberSmsVerifyService().delete(form.getUsername());
-                    }
-
-                    throw new ResponseFailureStatusException(UserRegisterResultStatus.VERIFICATION_TIMEOUT);
-                }
-            }
-
-            throw new ResponseFailureStatusException(SecurityRequestStatus.SECURITY_PHONE_VERIFICATION_DEMAND, new CommentWrapper("SMS request required.", new MethodHint(HttpMethod.POST, "/visitor/sms/request", new PhoneNumberSmsRequest(form.getUsername(), form.getPhoneNumber(), PhoneNumberSmsType.ACCOUNT_REGISTER))));
-        }
-
-        return register(form.getEntity(), form.getAddress().getEntity());
-    }
-
     public User register(User user, Address... addresses) throws ResponseFailureStatusException {
 
         if(user == null) {
 
             throw new ResponseFailureStatusException(UserRegisterResultStatus.UNACCEPTABLE_CONTENT);
+        }
+
+        if(ProjectBeanHolder.getSecurityConfiguration().isPhoneNumberVerifyEnable()) {
+
+            AccountPhoneNumberVerifyCache cache = ProjectBeanHolder.getPhoneNumberSmsVerifyService().getCache(user.getUsername());
+
+            if(cache == null) {
+
+                throw new ResponseFailureStatusException(SecurityRequestStatus.SECURITY_PHONE_VERIFICATION_DEMAND, new CommentWrapper("SMS request required.", new MethodHint(HttpMethod.POST, "/visitor/sms/request", new PhoneNumberSmsRequest(user.getUsername(), user.getPhoneNumber(), PhoneNumberSmsType.ACCOUNT_REGISTER))));
+            }
+
+            if (cache.getType() != PhoneNumberSmsType.ACCOUNT_REGISTER || !cache.isVerified()) {
+
+                throw new ResponseFailureStatusException(UserRegisterResultStatus.VERIFICATION_TIMEOUT);
+            }
+
+            ProjectBeanHolder.getPhoneNumberSmsVerifyService().delete(user.getUsername());
         }
 
         user.getAddresses().addAll(List.of(addresses));

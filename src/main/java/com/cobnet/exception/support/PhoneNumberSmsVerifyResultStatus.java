@@ -1,22 +1,22 @@
-package com.cobnet.spring.boot.dto.support;
+package com.cobnet.exception.support;
 
 import com.cobnet.interfaces.connection.web.ReasonableStatus;
 import org.springframework.http.HttpStatus;
 
-public enum GoogleApiRequestResultStatus implements ReasonableStatus {
+public enum PhoneNumberSmsVerifyResultStatus implements ReasonableStatus {
 
     SUCCESS(HttpStatus.OK, null),
-    EMPTY(HttpStatus.NO_CONTENT, "No result present."),
-    BAD_REQUEST(HttpStatus.BAD_REQUEST, "Arguments is not match the requires");
+    UNMATCHED(HttpStatus.NOT_ACCEPTABLE, "Code is not match our record.");
 
     private final HttpStatus status;
 
     private final String message;
 
-    private GoogleApiRequestResultStatus(HttpStatus status, String message) {
+    private PhoneNumberSmsVerifyResultStatus(HttpStatus status, String message) {
         this.status = status;
         this.message = message;
     }
+
 
     @Override
     public HttpStatus getStatus() {

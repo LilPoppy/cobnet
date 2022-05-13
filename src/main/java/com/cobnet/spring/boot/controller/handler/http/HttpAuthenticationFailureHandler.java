@@ -5,11 +5,8 @@ import com.cobnet.exception.AuthenticationCancelledException;
 import com.cobnet.exception.AuthenticationSecurityException;
 import com.cobnet.spring.boot.core.HttpRequestUrlResolver;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
-import com.cobnet.spring.boot.dto.CommentWrapper;
-import com.cobnet.spring.boot.dto.MethodHint;
-import com.cobnet.spring.boot.dto.ObjectWrapper;
-import com.cobnet.spring.boot.dto.ResponseResult;
-import com.cobnet.spring.boot.dto.support.AuthenticationStatus;
+import com.cobnet.spring.boot.dto.*;
+import com.cobnet.exception.support.AuthenticationStatus;
 import com.cobnet.spring.boot.entity.User;
 import com.cobnet.spring.boot.cache.AttemptLoginCache;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,13 +72,13 @@ public class HttpAuthenticationFailureHandler implements AuthenticationFailureHa
 
                     } else {
 
-                        writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult(AuthenticationStatus.PASSWORD_NOT_MATCH, new CommentWrapper<>("Login attempt time left.", new ObjectWrapper<>("attempt-remain", ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin() - cache.getCount())))));
+                        writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult(AuthenticationStatus.PASSWORD_NOT_MATCH, new CommentWrapper<>("Login attempt time left.", new MessageWrapper("attempt-remain", ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin() - cache.getCount())))));
                     }
 
                 } else if(exception instanceof BadCredentialsException) {
 
                     response.setStatus(AuthenticationStatus.PASSWORD_NOT_MATCH.getCode());
-                    writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult(AuthenticationStatus.PASSWORD_NOT_MATCH, new CommentWrapper<>("Login attempt time left.", new ObjectWrapper<>("attempt-remain",ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin() - ProjectBeanHolder.getSecurityService().getAttemptLoginCache(request.getSession().getId()).getCount())))));
+                    writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult(AuthenticationStatus.PASSWORD_NOT_MATCH, new CommentWrapper<>("Login attempt time left.", new MessageWrapper("attempt-remain",ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin() - ProjectBeanHolder.getSecurityService().getAttemptLoginCache(request.getSession().getId()).getCount())))));
 
                 } else if(exception instanceof AuthenticationCancelledException) {
 
@@ -95,7 +92,7 @@ public class HttpAuthenticationFailureHandler implements AuthenticationFailureHa
                     if(userDetailsService.loadUserByUsername(username) instanceof User user) {
 
                         response.setStatus(AuthenticationStatus.LOCKED.getCode());
-                        writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult<>(AuthenticationStatus.LOCKED, new CommentWrapper<>("", new ObjectWrapper<>("lock-until", user.getLockTime())))));
+                        writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult<>(AuthenticationStatus.LOCKED,  new MessageWrapper("lock-until", user.getLockTime()))));
                     }
 
                 } else if(exception instanceof AuthenticationSecurityException ex) {

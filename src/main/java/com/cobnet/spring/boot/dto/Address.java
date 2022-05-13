@@ -1,12 +1,8 @@
 package com.cobnet.spring.boot.dto;
 
-import com.cobnet.interfaces.connection.web.FormGenerator;
-import com.cobnet.spring.boot.core.ProjectBeanHolder;
-import com.cobnet.spring.boot.entity.Address;
+import com.cobnet.interfaces.connection.web.ApplicationJson;
 
-import java.util.Map;
-
-public class AddressForm extends FormBase<AddressForm, Address> {
+public class Address implements ApplicationJson {
 
     private String street;
     private String unit;
@@ -16,7 +12,7 @@ public class AddressForm extends FormBase<AddressForm, Address> {
 
     private String postalCode;
 
-    public AddressForm(String street, String unit, String city, String state, String country, String postalCode) {
+    public Address(String street, String unit, String city, String state, String country, String postalCode) {
         this.street = street;
         this.unit = unit;
         this.city = city;
@@ -25,7 +21,7 @@ public class AddressForm extends FormBase<AddressForm, Address> {
         this.postalCode = postalCode;
     }
 
-    public AddressForm() {}
+    public Address() {}
 
     public String getStreet() {
         return street;
@@ -118,19 +114,9 @@ public class AddressForm extends FormBase<AddressForm, Address> {
         return address();
     }
 
-    @Override
-    public Address getEntity(Object... args) {
+    public com.cobnet.spring.boot.entity.Address getEntity() {
 
-        return new Address.Builder().setStreet(this.street).setUnit(this.unit).setCity(this.city).setState(this.state).setPostalCode(this.postalCode).setCountry(this.country).build();
-    }
-
-    public static class AddressFormGenerator implements FormGenerator<AddressForm> {
-
-        @Override
-        public AddressForm generate(Map<String, ?> options) {
-
-            return ProjectBeanHolder.getObjectMapper().convertValue(options, AddressForm.class);
-        }
+        return new com.cobnet.spring.boot.entity.Address.Builder().setStreet(this.street).setUnit(this.unit).setCity(this.city).setState(this.state).setPostalCode(this.postalCode).setCountry(this.country).build();
     }
 
     public static final class Builder {
@@ -178,9 +164,9 @@ public class AddressForm extends FormBase<AddressForm, Address> {
             return this;
         }
 
-        public AddressForm build() {
+        public Address build() {
 
-            return new AddressForm(this.street, this.unit, this.city, this.state, this.country, this.postalCode);
+            return new Address(this.street, this.unit, this.city, this.state, this.country, this.postalCode);
         }
     }
 }

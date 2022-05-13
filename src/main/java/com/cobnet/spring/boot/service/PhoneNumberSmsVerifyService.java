@@ -5,11 +5,11 @@ import com.cobnet.exception.ResponseFailureStatusException;
 import com.cobnet.interfaces.spring.repository.AccountPhoneNumberVerifyCacheRepository;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.*;
-import com.cobnet.spring.boot.dto.support.PhoneNumberSmsRequestResultStatus;
+import com.cobnet.exception.support.PhoneNumberSmsRequestResultStatus;
 import com.cobnet.spring.boot.dto.support.PhoneNumberSmsType;
-import com.cobnet.spring.boot.dto.support.PhoneNumberSmsVerifyResultStatus;
+import com.cobnet.exception.support.PhoneNumberSmsVerifyResultStatus;
 import com.cobnet.spring.boot.cache.AccountPhoneNumberVerifyCache;
-import com.cobnet.spring.boot.dto.support.ServiceRequestStatus;
+import com.cobnet.exception.support.ServiceRequestStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -48,7 +48,7 @@ public class PhoneNumberSmsVerifyService {
 
                 if (DateUtils.addDuration(cache.getCreationTime(), ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsGenerateInterval()).before(DateUtils.now())) {
 
-                    throw new ResponseFailureStatusException(PhoneNumberSmsRequestResultStatus.INTERVAL_LIMITED, new ObjectWrapper<>("time-remain", ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsGenerateInterval().minus(DateUtils.getInterval(DateUtils.now(), cache.getCreationTime()))));
+                    throw new ResponseFailureStatusException(PhoneNumberSmsRequestResultStatus.INTERVAL_LIMITED, new MessageWrapper("time-remain", ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsGenerateInterval().minus(DateUtils.getInterval(DateUtils.now(), cache.getCreationTime()))));
                 }
             }
         }

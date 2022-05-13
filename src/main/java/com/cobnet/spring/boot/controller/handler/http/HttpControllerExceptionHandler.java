@@ -3,6 +3,7 @@ package com.cobnet.spring.boot.controller.handler.http;
 import com.cobnet.exception.ResponseFailureStatusException;
 import com.cobnet.interfaces.connection.web.Content;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
+import com.cobnet.spring.boot.dto.MessageWrapper;
 import com.cobnet.spring.boot.dto.ObjectWrapper;
 import com.cobnet.spring.boot.dto.ResponseResult;
 import org.springframework.http.MediaType;
@@ -31,11 +32,11 @@ public class HttpControllerExceptionHandler {
 
             String message = exception.getStatus().message();
 
-            ObjectWrapper<String> errorMessage = null;
+            MessageWrapper errorMessage = null;
 
             if(message != null) {
 
-                errorMessage = new ObjectWrapper<>("error", message);
+                errorMessage = new MessageWrapper("error", message);
             }
 
             List<Content<?>> params = new ArrayList<>();

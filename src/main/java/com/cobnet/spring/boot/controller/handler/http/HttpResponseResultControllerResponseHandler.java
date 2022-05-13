@@ -3,6 +3,7 @@ package com.cobnet.spring.boot.controller.handler.http;
 import com.cobnet.interfaces.connection.web.Content;
 import com.cobnet.interfaces.connection.web.ReasonableStatus;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
+import com.cobnet.spring.boot.dto.MessageWrapper;
 import com.cobnet.spring.boot.dto.ObjectWrapper;
 import com.cobnet.spring.boot.dto.ResponseResult;
 import org.springframework.core.MethodParameter;
@@ -33,11 +34,11 @@ public class HttpResponseResultControllerResponseHandler implements ResponseBody
 
         String message = body.status().message();
 
-        ObjectWrapper<String> statusMessage = null;
+        MessageWrapper statusMessage = null;
 
         if(message != null) {
 
-            statusMessage = new ObjectWrapper<>("message", message);
+            statusMessage = new MessageWrapper("message", message);
         }
 
         List<Content<?>> params = new ArrayList<>();

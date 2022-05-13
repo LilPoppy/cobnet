@@ -1,6 +1,6 @@
 package com.cobnet.exception;
 
-import com.cobnet.spring.boot.dto.support.AuthenticationStatus;
+import com.cobnet.exception.support.AuthenticationStatus;
 import org.springframework.security.core.AuthenticationException;
 
 public class AuthenticationSecurityException extends AuthenticationException {

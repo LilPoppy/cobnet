@@ -1,5 +1,6 @@
 package com.cobnet.spring.boot.dto.support;
 
+import com.cobnet.spring.boot.dto.MessageWrapper;
 import com.cobnet.spring.boot.dto.ObjectWrapper;
 import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.core.json.PackageVersion;
@@ -15,6 +16,9 @@ public final class DTOModule extends SimpleModule {
     public DTOModule() {
 
         super(PackageVersion.VERSION);
+
+        this.addDeserializer(MessageWrapper.class, new MessageWrapperDeserializer());
+        this.addSerializer(MessageWrapper.class, new MessageWrapperSerializer());
 
         this.addDeserializer(ObjectWrapper.class, new ObjectWrapperDeserializer());
         this.addSerializer(ObjectWrapper.class, new ObjectWrapperSerializer());

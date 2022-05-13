@@ -31,19 +31,17 @@ public class HttpFormControllerRequestHandler implements RequestBodyAdvice {
     @Override
     public HttpInputMessage beforeBodyRead(HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) throws IOException {
 
-        HttpServletRequest request = ProjectBeanHolder.getCurrentHttpRequest();
-
-
-
         return inputMessage;
     }
 
+    @SneakyThrows
     @Override
     public Object afterBodyRead(Object body, HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
 
         return body;
     }
 
+    @SneakyThrows
     @Override
     public Object handleEmptyBody(Object body, HttpInputMessage inputMessage, MethodParameter parameter, Type targetType, Class<? extends HttpMessageConverter<?>> converterType) {
 

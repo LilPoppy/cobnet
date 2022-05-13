@@ -8,15 +8,14 @@ import com.cobnet.interfaces.spring.repository.HumanValidationCacheRepository;
 import com.cobnet.spring.boot.cache.HumanValidationCache;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.*;
-import com.cobnet.spring.boot.dto.support.HumanValidationRequestStatus;
-import com.cobnet.spring.boot.dto.support.HumanValidationValidateStatus;
+import com.cobnet.exception.support.HumanValidationRequestStatus;
+import com.cobnet.exception.support.HumanValidationValidateStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Optional;
 
 @Service
@@ -41,7 +40,7 @@ public class HumanValidatorService {
                 return generateImage(key);
             }
 
-            throw new ResponseFailureStatusException(HumanValidationRequestStatus.INTERVAL_LIMITED, new ObjectWrapper<>("time-remain", ProjectBeanHolder.getSecurityConfiguration().getHumanValidation().getCreateInterval().minus(DateUtils.getInterval(DateUtils.now(), cache.getCreationTime()))));
+            throw new ResponseFailureStatusException(HumanValidationRequestStatus.INTERVAL_LIMITED, new MessageWrapper("time-remain", ProjectBeanHolder.getSecurityConfiguration().getHumanValidation().getCreateInterval().minus(DateUtils.getInterval(DateUtils.now(), cache.getCreationTime()))));
         }
 
         return generateImage(key);

@@ -5,7 +5,7 @@ import com.cobnet.interfaces.security.annotation.HumanValidationRequired;
 import com.cobnet.spring.boot.cache.IPAddressCache;
 import com.cobnet.spring.boot.controller.handler.http.HttpControllerExceptionHandler;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
-import com.cobnet.spring.boot.dto.support.SecurityRequestStatus;
+import com.cobnet.exception.support.SecurityRequestStatus;
 import com.cobnet.spring.boot.cache.BadMessageCache;
 import com.cobnet.spring.boot.cache.MessageCallsCache;
 import org.springframework.web.method.HandlerMethod;

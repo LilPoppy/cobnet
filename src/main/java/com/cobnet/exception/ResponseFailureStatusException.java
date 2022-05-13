@@ -2,6 +2,7 @@ package com.cobnet.exception;
 
 import com.cobnet.interfaces.connection.web.Content;
 import com.cobnet.interfaces.connection.web.ReasonableStatus;
+import com.cobnet.spring.boot.dto.MessageWrapper;
 import com.cobnet.spring.boot.dto.ObjectWrapper;
 
 import java.util.Collection;
@@ -20,7 +21,7 @@ public class ResponseFailureStatusException extends RuntimeException {
 
     public <T extends Enum & ReasonableStatus> ResponseFailureStatusException(T status, String message) {
 
-        this(status, new ObjectWrapper<>("error", message));
+        this(status, new MessageWrapper("error", message));
     }
 
     public <T extends Enum & ReasonableStatus> ResponseFailureStatusException(T status, Collection<? extends Content<?>> params) {

@@ -1,12 +1,12 @@
 package com.cobnet.spring.boot.controller.restful;
 
 import com.cobnet.common.PuzzledImage;
-import com.cobnet.exception.ResponseFailureStatusException;
+import com.cobnet.exception.*;
+import com.cobnet.exception.support.*;
 import com.cobnet.interfaces.security.annotation.HumanValidationRequired;
 import com.cobnet.security.AccountAuthenticationToken;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.*;
-import com.cobnet.spring.boot.dto.support.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.security.core.context.SecurityContext;
@@ -111,18 +111,13 @@ public class VisitorController {
     @PostMapping("/register")
     public ResponseResult<UserRegisterResultStatus> register(@RequestBody UserRegisterForm form) throws ResponseFailureStatusException {
 
-        if(ProjectBeanHolder.getAccountService().register(form) != null) {
-
-            return new ResponseResult<>(UserRegisterResultStatus.SUCCESS);
-        }
-
-        return null;
+        return form.getResult();
     }
 
     @HumanValidationRequired
     @Operation(summary = "auto complete given address.")
     @PostMapping("/autocomplete/address")
-    public ResponseResult<GoogleApiRequestResultStatus> autocompleteAddress(HttpServletRequest request, @RequestBody AddressForm addressRequest) throws ResponseFailureStatusException {
+    public ResponseResult<GoogleApiRequestResultStatus> autocompleteAddress(HttpServletRequest request, @RequestBody Address addressRequest) throws ResponseFailureStatusException {
 
         GoogleAutocompletePredicted predicted = ProjectBeanHolder.getGoogleMapService().autocompleteRequest(request, null, addressRequest);
 
@@ -139,11 +134,11 @@ public class VisitorController {
     @PostMapping("/autocomplete/find-place-address")
     public ResponseResult<GoogleApiRequestResultStatus> autocompleteFindPlaceAddress(HttpServletRequest request, String placeId) {
 
-        AddressForm form = ProjectBeanHolder.getGoogleMapService().findPlaceAddressRequest(request, placeId);
+        Address address = ProjectBeanHolder.getGoogleMapService().findPlaceAddressRequest(request, placeId);
 
-        if(form != null) {
+        if(address != null) {
 
-            return new ResponseResult<>(GoogleApiRequestResultStatus.SUCCESS, form);
+            return new ResponseResult<>(GoogleApiRequestResultStatus.SUCCESS, address);
         }
 
         return null;

@@ -9,7 +9,7 @@ import com.cobnet.spring.boot.cache.IPAddressCache;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.cache.BadMessageCache;
 import com.cobnet.spring.boot.cache.MessageCallsCache;
-import com.cobnet.spring.boot.dto.support.SecurityRequestStatus;
+import com.cobnet.exception.support.SecurityRequestStatus;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;

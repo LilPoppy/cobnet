@@ -1,20 +1,19 @@
-package com.cobnet.spring.boot.dto.support;
+package com.cobnet.exception.support;
 
 import com.cobnet.interfaces.connection.web.ReasonableStatus;
 import org.springframework.http.HttpStatus;
 
-public enum HumanValidationRequestStatus implements ReasonableStatus {
+public enum UserRegisterResultStatus implements ReasonableStatus {
 
     SUCCESS(HttpStatus.CREATED, null),
-    INTERVAL_LIMITED(HttpStatus.TOO_MANY_REQUESTS, "Operation too frequent, please try again later."),
-    VALIDATED(HttpStatus.BAD_REQUEST, "You're already validated, please try your request again.");
-
+    UNACCEPTABLE_CONTENT(HttpStatus.BAD_REQUEST, "Please check the form your have summit is not match requirement."),
+    VERIFICATION_TIMEOUT(HttpStatus.REQUEST_TIMEOUT, "Phone number verification is expired, please try to verify your phone number again.");
 
     private final HttpStatus status;
 
     private final String message;
 
-    private HumanValidationRequestStatus(HttpStatus status, String message) {
+    private UserRegisterResultStatus(HttpStatus status, String message) {
         this.status = status;
         this.message = message;
     }
@@ -28,6 +27,4 @@ public enum HumanValidationRequestStatus implements ReasonableStatus {
     public String message() {
         return null;
     }
-
-
 }

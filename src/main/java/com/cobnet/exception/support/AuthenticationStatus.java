@@ -1,4 +1,4 @@
-package com.cobnet.spring.boot.dto.support;
+package com.cobnet.exception.support;
 
 import com.cobnet.interfaces.connection.web.ReasonableStatus;
 import org.springframework.http.HttpStatus;
