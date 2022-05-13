@@ -2,12 +2,14 @@ package com.cobnet.security;
 
 import com.cobnet.exception.ResponseFailureStatusException;
 import com.cobnet.interfaces.security.annotation.HumanValidationRequired;
+import com.cobnet.spring.boot.cache.IPAddressCache;
 import com.cobnet.spring.boot.configuration.SessionConfiguration;
+import com.cobnet.spring.boot.controller.handler.http.HttpControllerExceptionHandler;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.support.SecurityRequestStatus;
-import com.cobnet.spring.boot.service.RedisSessionService;
-import com.cobnet.spring.boot.service.support.BadMessageCache;
-import com.cobnet.spring.boot.service.support.MessageCallsCache;
+import com.cobnet.spring.boot.cache.BadMessageCache;
+import com.cobnet.spring.boot.cache.MessageCallsCache;
+import lombok.SneakyThrows;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -20,51 +22,59 @@ public class SecurityHandlerInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
-        if(!request.getRequestURI().equalsIgnoreCase("/error")) {
+        try {
 
-            HttpSession session = request.getSession(true);
+            if(!request.getRequestURI().equalsIgnoreCase("/error")) {
 
-            session.setAttribute(SessionConfiguration.IP_ADDRESS, request.getRemoteAddr());
+                HttpSession session = request.getSession(true);
 
-            ProjectBeanHolder.getRedisSessionService().add(RedisSessionService.IP_ADDRESS_INDEX_NAME, request.getRemoteAddr(), session.getId());
+                ProjectBeanHolder.getSecurityService().setIPAddressCache(new IPAddressCache(session.getId(), request.getRemoteAddr()));
 
-            System.out.println("keys:" + ProjectBeanHolder.getRedisSessionService().getIndexKeys(RedisSessionService.IP_ADDRESS_INDEX_NAME));
+                if(ProjectBeanHolder.getSecurityService().getIPAddressCaches(request.getRemoteAddr()).size() >= ProjectBeanHolder.getSecurityConfiguration().getSession().getMaxIpCount()) {
 
-            System.out.println("members:" + ProjectBeanHolder.getRedisSessionService().getIndexMembers(RedisSessionService.IP_ADDRESS_INDEX_NAME, request.getRemoteAddr()));
+                    throw new ResponseFailureStatusException(SecurityRequestStatus.SECURITY_MAXIMUM_SESSION);
+                }
 
-            MessageCallsCache cache = null;
+                MessageCallsCache cache = null;
 
-            if(ProjectBeanHolder.getSecurityConfiguration().getSession().isMessageLogCacheEnable()) {
+                if(ProjectBeanHolder.getSecurityConfiguration().getSession().isMessageLogCacheEnable()) {
 
-                 cache = ProjectBeanHolder.getSecurityService().addMessageCalls(request);
-            }
+                    cache = ProjectBeanHolder.getSecurityService().addMessageCalls(request);
+                }
 
-            if(!ProjectBeanHolder.getSecurityService().isSessionAuthorized(request, cache)) {
+                if(!ProjectBeanHolder.getSecurityService().isSessionAuthorized(request, cache)) {
 
-                throw new ResponseFailureStatusException(SecurityRequestStatus.SECURITY_FORBIDDEN_SESSION);
-            }
+                    throw new ResponseFailureStatusException(SecurityRequestStatus.SECURITY_FORBIDDEN_SESSION);
+                }
 
-            if(handler instanceof HandlerMethod method) {
+                if(handler instanceof HandlerMethod method) {
 
-                HumanValidationRequired required = method.getMethodAnnotation(HumanValidationRequired.class);
+                    HumanValidationRequired required = method.getMethodAnnotation(HumanValidationRequired.class);
 
-                if (required != null && required.enabled() && ProjectBeanHolder.getSecurityConfiguration().getHumanValidation().isEnable() && !ProjectBeanHolder.getHumanValidator().isValidated(session.getId())) {
+                    if (required != null && required.enabled() && ProjectBeanHolder.getSecurityConfiguration().getHumanValidation().isEnable() && !ProjectBeanHolder.getHumanValidator().isValidated(session.getId())) {
 
-                    throw new ResponseFailureStatusException(SecurityRequestStatus.SECURITY_FORBIDDEN_HUMAN_VALIDATION);
+                        throw new ResponseFailureStatusException(SecurityRequestStatus.SECURITY_FORBIDDEN_HUMAN_VALIDATION);
+                    }
+                }
+
+            } else {
+
+                if(ProjectBeanHolder.getSecurityConfiguration().getSession().isBadMessageLogCacheEnable()) {
+
+                    BadMessageCache cache = ProjectBeanHolder.getSecurityService().addBadMessage(request);
+
+                    if(ProjectBeanHolder.getSecurityConfiguration().getSession().getMaxErrorMessage() > cache.getCount()) {
+
+                        //TODO reject the service to current session
+                    }
                 }
             }
 
-        } else {
+        } catch (ResponseFailureStatusException ex) {
 
-            if(ProjectBeanHolder.getSecurityConfiguration().getSession().isBadMessageLogCacheEnable()) {
+            ProjectBeanHolder.getSpringContext().getBean(HttpControllerExceptionHandler.class).handleResponseFailureStatusException(request, response, ex);
 
-                BadMessageCache cache = ProjectBeanHolder.getSecurityService().addBadMessage(request);
-
-                if(ProjectBeanHolder.getSecurityConfiguration().getSession().getMaxErrorMessage() > cache.count()) {
-
-                    //TODO reject the service to current session
-                }
-            }
+            return false;
         }
 
         return true;

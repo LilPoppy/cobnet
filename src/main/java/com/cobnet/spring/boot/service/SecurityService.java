@@ -1,33 +1,122 @@
 package com.cobnet.spring.boot.service;
 
 import com.cobnet.common.DateUtils;
+import com.cobnet.interfaces.spring.repository.*;
+import com.cobnet.spring.boot.cache.AttemptLoginCache;
+import com.cobnet.spring.boot.cache.IPAddressCache;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
-import com.cobnet.spring.boot.service.support.BadMessageCache;
-import com.cobnet.spring.boot.service.support.MessageCallsCache;
+import com.cobnet.spring.boot.cache.BadMessageCache;
+import com.cobnet.spring.boot.cache.MessageCallsCache;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.core.RedisOperations;
-import org.springframework.data.redis.core.SessionCallback;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.time.Duration;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 
 @Service
 public class SecurityService {
 
+    @Autowired
+    private AttemptLoginCacheRepository attemptLoginCacheRepository;
+
+    @Autowired
+    private BadMessageCacheRepository badMessageCacheRepository;
+
+    @Autowired
+    private MessageCallsCacheRepository messageCallsCacheRepository;
+
+    @Autowired
+    private IPAddressCacheRepository ipAddressCacheRepository;
+
+    public List<IPAddressCache> getIPAddressCaches(String address) {
+
+        return ipAddressCacheRepository.findByIpAddressEquals(address);
+    }
+
+    public IPAddressCache getIPAddressCache(String key) {
+
+        Optional<IPAddressCache> optional = ipAddressCacheRepository.findById(key);
+
+        if(optional.isEmpty()) {
+
+            return null;
+        }
+
+        return optional.get();
+    }
+
+    public IPAddressCache setIPAddressCache(IPAddressCache cache) {
+
+        return setIPAddressCache(cache, null);
+    }
+
+    public IPAddressCache setIPAddressCache(IPAddressCache cache, Duration expiration) {
+
+        if(expiration != null && !expiration.isZero()) {
+
+            return ipAddressCacheRepository.save(cache, expiration);
+        }
+
+        return ipAddressCacheRepository.save(cache);
+    }
+
+    public AttemptLoginCache getAttemptLoginCache(String key) {
+
+        Optional<AttemptLoginCache> optional = attemptLoginCacheRepository.findById(key);
+
+        if(optional.isEmpty()) {
+
+            return null;
+        }
+
+        return optional.get();
+    }
+
+    public AttemptLoginCache setAttemptLoginCache(AttemptLoginCache cache) {
+
+        return setAttemptLoginCache(cache, null);
+    }
+
+    public AttemptLoginCache setAttemptLoginCache(AttemptLoginCache cache, Duration expiration) {
+
+        if(expiration != null && !expiration.isZero()) {
+
+            return attemptLoginCacheRepository.save(cache, expiration);
+        }
+
+        return attemptLoginCacheRepository.save(cache);
+    }
+
+
     public BadMessageCache getBadMessageCache(HttpServletRequest request) {
 
-        return ProjectBeanHolder.getCacheService().get(BadMessageCache.SecurityServiceKey, BadMessageCache.class, request.getSession(true).getId());
+        Optional<BadMessageCache> optional = badMessageCacheRepository.findById(request.getSession(true).getId());
+
+        if(optional.isEmpty()) {
+
+            return null;
+        }
+
+        return optional.get();
     }
 
     public MessageCallsCache getMessageCallsCache(HttpServletRequest request) {
 
-        return ProjectBeanHolder.getCacheService().get(BadMessageCache.SecurityServiceKey, MessageCallsCache.class, request.getSession(true).getId());
+        Optional<MessageCallsCache> optional = messageCallsCacheRepository.findById(request.getSession(true).getId());
+
+        if(optional.isEmpty()) {
+
+            return null;
+        }
+
+        return optional.get();
     }
 
 
@@ -41,14 +130,14 @@ public class SecurityService {
 
         if(cache == null) {
 
-            cache = new BadMessageCache(method, path);
+            cache = new BadMessageCache(session.getId(), method, path);
 
         } else {
 
             cache = (BadMessageCache) cache.add(method, path);
         }
 
-        ProjectBeanHolder.getCacheService().set(BadMessageCache.SecurityServiceKey, session.getId(), cache, ProjectBeanHolder.getSecurityConfiguration().getSession().getBadMessageLogCacheExpire());
+        badMessageCacheRepository.save(cache, ProjectBeanHolder.getSecurityConfiguration().getSession().getBadMessageLogCacheExpire());
 
         return cache;
     }
@@ -63,14 +152,14 @@ public class SecurityService {
 
         if(cache == null) {
 
-            cache = new MessageCallsCache(method, path);
+            cache = new MessageCallsCache(session.getId(), method, path);
 
         } else {
 
             cache = (MessageCallsCache) cache.add(method, path);
         }
 
-        ProjectBeanHolder.getCacheService().set(MessageCallsCache.SecurityServiceKey, session.getId(), cache, ProjectBeanHolder.getSecurityConfiguration().getSession().getMessageLogCacheExpire());
+        messageCallsCacheRepository.save(cache, ProjectBeanHolder.getSecurityConfiguration().getSession().getMessageLogCacheExpire());
 
         return cache;
     }
@@ -96,7 +185,7 @@ public class SecurityService {
 
         if(ProjectBeanHolder.getSecurityConfiguration().getSession().isEnable() && ProjectBeanHolder.getSecurityConfiguration().getSession().getBypassCheckAfter().compareTo(DateUtils.getInterval(new Date(session.getCreationTime()), DateUtils.now())) > 0) {
 
-            if(cache.count() >= ProjectBeanHolder.getSecurityConfiguration().getSession().getBeforeCreatedTimeMaxMessageCount()) {
+            if(cache.getCount() >= ProjectBeanHolder.getSecurityConfiguration().getSession().getBeforeCreatedTimeMaxMessageCount()) {
 
                 return false;
             }

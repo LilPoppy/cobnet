@@ -3,9 +3,10 @@ package com.cobnet.spring.boot.core;
 import com.cobnet.exception.ServiceDownException;
 import com.cobnet.interfaces.FileSource;
 import com.cobnet.interfaces.spring.repository.FileInfoRepository;
+import com.cobnet.interfaces.spring.repository.MessageSourceCacheRepository;
+import com.cobnet.spring.boot.cache.MessageSourceCache;
 import com.cobnet.spring.boot.configuration.GoogleConsoleConfiguration;
 import com.cobnet.spring.boot.entity.FileInfo;
-import com.cobnet.spring.boot.service.RedisCacheService;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.cloud.translate.Translate;
 import com.google.cloud.translate.TranslateException;
@@ -20,7 +21,6 @@ import org.springframework.lang.Nullable;
 import javax.validation.constraints.NotNull;
 import java.io.*;
 import java.text.MessageFormat;
-import java.time.Duration;
 import java.util.*;
 
 public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSource {
@@ -40,11 +40,11 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
 
     private final FileSource source;
 
-    private final RedisCacheService service;
+    private final MessageSourceCacheRepository service;
 
     private final Translate translate;
 
-    GoogleTranslatorBundleMessageSource(FileInfoRepository repository, FileSource source, RedisCacheService service, GoogleConsoleConfiguration configuration) throws IOException {
+    GoogleTranslatorBundleMessageSource(FileInfoRepository repository, FileSource source, MessageSourceCacheRepository service, GoogleConsoleConfiguration configuration) throws IOException {
 
         super();
 
@@ -336,7 +336,7 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
             return false;
         }
 
-        return service.set(GoogleTranslatorBundleMessageSource.CACHE_NAMESPACE, locale, properties, this.getCacheMillis() > -1 ? Duration.ofMillis(this.getCacheMillis()) : Duration.ofDays(360));
+        return service.save(new MessageSourceCache(locale, properties)) != null;
     }
 
     protected Properties readFromCache(@NotNull Locale locale) {
@@ -346,7 +346,14 @@ public class GoogleTranslatorBundleMessageSource extends ResourceBundleMessageSo
             return null;
         }
 
-        return service.get(GoogleTranslatorBundleMessageSource.CACHE_NAMESPACE, locale, Properties.class);
+        Optional<MessageSourceCache> cache = service.findById(locale);
+
+        if(cache.isEmpty()) {
+
+            return null;
+        }
+
+        return cache.get().getMessages();
     }
 
     private FileInfo getFileInfo(Locale locale, long size) {

@@ -49,8 +49,6 @@ import java.io.IOException;
 
 public class ProjectBeanHolder {
 
-    private static RedisSessionService REDIS_SESSION_SERVICE;
-
     private static FileSource FILE_SOURCE;
 
     private static FileInfoRepository FILE_INFO_REPOSITORY;
@@ -74,8 +72,6 @@ public class ProjectBeanHolder {
     private static RememberMeServices REMEMBER_ME_SERVICE;
 
     private static AccountService ACCOUNT_SERVICE;
-
-    private static RedisCacheService CACHE_SERVICE;
 
     private static HumanValidatorService HUMAN_VALIDATOR;
 
@@ -190,11 +186,6 @@ public class ProjectBeanHolder {
         return ProjectBeanHolder.ACCOUNT_SERVICE;
     }
 
-    public static RedisCacheService getCacheService() {
-
-        return ProjectBeanHolder.CACHE_SERVICE;
-    }
-
     public static HumanValidatorService getHumanValidator() {
 
         return ProjectBeanHolder.HUMAN_VALIDATOR;
@@ -277,10 +268,6 @@ public class ProjectBeanHolder {
     public static GoogleMap getGoogleMap() {
 
         return ProjectBeanHolder.GOOGLE_MAP;
-    }
-
-    public static RedisSessionService getRedisSessionService() {
-        return ProjectBeanHolder.REDIS_SESSION_SERVICE;
     }
 
     public static GoogleConsoleConfiguration getGoogleConsoleConfiguration() {
@@ -498,12 +485,6 @@ public class ProjectBeanHolder {
         }
 
         @Autowired
-        public void setCacheService(RedisCacheService service) {
-
-            ProjectBeanHolder.CACHE_SERVICE = service;
-        }
-
-        @Autowired
         public void setSecurityService(SecurityService service) {
 
             ProjectBeanHolder.SECURITY_SERVICE = service;
@@ -538,13 +519,6 @@ public class ProjectBeanHolder {
 
             ProjectBeanHolder.CACHE_CONFIGURATION = config;
         }
-
-        @Autowired
-        public void setRedisSessionService(RedisSessionService service) {
-
-            ProjectBeanHolder.REDIS_SESSION_SERVICE = service;
-        }
-
         @Autowired
         public void setRedisConfiguration(RedisConfiguration config) {
 
@@ -919,7 +893,7 @@ public class ProjectBeanHolder {
 
         @Bean
         @Primary
-        public MessageSource messageSourceBean(@Autowired ObjectMapper mapper, @Autowired FileInfoRepository repository, @Autowired FileSource source, @Autowired RedisCacheService service, @Autowired GoogleConsoleConfiguration configuration) throws IOException {
+        public MessageSource messageSourceBean(@Autowired ObjectMapper mapper, @Autowired FileInfoRepository repository, @Autowired FileSource source, @Autowired MessageSourceCacheRepository service, @Autowired GoogleConsoleConfiguration configuration) throws IOException {
 
             return new GoogleTranslatorBundleMessageSource(repository, source, service, configuration);
         }

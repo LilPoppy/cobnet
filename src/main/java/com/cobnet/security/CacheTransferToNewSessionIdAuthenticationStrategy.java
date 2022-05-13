@@ -1,5 +1,6 @@
 package com.cobnet.security;
 
+import com.cobnet.interfaces.spring.repository.IndexedRedisRepository;
 import com.cobnet.spring.boot.configuration.SessionConfiguration;
 import com.cobnet.spring.boot.controller.handler.http.HttpSessionEventHandler;
 import org.springframework.security.core.Authentication;
@@ -17,7 +18,7 @@ public class CacheTransferToNewSessionIdAuthenticationStrategy implements Sessio
 
         if(authentication.getDetails() instanceof WebAuthenticationDetails details) {
 
-            HttpSessionEventHandler.onChangeSessionId(request.getSession(), details.getSessionId(), request.getSession().getId());
+            IndexedRedisRepository.updateIndex(details, request.getSession());
         }
     }
 }

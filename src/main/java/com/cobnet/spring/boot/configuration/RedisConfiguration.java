@@ -1,6 +1,6 @@
 package com.cobnet.spring.boot.configuration;
 
-import com.cobnet.spring.boot.core.ProjectBeanHolder;
+import com.cobnet.spring.boot.cache.support.*;
 import com.cobnet.spring.boot.service.RedisMessageListener;
 import com.cobnet.cache.redis.RedisMode;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
@@ -12,21 +12,11 @@ import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import org.redisson.config.TransportMode;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnJava;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.data.redis.RedisProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
+import org.springframework.data.convert.CustomConversions;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.*;
@@ -34,23 +24,21 @@ import org.springframework.data.redis.connection.lettuce.LettuceConnection;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.connection.lettuce.LettucePoolingClientConfiguration;
 import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.core.convert.*;
+import org.springframework.data.redis.core.mapping.RedisMappingContext;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.data.redis.listener.adapter.MessageListenerAdapter;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-import org.springframework.session.data.redis.RedisIndexedSessionRepository;
-import org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration;
 
-import javax.annotation.Resource;
 import java.time.Duration;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Configuration
 @ConfigurationProperties("spring.redis")
-@EnableRedisRepositories
+@EnableRedisRepositories(value = "com.cobnet.interfaces.spring.repository", repositoryBaseClass = RedisKeyValueExtensionRepository.class, enableKeyspaceEvents = RedisKeyValueAdapter.EnableKeyspaceEvents.ON_STARTUP)
 //@EnableTransactionManagement
 public class RedisConfiguration {
 
@@ -209,7 +197,7 @@ public class RedisConfiguration {
         template.setConnectionFactory(factory);
 
         StringRedisSerializer keySerializer = new StringRedisSerializer();
-        Jackson2JsonRedisSerializer<?> valueSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
+        Jackson2JsonRedisSerializer<?> valueSerializer = new Jackson2JsonRedisSerializer(Object.class);
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
@@ -221,7 +209,7 @@ public class RedisConfiguration {
 //        template.setValueSerializer(valueSerializer);     we keep the value as binary
         template.setHashKeySerializer(keySerializer);
         template.setEnableTransactionSupport(true);
-//        template.setHashValueSerializer(valueSerializer);     we keep the hash value as binary too
+        template.setHashValueSerializer(valueSerializer);
         template.afterPropertiesSet();
 
         return template;
@@ -251,6 +239,49 @@ public class RedisConfiguration {
         container.addMessageListener(adapter, this.getMessage().getTopics().stream().map(ChannelTopic::new).toList());
 
         return adapter;
+    }
+
+    @Bean
+    public RedisKeyValueTemplate redisKeyValueTemplate(ConfigurableApplicationContext context, RedisTemplate<String, Object> template, RedisKeyValueExtensionAdapter adapter) {
+        RedisKeyValueExtensionTemplate operations =  new RedisKeyValueExtensionTemplate(template, adapter, redisMappingContextBean());
+        operations.setApplicationEventPublisher(context);
+
+
+        return operations;
+    }
+
+    @Bean
+    public RedisConverter redisConverter(ObjectMapper mapper, ReferenceResolver resolver, CustomConversions conversions) {
+
+        MappingJsonRedisConverter converter = new MappingJsonRedisConverter(mapper, redisMappingContextBean(), null, resolver, customTypeMapper(), conversions);
+
+        return converter;
+    }
+
+    @Bean
+    public RedisKeyValueExtensionAdapter redisKeyValueAdapter(RedisTemplate<String, Object> template, RedisConverter conversions) {
+
+        RedisKeyValueExtensionAdapter adapter = new RedisKeyValueExtensionAdapter(template, conversions);
+        adapter.setEnableKeyspaceEvents(RedisKeyValueAdapter.EnableKeyspaceEvents.ON_STARTUP);
+        adapter.setShadowCopy(RedisKeyValueAdapter.ShadowCopy.OFF);
+        return adapter;
+    }
+
+    @Bean
+    public RedisCustomConversions redisCustomConversions(BytesToLocaleConverter bytesToLocaleConverter, LocaleToBytesConverter localeToBytesConverter) {
+        return new RedisCustomConversions(Arrays.asList(
+                bytesToLocaleConverter, localeToBytesConverter));
+    }
+
+    @Bean
+    public RedisCustomTypeMapper customTypeMapper() {
+        return new RedisCustomTypeMapper();
+    }
+
+    @Bean
+    public RedisMappingContext redisMappingContextBean() {
+
+        return new RedisMappingContext();
     }
 
     @Bean

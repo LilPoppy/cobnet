@@ -1,35 +1,42 @@
 package com.cobnet.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Transient;
 
+import javax.validation.constraints.NotNull;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.Random;
 
+@NoArgsConstructor
 public class PuzzledImage implements Serializable {
 
-    private final int jigsawWidth;
+    private int jigsawWidth;
 
-    private final int jigsawHeight;
+    private int jigsawHeight;
 
-    private final int circleR;
+    private int circleR;
 
-    private final int padding;
-
-    @JsonIgnore
-    private transient final int[][] template;
+    private int padding;
 
     @JsonIgnore
-    private transient final BufferedImage image;
+    @Transient
+    private transient int[][] template;
 
     @JsonIgnore
-    private transient final BufferedImage jigsawImage;
+    @Transient
+    private transient BufferedImage image;
 
-    private final int jigsawX;
+    @JsonIgnore
+    @Transient
+    private transient BufferedImage jigsawImage;
 
-    private final int jigsawY;
+    private int jigsawX;
+
+    private int jigsawY;
 
     private static final int EMPTY = 0;
 
@@ -37,7 +44,7 @@ public class PuzzledImage implements Serializable {
 
     private static final int FRAME = 2;
 
-    public PuzzledImage(BufferedImage image, int jigsawWidth, int jigsawHeight, int circleR, int padding) throws IOException {
+    public PuzzledImage(@NotNull BufferedImage image, int jigsawWidth, int jigsawHeight, int circleR, int padding) throws IOException {
 
         this.jigsawWidth = jigsawWidth;
         this.jigsawHeight = jigsawHeight;

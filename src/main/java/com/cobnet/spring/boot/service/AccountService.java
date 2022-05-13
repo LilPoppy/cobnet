@@ -15,8 +15,8 @@ import com.cobnet.spring.boot.dto.*;
 import com.cobnet.spring.boot.dto.support.*;
 import com.cobnet.spring.boot.entity.Address;
 import com.cobnet.spring.boot.entity.User;
-import com.cobnet.spring.boot.service.support.AccountPhoneNumberVerifyCache;
-import com.cobnet.spring.boot.service.support.AttemptLoginCache;
+import com.cobnet.spring.boot.cache.AccountPhoneNumberVerifyCache;
+import com.cobnet.spring.boot.cache.AttemptLoginCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,25 +94,25 @@ public class AccountService {
 
                     if(account instanceof User user) {
 
-                        AttemptLoginCache cache = ProjectBeanHolder.getCacheService().get(AttemptLoginCache.AccountServiceName, AttemptLoginCache.class, key);
+                        AttemptLoginCache cache = ProjectBeanHolder.getSecurityService().getAttemptLoginCache(key);
 
-                        if(cache == null || !DateUtils.addDuration(cache.creationTime(), ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLoginReset()).after(DateUtils.now())) {
+                        if(cache == null || !DateUtils.addDuration(cache.getCreationTime(), ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLoginReset()).after(DateUtils.now())) {
 
-                            cache = new AttemptLoginCache(DateUtils.now(), 0);
+                            cache = new AttemptLoginCache(key, DateUtils.now(), 0);
 
-                            ProjectBeanHolder.getCacheService().set(AttemptLoginCache.AccountServiceName, key, cache, ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLoginReset());
+                            ProjectBeanHolder.getSecurityService().setAttemptLoginCache(cache, ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLoginReset());
                         }
 
-                        if(cache.count() >= ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin()) {
+                        if(cache.getCount() >= ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin()) {
 
                             throw new AuthenticationSecurityException(AuthenticationStatus.REACHED_MAXIMUM_ATTEMPT, "Authenticate reached maximum tries.");
                         }
 
                         if(user.getPassword().equals(authentication.getCredentials().toString()) || (!user.isPasswordEncoded() && encoder.matches(user.getPassword(), authentication.getCredentials().toString()))) {
 
-                            cache = new AttemptLoginCache(DateUtils.now(), 0);
+                            cache = new AttemptLoginCache(key, DateUtils.now(), 0);
 
-                            ProjectBeanHolder.getCacheService().set(AttemptLoginCache.AccountServiceName, key, cache, ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLoginReset());
+                            ProjectBeanHolder.getSecurityService().setAttemptLoginCache(cache, ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLoginReset());
 
                             if(!user.isPasswordEncoded()) {
 
@@ -134,11 +134,11 @@ public class AccountService {
                             return new AccountAuthenticationToken(account, ((UserDetails) account).getPassword());
                         }
 
-                        cache = new AttemptLoginCache(cache.creationTime(), cache.count() + 1);
+                        cache = new AttemptLoginCache(key, cache.getCreationTime(), cache.getCount() + 1);
 
-                        ProjectBeanHolder.getCacheService().set(AttemptLoginCache.AccountServiceName, key, cache, ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLoginReset().minus(DateUtils.getInterval(DateUtils.now(), cache.creationTime())));
+                        ProjectBeanHolder.getSecurityService().setAttemptLoginCache(cache, ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLoginReset().minus(DateUtils.getInterval(DateUtils.now(), cache.getCreationTime())));
 
-                        if(ProjectBeanHolder.getSecurityConfiguration().isMaxAttemptLoginAccountLocks() && cache.count() >= ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin()) {
+                        if(ProjectBeanHolder.getSecurityConfiguration().isMaxAttemptLoginAccountLocks() && cache.getCount() >= ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin()) {
 
                             user.setLocked(true);
                             user.setLockTime(DateUtils.addDuration(DateUtils.now(), ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLoginAccountLocksDuration()));
@@ -172,7 +172,7 @@ public class AccountService {
 
                 } finally {
 
-                    if (cache.type() == PhoneNumberSmsType.ACCOUNT_REGISTER && cache.verified())
+                    if (cache.getType() == PhoneNumberSmsType.ACCOUNT_REGISTER && cache.isVerified())
                     {
                         ProjectBeanHolder.getPhoneNumberSmsVerifyService().delete(form.getUsername());
                     }
@@ -241,7 +241,7 @@ public class AccountService {
 
         repository.save(user);
 
-        ProjectBeanHolder.getCacheService().evictIfPresent(AccountPhoneNumberVerifyCache.PhoneNumberSmsVerifyServiceKey, AccountPhoneNumberVerifyCache.class, user.getUsername());
+        ProjectBeanHolder.getPhoneNumberSmsVerifyService().delete(user.getUsername());
 
         return user;
     }

@@ -4,22 +4,28 @@ import com.cobnet.common.DateUtils;
 import com.cobnet.common.ImageUtils;
 import com.cobnet.common.PuzzledImage;
 import com.cobnet.exception.ResponseFailureStatusException;
+import com.cobnet.interfaces.spring.repository.HumanValidationCacheRepository;
+import com.cobnet.spring.boot.cache.HumanValidationCache;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.*;
 import com.cobnet.spring.boot.dto.support.HumanValidationRequestStatus;
 import com.cobnet.spring.boot.dto.support.HumanValidationValidateStatus;
-import com.cobnet.spring.boot.service.support.HumanValidationCache;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Optional;
 
 @Service
 public class HumanValidatorService {
 
-    public <T extends Serializable> PuzzledImage create(T key) throws IOException, ResponseFailureStatusException {
+    @Autowired
+    private HumanValidationCacheRepository repository;
+
+    public PuzzledImage create(String key) throws IOException, ResponseFailureStatusException {
 
         if(this.isValidated(key)) {
 
@@ -30,12 +36,12 @@ public class HumanValidatorService {
 
         if(cache != null) {
 
-            if(cache.count() < ProjectBeanHolder.getSecurityConfiguration().getHumanValidation().getInitialCount() || DateUtils.addDuration(cache.creationTime(), ProjectBeanHolder.getSecurityConfiguration().getHumanValidation().getCreateInterval()).before(DateUtils.now())) {
+            if(cache.getCount() < ProjectBeanHolder.getSecurityConfiguration().getHumanValidation().getInitialCount() || DateUtils.addDuration(cache.getCreationTime(), ProjectBeanHolder.getSecurityConfiguration().getHumanValidation().getCreateInterval()).before(DateUtils.now())) {
 
                 return generateImage(key);
             }
 
-            throw new ResponseFailureStatusException(HumanValidationRequestStatus.INTERVAL_LIMITED, new ObjectWrapper<>("time-remain", ProjectBeanHolder.getSecurityConfiguration().getHumanValidation().getCreateInterval().minus(DateUtils.getInterval(DateUtils.now(), cache.creationTime()))));
+            throw new ResponseFailureStatusException(HumanValidationRequestStatus.INTERVAL_LIMITED, new ObjectWrapper<>("time-remain", ProjectBeanHolder.getSecurityConfiguration().getHumanValidation().getCreateInterval().minus(DateUtils.getInterval(DateUtils.now(), cache.getCreationTime()))));
         }
 
         return generateImage(key);
@@ -50,21 +56,21 @@ public class HumanValidatorService {
         return ImageUtils.getLuminance(grayscale) <= 50 && hsv[2] <= 0.150f;
     }
 
-    public <T extends Serializable> boolean isExpired(T key) {
+    public boolean isExpired(String key) {
 
         HumanValidationCache cache = getCache(key);
 
-        return !(cache != null && !DateUtils.addDuration(cache.creationTime(), ProjectBeanHolder.getSecurityConfiguration().getHumanValidation().getExpire()).before(DateUtils.now()));
+        return !(cache != null && !DateUtils.addDuration(cache.getCreationTime(), ProjectBeanHolder.getSecurityConfiguration().getHumanValidation().getExpire()).before(DateUtils.now()));
     }
 
-    public <T extends Serializable> boolean isValidated(T key) {
+    public boolean isValidated(String key) {
 
         HumanValidationCache cache = getCache(key);
 
         return !isExpired(key) && cache.isValidated();
     }
 
-    private <T extends Serializable> PuzzledImage generateImage(T key) throws IOException {
+    private PuzzledImage generateImage(String key) throws IOException {
 
         //TODO create image provider upstream pool
 
@@ -84,17 +90,24 @@ public class HumanValidatorService {
 
         HumanValidationCache cache = this.getCache(key);
 
-        ProjectBeanHolder.getCacheService().set(HumanValidationCache.HumanValidatorKey, key, new HumanValidationCache(image, DateUtils.now(),cache != null ? cache.count() + 1 : 1, false), ProjectBeanHolder.getSecurityConfiguration().getHumanValidation().getExpire());
+        repository.save(new HumanValidationCache(key, image, DateUtils.now(), cache != null ? cache.getCount() + 1 : 1, false), ProjectBeanHolder.getSecurityConfiguration().getHumanValidation().getExpire());
 
         return image;
     }
 
-    public <T extends Serializable> HumanValidationCache getCache(T key) {
+    public HumanValidationCache getCache(String key) {
 
-        return ProjectBeanHolder.getCacheService().get(HumanValidationCache.HumanValidatorKey, HumanValidationCache.class, key);
+        Optional<HumanValidationCache> optional = repository.findById(key);
+
+        if(optional.isEmpty()) {
+
+            return null;
+        }
+
+        return optional.get();
     }
 
-    public <T extends Serializable> boolean validate(T key, double position) throws ResponseFailureStatusException {
+    public boolean validate(String key, double position) throws ResponseFailureStatusException {
 
         //TODO more advance to check is human operating
 
@@ -117,7 +130,7 @@ public class HumanValidatorService {
 
             } finally {
 
-                ProjectBeanHolder.getCacheService().set(HumanValidationCache.HumanValidatorKey, key, cache, ProjectBeanHolder.getSecurityConfiguration().getHumanValidation().getExpire());
+                repository.save(cache, ProjectBeanHolder.getSecurityConfiguration().getHumanValidation().getExpire());
             }
         }
 

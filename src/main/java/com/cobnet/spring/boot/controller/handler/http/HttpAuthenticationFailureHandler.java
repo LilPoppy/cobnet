@@ -11,7 +11,7 @@ import com.cobnet.spring.boot.dto.ObjectWrapper;
 import com.cobnet.spring.boot.dto.ResponseResult;
 import com.cobnet.spring.boot.dto.support.AuthenticationStatus;
 import com.cobnet.spring.boot.entity.User;
-import com.cobnet.spring.boot.service.support.AttemptLoginCache;
+import com.cobnet.spring.boot.cache.AttemptLoginCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -44,8 +44,6 @@ public class HttpAuthenticationFailureHandler implements AuthenticationFailureHa
 
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
-        System.out.println(exception);
-
         if(url == null) {
 
             try (PrintWriter writer = response.getWriter()) {
@@ -56,34 +54,34 @@ public class HttpAuthenticationFailureHandler implements AuthenticationFailureHa
 
                     String key = request.getSession(true).getId();
 
-                    AttemptLoginCache cache = ProjectBeanHolder.getCacheService().get(AttemptLoginCache.AccountServiceName, AttemptLoginCache.class, key);
+                    AttemptLoginCache cache =  ProjectBeanHolder.getSecurityService().getAttemptLoginCache(key);
 
                     if(cache == null) {
 
-                        cache = new AttemptLoginCache(DateUtils.now(), 0);
+                        cache = new AttemptLoginCache(key, DateUtils.now(), 0);
 
-                        ProjectBeanHolder.getCacheService().set(AttemptLoginCache.AccountServiceName, key, cache, ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLoginReset());
+                        ProjectBeanHolder.getSecurityService().setAttemptLoginCache(cache, ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLoginReset());
 
                     } else {
 
-                        cache = new AttemptLoginCache(cache.creationTime(), cache.count() + 1);
+                        cache = cache.setCount(cache.getCount() + 1);
 
-                        ProjectBeanHolder.getCacheService().set(AttemptLoginCache.AccountServiceName, key, cache, ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLoginReset().minus(DateUtils.getInterval(DateUtils.now(), cache.creationTime())));
+                        ProjectBeanHolder.getSecurityService().setAttemptLoginCache(cache, ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLoginReset().minus(DateUtils.getInterval(DateUtils.now(), cache.getCreationTime())));
                     }
 
-                    if(cache.count() >= ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin()) {
+                    if(cache.getCount() >= ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin()) {
 
                         writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult<>(AuthenticationStatus.REACHED_MAXIMUM_ATTEMPT)));
 
                     } else {
 
-                        writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult(AuthenticationStatus.PASSWORD_NOT_MATCH, new CommentWrapper<>("Login attempt time left.", new ObjectWrapper<>("attempt-remain", ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin() - cache.count())))));
+                        writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult(AuthenticationStatus.PASSWORD_NOT_MATCH, new CommentWrapper<>("Login attempt time left.", new ObjectWrapper<>("attempt-remain", ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin() - cache.getCount())))));
                     }
 
                 } else if(exception instanceof BadCredentialsException) {
 
                     response.setStatus(AuthenticationStatus.PASSWORD_NOT_MATCH.getCode());
-                    writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult(AuthenticationStatus.PASSWORD_NOT_MATCH, new CommentWrapper<>("Login attempt time left.", new ObjectWrapper<>("attempt-remain",ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin() - ProjectBeanHolder.getCacheService().get(AttemptLoginCache.AccountServiceName, AttemptLoginCache.class, request.getSession().getId()).count())))));
+                    writer.write(ProjectBeanHolder.getObjectMapper().writeValueAsString(new ResponseResult(AuthenticationStatus.PASSWORD_NOT_MATCH, new CommentWrapper<>("Login attempt time left.", new ObjectWrapper<>("attempt-remain",ProjectBeanHolder.getSecurityConfiguration().getMaxAttemptLogin() - ProjectBeanHolder.getSecurityService().getAttemptLoginCache(request.getSession().getId()).getCount())))));
 
                 } else if(exception instanceof AuthenticationCancelledException) {
 
