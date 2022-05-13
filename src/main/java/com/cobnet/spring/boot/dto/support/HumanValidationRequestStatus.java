@@ -6,9 +6,8 @@ import org.springframework.http.HttpStatus;
 public enum HumanValidationRequestStatus implements ReasonableStatus {
 
     SUCCESS(HttpStatus.CREATED, null),
-    INTERVAL_LIMITED(HttpStatus.BAD_REQUEST, null),
-    VALIDATED(HttpStatus.BAD_REQUEST, null),
-    REJECTED(HttpStatus.BAD_REQUEST, null);
+    INTERVAL_LIMITED(HttpStatus.TOO_MANY_REQUESTS, "Operation too frequent, please try again later."),
+    VALIDATED(HttpStatus.BAD_REQUEST, "You're already validated, please try your request again.");
 
 
     private final HttpStatus status;

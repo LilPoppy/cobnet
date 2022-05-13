@@ -9,6 +9,7 @@ import com.cobnet.spring.boot.dto.support.PhoneNumberSmsRequestResultStatus;
 import com.cobnet.spring.boot.dto.support.PhoneNumberSmsType;
 import com.cobnet.spring.boot.dto.support.PhoneNumberSmsVerifyResultStatus;
 import com.cobnet.spring.boot.cache.AccountPhoneNumberVerifyCache;
+import com.cobnet.spring.boot.dto.support.ServiceRequestStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -42,7 +43,7 @@ public class PhoneNumberSmsVerifyService {
 
                 if(cache.getCount() > ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsVerifyMaxCount()) {
 
-                    throw new ResponseFailureStatusException(PhoneNumberSmsRequestResultStatus.EXHAUSTED);
+                    throw new ResponseFailureStatusException(ServiceRequestStatus.EXHAUSTED);
                 }
 
                 if (DateUtils.addDuration(cache.getCreationTime(), ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsGenerateInterval()).before(DateUtils.now())) {
@@ -71,7 +72,7 @@ public class PhoneNumberSmsVerifyService {
 
         } catch (Exception ex) {
 
-            throw new ResponseFailureStatusException(PhoneNumberSmsRequestResultStatus.SERVICE_DOWN);
+            throw new ResponseFailureStatusException(ServiceRequestStatus.SERVICE_DOWN);
         }
 
         return true;
@@ -88,7 +89,7 @@ public class PhoneNumberSmsVerifyService {
             return true;
         }
 
-        throw new ResponseFailureStatusException(PhoneNumberSmsVerifyResultStatus.FAILED);
+        throw new ResponseFailureStatusException(PhoneNumberSmsVerifyResultStatus.UNMATCHED);
     }
 
     public AccountPhoneNumberVerifyCache getCache(String key) {
@@ -101,23 +102,6 @@ public class PhoneNumberSmsVerifyService {
         }
 
         return optional.get();
-    }
-
-    public int getCode(String key, PhoneNumberSmsType type) {
-
-        AccountPhoneNumberVerifyCache cache = getCache(key);
-
-        if(cache != null) {
-
-            if(cache.getType() == type) {
-
-                return cache.getCode();
-            }
-
-            return 0;
-        }
-
-        return 0;
     }
 
     public void delete(String key) {

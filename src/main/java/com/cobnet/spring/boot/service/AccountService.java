@@ -177,11 +177,11 @@ public class AccountService {
                         ProjectBeanHolder.getPhoneNumberSmsVerifyService().delete(form.getUsername());
                     }
 
-                    throw new ResponseFailureStatusException(UserRegisterResultStatus.VERIFICATION_FAILED);
+                    throw new ResponseFailureStatusException(UserRegisterResultStatus.VERIFICATION_TIMEOUT);
                 }
             }
 
-            throw new ResponseFailureStatusException(UserRegisterResultStatus.REJECTED, new CommentWrapper("SMS request required.", new MethodHint(HttpMethod.POST, "/visitor/sms/request", new PhoneNumberSmsRequest(form.getUsername(), form.getPhoneNumber(), PhoneNumberSmsType.ACCOUNT_REGISTER))));
+            throw new ResponseFailureStatusException(SecurityRequestStatus.SECURITY_PHONE_VERIFICATION_DEMAND, new CommentWrapper("SMS request required.", new MethodHint(HttpMethod.POST, "/visitor/sms/request", new PhoneNumberSmsRequest(form.getUsername(), form.getPhoneNumber(), PhoneNumberSmsType.ACCOUNT_REGISTER))));
         }
 
         return register(form.getEntity(), form.getAddress().getEntity());

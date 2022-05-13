@@ -6,7 +6,6 @@ import com.cobnet.interfaces.security.Account;
 import com.cobnet.interfaces.spring.repository.*;
 import com.cobnet.spring.boot.cache.AttemptLoginCache;
 import com.cobnet.spring.boot.cache.IPAddressCache;
-import com.cobnet.spring.boot.configuration.SecurityConfiguration;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.cache.BadMessageCache;
 import com.cobnet.spring.boot.cache.MessageCallsCache;
@@ -15,8 +14,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.core.session.SessionInformation;
-import org.springframework.session.Session;
-import org.springframework.session.data.redis.RedisIndexedSessionRepository;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -205,7 +202,7 @@ public class SecurityService {
 
                 if(cache.getCount() >= ProjectBeanHolder.getSecurityConfiguration().getSession().getBeforeCreatedTimeMaxMessageCount()) {
 
-                    throw new ResponseFailureStatusException(SecurityRequestStatus.SECURITY_MAX_MESSAGE);
+                    throw new ResponseFailureStatusException(SecurityRequestStatus.SECURITY_MAXIMUM_MESSAGE);
                 }
             }
         }

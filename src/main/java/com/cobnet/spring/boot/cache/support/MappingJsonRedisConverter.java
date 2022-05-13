@@ -1,10 +1,12 @@
 package com.cobnet.spring.boot.cache.support;
 
+import com.cobnet.common.StringUtils;
 import com.fasterxml.jackson.core.ObjectCodec;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 import com.fasterxml.jackson.databind.node.ValueNode;
 import lombok.SneakyThrows;
 import org.springframework.data.convert.CustomConversions;
@@ -20,6 +22,10 @@ import java.io.IOException;
 import java.util.*;
 
 public class MappingJsonRedisConverter extends MappingRedisConverter {
+
+    private static final Character PATH_OPEN = '[';
+
+    private static final Character PATH_CLOSE = ']';
 
     private ObjectMapper mapper;
 
@@ -127,7 +133,7 @@ public class MappingJsonRedisConverter extends MappingRedisConverter {
 
                 } else {
 
-                    childName = new StringBuilder(name).append(".").append(current.getKey()).toString();
+                    childName = new StringBuilder(name).append(PATH_OPEN).append(current.getKey()).append(PATH_CLOSE).toString();
                 }
 
                 fields.addAll(getFields(childName, current.getValue(), codec));
@@ -143,13 +149,13 @@ public class MappingJsonRedisConverter extends MappingRedisConverter {
 
     protected JsonNode getChild(JsonNode parent, Map.Entry<String, String> field, JsonNodeFactory factory) {
 
-        String[] nodes = field.getKey().split("\\.");
+        Map.Entry<String, String[]> nodes = StringUtils.substringsBetween(field.getKey(), PATH_OPEN, PATH_CLOSE);
 
-        if(nodes.length > 1) {
+        if(nodes.getValue().length > 0) {
 
             if(parent instanceof ObjectNode tree) {
 
-                String fieldName = nodes[0];
+                String fieldName = nodes.getKey();
 
                 JsonNode fieldNode = tree.get(fieldName);
 
@@ -158,7 +164,14 @@ public class MappingJsonRedisConverter extends MappingRedisConverter {
                     fieldNode = new ObjectNode(factory);
                 }
 
-                return tree.set(fieldName, getChild(fieldNode, new AbstractMap.SimpleEntry<>(String.join(".", Arrays.copyOfRange(nodes, 1, nodes.length)), field.getValue()), factory));
+                StringBuilder sb = new StringBuilder(nodes.getValue()[0]);
+
+                for(int i = 1; i < nodes.getValue().length; i++) {
+
+                    sb.append(PATH_OPEN).append(nodes.getValue()[i]).append(PATH_CLOSE);
+                }
+
+                return tree.set(fieldName, getChild(fieldNode, new AbstractMap.SimpleEntry<>(sb.toString(), field.getValue()), factory));
             }
         }
 
@@ -168,7 +181,7 @@ public class MappingJsonRedisConverter extends MappingRedisConverter {
 
             if(fieldNode == null) {
 
-                fieldNode = new com.fasterxml.jackson.databind.node.TextNode(field.getValue());
+                fieldNode = new TextNode(field.getValue());
             }
 
             return tree.set(field.getKey(), fieldNode);

@@ -6,11 +6,8 @@ import org.springframework.http.HttpStatus;
 public enum GoogleApiRequestResultStatus implements ReasonableStatus {
 
     SUCCESS(HttpStatus.OK, null),
-    FAILED(HttpStatus.BAD_REQUEST, null),
-    EXHAUSTED(HttpStatus.BAD_REQUEST, null),
-    REJECTED(HttpStatus.BAD_REQUEST, null),
-    BAD_REQUEST(HttpStatus.BAD_REQUEST, null),
-    SERVICE_DOWN(HttpStatus.BAD_GATEWAY, null);
+    EMPTY(HttpStatus.NO_CONTENT, "No result present."),
+    BAD_REQUEST(HttpStatus.BAD_REQUEST, "Arguments is not match the requires");
 
     private final HttpStatus status;
 

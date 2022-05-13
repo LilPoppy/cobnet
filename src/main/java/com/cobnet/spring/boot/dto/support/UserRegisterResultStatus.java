@@ -6,9 +6,8 @@ import org.springframework.http.HttpStatus;
 public enum UserRegisterResultStatus implements ReasonableStatus {
 
     SUCCESS(HttpStatus.CREATED, null),
-    UNACCEPTABLE_CONTENT(HttpStatus.BAD_REQUEST, null),
-    VERIFICATION_FAILED(HttpStatus.REQUEST_TIMEOUT, null),
-    REJECTED(HttpStatus.BAD_REQUEST, null);
+    UNACCEPTABLE_CONTENT(HttpStatus.BAD_REQUEST, "Please check the form your have summit is not match requirement."),
+    VERIFICATION_TIMEOUT(HttpStatus.REQUEST_TIMEOUT, "Phone number verification is expired, please try to verify your phone number again.");
 
     private final HttpStatus status;
 

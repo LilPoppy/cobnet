@@ -6,11 +6,8 @@ import org.springframework.http.HttpStatus;
 public enum PhoneNumberSmsRequestResultStatus implements ReasonableStatus {
 
     SUCCESS(HttpStatus.CREATED, null),
-    INTERVAL_LIMITED(HttpStatus.BAD_REQUEST, null),
-    EXHAUSTED(HttpStatus.BAD_REQUEST, null),
-    NUMBER_OVERUSED(HttpStatus.CONFLICT, null),
-    SERVICE_DOWN(HttpStatus.SERVICE_UNAVAILABLE, null),
-    REJECTED(HttpStatus.BAD_REQUEST, null);
+    INTERVAL_LIMITED(HttpStatus.TOO_MANY_REQUESTS, "Operation too frequent, please try again later."),
+    NUMBER_OVERUSED(HttpStatus.CONFLICT, "Phone number is over limited use.");
 
     private final HttpStatus status;
 

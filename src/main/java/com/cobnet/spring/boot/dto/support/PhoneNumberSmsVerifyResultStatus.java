@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 public enum PhoneNumberSmsVerifyResultStatus implements ReasonableStatus {
 
     SUCCESS(HttpStatus.OK, null),
-    FAILED(HttpStatus.FORBIDDEN, null);
+    UNMATCHED(HttpStatus.NOT_ACCEPTABLE, "Code is not match our record.");
 
     private final HttpStatus status;
 

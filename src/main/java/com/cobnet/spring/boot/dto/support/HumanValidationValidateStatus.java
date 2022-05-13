@@ -6,9 +6,8 @@ import org.springframework.http.HttpStatus;
 public enum HumanValidationValidateStatus implements ReasonableStatus {
 
     SUCCESS(HttpStatus.CREATED, null),
-    TIMEOUT(HttpStatus.REQUEST_TIMEOUT, null),
-    WRONG_POSITION(HttpStatus.BAD_REQUEST, null),
-    REJECTED(HttpStatus.BAD_REQUEST, null);
+    TIMEOUT(HttpStatus.NO_CONTENT, "No result is present in our record."),
+    WRONG_POSITION(HttpStatus.BAD_REQUEST, "Argument provided is not match any in our record.");
 
     private final HttpStatus status;
 
