@@ -96,7 +96,7 @@ spring:
          enable: true
          bypass-check-after: 60s
          bypass-check-after-authenticated: true
-         before-created-time-max-message-count: 5
+         before-created-time-max-message-count: 10000
          max-ip-count: 100
          max-error-message: 500
          bad-message-log-cache-enable: true
