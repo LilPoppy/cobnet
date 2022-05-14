@@ -2,6 +2,7 @@ package com.cobnet.spring.boot.service;
 
 import com.cobnet.common.DateUtils;
 import com.cobnet.exception.ResponseFailureStatusException;
+import com.cobnet.exception.support.GeneralMethodIssuesStatus;
 import com.cobnet.interfaces.spring.repository.AccountPhoneNumberVerifyCacheRepository;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.*;
@@ -23,7 +24,12 @@ public class PhoneNumberSmsVerifyService {
     @Autowired
     private AccountPhoneNumberVerifyCacheRepository repository;
 
-    public boolean requestSms(String username, String phoneNumber, PhoneNumberSmsType type) throws IOException, ResponseFailureStatusException {
+    public boolean requestSms(String username, String phoneNumber, PhoneNumberSmsType type) throws ResponseFailureStatusException {
+
+        if(username == null || phoneNumber == null || type == null) {
+
+            throw new ResponseFailureStatusException(GeneralMethodIssuesStatus.UNACCEPTABLE_PARAMETER);
+        }
 
         if(type == PhoneNumberSmsType.ACCOUNT_REGISTER) {
 
@@ -58,6 +64,11 @@ public class PhoneNumberSmsVerifyService {
 
     private boolean send(String username, String phoneNumber, PhoneNumberSmsType type) throws ResponseFailureStatusException {
 
+        if(username == null || phoneNumber == null || type == null) {
+
+            throw new ResponseFailureStatusException(GeneralMethodIssuesStatus.UNACCEPTABLE_PARAMETER);
+        }
+
         Random random = new Random();
 
         int code = random.nextInt(987654 + 1 - 123456) + 123456;
@@ -78,13 +89,18 @@ public class PhoneNumberSmsVerifyService {
         return true;
     }
 
-    public boolean verify(PhoneNumberSmsVerify verify) throws ResponseFailureStatusException {
+    public boolean verify(String username, int code, PhoneNumberSmsType type) throws ResponseFailureStatusException {
 
-        AccountPhoneNumberVerifyCache cache = getCache(verify.username());
+        if(username == null || code == 0 || type == null) {
 
-        if(cache != null && cache.getType() == verify.type() && cache.getCode() == verify.code()) {
+            throw new ResponseFailureStatusException(GeneralMethodIssuesStatus.UNACCEPTABLE_PARAMETER);
+        }
 
-            repository.save(new AccountPhoneNumberVerifyCache(verify.username(), verify.code(), DateUtils.now(), verify.type(), cache.getCount(), true), ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsCodeExpire());
+        AccountPhoneNumberVerifyCache cache = getCache(username);
+
+        if(cache != null && cache.getType() == type && cache.getCode() == code) {
+
+            repository.save(new AccountPhoneNumberVerifyCache(cache.getId(), cache.getCode(), DateUtils.now(), cache.getType(), cache.getCount(), true), ProjectBeanHolder.getSecurityConfiguration().getPhoneNumberSmsCodeExpire());
 
             return true;
         }

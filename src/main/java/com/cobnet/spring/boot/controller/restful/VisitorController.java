@@ -85,7 +85,7 @@ public class VisitorController {
     @HumanValidationRequired
     @Operation(summary = "Request sms verify for provided phone number.")
     @PostMapping("/sms/request")
-    public ResponseResult<PhoneNumberSmsRequestResultStatus> phoneNumberSmsRequest(PhoneNumberSmsRequest request) throws IOException, ResponseFailureStatusException {
+    public ResponseResult<PhoneNumberSmsRequestResultStatus> phoneNumberSmsRequest(@RequestBody PhoneNumberSmsRequest request) throws IOException, ResponseFailureStatusException {
 
         if(ProjectBeanHolder.getPhoneNumberSmsVerifyService().requestSms(request.username(), request.phoneNumber(), request.type())) {
 
@@ -97,9 +97,9 @@ public class VisitorController {
 
     @Operation(summary = "Verify sms code from record.")
     @PostMapping("/sms/verify")
-    public ResponseResult<PhoneNumberSmsVerifyResultStatus> phoneNumberSmsVerify(PhoneNumberSmsVerify verify) throws ResponseFailureStatusException {
+    public ResponseResult<PhoneNumberSmsVerifyResultStatus> phoneNumberSmsVerify(@RequestBody PhoneNumberSmsVerify verify) throws ResponseFailureStatusException {
 
-        if(ProjectBeanHolder.getPhoneNumberSmsVerifyService().verify(verify)) {
+        if(ProjectBeanHolder.getPhoneNumberSmsVerifyService().verify(verify.username(), verify.code(), verify.type())) {
 
             return new ResponseResult<>(PhoneNumberSmsVerifyResultStatus.SUCCESS);
         }
