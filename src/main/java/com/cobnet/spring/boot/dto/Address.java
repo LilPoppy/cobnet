@@ -1,6 +1,7 @@
 package com.cobnet.spring.boot.dto;
 
 import com.cobnet.interfaces.connection.web.ApplicationJson;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class Address implements ApplicationJson {
 
@@ -114,6 +115,7 @@ public class Address implements ApplicationJson {
         return address();
     }
 
+    @JsonIgnore
     public com.cobnet.spring.boot.entity.Address getEntity() {
 
         return new com.cobnet.spring.boot.entity.Address.Builder().setStreet(this.street).setUnit(this.unit).setCity(this.city).setState(this.state).setPostalCode(this.postalCode).setCountry(this.country).build();
