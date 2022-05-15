@@ -43,9 +43,13 @@ public class JpaExtensionRepository <T, ID extends Serializable>  extends Simple
     @Override
     public <S extends T> S save(S entity) {
 
-        S result = super.save(entity);
+        if(entity instanceof Account account) {
 
-        if(result instanceof Account account) {
+            account = (Account) super.save(entity);
+
+            super.flush();
+
+            this.manager.refresh(account);
 
             for(String key : ProjectBeanHolder.getRedisIndexedSessionRepository().findByPrincipalName(account.getUsername()).keySet()) {
 
@@ -70,9 +74,13 @@ public class JpaExtensionRepository <T, ID extends Serializable>  extends Simple
                     context.setAuthentication(token.updatePrincipal(account));
                 }
             }
-        }
 
-        return result;
+            return (S) account;
+
+        } else {
+
+            return super.save(entity);
+        }
     }
 
 

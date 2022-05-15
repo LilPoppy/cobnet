@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 //Self
 @Hidden
 @RestController
-//@RequestMapping("/twilio")
+@RequestMapping("/twilio")
 public class TwilioController {
 
     private static final Logger LOG = LoggerFactory.getLogger(TwilioController.class);
