@@ -367,9 +367,9 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
         private boolean emailVerified;
 
-        private List<Address> addresses;
+        private List<Address> addresses = new ArrayList<>();
 
-        private List<UserRole> roles;
+        private List<UserRole> roles = new ArrayList<>();
 
         private boolean expired;
 

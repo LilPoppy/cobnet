@@ -90,7 +90,7 @@ public class VisitorController {
     @HumanValidationRequired
     @Operation(summary = "Request sms verify for provided phone number.")
     @PostMapping("/sms/request")
-    public ResponseResult<PhoneNumberSmsRequestResultStatus> phoneNumberSmsRequest(@RequestBody PhoneNumberSmsRequest request) throws IOException, ResponseFailureStatusException {
+    public ResponseResult<PhoneNumberSmsRequestResultStatus> phoneNumberSmsRequest(PhoneNumberSmsRequest request) throws IOException, ResponseFailureStatusException {
 
         if(ProjectBeanHolder.getPhoneNumberSmsVerifyService().requestSms(request.username(), request.phoneNumber(), request.type())) {
 
@@ -102,7 +102,7 @@ public class VisitorController {
 
     @Operation(summary = "Verify sms code from record.")
     @PostMapping("/sms/verify")
-    public ResponseResult<PhoneNumberSmsVerifyResultStatus> phoneNumberSmsVerify(@RequestBody PhoneNumberSmsVerify verify) throws ResponseFailureStatusException {
+    public ResponseResult<PhoneNumberSmsVerifyResultStatus> phoneNumberSmsVerify(PhoneNumberSmsVerify verify) throws ResponseFailureStatusException {
 
         if(ProjectBeanHolder.getPhoneNumberSmsVerifyService().verify(verify.username(), verify.code(), verify.type())) {
 
@@ -114,7 +114,7 @@ public class VisitorController {
 
     @Operation(summary = "Register an new account.", description = "")
     @PostMapping("/register")
-    public ResponseResult<UserRegisterResultStatus> register(@RequestBody UserRegisterForm form) throws ResponseFailureStatusException {
+    public ResponseResult<UserRegisterResultStatus> register(UserRegisterForm form) throws ResponseFailureStatusException {
 
         return form.getResult();
     }
@@ -122,7 +122,7 @@ public class VisitorController {
     @HumanValidationRequired
     @Operation(summary = "auto complete given address.")
     @PostMapping("/autocomplete/address")
-    public ResponseResult<GoogleApiRequestResultStatus> autocompleteAddress(HttpServletRequest request, @RequestBody Address addressRequest) throws ResponseFailureStatusException {
+    public ResponseResult<GoogleApiRequestResultStatus> autocompleteAddress(HttpServletRequest request, Address addressRequest) throws ResponseFailureStatusException {
 
         GoogleAutocompletePredicted predicted = ProjectBeanHolder.getGoogleMapService().autocompleteRequest(request, null, addressRequest);
 
