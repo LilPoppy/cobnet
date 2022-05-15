@@ -134,7 +134,7 @@ public class VisitorController {
     @PostMapping("/autocomplete/find-place-address")
     public ResponseResult<GoogleApiRequestResultStatus> autocompleteFindPlaceAddress(HttpServletRequest request, String placeId) {
 
-        AddressInfo addressInfo = ProjectBeanHolder.getGoogleMapService().findPlaceAddressRequest(request, placeId);
+        AddressInfo addressInfo = ProjectBeanHolder.getGoogleMapService().findPlaceAddress(request, ProjectBeanHolder.getGoogleMapService().findPlaceDetails(request, placeId));
 
         if(addressInfo != null) {
 

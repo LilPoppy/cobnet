@@ -41,7 +41,7 @@ public class GoogleMapService {
     }
 
     //TODO: Place entity to store the search cache and reuse it again.
-    public AddressInfo findPlaceAddressRequest(HttpServletRequest request, String placeId) {
+    public PlaceDetails findPlaceDetails(HttpServletRequest request, String placeId) {
 
         return this.invoke(request, cache -> {
 
@@ -49,10 +49,25 @@ public class GoogleMapService {
 
                 PlaceDetails details = this.search(placeId);
 
-                if(details == null) {
+                if (details == null) {
 
                     throw new ResponseFailureStatusException(GoogleApiRequestResultStatus.EMPTY);
                 }
+
+                return details;
+
+            } catch (IOException | ApiException | InterruptedException e) {
+
+                throw new ResponseFailureStatusException(ServiceRequestStatus.SERVICE_DOWN);
+            }
+        });
+    }
+
+    public AddressInfo findPlaceAddress(HttpServletRequest request, PlaceDetails details) {
+
+        return this.invoke(request, cache -> {
+
+            try {
 
                 List<AddressComponent> components = Arrays.stream(ProjectBeanHolder.getGoogleMap().geocodingApiRequest().address(details.formattedAddress).await()).map(result -> result.addressComponents).flatMap(Arrays::stream).toList();
 
