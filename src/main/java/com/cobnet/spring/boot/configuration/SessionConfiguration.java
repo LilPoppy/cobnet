@@ -10,13 +10,14 @@ import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.session.FlushMode;
 import org.springframework.session.data.redis.RedisIndexedSessionRepository;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 import org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration;
 
 @Configuration
 @ConfigurationProperties("spring.session")
-@EnableRedisHttpSession
+@EnableRedisHttpSession(flushMode = FlushMode.IMMEDIATE)
 @Import(RedisHttpSessionConfiguration.class)
 public class SessionConfiguration {
 

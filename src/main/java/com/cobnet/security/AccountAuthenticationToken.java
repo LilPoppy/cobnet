@@ -53,6 +53,11 @@ public class AccountAuthenticationToken extends AbstractAuthenticationToken {
         return getPrincipal();
     }
 
+    public AccountAuthenticationToken updatePrincipal(Account account) {
+
+        return new AccountAuthenticationToken(account, this.credentials, this.getDetails());
+    }
+
     public boolean isRegistered() {
 
         return this.principal instanceof User;

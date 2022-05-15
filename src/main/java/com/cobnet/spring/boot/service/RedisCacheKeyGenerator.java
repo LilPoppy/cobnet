@@ -35,6 +35,6 @@ public class RedisCacheKeyGenerator implements KeyGenerator {
             }
         }
 
-        return String.join(":", Arrays.stream(params).map(Object::toString).toList());
+        return String.join(":", Arrays.stream(params).filter(param -> param != null).map(Object::toString).toList());
     }
 }

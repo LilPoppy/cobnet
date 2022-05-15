@@ -1,9 +1,18 @@
 package com.cobnet.spring.boot.entity.support;
 
+import com.cobnet.interfaces.security.Account;
 import com.cobnet.interfaces.spring.repository.JPABaseRepository;
+import com.cobnet.security.AccountAuthenticationToken;
+import com.cobnet.spring.boot.core.ProjectBeanHolder;
+import com.cobnet.spring.boot.entity.User;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
 import org.springframework.data.jpa.repository.support.JpaEntityInformationSupport;
 import org.springframework.data.jpa.repository.support.SimpleJpaRepository;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.session.Session;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
@@ -33,7 +42,37 @@ public class JpaExtensionRepository <T, ID extends Serializable>  extends Simple
     @Transactional
     @Override
     public <S extends T> S save(S entity) {
-        return super.save(entity);
+
+        S result = super.save(entity);
+
+        if(result instanceof Account account) {
+
+            for(String key : ProjectBeanHolder.getRedisIndexedSessionRepository().findByPrincipalName(account.getUsername()).keySet()) {
+
+                Session session = ProjectBeanHolder.getRedisIndexedSessionRepository().findById(key);
+
+                SecurityContext context = session.getAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY);
+
+                if(context.getAuthentication() instanceof AccountAuthenticationToken token) {
+
+                    context.setAuthentication(token.updatePrincipal(account));
+                }
+
+                session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
+            }
+
+            SecurityContext context = SecurityContextHolder.getContext();
+
+            if(context != null && context.getAuthentication() instanceof AccountAuthenticationToken token) {
+
+                if(token.getAccount() != null && token.getAccount().getUsername() != null && token.getAccount().getUsername().equalsIgnoreCase(account.getUsername())) {
+
+                    context.setAuthentication(token.updatePrincipal(account));
+                }
+            }
+        }
+
+        return result;
     }
 
 
