@@ -1,9 +1,10 @@
 package com.cobnet.spring.boot.dto;
 
 import com.cobnet.interfaces.connection.web.ApplicationJson;
+import com.cobnet.spring.boot.entity.Address;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class Address implements ApplicationJson {
+public class AddressInfo implements ApplicationJson {
 
     private String street;
     private String unit;
@@ -13,7 +14,7 @@ public class Address implements ApplicationJson {
 
     private String postalCode;
 
-    public Address(String street, String unit, String city, String state, String country, String postalCode) {
+    public AddressInfo(String street, String unit, String city, String state, String country, String postalCode) {
         this.street = street;
         this.unit = unit;
         this.city = city;
@@ -22,7 +23,12 @@ public class Address implements ApplicationJson {
         this.postalCode = postalCode;
     }
 
-    public Address() {}
+    public AddressInfo(Address address) {
+
+        this(address.getStreet(), address.getUnit(), address.getCity(), address.getState(), address.getCountry(), address.getPostalCode());
+    }
+
+    public AddressInfo() {}
 
     public String getStreet() {
         return street;
@@ -166,9 +172,9 @@ public class Address implements ApplicationJson {
             return this;
         }
 
-        public Address build() {
+        public AddressInfo build() {
 
-            return new Address(this.street, this.unit, this.city, this.state, this.country, this.postalCode);
+            return new AddressInfo(this.street, this.unit, this.city, this.state, this.country, this.postalCode);
         }
     }
 }

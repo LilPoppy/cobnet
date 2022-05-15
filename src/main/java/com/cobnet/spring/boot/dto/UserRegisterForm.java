@@ -21,11 +21,11 @@ public class UserRegisterForm extends FormBase<UserRegisterForm, ResponseResult<
 
     private String lastName;
 
-    private Address address;
+    private AddressInfo addressInfo;
 
     public UserRegisterForm() {}
 
-    public UserRegisterForm(String username, String password, Gender gender, String email, String phoneNumber, String firstName, String lastName, Address address) {
+    public UserRegisterForm(String username, String password, Gender gender, String email, String phoneNumber, String firstName, String lastName, AddressInfo addressInfo) {
         this.username = username;
         this.password = password;
         this.gender = gender;
@@ -33,7 +33,7 @@ public class UserRegisterForm extends FormBase<UserRegisterForm, ResponseResult<
         this.phoneNumber = phoneNumber;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.address = address;
+        this.addressInfo = addressInfo;
     }
 
     public String getUsername() {
@@ -64,8 +64,8 @@ public class UserRegisterForm extends FormBase<UserRegisterForm, ResponseResult<
         return lastName;
     }
 
-    public Address getAddress() {
-        return address;
+    public AddressInfo getAddress() {
+        return addressInfo;
     }
 
     public void setUsername(String username) {
@@ -96,15 +96,15 @@ public class UserRegisterForm extends FormBase<UserRegisterForm, ResponseResult<
         this.lastName = lastName;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setAddress(AddressInfo addressInfo) {
+        this.addressInfo = addressInfo;
     }
 
 
     @Override
     public ResponseResult<UserRegisterResultStatus> getResult(Object... args) {
 
-        User user = ProjectBeanHolder.getAccountService().register(new User.Builder().setUsername(this.username).setPassword(this.password).setFirstName(this.firstName).setLastName(this.lastName).setGender(this.gender).setPhoneNumber(this.phoneNumber).setEmail(this.email).setRoles(ProjectBeanHolder.getUserRoleRepository().getDefaultRole().get()).build(), this.address.getEntity());
+        User user = ProjectBeanHolder.getAccountService().register(new User.Builder().setUsername(this.username).setPassword(this.password).setFirstName(this.firstName).setLastName(this.lastName).setGender(this.gender).setPhoneNumber(this.phoneNumber).setEmail(this.email).setRoles(ProjectBeanHolder.getUserRoleRepository().getDefaultRole().get()).build(), this.addressInfo.getEntity());
 
         if(user != null) {
 

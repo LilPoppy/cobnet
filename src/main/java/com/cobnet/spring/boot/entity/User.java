@@ -6,6 +6,7 @@ import com.cobnet.interfaces.security.Permission;
 import com.cobnet.security.RoleRule;
 import com.cobnet.security.permission.PermissionValidator;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
+import com.cobnet.spring.boot.dto.UserInfo;
 import com.cobnet.spring.boot.entity.support.Gender;
 import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
 import lombok.NoArgsConstructor;
@@ -79,7 +80,7 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
     private Date lockTime;
 
-    private boolean vaildPassword;
+    private boolean validPassword;
 
     private boolean enabled;
 
@@ -90,7 +91,7 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
     @Transient
     private transient PermissionValidator permissionValidator;
 
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, @NonNull Gender gender, String phoneNumber, boolean phoneNumberVerified, String email, boolean emailVerified, @NonNull List<Address> addresses,  @NonNull List<UserRole> roles, boolean expired, boolean locked, boolean vaildPassword, boolean enabled) {
+    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, @NonNull Gender gender, String phoneNumber, boolean phoneNumberVerified, String email, boolean emailVerified, @NonNull List<Address> addresses,  @NonNull List<UserRole> roles, boolean expired, boolean locked, boolean validPassword, boolean enabled) {
 
         this.username = username;
         this.password = password;
@@ -108,51 +109,17 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
         this.roles.addAll(roles.stream().collect(Collectors.collectingAndThen(Collectors.toCollection(() -> new TreeSet<>(Comparator.comparing(EntityBase::getCreatedTime))), ArrayList::new)));
         this.expired = expired;
         this.locked = locked;
-        this.vaildPassword = vaildPassword;
+        this.validPassword = validPassword;
         this.enabled = enabled;
 
     }
 
+    public User(UserInfo info, String password, boolean phoneNumberVerified, boolean emailVerified, boolean expired, boolean locked, boolean validPassword, boolean enabled) {
 
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, @NonNull Gender gender, @NonNull List<Address> addresses ,@NonNull List<UserRole> roles) {
-
-        this(username, password,firstName, lastName, gender,null, false, null, false, addresses, roles, false, false, true, true);
+        this(info.getUsername(), password, info.getFirstName(), info.getLastName(), info.getGender(), info.getPhoneNumber(), phoneNumberVerified, info.getEmail(), emailVerified, info.getAddressInfos().stream().map(address -> new Address(address)).toList(), info.getUserRoleInfos().stream().map(role -> new UserRole(role)).toList(), expired, locked, validPassword, enabled);
     }
 
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, @NonNull Gender gender, @NonNull Address address ,@NonNull List<UserRole> roles) {
 
-        this(username, password, firstName, lastName, gender, List.of(address), roles);
-    }
-
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, Gender gender, String phoneNumber, String email, @NonNull List<Address> addresses, @NonNull List<UserRole> roles) {
-
-        this(username, password,firstName, lastName, gender, phoneNumber, false, email, false, addresses, roles, false, false, true, true);
-    }
-
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, @NonNull Gender gender, String phoneNumber, String email, @NonNull Address address, @NonNull List<UserRole> roles) {
-
-        this(username, password,firstName, lastName, gender, phoneNumber, false, email, false, List.of(address), roles, false, false, true, true);
-    }
-
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, @NonNull Gender gender, String phoneNumber, String email, List<Address> addresses, UserRole... roles) {
-
-        this(username, password, firstName, lastName, gender, phoneNumber, email, addresses, Arrays.stream(roles).toList());
-    }
-
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, @NonNull Gender gender, String phoneNumber, String email, Address addresse, UserRole... roles) {
-
-        this(username, password, firstName, lastName, gender, phoneNumber, email, List.of(addresse), Arrays.stream(roles).toList());
-    }
-
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, @NonNull Gender gender, List<Address> addresses, UserRole... roles) {
-
-        this(username, password, firstName, lastName, gender, addresses, Arrays.stream(roles).toList());
-    }
-
-    public User(@NonNull String username, @NonNull String password, @NonNull String firstName, @NonNull String lastName, @NonNull Gender gender, Address address, UserRole... roles) {
-
-        this(username, password, firstName, lastName, gender, List.of(address), Arrays.stream(roles).toList());
-    }
 
     @Override
     public String getUsername() {
@@ -219,7 +186,7 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return this.vaildPassword;
+        return this.validPassword;
     }
 
     @Override
@@ -274,6 +241,10 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
         Optional<UserRole> role = this.roles.stream().max(Comparator.comparingInt(UserRole::getPower));
 
         return role.isEmpty() ? RoleRule.VISITOR : role.get().getRule();
+    }
+
+    public Set<UserRole> getRoles() {
+        return roles;
     }
 
     public Set<ExternalUser> getExternalUsers() {
@@ -516,7 +487,7 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
                 "permissions = " + permissions + ", " +
                 "expired = " + expired + ", " +
                 "locked = " + locked + ", " +
-                "vaildPassword = " + vaildPassword + ", " +
+                "vaildPassword = " + validPassword + ", " +
                 "enabled = " + enabled + ")";
     }
 }

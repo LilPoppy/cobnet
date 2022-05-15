@@ -4,7 +4,7 @@ import com.cobnet.common.DateUtils;
 import com.cobnet.exception.ResponseFailureStatusException;
 import com.cobnet.interfaces.spring.repository.AutocompleteRequestCacheRepository;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
-import com.cobnet.spring.boot.dto.Address;
+import com.cobnet.spring.boot.dto.AddressInfo;
 import com.cobnet.spring.boot.dto.GoogleAutocompletePredicted;
 import com.cobnet.exception.support.GoogleApiRequestResultStatus;
 import com.cobnet.spring.boot.cache.GoogleMapRequestCache;
@@ -41,7 +41,7 @@ public class GoogleMapService {
     }
 
     //TODO: Place entity to store the search cache and reuse it again.
-    public Address findPlaceAddressRequest(HttpServletRequest request, String placeId) {
+    public AddressInfo findPlaceAddressRequest(HttpServletRequest request, String placeId) {
 
         return this.invoke(request, cache -> {
 
@@ -96,7 +96,7 @@ public class GoogleMapService {
                     }
                 }
 
-                return new Address(street.toString(), unit.toString(), city.toString(), state.toString(), country.toString(), postalCode.toString());
+                return new AddressInfo(street.toString(), unit.toString(), city.toString(), state.toString(), country.toString(), postalCode.toString());
 
             } catch (IOException | ApiException | InterruptedException e) {
 
@@ -106,7 +106,7 @@ public class GoogleMapService {
     }
 
 
-    public GoogleAutocompletePredicted autocompleteRequest(HttpServletRequest request, PlaceAutocompleteType type, Address form, String... params) throws ResponseFailureStatusException {
+    public GoogleAutocompletePredicted autocompleteRequest(HttpServletRequest request, PlaceAutocompleteType type, AddressInfo form, String... params) throws ResponseFailureStatusException {
 
         return this.invoke(request, cache -> {
 

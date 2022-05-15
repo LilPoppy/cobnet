@@ -4,6 +4,7 @@ import com.cobnet.interfaces.security.Permissible;
 import com.cobnet.interfaces.security.Permission;
 import com.cobnet.security.RoleRule;
 import com.cobnet.security.permission.PermissionValidator;
+import com.cobnet.spring.boot.dto.UserRoleInfo;
 import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
 import com.cobnet.spring.boot.entity.support.JsonStringSetConverter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.lang.NonNull;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @NoArgsConstructor
@@ -38,31 +40,22 @@ public class UserRole extends EntityBase implements Permissible, Serializable {
     @Transient
     private transient PermissionValidator permissionCollection;
 
-    public UserRole(@NonNull String role, RoleRule rule, boolean isDefault) {
+    public UserRole(@NonNull String role, RoleRule rule, boolean isDefault, Set<String> alias, Permission... permissions) {
 
         this.role = role;
         this.rule = rule;
         this.isDefault = isDefault;
+        this.alias = alias;
+        if(permissions.length > 0) {
+
+            this.permissions = Arrays.stream(permissions).collect(Collectors.toSet());
+        }
     }
 
-
-
-    public UserRole(@NonNull String role, RoleRule rule, boolean isDefault, Permission... permissions) {
-
-        this(role, rule, isDefault);
-
-        Arrays.stream(permissions).forEach(this::addPermission);
+    public UserRole(UserRoleInfo info) {
+        this(info.getRole(), info.getRule(), false, new HashSet<>(),info.getPermissions().stream().toArray(Permission[]::new));
     }
 
-    public UserRole(@NonNull String role) {
-
-        this(role, RoleRule.USER, false);
-    }
-
-    public UserRole(@NonNull String role, Permission... permissions) {
-
-        this(role, RoleRule.USER, false, permissions);
-    }
 
     public String getName() {
 
@@ -174,5 +167,48 @@ public class UserRole extends EntityBase implements Permissible, Serializable {
     public RoleRule getRule() {
 
         return this.rule;
+    }
+
+    public static final class Builder {
+
+        private String role;
+
+        private RoleRule rule;
+
+        private Set<String> alias = new HashSet<>();
+
+        private boolean isDefault;
+
+        private Set<Permission> permissions = new HashSet<>();
+
+        public Builder setRole(String role) {
+            this.role = role;
+            return this;
+        }
+
+        public Builder setRule(RoleRule rule) {
+            this.rule = rule;
+            return this;
+        }
+
+        public Builder setAlias(String... alias) {
+            this.alias = Arrays.stream(alias).collect(Collectors.toSet());
+            return this;
+        }
+
+        public Builder setDefault(boolean aDefault) {
+            isDefault = aDefault;
+            return this;
+        }
+
+        public Builder setPermissions(Permission... permissions) {
+            this.permissions = Arrays.stream(permissions).collect(Collectors.toSet());
+            return this;
+        }
+
+        public UserRole build() {
+
+            return new UserRole(this.role, this.rule, this.isDefault, this.alias, this.permissions.toArray(Permission[]::new));
+        }
     }
 }

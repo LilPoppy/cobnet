@@ -1,5 +1,6 @@
 package com.cobnet.spring.boot.entity;
 
+import com.cobnet.spring.boot.dto.AddressInfo;
 import com.cobnet.spring.boot.entity.support.AddressKey;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,11 @@ public class Address extends EntityBase implements Serializable {
         this.city = city;
         this.state = state;
         this.country = country;
+    }
+
+    public Address(AddressInfo info) {
+
+        this(info.getStreet(), info.getUnit(), info.getCity(), info.getState(), info.getCountry(), info.getPostalCode());
     }
 
     public Address(String street, String unit, String city, String state, String country) {
@@ -113,7 +119,7 @@ public class Address extends EntityBase implements Serializable {
 
     public String address() {
 
-        return new com.cobnet.spring.boot.dto.Address.Builder().setStreet(this.getStreet()).setUnit(this.getUnit()).setCity(this.getCity()).setState(this.getState()).setCountry(this.getCountry()).setPostalCode(this.getPostalCode()).build().address();
+        return new AddressInfo.Builder().setStreet(this.getStreet()).setUnit(this.getUnit()).setCity(this.getCity()).setState(this.getState()).setCountry(this.getCountry()).setPostalCode(this.getPostalCode()).build().address();
     }
 
     @Override

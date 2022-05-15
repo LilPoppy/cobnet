@@ -1,5 +1,7 @@
 package com.cobnet.common;
 
+import jodd.util.StringUtil;
+
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Map;
@@ -20,5 +22,10 @@ public class StringUtils {
             }
 
         }).toArray(String[]::new));
+    }
+
+    public static String secure(String text, int start, int end, char replacement) {
+
+        return new StringBuilder(text).replace(start, end, StringUtil.repeat(replacement, end - start)).toString();
     }
 }

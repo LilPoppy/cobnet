@@ -101,6 +101,7 @@ public class EntryPoint {
 	public static void main(String[] args) throws IOException, ServiceDownException {
 
 		SpringApplication.run(EntryPoint.class, args);
+
 		if(ProjectBeanHolder.getCacheConfiguration().isStartClear()) {
 
 			clearCaches();
@@ -109,9 +110,8 @@ public class EntryPoint {
 		LOG.info("@@@@" + ProjectBeanHolder.getTranslatorMessageSource().getMessage("Hey"));
 		LOG.info(EntryPoint.getLogo());
 
-		User user = new User("admin", "123456", "Bob", "Smith", Gender.MALE, new Address.Builder().setStreet("1 Heaven Street").setPostalCode("007").build(), new UserRole("admin", RoleRule.ADMIN, false, new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")).addAlias("user"));
+		User user = new User.Builder().setUsername("admin").setPassword("123456").setFirstName("Bob").setLastName("Smith").setGender(Gender.MALE).setAddresses(new Address.Builder().setStreet("1 Heaven Street").setPostalCode("007").build()).setRoles(new UserRole.Builder().setRole("admin").setRule(RoleRule.ADMIN).setDefault(false).setPermissions(new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")).setAlias("user").build()).build();
 
-		ProjectBeanHolder.getUserRoleRepository().save(new UserRole("user", RoleRule.USER, true));
 		ProjectBeanHolder.getUserRepository().save(user);
 
 		if(Arrays.stream(args).anyMatch(arg -> arg.equalsIgnoreCase("agent"))) {
