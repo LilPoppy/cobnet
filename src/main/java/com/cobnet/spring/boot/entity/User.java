@@ -347,7 +347,7 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
         private boolean locked;
 
-        private boolean vaildPassword;
+        private boolean validPassword;
 
         private boolean enabled;
 
@@ -442,9 +442,9 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
             return this;
         }
 
-        public Builder setVaildPassword(boolean vaildPassword) {
+        public Builder setValidPassword(boolean validPassword) {
 
-            this.vaildPassword = vaildPassword;
+            this.validPassword = validPassword;
 
             return this;
         }
@@ -458,7 +458,7 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
         public User build() {
 
-            return new User(this.username, this.password, this.firstName, this.lastName, this.gender, this.phoneNumber, this.phoneNumberVerified, this.email, this.emailVerified, this.addresses, this.roles, this.expired, this.locked, this.vaildPassword, this.enabled);
+            return new User(this.username, this.password, this.firstName, this.lastName, this.gender, this.phoneNumber, this.phoneNumberVerified, this.email, this.emailVerified, this.addresses, this.roles, this.expired, this.locked, this.validPassword, this.enabled);
         }
     }
 
@@ -488,7 +488,7 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
                 "permissions = " + permissions + ", " +
                 "expired = " + expired + ", " +
                 "locked = " + locked + ", " +
-                "vaildPassword = " + validPassword + ", " +
+                "validPassword = " + validPassword + ", " +
                 "enabled = " + enabled + ")";
     }
 }

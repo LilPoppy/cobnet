@@ -110,7 +110,7 @@ public class EntryPoint {
 		LOG.info("@@@@" + ProjectBeanHolder.getTranslatorMessageSource().getMessage("Hey"));
 		LOG.info(EntryPoint.getLogo());
 
-		User user = new User.Builder().setUsername("admin").setPassword("123456").setFirstName("Bob").setLastName("Smith").setGender(Gender.MALE).setAddresses(new Address.Builder().setStreet("1 Heaven Street").setPostalCode("007").build()).setRoles(new UserRole.Builder().setRole("admin").setRule(RoleRule.ADMIN).setDefault(false).setPermissions(new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")).setAlias("user").build()).build();
+		User user = new User.Builder().setUsername("admin").setPassword("123456").setFirstName("Bob").setLastName("Smith").setGender(Gender.MALE).setAddresses(new Address.Builder().setStreet("1 Heaven Street").setPostalCode("007").build()).setRoles(new UserRole.Builder().setRole("admin").setRule(RoleRule.ADMIN).setDefault(false).setPermissions(new UserPermission("admin.read.test"), new UserPermission("user.op"), new UserPermission("user.read.lm"), new UserPermission("user.test")).setAlias("user").build()).setEnabled(true).build();
 
 		ProjectBeanHolder.getUserRepository().save(user);
 
