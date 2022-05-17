@@ -95,6 +95,7 @@ public class User extends EntityBase implements Permissible, Account, UserDetail
 
         this.username = username;
         this.password = password;
+        this.passwordEncoded = false;
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
