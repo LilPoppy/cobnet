@@ -2,10 +2,8 @@ package com.cobnet.spring.boot.dto;
 
 import com.cobnet.common.StringUtils;
 import com.cobnet.interfaces.connection.web.ApplicationJson;
-import com.cobnet.spring.boot.entity.ExternalUser;
 import com.cobnet.spring.boot.entity.User;
-import com.cobnet.spring.boot.entity.UserRole;
-import com.cobnet.spring.boot.entity.support.Gender;
+import com.cobnet.spring.boot.dto.support.Gender;
 import lombok.NoArgsConstructor;
 
 import java.util.Arrays;

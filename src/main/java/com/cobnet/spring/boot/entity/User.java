@@ -7,7 +7,7 @@ import com.cobnet.security.RoleRule;
 import com.cobnet.security.permission.PermissionValidator;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.spring.boot.dto.UserInfo;
-import com.cobnet.spring.boot.entity.support.Gender;
+import com.cobnet.spring.boot.dto.support.Gender;
 import com.cobnet.spring.boot.entity.support.JsonPermissionSetConverter;
 import lombok.NoArgsConstructor;
 import org.hibernate.Hibernate;

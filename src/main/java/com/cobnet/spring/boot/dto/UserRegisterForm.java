@@ -3,7 +3,7 @@ package com.cobnet.spring.boot.dto;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;
 import com.cobnet.exception.support.UserRegisterResultStatus;
 import com.cobnet.spring.boot.entity.User;
-import com.cobnet.spring.boot.entity.support.Gender;
+import com.cobnet.spring.boot.dto.support.Gender;
 
 public class UserRegisterForm extends FormBase<UserRegisterForm, ResponseResult<UserRegisterResultStatus>> {
 
