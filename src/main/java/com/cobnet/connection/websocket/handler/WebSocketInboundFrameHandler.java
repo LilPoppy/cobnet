@@ -1,6 +1,6 @@
 package com.cobnet.connection.websocket.handler;
 
-import com.cobnet.common.Endian;
+import com.cobnet.common.enums.Endian;
 import com.cobnet.connection.support.NettyChannel;
 import com.cobnet.connection.websocket.WebSocketChannel;
 import com.cobnet.spring.boot.controller.handler.InboundOperation;

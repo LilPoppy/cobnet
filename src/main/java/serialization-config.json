@@ -37,6 +37,9 @@
       "customTargetConstructorClass":"java.lang.Object"
     },
     {
+      "name":"com.cobnet.spring.boot.entity.FileInfo"
+    },
+    {
       "name":"java.lang.Integer"
     },
     {

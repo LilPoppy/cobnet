@@ -1,6 +1,6 @@
 package com.cobnet.connection.support;
 
-import com.cobnet.common.Endian;
+import com.cobnet.common.enums.Endian;
 import com.cobnet.common.KeyValuePair;
 import com.cobnet.connection.support.handler.ChannelActivityHandler;
 import com.cobnet.connection.support.handler.ChannelInitializeHandler;

@@ -1,5 +1,6 @@
 package com.cobnet;
 
+import com.cobnet.common.Delegate;
 import com.cobnet.connection.websocket.WebSocketServer;
 import com.cobnet.exception.ServiceDownException;
 import com.cobnet.security.RoleRule;
@@ -18,10 +19,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Locale;
-import java.util.Objects;
+import java.util.*;
 
 @EnableEurekaClient
 @SpringBootApplication(proxyBeanMethods = false)
@@ -90,7 +88,7 @@ public class EntryPoint {
 			                        ****
 			""";
 
-	public static void main(String[] args) throws IOException, ServiceDownException {
+	public static void main(String[] args) throws IOException, ServiceDownException, NoSuchFieldException {
 
 		SpringApplication.run(EntryPoint.class, args);
 

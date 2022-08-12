@@ -1,4 +1,4 @@
-package com.cobnet.common;
+package com.cobnet.common.enums;
 
 public enum Endian {
 	BIG,

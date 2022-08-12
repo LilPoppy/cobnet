@@ -1,6 +1,6 @@
 package com.cobnet.connection.support;
 
-import com.cobnet.common.Endian;
+import com.cobnet.common.enums.Endian;
 import com.cobnet.interfaces.connection.InputTransmission;
 import com.cobnet.spring.boot.controller.handler.InboundOperation;
 import com.cobnet.spring.boot.core.ProjectBeanHolder;

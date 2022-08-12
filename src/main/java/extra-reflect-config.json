@@ -53,6 +53,15 @@
   },
   {
     "name": "com.zaxxer.hikari.HikariDataSource",
-    "methods":[{"name":"<init>","parameterTypes":[] }]
+    "methods":[{ "name":"<init>","parameterTypes":[] }]
+  },
+  {
+    "name":"org.hibernate.dialect.PostgreSQLDialect",
+    "allDeclaredMethods" : true,
+    "allDeclaredFields" : true,
+    "allDeclaredConstructors" : true
+  },
+  {
+    "name":"java.sql.Statement[]"
   }
 ]

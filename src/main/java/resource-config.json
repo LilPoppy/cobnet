@@ -194,7 +194,19 @@
       "pattern":"\\Qcom/cobnet/interfaces/security/annotation/AccessSecured.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/interfaces/spring/repository/AccountPhoneNumberVerifyCacheRepository.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/interfaces/spring/repository/AddressRepository.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/spring/repository/AttemptLoginCacheRepository.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/spring/repository/AutocompleteRequestCacheRepository.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/spring/repository/BadMessageCacheRepository.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/interfaces/spring/repository/ExternalUserRepository.class\\E"
@@ -203,10 +215,28 @@
       "pattern":"\\Qcom/cobnet/interfaces/spring/repository/FileInfoRepository.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/interfaces/spring/repository/HumanValidationCacheRepository.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/spring/repository/IPAddressCacheRepository.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/spring/repository/IndexedRedisRepository.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/interfaces/spring/repository/JPABaseRepository.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/interfaces/spring/repository/MessageCallsCacheRepository.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/spring/repository/MessageSourceCacheRepository.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/interfaces/spring/repository/PersistentLoginsRepository.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/interfaces/spring/repository/RedisRepository.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/interfaces/spring/repository/UserRepository.class\\E"
@@ -225,6 +255,12 @@
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/aspect/JPARepositorySaveMethodAspect.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/cache/support/BytesToLocaleConverter.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/cache/support/LocaleToBytesConverter.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/configuration/CacheConfiguration.class\\E"
@@ -326,6 +362,9 @@
       "pattern":"\\Qcom/cobnet/spring/boot/controller/handler/http/HttpSessionEventHandler.class\\E"
     }, 
     {
+      "pattern":"\\Qcom/cobnet/spring/boot/controller/restful/AddressController.class\\E"
+    }, 
+    {
       "pattern":"\\Qcom/cobnet/spring/boot/controller/restful/AuthenticationController.class\\E"
     }, 
     {
@@ -339,6 +378,9 @@
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/controller/restful/VisitorController.class\\E"
+    }, 
+    {
+      "pattern":"\\Qcom/cobnet/spring/boot/controller/support/CustomOpenApiWebMvcResource.class\\E"
     }, 
     {
       "pattern":"\\Qcom/cobnet/spring/boot/core/ProjectBeanHolder$AutowireLoader.class\\E"
@@ -518,6 +560,9 @@
       "pattern":"\\Qio/netty/util/AttributeMap.class\\E"
     }, 
     {
+      "pattern":"\\Qio/swagger/v3/core/filter/SpecFilter.class\\E"
+    }, 
+    {
       "pattern":"\\Qio/swagger/v3/oas/annotations/Hidden.class\\E"
     }, 
     {
@@ -599,7 +644,16 @@
       "pattern":"\\Qorg/hibernate/xsd/mapping/legacy-mapping-4.0.xsd\\E"
     }, 
     {
+      "pattern":"\\Qorg/redisson/spring/cache/RedissonCacheStatisticsAutoConfiguration.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/slf4j/impl/StaticLoggerBinder.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/api/AbstractOpenApiResource$ConditionType.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/api/AbstractOpenApiResource.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springdoc/core/AbstractSwaggerUiConfigProperties$Direction.class\\E"
@@ -710,6 +764,12 @@
       "pattern":"\\Qorg/springdoc/security/SpringDocSecurityConfiguration.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springdoc/webmvc/api/OpenApiResource.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springdoc/webmvc/api/OpenApiWebMvcResource.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springdoc/webmvc/core/MultipleOpenApiSupportConfiguration$SpringDocWebMvcActuatorDifferentConfiguration.class\\E"
     }, 
     {
@@ -804,6 +864,18 @@
     }, 
     {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/cache/GenericCacheConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/cache/HazelcastJCacheCustomizationConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/cache/JCacheCacheConfiguration$JCacheAvailableCondition.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/cache/JCacheCacheConfiguration$JCacheProviderAvailableCondition.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/boot/autoconfigure/cache/JCacheCacheConfiguration.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/boot/autoconfigure/cache/NoOpCacheConfiguration.class\\E"
@@ -1484,6 +1556,12 @@
       "pattern":"\\Qorg/springframework/cache/interceptor/KeyGenerator.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/cache/jcache/config/AbstractJCacheConfiguration.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/cache/jcache/config/ProxyJCacheConfiguration.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/cloud/autoconfigure/ConfigurationPropertiesRebinderAutoConfiguration.class\\E"
     }, 
     {
@@ -1754,6 +1832,9 @@
       "pattern":"\\Qorg/springframework/context/annotation/Lazy.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/context/annotation/Primary.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/context/annotation/Role.class\\E"
     }, 
     {
@@ -1775,7 +1856,16 @@
       "pattern":"\\Qorg/springframework/core/annotation/Order.class\\E"
     }, 
     {
+      "pattern":"\\Qorg/springframework/core/convert/converter/Converter.class\\E"
+    }, 
+    {
       "pattern":"\\Qorg/springframework/core/env/EnvironmentCapable.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/data/convert/ReadingConverter.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/data/convert/WritingConverter.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/data/jpa/repository/JpaRepository.class\\E"
@@ -1818,6 +1908,9 @@
     }, 
     {
       "pattern":"\\Qorg/springframework/data/redis/repository/configuration/RedisRepositoriesRegistrar.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/data/redis/repository/support/RedisRepositoryFactoryBean.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/data/repository/CrudRepository.class\\E"
@@ -2049,6 +2142,12 @@
     }, 
     {
       "pattern":"\\Qorg/springframework/web/bind/annotation/ControllerAdvice.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/web/bind/annotation/Mapping.class\\E"
+    }, 
+    {
+      "pattern":"\\Qorg/springframework/web/bind/annotation/RequestMapping.class\\E"
     }, 
     {
       "pattern":"\\Qorg/springframework/web/bind/annotation/ResponseBody.class\\E"

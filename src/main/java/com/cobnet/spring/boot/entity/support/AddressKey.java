@@ -65,4 +65,13 @@ public class AddressKey implements Serializable {
     public int hashCode() {
         return Objects.hash(street, unit, postalCode);
     }
+
+    @Override
+    public String toString() {
+        return "AddressKey{" +
+                "street='" + street + '\'' +
+                ", unit='" + unit + '\'' +
+                ", postalCode='" + postalCode + '\'' +
+                '}';
+    }
 }
